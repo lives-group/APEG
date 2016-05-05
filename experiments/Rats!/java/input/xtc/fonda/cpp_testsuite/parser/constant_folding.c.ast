@@ -1,0 +1,43 @@
+#superc_args -printAST
+TranslationUnit(
+  ExternalDeclarationList(
+    Conditional(
+      1,
+      FunctionDefinition(
+        FunctionPrototype(
+          xtc.lang.cpp.Syntax$Language(
+            "int"
+          ),
+          FunctionDeclarator(
+            SimpleDeclarator(
+              xtc.lang.cpp.Syntax$Text(
+                "main"
+              )
+            )
+          )
+        ),
+        CompoundStatement(
+          DeclarationOrStatementList(
+            Conditional(
+              1,
+              Conditional(
+                (A + 8),
+                ExpressionStatement(
+                  xtc.lang.cpp.Syntax$Text(
+                    "1"
+                  )
+                ),
+                !(A + 8),
+                ExpressionStatement(
+                  xtc.lang.cpp.Syntax$Text(
+                    "3"
+                  )
+                )
+              )
+            )
+          )
+        )
+      )
+    )
+  )
+)

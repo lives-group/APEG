@@ -1,0 +1,63 @@
+# Hierarchical syntax
+ClassDeclaration       <- Spacing 'class' Spacing Identifier ClassBody EndOfFile		# Type 0
+ClassBody              <- CURLYOPEN MethodDeclaration* ConstructorDeclaration			# Type 1
+                          MethodDeclaration* CURLYCLOSE
+
+MethodDeclaration      <- ResultType MethodDeclarator Block					# Type 2
+ConstructorDeclaration <- MethodDeclarator Block						# Type 3
+MethodDeclarator       <- Identifier FormalParameter						# Type 4
+FormalParameter        <- OPEN Identifier? CLOSE						# Type 5
+ResultType             <- ( 'void' / 'define' ) Spacing						# Type 6
+OptionalArgument       <- OPEN IntExp? CLOSE							# Type 7
+
+#Statements
+Statement              <- Block / SEMICOLON / IfStatement / WhileStatement			# Type 8
+			  / IterateStatement / TurnoffStatement / TurnleftStatement
+			  / MoveStatement / PickbeeperStatement / PutbeeperStatement
+			  / CallStatement
+Block                  <- CURLYOPEN Statement* CURLYCLOSE					# Type 9
+CallStatement          <- Identifier OptionalArgument SEMICOLON					# Type 10
+IfStatement            <- 'if' Spacing OPEN Expression CLOSE Statement				# Type 11
+                          ( 'else' Spacing Statement )?
+WhileStatement         <- 'while' Spacing OPEN Expression CLOSE Statement			# Type 12
+IterateStatement       <- 'iterate' Spacing OPEN IntExp CLOSE Statement				# Type 13
+TurnoffStatement       <- 'turnoff' Spacing OPEN CLOSE SEMICOLON				# Type 14
+TurnleftStatement      <- 'turnleft' Spacing OPEN CLOSE SEMICOLON				# Type 15
+MoveStatement          <- 'move' Spacing OPEN CLOSE SEMICOLON					# Type 16
+PickbeeperStatement    <- 'pickbeeper' Spacing OPEN CLOSE SEMICOLON				# Type 17
+PutbeeperStatement     <- 'putbeeper' Spacing OPEN CLOSE SEMICOLON				# Type 18
+
+#Boolean expressions
+Expression             <- AndClause ( OR AndClause )*						# Type 19
+AndClause              <- NotClause ( AND NotClause )*						# Type 20
+NotClause              <- NOT? AtomClause							# Type 21
+AtomClause             <- 'iszero' Spacing OPEN IntExp CLOSE					# Type 22
+                          / BooleanFunction / OPEN Expression CLOSE
+BooleanFunction        <- ( 'frontIsClear' / 'frontIsBlocked' / 'leftIsClear'			# Type 23
+                            / 'leftIsBlocked' / 'rightIsClear' / 'rightIsBlocked'
+                            / 'nextToABeeper' / 'notNextToABeeper'
+                            / 'anyBeepersInBeeperBag' / 'noBeepersInBeeperBag'
+                            / 'facingNorth' / 'notFacingNorth' / 'facingWest'
+                            / 'notFacingWest' / 'facingSouth' / 'notFacingSouth'
+                            / 'facingEast' / 'notFacingEast' ) Spacing (OPEN CLOSE)?
+IntExp                 <- Decimal / Identifier / 'pred' Spacing OPEN IntExp CLOSE		# Type 24
+                          / 'succ' Spacing OPEN IntExp CLOSE
+
+# Lexical syntax
+Identifier             <- '[a-zA-Z_][a-zA-Z\-_0-9]*' Spacing					# Type 25
+Decimal                <- ( '0' / '[1-9][0-9]*' ) Spacing					# Type 26
+
+OR                     <- '\|\|' Spacing							# Type 27
+AND                    <- '&&' Spacing								# Type 28
+NOT                    <- '!' Spacing								# Type 29
+SEMICOLON              <- ';' Spacing								# Type 30
+OPEN                   <- '\(' Spacing								# Type 31
+CLOSE                  <- '\)' Spacing								# Type 32
+CURLYOPEN              <- '\{' Spacing								# Type 33
+CURLYCLOSE             <- '\}' Spacing								# Type 34
+
+Spacing    <- (Space / Comment)*								# Type 35
+Comment    <- '//' (!EndOfLine .)* EndOfLine / '/\*' ( !'\*/' . )* ( '\*/' / EndOfFile )	# Type 36
+Space      <- ' ' / '\t' / EndOfLine								# Type 37
+EndOfLine  <- '\r\n' / '\n' / '\r'								# Type 38
+EndOfFile  <- !.										# Type 39

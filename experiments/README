@@ -1,0 +1,7 @@
+Dentro da pasta Rats! está todos os codigos feitos para os testes.
+
+Na subpasta java as nossas entradas sao ferramentas escritas em PEG.  Utilizamos a ferramenta chamada Rats! e assim pegamos a gramática de java e a reescrevemos em PEG, e passando-a na ferramenta geramos um parser automaticamente para assim testar as nossas entradas que são também ferramentas escritas em PEG.
+
+Nas subpastas pairs e closure temos a gramatica java acrescida dessas outras linguagens. Tendo como entrada códigos que misturam as duas linguagens.
+
+

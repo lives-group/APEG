@@ -1,0 +1,213 @@
+%HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+
+\section{Get error handling right\label{errors}}
+
+%HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+
+Try the following with the calculator just constructed:
+
+\small
+\begin{Verbatim}[samepage=true,xleftmargin=15mm,baselinestretch=0.8]
+ java Calc
+ > 2a
+ After '2': 'a' is not defined
+ NaN
+ > a =
+ At start: 'a' is not defined
+ NaN
+ After 'a =': expected ' ' or Sum
+ > a = 12(
+ After 'a = 12': expected ' ' or Sum
+ > a
+ 12.0
+ > 2a)
+ 24.0
+ After '2a': expected [a-z] or ' ' or MultOp or Factor or AddOp or end of text
+ > 
+\end{Verbatim}
+\normalsize
+
+Note that the syntactically incorrect input \tx{"a ="}
+resulted "not defined" message and \tx{"NaN"}
+before the message about syntax error.
+
+Note also that syntactically incorrect input \tx{"a = 12("}
+actually entered \tx{"a"} in the dictionary, which is shown 
+by response to the subsequent \tx{"a"}.
+
+Another syntactically incorrect input \tx{"2a)"}
+printed the result of \tx{"2a"}
+before the message about syntax error.
+
+What happens?
+
+In the first case, \Store\ failed on \tx{"a ="} and backtracked.
+The other alternative, \Print, succeeded in consuming \tx{"a~"}.
+Its sub-procedure \Factor, through semantic action \tx{retrieve()}
+printed the "not defined" message, and produced the result \tx{"NaN"}
+that was eventually printed by \Printa.
+Then, \Print\ returned success to \Input, which failed
+by finding \tx{"="} instead end of text, 
+backtracked, and issued the "expected" message.
+
+In the second case, \Store\ successfully consumed \tx{"a = 12"},
+and its action \Storea\ entered \tx{"a"} into the dictionary with \tx{12} as value.
+Then, \Store\ returned success to \Input, which failed by finding \tx{"("} instead of end of text,
+backtracked, and issued the error message.
+
+In the third case, \Print\ successfully consumed \tx{"2a"}, printed its result,
+and returned success to \Input, which failed by not finding end of text.
+
+All these confusing effects are caused by premature printing of a message
+or call to semantic action in an uncertain situation that can be changed by backtracking.
+%
+The moral of the story is that \textbf{you must not take any irreversible actions
+in a situation that can be reversed by backtracking}.
+
+The problem of premature calls to semantic actions 
+can be solved by moving the predicate \tx{"!\_"} from \Input\ 
+to \Store\ and \Print:
+
+\small
+\begin{Verbatim}[frame=single,framesep=2mm,samepage=true,xleftmargin=15mm,xrightmargin=15mm,baselinestretch=0.8]
+   Input   = Space (Store / Print) ;
+   Store   = Name Space Equ Sum !_ {store} ;
+   Print   = Sum !_ {print} ;
+\end{Verbatim}
+\normalsize
+
+In this way, \Storea\ and \Printa\ are called only after the entire input
+has been successfully parsed.
+
+Another irreversible action here is the printing of "not defined" message.
+As soon as \Print\ (via its sub-procedures) encounters an undefined \tx{"a"},
+it issues the message, even if it is going to fail later on.
+This can be solved using the "deferred action" feature.
+A deferred action is any lambda-expression without parameters and with \tx{void} result.
+It  is a chunk of code that can be stored for later execution.
+In this case, it can be, for example: 
+
+\small
+\begin{Verbatim}[frame=single,framesep=2mm,samepage=true,xleftmargin=15mm,xrightmargin=15mm,baselinestretch=0.8]
+   ()<-(){System.out.println("At start: 'a' is not defined")} ;
+\end{Verbatim}
+\normalsize
+
+Using the helper method \tx{actAdd()}, you can save it in the \Phrase\ object of your parsing procedure.
+If your procedure is successful, it is passed on to the \Phrase\ object of its caller, and further on,
+as long as the procedures are successful.
+The actions that made it to the end of the parse are executed then.
+If any procedure in the chain fails, the deferred action id discarded together with the \Phrase\ 
+object containing it.
+
+To exploit this feature, the semantic action \tx{retrieve()} can be changed as follows:
+
+\small
+\begin{Verbatim}[frame=single,framesep=2mm,samepage=true,xleftmargin=15mm,xrightmargin=15mm,baselinestretch=0.8]
+  //-------------------------------------------------------------------
+  //  Factor = Name Space
+  //             0    1
+  //-------------------------------------------------------------------
+  void retrieve()
+    {
+      String name = rhs(0).text();
+      Double d = dictionary.get(name);
+      if (d==null)
+      {
+        d = (Double)Double.NaN;
+        String msg = rhs(0).where(0) + ": '" + name + "' is not defined";
+        lhs().actAdd(()->{System.out.println(msg);});
+      }
+      lhs().put(d);
+    }
+\end{Verbatim}
+\normalsize
+
+(\textbf{Note.} 
+You may choose to handle undefined name in an entirely different way,
+as a syntax error.
+This could be done by defining \tx{retrieve()} as a boolean action,
+a feature described in Section~\ref{BoolAct}.)
+
+\medskip
+Looking at smaller details,
+you may wonder why the message after \tx{"a = 12("} says nothing about the expected end of text.
+
+A non-backtracking parser stops after failing to find an expected character
+in the input text, and this failure
+is reported as \emph{the} syntax error.
+A backtracking parser may instead backtrack
+and fail several times.  
+It terminates and reports failure when no more
+alternatives are left.
+The strategy used by \Mouse\ is to report only the failure that occurred 
+farthest down in the input.
+If several different attempts failed at the same point,
+all such failures are reported.
+
+In the example, the message says that \tx{Lparen} expected blanks after \tx{"("},
+and that the third alternative of \Factor\ expected \Sum\ at that place.
+The failure to find end of text occurred earlier in the input and is not mentioned.
+
+\medskip
+In the case of \tx{"2a)"}, several procedures failed immediately after \tx{"2a"}.
+The processing did not advance beyond that point, so all these failures are reported.
+
+You may feel that information \tx{"expected ' ' "} is uninteresting noise.
+It results from the iteration in \Space\ terminated by not finding another blank.
+To suppress it, you can define the following semantic action for \tx{Space}:
+%
+\small
+\begin{Verbatim}[frame=single,framesep=2mm,samepage=true,xleftmargin=15mm,xrightmargin=15mm,baselinestretch=0.8]
+   //-------------------------------------------------------------------
+   //  Space = " "*
+   //-------------------------------------------------------------------
+   void space()
+     { lhs().errClear(); }
+\end{Verbatim}
+\normalsize
+%
+When \tx{space()} is invoked, the \tx{lhs()} object seen by it
+contains the information that \tx{Space()} ended
+by not finding another blank.
+The helper method \tx{errClear()} erases all failure information
+from the \tx{lhs()} object, so \tx{Space} will never report any failure.
+
+If you wish, you can make messages more readable by saying
+\tx{"+ or -"} instead of \tx{"AddOp"}.
+You specify such "diagnostic names" in pointed brackets at the end of a rule, like this:
+
+\small
+\begin{Verbatim}[frame=single,framesep=2mm,samepage=true,xleftmargin=15mm,xrightmargin=15mm,baselinestretch=0.8]
+   AddOp   = [-+] Space <+ or -> ;
+   MultOp  = [*/] Space <* or /> ;
+   Lparen  = "("  Space <(> ;
+   Rparen  = ")"  Space <)> ;
+   Equ     = "="  Space <=> ;
+\end{Verbatim}
+\normalsize
+
+A grammar and semantics with these modifications are found in \tx{example8}.
+Copy them to the \tx{work} directory, generate new parser (replacing the old), and compile both.
+A parser session may now appear like this:
+
+\small
+\begin{Verbatim}[samepage=true,xleftmargin=15mm,baselinestretch=0.8]
+ java Calc
+ > 2a
+ NaN
+ After '2': 'a' is not defined
+ > a =
+ After 'a =': expected Sum 
+ > a = 12(
+ After 'a = 12': expected Sum
+ > a
+ NaN
+ At start: 'a' is not defined 
+ > 2a)
+ After '2a': expected [a-z] or * or / or Factor or + or - or end of text
+ >
+\end{Verbatim}
+\normalsize
+
+

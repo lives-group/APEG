@@ -1,0 +1,10 @@
+package pair;
+
+import pair.Pair;
+
+public class TestPair {
+  private (String,int) p = ("12",2); 
+ 
+  
+}
+

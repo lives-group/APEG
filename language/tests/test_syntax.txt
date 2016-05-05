@@ -1,0 +1,85 @@
+test expr from ./expr/
+
+arithmetic01.apeg => sucess
+arithmetic02.apeg => sucess
+relational01.apeg => sucess
+relational02.apeg => sucess
+relational03.apeg => sucess
+relational04.apeg => sucess
+boolean01.apeg => sucess
+boolean02.apeg => sucess
+boolean03.apeg => sucess
+boolean04.apeg => sucess
+
+arithmetic01_failure.apeg => fail
+arithmetic02_failure.apeg => fail
+relational01_failure.apeg => fail
+relational02_failure.apeg => fail
+relational03_failure.apeg => fail
+boolean01_failure.apeg => fail
+boolean02_failure.apeg => fail
+boolean03_failure.apeg => fail
+
+
+test metarule from ./metarule/
+
+meta01.apeg => sucess
+meta02.apeg => sucess
+meta03.apeg => sucess
+
+meta01_failure.apeg => fail
+meta02_failure.apeg => fail
+meta03_failure.apeg => fail
+
+
+test pexpr from ./parsing_expr/
+
+pexpr01.apeg => sucess
+pexpr02.apeg => sucess
+pexpr03.apeg => sucess
+pexpr04.apeg => sucess
+
+pexpr01_failure.apeg => fail
+pexpr02_failure.apeg => fail
+pexpr03_failure.apeg => fail
+pexpr04_failure.apeg => fail
+pexpr05_failure.apeg => fail
+pexpr06_failure.apeg => fail
+pexpr07_failure.apeg => fail
+pexpr08_failure.apeg => fail
+pexpr09_failure.apeg => fail
+pexpr10_failure.apeg => fail
+pexpr11_failure.apeg => fail
+pexpr12_failure.apeg => fail
+pexpr13_failure.apeg => fail
+
+
+test rule from ./rule/
+
+rule01.apeg => sucess
+rule02.apeg => sucess
+rule03.apeg => sucess
+rule04.apeg => sucess
+rule05.apeg => sucess
+rule06.apeg => sucess
+
+rule01_failure.apeg => fail
+rule02_failure.apeg => fail
+rule03_failure.apeg => fail
+rule04_failure.apeg => fail
+
+
+test grammar from ./grammar/
+
+grammar01.apeg => sucess
+grammar02.apeg => sucess
+grammar03.apeg => sucess
+grammar04.apeg => sucess
+grammar05.apeg => sucess
+grammar06.apeg => sucess
+grammar07.apeg => sucess
+
+
+
+
+

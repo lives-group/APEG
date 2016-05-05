@@ -1,0 +1,87 @@
+\newpage
+%HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+
+\section{Appendix: Helper methods\label{helper}}
+
+%HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+
+These methods provide access to the environment seen by a semantic action.
+
+The following four methods 
+are inherited from \tx{mouse.runtime.Semantics}.\newline
+They call back the parser to access the relevant \Phrase\ objects.
+
+\ul
+
+\item[\tx{Phrase }\textbf{lhs}\tx{()}]\upsp\newline   
+   Returns the left-hand side object.
+
+\item[\tx{int }\textbf{rhsSize}\tx{()}]\upsp\newline 
+   Returns the number of right-hand side objects.
+
+\item[\tx{Phrase }\textbf{rhs}\tx{(int i)}]\upsp\newline   
+   Returns the $i$-th element on the right-hand side, $0\le i <\,$\tx{rhsSize()}.
+   
+\item[\tx{String }\textbf{rhsText}\tx{(int i,int j)}]\upsp\newline   
+   Returns as one \tx{String} the text
+   represented by the right-hand side objects $i$ through $j-1$,\newline  
+   where $0\leq i < j \le\,$\tx{rhsSize()}.
+   
+\eul
+
+
+The following fifteen methods can be applied to a \Phrase\ object:
+
+\ul
+
+\item[\tx{void }\textbf{put}\tx{(Object v)}]\upsp \newline   
+   Inserts $v$ as the semantic value of this \Phrase.
+
+\item[\tx{Object }\textbf{get}\tx{()}]\upsp \newline
+   Returns the semantic value of this \Phrase.
+
+\item[\tx{String }\textbf{text}\tx{()}]\upsp \newline
+   Returns the text represented by this \tx{Phrase}.
+
+\item[\tx{char }\textbf{charAt}\tx{(int i)}]\upsp \newline
+   Returns the $i$-th character of the text represented by this \tx{Phrase}.   
+
+\item[\tx{String }\textbf{rule}\tx{()}]\upsp \newline
+   Returns name of the rule that created this \tx{Phrase}.
+
+\item[\tx{boolean }\textbf{isA}\tx{(String name)}]\upsp \newline
+   Returns \tx{true} if this \tx{Phrase} was created by rule \textit{name}.
+
+\item[\tx{boolean }\textbf{isTerm}\tx{()}]\upsp \newline
+   Returns \tx{true} if this \tx{Phrase} was created by a terminal.
+
+\item[\tx{boolean }\textbf{isEmpty}\tx{()}]\upsp \newline
+   Returns \tx{true} if the text represented by this \tx{Phrase} is empty.
+
+\item[\tx{String }\textbf{where}\tx{(int i)}]\upsp \newline
+   Returns a printable string describing where in the text being parsed\newline 
+   find the i-th character
+   of text represented by this \tx{Phrase}.   
+   
+\item[\tx{String }\textbf{errMsg}\tx{()}]\upsp \newline   
+   Returns the error message contained in this \tx{Phrase}.    
+
+\item[\tx{void }\textbf{errClear}\tx{()}]\upsp \newline
+   Erases the error message contained in this \tx{Phrase}.   
+   
+\item[\tx{void }\textbf{errAdd}\tx{(String expr,int i)}]\upsp \newline
+   Updates error message contained in this \tx{Phrase} with information\newline 
+   that expression \textit{expr} failed at the i-th character
+   of text represented by this \tx{Phrase}.   
+   
+\item[\tx{void }\textbf{actAdd}\tx{(Deferred act)}]\upsp \newline
+   Adds to this \Phrase deferred action \tx{act}: a lambda expression implementing 
+   the interface \tx{Deferred}.
+   
+\item[\tx{void }\textbf{actClear}\tx{()}]\upsp \newline
+   Removes all deferred actions saved in this \Phrase.
+   
+\item[\tx{void }\textbf{actExec}\tx{()}]\upsp \newline
+   Executes and removes all deferred actions saved in this \Phrase.
+
+\eul

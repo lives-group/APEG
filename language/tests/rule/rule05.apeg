@@ -1,0 +1,27 @@
+
+block locals[grammar g1]:
+	'{' dlist<$g, g1> slist<g1> '}' !.
+	;
+	
+dlist returns[grammar g1] :
+	decl<$g, g1> {$g = g1;} (decl<$g, g1> {$g = g1;})*
+	;
+	
+decl returns[grammar g1]:
+	!('int ' var) 'int ' s=id ';'
+	{ g1 = addRule(copyGrammar($g), concat('var : ', concat(' \'', concat(s, concat('\' ', '!alpha ;'))))); }
+	;
+
+var : {? false } ;
+
+slist :
+	stmt stmt*
+	;
+	
+stmt:
+	var '=' var ';'
+	;
+	
+id : alpha* ;
+	
+alpha : [a-zA-Z] ;

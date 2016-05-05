@@ -1,0 +1,33 @@
+/*
+ /*
+Tests semantics of operators without discarding changes on environments.
+ */
+*/
+
+apeg notDiscardChanges;
+
+header {
+  // Some unchecked code here
+  void f() {
+   return;
+  }
+}
+
+a returns[int k] : b<0,k> ;
+ 
+b[int x] returns[int x1] :
+  { x = x + 1; } '0' { x1 = x; }
+  /
+  { x = x + 1; } '1' { x1 = x; }
+  /
+  { x = x + 1; } '2' { x1 = x; }
+  ;
+ 
+
+c returns[int x] :
+  { x = 0; }
+  (
+    { x = x + 1; }
+    '2'
+  )*
+  ;

@@ -1,0 +1,58 @@
+group prettyprint;
+
+/** Defining the grammar specfication template */
+apeg(name, option, header, func_sources, rules) ::= <<
+apeg <name>;
+<if(option)>
+
+options {
+  <option; separator=";\n">;
+}
+<endif>
+
+<if(header)>
+
+header {
+ <header>
+}
+<endif>
+
+<if(func_sources)>
+
+functions <functions; separator=" ", wrap> from {
+  <func_sources; separator=" ", wrap>
+};
+<endif>
+
+<rules:rule(); separator="\n\n">
+>>
+
+/** Template for rules specification */
+rule(r) ::= <<
+<if(r.annotation)>
+@<r.annotation> 
+<endif>
+<r.name><if(r.inh_attr)>[<r.inh_attr:decl(); separator=", ", wrap>]<endif><if(r.syn_attr)> returns[<r.syn_attr:decl(); separator=", ", wrap>]<endif><if(r.ret_attr)> locals[<r.ret_attr:decl(); separator=", ", wrap>]<endif>:
+  <peg_expr()>
+;
+>>
+
+/** Template for parameters declaration */
+decl(attr) ::= <<
+<attr.type> <attr.name>
+>>
+
+
+
+/** Template for types */
+int() ::= "int"
+float() ::= "float"
+string() ::= "string"
+boolean() ::= "boolean"
+grammar() ::= "grammar"
+ruleType() ::= "rule"
+idType(name) ::= "<name>"
+
+/** Template for parsing expression */
+peg_expr() ::= ""
+

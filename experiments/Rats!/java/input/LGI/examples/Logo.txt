@@ -1,0 +1,101 @@
+# Hierarchical analysis
+Expression         <- UserProcedureHead EndOfFile / Blank*         # Type 0
+                      BinaryExpression* ( EndOfFile / EndOfLine )
+BinaryExpression   <- Primitive ( Operator Primitive )*            # Type 1
+Primitive          <- ProcedureCall / Value /                      # Type 2
+                      L_PARENTHESIS BinaryExpression R_PARENTHESIS /
+                      RepeatStatement / IfStatement / Identifier
+
+# Terminals
+Value              <- Integer / Float / String / Variable / List   # Type 3
+Variable           <- COLON Identifier                             # Type 4
+String             <- QUOTATION Identifier                         # Type 5
+List               <- L_BRACKET ( !R_BRACKET BinaryExpression )*   # Type 6
+                      R_BRACKET
+Integer            <- '-?[0-9]+' &BoundaryChar Blank*              # Type 7
+Float              <- '-?[0-9]+\.[0-9]+' &BoundaryChar Blank*      # Type 8
+Identifier         <- ( !EndOfLine !StrictBlank . )+ StrictBlank   # Type 9
+
+# Lexical analysis
+COLON              <- ':'                                          # Type 10
+QUOTATION          <- '\"'                                         # Type 11
+L_PARENTHESIS      <- '\(' Blank*                                  # Type 12
+R_PARENTHESIS      <- '\)' Blank*                                  # Type 13
+L_BRACKET          <- '\[' Blank*                                  # Type 14
+R_BRACKET          <- '\]' Blank*                                  # Type 15
+Operator           <- ( '\+' / '\*' / '/' / '-' / '\^' ) Blank*    # Type 16
+
+# Procedures
+SingleProcName     <- (                                            # Type 17
+                        'BACKGROUND' / 'BG' / 'FD' / 'FORWARD' / 'BK' /
+                        'BACK' / 'LT' / 'LEFT' / 'RT' / 'RIGHT' /
+                        'SETHEADING' / 'SETH' / 'SETX' / 'SETY' / 'TEXTBG' /
+                        'STAMPCHAR' / 'PENCOLOR' / 'PC' / 'TEXTCOLOR' /
+                        'RANDOM' / 'COS' / 'INTEGER' / 'NUMBER\?' / 'SQRT' /
+                        'ROUND' / 'SIN' / 'COUNT' / 'LIST\?' / 'WORD\?' /
+                        'FIRST' / 'BUTFIRST' / 'BF' / 'BUTLAST' / 'BL' /
+                        'LAST' / 'EMPTY\?' / 'ERASE' / 'ER' / 'TEXT' /
+                        'THING\?' / 'THING' / 'LOCAL' / 'CTYO' / 'ASCII' /
+                        'JOYBUTTON' / 'JOYSTICK' / 'SETDISK' / 'BLOAD' /
+                        'READPICT' / 'SAVEPICT' / 'SAVE' / 'LOAD' / 'NOT' /
+                        'ASPECT' / 'ERASEFILE' / 'ERASEPICT' / 'ERNAME' /
+                        'RUN' / 'OUTPUT' / 'OP' / 'TELL' / 'PRINT1' /
+                        'PRINT' / 'PR' / 'FPRINT' / 'STROKE'
+                      ) Blank+
+DoubleProcName     <- (                                            # Type 18
+                        'SETXY' / 'TOWARDS' / 'ATAN' / 'BITAND' / 'BITOR' /
+                        'BITXOR' / 'QUOTIENT' / 'REMAINDER' / 'ITEM' /
+                        'MEMBER\?' / 'FPUT' / 'LPUT' / 'DEFINE' / 'MAKE' /
+                        'CHAR' / 'SENTENCE' / 'SE' / 'LIST' / 'WORD' /
+                        '.QUERY'
+                      ) Blank+
+TripleProcName     <- ( '\.OPTION' / 'BSAVE' ) Blank+              # Type 19
+NoArgProcName      <- (                                            # Type 20
+                        'HOME' / 'DOUBLECOLOR' / 'SINGLECOLOR' / 'XCOR' /
+                        'YCOR' / 'DRAWSTATE' / 'DRAW' / 'HEADING' /
+                        'CLEARSCREEN' / 'CS' / 'SHOWTURTLE' / 'ST' /
+                        'NODRAW' / 'ND' / 'NOWRAP' / 'PENUP' / 'PU' /
+                        'HIDETURTLE' / 'HT' / 'FULLSCREEN' / 'SPLITSCREEN' /
+                        'TEXTSCREEN' / 'WHO' / 'WRAP' / 'PENDOWN' / 'PD' /
+                        'CLEARTEXT' / 'READCHARACTER' / 'RC' / 'REQUEST' /
+                        'RQ' / 'CURSORPOS' / 'CLEARINPUT' / 'RC\?'/
+                        'CATALOG' / 'POTS' / 'GCOLL' / 'GOODBYE' / 'STOP' /
+                        'TOPLEVEL'
+                      ) StrictBlank
+ListProcName       <- (                                            # Type 21
+                        'PRINT1' / 'PRINT' / 'FPRINT' / 'PR' / 'SENTENCE' /
+                        'SE' / 'WORD'
+                      ) Blank+
+
+ProcedureCall      <- SingleArgProcedure / DoubleArgProcedure /    # Type 22
+                      TripleArgProcedure / NoArgProcedure /
+                      ListArgProcedure / UserProcedureCall
+SingleArgProcedure <- SingleProcName BinaryExpression              # Type 23
+DoubleArgProcedure <- DoubleProcName BinaryExpression              # Type 24
+                      BinaryExpression
+TripleArgProcedure <- TripleProcName BinaryExpression              # Type 25
+                      BinaryExpression BinaryExpression
+NoArgProcedure     <- NoArgProcName                                # Type 26
+ListArgProcedure   <- L_BRACKET ListProcName (!R_BRACKET           # Type 27
+                      BinaryExpression)* R_BRACKET
+UserProcedureCall  <- '___DUMMY___'                                # Type 28
+
+# Special Sentences
+IfStatement        <- 'IF' Blank+ BinaryExpression 'THEN' Blank+   # Type 29
+                      ( !'ELSE' BinaryExpression )+ ( 'ELSE' Blank+
+                      BinaryExpression+ )? ( EndOfLine / EndOfFile )
+TestStatement      <- 'TEST' Blank+ BinaryExpression EndOfLine     # Type 30
+IfTrueStatement    <- ( 'IFTRUE' / 'IFT' ) Blank+ Expression       # Type 31
+IfFalseStatement   <- ( 'IFFALSE' / 'IFF' ) Blank+ Expression      # Type 32
+RepeatStatement    <- 'REPEAT' Blank+ BinaryExpression List        # Type 33
+UserProcedureHead  <- 'TO' Blank+ Identifier Variable*             # Type 34
+UserProcedureDef   <- UserProcedureHead EndOfLine Expression+      # Type 35
+                      ( 'END' Blank* / EndOfFile )
+
+# Spacing
+BoundaryChar       <- ' ' / '\t' / Operator / L_PARENTHESIS /      # Type 36
+                      R_PARENTHESIS / L_BRACKET / R_BRACKET / EndOfFile
+Blank              <- ' ' / '\t'                                   # Type 37
+StrictBlank        <- Blank+ / EndOfFile                           # Type 38
+EndOfLine          <- '\r\n' / '\n' / '\r'                         # Type 39
+EndOfFile          <- !.                                           # Type 40

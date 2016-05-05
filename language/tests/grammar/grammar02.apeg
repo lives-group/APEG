@@ -1,0 +1,15 @@
+apeg annotation;
+
+options {
+ memoize=false;
+}
+
+a:
+  b '1'
+ /
+  b '2'
+;
+
+@memoize
+b:
+ 'b';

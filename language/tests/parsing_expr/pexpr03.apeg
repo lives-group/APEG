@@ -1,0 +1,8 @@
+ modifier*
+  ( class_declaration
+   / enum_declaration
+   / interface_declaration
+   / annotation_type_declaration
+   / sugar_declaration<s,r> {? true == resgisterSugarLibrary(p,s,r) }
+  )
+   / SEMI

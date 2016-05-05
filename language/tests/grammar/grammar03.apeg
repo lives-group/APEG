@@ -1,0 +1,5 @@
+apeg expression;
+
+s:
+  {? (x < y || z == 2) && w > 10 }
+;

@@ -1,0 +1,35 @@
+#superc_args -printAST
+TranslationUnit(
+  ExternalDeclarationList(
+    Conditional(
+      1,
+      Declaration(
+        DeclaringList(
+          xtc.lang.cpp.Syntax$Language(
+            "int"
+          ),
+          SimpleDeclarator(
+            xtc.lang.cpp.Syntax$Text(
+              "x"
+            )
+          )
+        )
+      )
+    ),
+    Conditional(
+      (defined A),
+      Declaration(
+        DeclaringList(
+          xtc.lang.cpp.Syntax$Language(
+            "int"
+          ),
+          SimpleDeclarator(
+            xtc.lang.cpp.Syntax$Text(
+              "y"
+            )
+          )
+        )
+      )
+    )
+  )
+)

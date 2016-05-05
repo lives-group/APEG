@@ -1,0 +1,71 @@
+------------------------------
+ Language Generator by Instil
+------------------------------
+
+Introduction
+------------
+
+Logic (LGI) is a Java API for formal languages generation, parsing and
+execution. LGI is open source and protected by the GNU General Public License
+(GPL). If you didn't get a copy of that license with LGI, please contact
+Edgar A. Duenez-Guzman (duenez@cs.utk.edu) immediately.
+
+Included in the release is the javadoc Documentation for the API, the source,
+binary builds, two reference articles with the theoretical foundations of
+Parsing Expression Grammars explained, and a JAR file for distribution and
+web usage.
+
+Features
+--------
+
+LGI allows for quick specification of formal languages, either by directly
+using the API or by means of the included utility classes that take the
+specification from text files and create all required Objects to handle the
+language.
+
+The approach of Logic is to allow for runtime (dynamic) generation of custom
+made parsers instead of the more usual approach of generating source file for
+later compiling and usage. This is mainly to allow complete interactivity and
+flexibility that is usually lacking in traditional packages.
+
+The package has been tested in several projects, and is efficient enough to
+parse text at a decent speed. While speed would be definetly gained with a
+pre-compiled approach, the sacrifice of being unable to dynamically create and
+edit grammars was thought to be too much.
+
+Quick Overview
+--------------
+
+The PackratParser and ParsingExpressionGrammar are the most important classes
+included. The first is the actual implementation of a parser, but on its own
+is useless. The parser requires a grammar specification in order to parse any
+text. The second class is the specification of the most basic grammar (the
+specification of the meta-grammar itself), done and optimized by hand.
+
+By using the ParsingExpressionGrammar as the specification for the
+PackratParser, the user can parse arbitrary grammar descriptions that can, in
+turn, be used in a PackratParser to parse arbitrary text complying with the
+generated grammars.
+
+This serves two purposes. The first is the ability to use this package in
+teaching formal languages. The second is to define parsers for user-defined
+languages. In fact, at least three projects use this API as its underlying
+mechanism for parsing: Caliman (an image processing application with a
+scripting language used for batch manipulation), Haply (a Logo interpreter for
+kids) and OIEGKarel (a language to teach programming and recursion to high-
+school students). You can find more about these project at:
+
+   www.cs.utk.edu/~duenez/
+
+Bugs
+----
+
+No known bugs so far. Report bugs to duenez@cs.utk.edu.
+
+Contact Info
+------------
+
+For comments, feature requests, bug reports and more contact the author at
+
+	duenez@cs.utk.edu
+

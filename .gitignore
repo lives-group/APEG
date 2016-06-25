@@ -1,4 +1,13 @@
 *.class
+
+# Eclipse projects
 .classpath
-!.project
+.project
+.settings/
+.metadata
+
+# Package Files #
+*.jar
+*.war
+*.ear
 

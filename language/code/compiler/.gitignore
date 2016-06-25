@@ -1,1 +1,4 @@
+# Ignore bin folder
 /bin/
+# Ignore .settings folder
+/.settings/

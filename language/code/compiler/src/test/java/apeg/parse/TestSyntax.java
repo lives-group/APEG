@@ -27,8 +27,8 @@ public class TestSyntax {
 	 */
 	public static void main(String[] args) throws Exception {
 		// my test
-		args[0] = "./../../tests/grammar/grammar07.apeg";
-		//args[0] = "./../../tests/grammar/grammar01_failure.apeg";
+		args[0] = "./../../examples/grammar/grammar07.apeg";
+		//args[0] = "./../../examples/grammar/grammar01_failure.apeg";
 		args[1] = "grammar";
 
 		if (args.length < 2)

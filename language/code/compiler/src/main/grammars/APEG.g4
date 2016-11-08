@@ -394,8 +394,7 @@ equalityOp returns[EqualityExprNode.EqualityOperator op]:
   OP_EQ {$op = EqualityExprNode.EqualityOperator.EQ;};
 
 relOp returns[BinaryExprNode.Operator op]:
-   
-  |
+ 
    OP_LT {$op = BinaryExprNode.Operator.LT;}
   |
    OP_GT {$op = BinaryExprNode.Operator.GT;}
@@ -406,9 +405,11 @@ relOp returns[BinaryExprNode.Operator op]:
 ;
 
 addOp returns[BinaryExprNode.Operator op]:
-   OP_ADD {$op = BinaryExprNode.Operator.ADD;}
-  |
+   
    OP_SUB {$op = BinaryExprNode.Operator.SUB;}
+   |
+   OP_ADD {$op = BinaryExprNode.Operator.ADD;}
+ 
 ;
 
 mulOp returns[BinaryExprNode.Operator op]:

@@ -26,10 +26,11 @@ public class TestSyntax {
 	 * @throws Exception
 	 */
 	public static void main(String[] args) throws Exception {
+		args = new String[2];
 		// my test
-		args[0] = "./../../examples/grammar/grammar07.apeg";
+		args[0] = "./../../examples/expr/arithmetic01.apeg";
 		//args[0] = "./../../examples/grammar/grammar01_failure.apeg";
-		args[1] = "grammar";
+		args[1] = "expr";
 
 		if (args.length < 2)
 			throw new Exception("Wrong number of arguments");

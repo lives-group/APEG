@@ -182,7 +182,7 @@ type returns[TypeNode tp]:
 // The precedence of CHOICE operator is 1
 // CHOICE is an associative operator. We decided for right association because it may be faster to interpret
 peg_expr returns[PegNode peg]:
-  peg_seq '/' peg_expr {$peg = factory.newChoicePeg($peg_seq.peg, $peg_expr.peg);}
+  peg_seq '/' e=peg_expr {$peg = factory.newChoicePeg($peg_seq.peg, $e.peg);}
  |
   peg_seq {$peg = $peg_seq.peg;}
 ;

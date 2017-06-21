@@ -98,7 +98,7 @@ public class Tool {
 				// Pretty printing the grammar. Just for testing
 				ASTNodeVisitor prettyprint = new PrettyPrintVisitor(
 						new RelativePath(new AbsolutePath("."),
-								"templates/prettyprint.stg"));
+								"./src/main/templates/prettyprint.stg"));
 				g.accept(prettyprint);
 				
 				// 

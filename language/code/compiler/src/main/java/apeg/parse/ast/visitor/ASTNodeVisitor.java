@@ -49,10 +49,10 @@ public interface ASTNodeVisitor {
 	void visit(FloatExprNode expr);
 	void visit(IntExprNode expr);
 	void visit(MetaPegExprNode expr);
-	void visit(MinusExprNode peg);
-	void visit(NotExprNode peg);
-	void visit(OrExprNode peg);
-	void visit(StringExprNode peg);
+	void visit(MinusExprNode expr);
+	void visit(NotExprNode expr);
+	void visit(OrExprNode expr);
+	void visit(StringExprNode expr);
 	
 	// PEG Expressions
 	void visit(AndPegNode peg);

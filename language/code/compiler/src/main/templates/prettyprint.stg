@@ -33,7 +33,7 @@ rule(r) ::= <<
 @<r.annotation> 
 <endif>
 <r.name><if(r.inh_attr)>[<r.inh_attr:decl(); separator=", ", wrap>]<endif><if(r.syn_attr)> returns[<r.syn_attr:decl(); separator=", ", wrap>]<endif><if(r.ret_attr)> locals[<r.ret_attr:decl(); separator=", ", wrap>]<endif>:
-  <peg_expr()>
+  <r.peg_expr>
 ;
 >>
 
@@ -52,7 +52,40 @@ boolean() ::= "boolean"
 grammar() ::= "grammar"
 ruleType() ::= "rule"
 idType(name) ::= "<name>"
+and_expr(e,d) ::= "<e> && <d>" 
+atribute_expr(atribute) ::= "<atribute>"
+binary_expr(e,o,d) ::= "<e> <d>"
+
+lt_expr(e,d) ::= "(<e>  <d>)"
+
+boolean_expr(valor) ::= "<valor>"
+call_expr(name,param) ::=  "<name><param>" 
+equality_expr(e,tipo,d) ::= "<e> <tipo> <d>"
+float_expr(valor) ::= "<valor>"
+int_expr(valor) ::= "<valor>"
+meta_expr(valor) ::= "@[ <valor> ]"
+minus_expr(minus) ::= "-<minus>"
+not_expr(not) ::= "!<not>"
+or_expr(e,d) ::= "<e> || <d>"
+string_expr(string) ::= "<string>"
 
 /** Template for parsing expression */
-peg_expr() ::= ""
+and_peg(and) ::= "&&<and>"
+bind_peg(bind,variable) ::="<variable> = (<bind>)"
+choice_peg(e,d) ::= "<e> / <d>"
+constraint_peg(constraint) ::= "{?(<constraint>)}"
+gr_peg(gr) ::= "<gr>"
+literal_peg(literal) ::= " <literal> " 
+non_peg(name,exprr) ::= "<exprr> <name> "  
+no_peg(no) ::= "!(no)"
+plus_peg(plus) ::= "(<plus>)+"
+optional_peg(optional) ::= "?<optional>"
+sequence_peg(sequence) ::= "<sequence>"
+star_peg(star) ::= "(<star>)*"
+update_peg(update) ::= "[<update>]"
+
+assign(as,a) ::= "<as> = <a>;"
+func(f) ::= "<f>"
+
+
 

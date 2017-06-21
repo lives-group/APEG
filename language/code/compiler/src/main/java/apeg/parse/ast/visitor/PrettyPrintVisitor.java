@@ -17,6 +17,7 @@ import apeg.parse.ast.CallExprNode;
 import apeg.parse.ast.ChoicePegNode;
 import apeg.parse.ast.ConstraintPegNode;
 import apeg.parse.ast.EqualityExprNode;
+import apeg.parse.ast.ExprNode;
 import apeg.parse.ast.FloatExprNode;
 import apeg.parse.ast.FunctionNode;
 import apeg.parse.ast.GrammarNode;
@@ -32,6 +33,7 @@ import apeg.parse.ast.NotExprNode;
 import apeg.parse.ast.NotPegNode;
 import apeg.parse.ast.OptionalPegNode;
 import apeg.parse.ast.OrExprNode;
+import apeg.parse.ast.PegNode;
 import apeg.parse.ast.PlusPegNode;
 import apeg.parse.ast.RuleNode;
 import apeg.parse.ast.SequencePegNode;
@@ -43,198 +45,421 @@ import apeg.parse.ast.VarDeclarationNode;
 import apeg.util.path.Path;
 
 public class PrettyPrintVisitor implements ASTNodeVisitor {
-
+ 
 	private STGroup groupTemplate;
-	private ST template, peg_expr;
+	private ST template;
 	
 	// List for declarations: inherited, synthesized attributes and so forth.
 	List<Object> attrs;
 	// curent Type
 	ST type;
 	
+	private ST peg_expr, expr;
+	
+	
 	
 	public PrettyPrintVisitor(Path filePath) {
 		groupTemplate = new STGroupFile(filePath.getAbsolutePath());
+		
 	}
 	
 	@Override
 	public void visit(AndExprNode expr) {
-		// TODO Auto-generated method stub
-
+   
+       expr.getLeftExpr().accept(this);
+		
+		ST aux_left = this.expr;
+		
+		
+		expr.getRightExpr().accept(this);
+		
+		ST aux_right = this.expr;
+		
+		
+		this.expr = groupTemplate.getInstanceOf("and_expr");
+	
+		this.expr.add("e", aux_left);
+		this.expr.add("d", aux_right);
 	}
 
 	@Override
-	public void visit(AttributeExprNode expr) {
-		// TODO Auto-generated method stub
-
+	public void visit(AttributeExprNode expr) { 
+		
+		this.expr = groupTemplate.getInstanceOf("atribute_expr");
+		
+		this.expr.add("atribute", expr.getName());
+		
 	}
 
 	@Override
-	public void visit(BinaryExprNode expr) {
-		// TODO Auto-generated method stub
+	public void visit(BinaryExprNode expr) { 
+		
+        expr.getLeftExpr().accept(this);
+		
+		ST aux_left = this.expr;
+		
+		
+		expr.getRightExpr().accept(this);
+		
+		ST aux_right = this.expr;
+		
+		switch(expr.getOperation()) {
+			case LT:
+				this.expr = groupTemplate.getInstanceOf("lt_expr");
+				break;
+		default:
+			this.expr = groupTemplate.getInstanceOf("binary_expr");
+			break;
+		}
+		
+        //this.expr = groupTemplate.getInstanceOf("binary_expr");
+		
+		this.expr.add("e", aux_left); 
+		//this.expr.add("o", expr.getOperation());
+		this.expr.add("d", aux_right);
+		
 
 	}
 
 	@Override
 	public void visit(BooleanExprNode expr) {
-		// TODO Auto-generated method stub
+	     
+	     this.expr = groupTemplate.getInstanceOf("boolean_expr");
+			
+		 this.expr.add("valor", expr.getValue());
+		
+		
 
 	}
 
 	@Override
-	public void visit(CallExprNode expr) {
-		// TODO Auto-generated method stub
+	public void visit(CallExprNode expr) { 
+		
+		List<ST> l = new ArrayList<ST>();
+		for(ExprNode p : expr.getParameters()){
+			p.accept(this);
+			l.add(this.expr);
+		}
+		
+		
+		this.expr = groupTemplate.getInstanceOf("call_expr");
+		
+		 this.expr.add("name", expr.getName());
+		 this.expr.add("param", l );
+		
+		
+	}
+
+	@Override
+	public void visit(EqualityExprNode expr) { //equality type?
+		
+        expr.getLeftExpr().accept(this);
+		
+		ST aux_left = this.expr;
+		
+		
+		expr.getRightExpr().accept(this);
+		
+		ST aux_right = this.expr; 
+		
+		
+        this.expr = groupTemplate.getInstanceOf("equality_expr");
+		
+        this.expr.add("e", aux_left);
+        this.expr.add("d", aux_right);
+        this.expr.add("tipo", expr.getEqualityType()); //==, !=
+		
+        
+	}
+
+	@Override
+	public void visit(FloatExprNode expr) { 
+		
+		this.expr = groupTemplate.getInstanceOf("float_expr");
+			
+		this.expr.add("valor", expr.getValue());
+	
+	
 
 	}
 
 	@Override
-	public void visit(EqualityExprNode expr) {
-		// TODO Auto-generated method stub
+	public void visit(IntExprNode expr) { 
+		
+		this.expr = groupTemplate.getInstanceOf("int_expr");
+		
+		this.expr.add("valor", expr.getValue());
+	
 
 	}
 
 	@Override
-	public void visit(FloatExprNode expr) {
-		// TODO Auto-generated method stub
+	public void visit(MetaPegExprNode expr) { 
+		
+        expr.getExpr().accept(this);
+		
+		ST aux_expr = this.expr;
+		
+		this.expr = groupTemplate.getInstanceOf("meta_expr");
+		
+		this.expr.add("valor", aux_expr);
+	}
+
+	@Override
+	public void visit(MinusExprNode expr) { 
+		
+        expr.getExpr().accept(this);
+		
+		ST aux_expr = this.expr;
+		
+        this.expr = groupTemplate.getInstanceOf("minus_expr");
+		
+        this.expr.add("minus", aux_expr);
 
 	}
 
 	@Override
-	public void visit(IntExprNode expr) {
-		// TODO Auto-generated method stub
+	public void visit(NotExprNode expr) {
+        
+		expr.getExpr().accept(this);
+		
+		ST aux_expr = this.expr;
+		
+		this.expr = groupTemplate.getInstanceOf("not_expr");
+		
+		this.expr.add("not", aux_expr);
+
 
 	}
 
 	@Override
-	public void visit(MetaPegExprNode expr) {
-		// TODO Auto-generated method stub
+	public void visit(OrExprNode expr) {
+	
+       expr.getLeftExpr().accept(this);
+		
+		ST aux_left = this.expr;
+			
+		expr.getRightExpr().accept(this);
+		
+		ST aux_right = this.expr;
+			
+		this.expr = groupTemplate.getInstanceOf("or_expr");
+		
+		this.expr.add("e", aux_left);
+		this.expr.add("d", aux_right);
 
 	}
 
 	@Override
-	public void visit(MinusExprNode peg) {
-		// TODO Auto-generated method stub
+	public void visit(StringExprNode expr) {
+		
+		this.expr = groupTemplate.getInstanceOf("string_expr");
+		
+		this.expr.add("string", expr.getValue()); 
+		
 
 	}
 
 	@Override
-	public void visit(NotExprNode peg) {
-		// TODO Auto-generated method stub
+	public void visit(AndPegNode peg) { 
+		
+        peg.getPeg().accept(this);
+		
+		ST aux_expr = peg_expr;
+		
+		peg_expr = groupTemplate.getInstanceOf("and_peg");
+		
+        peg_expr.add("and", aux_expr);
+
 
 	}
 
 	@Override
-	public void visit(OrExprNode peg) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void visit(StringExprNode peg) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void visit(AndPegNode peg) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void visit(AnyPegNode peg) {
-		// TODO Auto-generated method stub
-
+	public void visit(AnyPegNode peg) { //oq eu faco?
+		
+    peg.accept(this);
+    
 	}
 
 	@Override
 	public void visit(BindPegNode peg) {
-		// TODO Auto-generated method stub
+		
+		peg.getPeg().accept(this);
+		ST aux_expr = peg_expr;
+		
+		peg_expr = groupTemplate.getInstanceOf("bind_peg");
+		
+		peg_expr.add("bind", aux_expr);
+		peg_expr.add("variable", peg.getVariable());
 
 	}
 
 	@Override
 	public void visit(ChoicePegNode peg) {
-		// TODO Auto-generated method stub
-
+		
+		peg.getLeftPeg().accept(this);
+		
+		ST aux_left = peg_expr;
+		
+		
+		peg.getRightPeg().accept(this);
+		
+		ST aux_right = peg_expr;
+			
+		peg_expr = groupTemplate.getInstanceOf("choice_peg");
+		
+		peg_expr.add("e", aux_left);
+		peg_expr.add("d", aux_right);
+		
 	}
 
 	@Override
 	public void visit(ConstraintPegNode peg) {
-		// TODO Auto-generated method stub
-
+		
+        peg.getExpr().accept(this);
+		
+		ST aux = expr;
+		
+		peg_expr = groupTemplate.getInstanceOf("constraint_peg");
+		
+		peg_expr.add("constraint", aux);
 	}
 
 	@Override
 	public void visit(GroupPegNode peg) {
-		// TODO Auto-generated method stub
+	
+		peg_expr = groupTemplate.getInstanceOf("gr_peg");
+		
+		peg_expr.add("gr", peg.getRanges());
 
 	}
 
 	@Override
-	public void visit(LambdaPegNode peg) {
-		// TODO Auto-generated method stub
-
+	public void visit(LambdaPegNode peg) { // ??
+		
+		 //peg.accept(this); 
+		// peg_expr = groupTemplate.getInstanceOf("lambda");
+    
 	}
 
 	@Override
 	public void visit(LiteralPegNode peg) {
-		// TODO Auto-generated method stub
+		
+		peg_expr= groupTemplate.getInstanceOf("literal_peg");
+		
+		peg_expr.add("literal", peg.getValue());
+		
 
 	}
 
 	@Override
 	public void visit(NonterminalPegNode peg) {
-		// TODO Auto-generated method stub
+		
+		List<ST> l = new ArrayList<ST>();
+		for(ExprNode p:peg.getExprs()) {
+			p.accept(this);
+			l.add(peg_expr);
+		}
+	 	
+		
+		peg_expr = groupTemplate.getInstanceOf("non_peg");
+		
+		peg_expr.add("name", peg.getName());
+		peg_expr.add("exprr", l);
 
 	}
 
 	@Override
 	public void visit(NotPegNode peg) {
-		// TODO Auto-generated method stub
+		
+		peg.getPeg().accept(this);
+		ST aux = peg_expr; 
+		
+		peg_expr = groupTemplate.getInstanceOf("no_peg");
+		peg_expr.add("no", aux);
 
 	}
 
 	@Override
 	public void visit(OptionalPegNode peg) {
-		// TODO Auto-generated method stub
+		
+        peg.getPeg().accept(this);
+		
+		ST aux = peg_expr;
+		
+		peg_expr = groupTemplate.getInstanceOf("optional_peg");
+		peg_expr.add("optional", aux);
 
+
+		
 	}
 
 	@Override
 	public void visit(PlusPegNode peg) {
-		// TODO Auto-generated method stub
+    
+       peg.getPeg().accept(this);
+		
+		ST aux = peg_expr;
+		
+		peg_expr = groupTemplate.getInstanceOf("plus_peg");
+		peg_expr.add("plus", aux);
 
 	}
 
 	@Override
 	public void visit(SequencePegNode peg) {
-		// TODO Auto-generated method stub
+		
 
+		List<ST> l = new ArrayList<ST>();
+		for(PegNode p:peg.getPegs()) {
+			p.accept(this);
+			l.add(peg_expr);
+		}
+		peg_expr = groupTemplate.getInstanceOf("sequence_peg");
+		peg_expr.add("sequence", l);
+		
 	}
 
 	@Override
 	public void visit(StarPegNode peg) {
-		// TODO Auto-generated method stub
-
+		
+		peg.getPeg().accept(this);
+		ST aux = peg_expr;
+		
+		peg_expr = groupTemplate.getInstanceOf("star_peg");
+		peg_expr.add("star", aux);
 	}
 
 	@Override
 	public void visit(UpdatePegNode peg) {
-		// TODO Auto-generated method stub
-
+		
+		List<ST> l = new ArrayList<ST>();
+		for(AssignmentNode p:peg.getAssignments()) {
+			p.accept(this);
+			l.add(peg_expr);
+		}
+		
+		peg_expr = groupTemplate.getInstanceOf("update_peg");
+		peg_expr.add("update", l);	
+		
 	}
 
 	@Override
 	public void visit(AssignmentNode assign) {
-		// TODO Auto-generated method stub
-
+		
+		assign.getExpr().accept(this);
+		ST aux = expr;
+		peg_expr = groupTemplate.getInstanceOf("assign");
+		peg_expr.add("as", assign.getVariable());
+		peg_expr.add("a", aux);
+	
 	}
 
 	@Override
 	public void visit(FunctionNode func) {
-		// TODO Auto-generated method stub
-
+		
+		peg_expr= groupTemplate.getInstanceOf("func");
+		peg_expr.add("f", func.getName());
 	}
 
 	@Override
@@ -277,12 +502,17 @@ public class PrettyPrintVisitor implements ASTNodeVisitor {
 		// visit the rules
 		for(RuleNode rule : grammar.getRules())
 			rule.accept(this);
+		
 		// rendering the template
+	
 		System.out.println(template.render());
+		
+		
 	}
 
 	@Override
 	public void visit(RuleNode rule) {
+		
 		RuleSymbol r = new RuleSymbol();
 		
 		// setting annotation 
@@ -301,6 +531,7 @@ public class PrettyPrintVisitor implements ASTNodeVisitor {
 			break;
 		
 		}
+		
 		// setting rule name
 		r.name = rule.getName();
 		
@@ -318,10 +549,12 @@ public class PrettyPrintVisitor implements ASTNodeVisitor {
 		
 		// visit the parsing expression
 		rule.getExpr().accept(this);
-		//TODO r.peg_expr =
+
+		r.peg_expr = peg_expr;
+		
 		
 		template.add("rules", r);
-
+			
 	}
 
 	@Override
@@ -366,7 +599,7 @@ public class PrettyPrintVisitor implements ASTNodeVisitor {
 
 	class RuleSymbol {
 		public String annotation, name;
-		public Object inh_attr, syn_attr, peg_expr;
+		public Object inh_attr, syn_attr, peg_expr, expr;
 	}
 	
 	class VarSymbol {

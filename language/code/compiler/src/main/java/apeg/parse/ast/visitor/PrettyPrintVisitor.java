@@ -107,12 +107,25 @@ public class PrettyPrintVisitor implements ASTNodeVisitor {
 			case LT:
 				this.expr = groupTemplate.getInstanceOf("lt_expr");
 				break;
+			case MUL:
+				this.expr = groupTemplate.getInstanceOf("mul_expr");
+				break;
+			case ADD:
+				this.expr = groupTemplate.getInstanceOf("add_expr");
+				break;
+			case GT: 
+				this.expr = groupTemplate.getInstanceOf("gt_expr");
+				break;		
+			case SUB: 
+				this.expr = groupTemplate.getInstanceOf("sub_expr");
+				break;
+				
+				
 		default:
 			this.expr = groupTemplate.getInstanceOf("binary_expr");
 			break;
 		}
-		
-        //this.expr = groupTemplate.getInstanceOf("binary_expr");
+
 		
 		this.expr.add("e", aux_left); 
 		//this.expr.add("o", expr.getOperation());
@@ -128,8 +141,6 @@ public class PrettyPrintVisitor implements ASTNodeVisitor {
 			
 		 this.expr.add("valor", expr.getValue());
 		
-		
-
 	}
 
 	@Override
@@ -162,13 +173,22 @@ public class PrettyPrintVisitor implements ASTNodeVisitor {
 		
 		ST aux_right = this.expr; 
 		
+		switch(expr.getEqualityType()) {
+		case EQ:
+			this.expr = groupTemplate.getInstanceOf("eq_expr");
+			break;
+	
+	default:
+		this.expr = groupTemplate.getInstanceOf("equality_expr");
+		break;
+	}
 		
-        this.expr = groupTemplate.getInstanceOf("equality_expr");
+		
+        //this.expr = groupTemplate.getInstanceOf("equality_expr");
 		
         this.expr.add("e", aux_left);
         this.expr.add("d", aux_right);
-        this.expr.add("tipo", expr.getEqualityType()); //==, !=
-		
+      	
         
 	}
 
@@ -275,9 +295,9 @@ public class PrettyPrintVisitor implements ASTNodeVisitor {
 	}
 
 	@Override
-	public void visit(AnyPegNode peg) { //oq eu faco?
+	public void visit(AnyPegNode peg) { 
 		
-    peg.accept(this);
+    //peg.accept(this);
     
 	}
 
@@ -316,6 +336,7 @@ public class PrettyPrintVisitor implements ASTNodeVisitor {
 	@Override
 	public void visit(ConstraintPegNode peg) {
 		
+		
         peg.getExpr().accept(this);
 		
 		ST aux = expr;
@@ -347,7 +368,8 @@ public class PrettyPrintVisitor implements ASTNodeVisitor {
 		
 		peg_expr= groupTemplate.getInstanceOf("literal_peg");
 		
-		peg_expr.add("literal", peg.getValue());
+		peg_expr.add("l", peg.getValue());
+		
 		
 
 	}
@@ -457,7 +479,6 @@ public class PrettyPrintVisitor implements ASTNodeVisitor {
 
 	@Override
 	public void visit(FunctionNode func) {
-		
 		peg_expr= groupTemplate.getInstanceOf("func");
 		peg_expr.add("f", func.getName());
 	}

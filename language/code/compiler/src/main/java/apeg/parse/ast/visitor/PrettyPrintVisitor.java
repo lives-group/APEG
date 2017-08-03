@@ -486,6 +486,7 @@ public class PrettyPrintVisitor implements ASTNodeVisitor {
 	@Override
 	public void visit(GrammarNode grammar) {
 		template = groupTemplate.getInstanceOf("apeg");
+		
 		template.add("name", grammar.getName());
 		// print the options
 		for(GrammarOption opt : grammar.getOptions()) {
@@ -558,15 +559,22 @@ public class PrettyPrintVisitor implements ASTNodeVisitor {
 		
 		// visit inherited attributes
 		attrs = new ArrayList<Object>();
-		for(VarDeclarationNode param : rule.getParameters())
+		for(VarDeclarationNode param : rule.getParameters()){
+		
 			param.accept(this);
+			
+		}
 		r.inh_attr = attrs;
+	
+		
 		
 		// visit synthesized attributes
 		attrs = new ArrayList<Object>();
-		for(VarDeclarationNode param : rule.getReturns())
+		for(VarDeclarationNode param : rule.getReturns()){
 			param.accept(this);
+		}
 		r.syn_attr = attrs;
+		
 		
 		// visit the parsing expression
 		rule.getExpr().accept(this);
@@ -575,6 +583,7 @@ public class PrettyPrintVisitor implements ASTNodeVisitor {
 		
 		
 		template.add("rules", r);
+		
 			
 	}
 
@@ -616,11 +625,16 @@ public class PrettyPrintVisitor implements ASTNodeVisitor {
 		v.name = var.getName();
 		v.type = type;
 		attrs.add(v);
+
+	
+	
 	}
 
 	class RuleSymbol {
 		public String annotation, name;
 		public Object inh_attr, syn_attr, peg_expr, expr;
+		
+		
 	}
 	
 	class VarSymbol {

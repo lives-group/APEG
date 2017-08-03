@@ -6,6 +6,7 @@ import apeg.parse.ast.visitor.ASTNodeVisitor;
 
 public class VarDeclarationNodeImpl implements VarDeclarationNode {
 	
+	
 	private String name;
 	private TypeNode type;
 	

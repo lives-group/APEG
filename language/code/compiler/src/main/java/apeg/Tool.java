@@ -16,6 +16,8 @@ import apeg.parse.ast.AstFactory;
 import apeg.parse.ast.GrammarNode;
 import apeg.parse.ast.impl.AstFactoryImpl;
 import apeg.parse.ast.visitor.ASTNodeVisitor;
+import apeg.parse.ast.visitor.BuildingVisitor;
+import apeg.parse.ast.visitor.DOTVisitor;
 import apeg.parse.ast.visitor.PrettyPrintVisitor;
 import apeg.util.lang.LangInfo;
 import apeg.util.lang.java.JavaInfo;
@@ -101,7 +103,13 @@ public class Tool {
 								"./src/main/templates/prettyprint.stg"));
 				g.accept(prettyprint);
 				
-				// 
+				DOTVisitor dot = new DOTVisitor("saida.dot");
+				g.accept(dot);
+				dot.closeFile();
+				
+				BuildingVisitor build = new BuildingVisitor();
+				g.accept(build);
+		
 				
 				
 			} catch (FileNotFoundException e) {

@@ -34,12 +34,15 @@ import apeg.parse.ast.StringExprNode;
 import apeg.parse.ast.TypeNode;
 import apeg.parse.ast.UpdatePegNode;
 import apeg.parse.ast.VarDeclarationNode;
+//import deise.Add;
 
 public interface ASTNodeVisitor {
 	/**
 	 * Visit method for each AST element
 	 */
 	// Expressions
+	
+	
 	void visit(AndExprNode expr);
 	void visit(AttributeExprNode expr);
 	void visit(BinaryExprNode expr);

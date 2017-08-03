@@ -1,0 +1,118 @@
+Digraph G {        no3 [ shape = "box", label="Int:0" ];
+        no4 [ shape = "box", label="Atribute:k" ];
+        no2 [ shape = "box", label="NonTerminalPegNode: b" ];
+        no2 -> no3
+        no2 -> no4
+        no6 [ shape = "box", label="TypeNode:int" ];
+        no5 [ shape = "box", label="DeclarationName:k" ];
+        no5 -> no6
+        no1 [ shape = "box", label="RuleGetName:a" ];
+        no1 -> no2
+        no1 -> no5
+        no12 [ shape = "box", label="Atribute:x" ];
+        no13 [ shape = "box", label="Int:1" ];
+        no11 [ shape = "box", label="BinaryExpr (+)" ];
+        no11 -> no12
+        no11 -> no13
+        no10 [ shape = "box", label="Assignment: x" ];
+        no10 -> no11
+        no9 [ shape = "box", label="[UpdatePegNode]" ];
+        no9 -> no10
+        no14 [ shape = "box", label="LiteralPegNode:0" ];
+        no17 [ shape = "box", label="Atribute:x" ];
+        no16 [ shape = "box", label="Assignment: x1" ];
+        no16 -> no17
+        no15 [ shape = "box", label="[UpdatePegNode]" ];
+        no15 -> no16
+        no8 [ shape = "box", label="SequencePegNode" ];
+        no8 -> no9
+        no8 -> no14
+        no8 -> no15
+        no22 [ shape = "box", label="Atribute:x" ];
+        no23 [ shape = "box", label="Int:1" ];
+        no21 [ shape = "box", label="BinaryExpr (+)" ];
+        no21 -> no22
+        no21 -> no23
+        no20 [ shape = "box", label="Assignment: x" ];
+        no20 -> no21
+        no19 [ shape = "box", label="[UpdatePegNode]" ];
+        no19 -> no20
+        no24 [ shape = "box", label="LiteralPegNode:1" ];
+        no27 [ shape = "box", label="Atribute:x" ];
+        no26 [ shape = "box", label="Assignment: x1" ];
+        no26 -> no27
+        no25 [ shape = "box", label="[UpdatePegNode]" ];
+        no25 -> no26
+        no18 [ shape = "box", label="SequencePegNode" ];
+        no18 -> no19
+        no18 -> no24
+        no18 -> no25
+        no32 [ shape = "box", label="Atribute:x" ];
+        no33 [ shape = "box", label="Int:1" ];
+        no31 [ shape = "box", label="BinaryExpr (+)" ];
+        no31 -> no32
+        no31 -> no33
+        no30 [ shape = "box", label="Assignment: x" ];
+        no30 -> no31
+        no29 [ shape = "box", label="[UpdatePegNode]" ];
+        no29 -> no30
+        no34 [ shape = "box", label="LiteralPegNode:2" ];
+        no37 [ shape = "box", label="Atribute:x" ];
+        no36 [ shape = "box", label="Assignment: x1" ];
+        no36 -> no37
+        no35 [ shape = "box", label="[UpdatePegNode]" ];
+        no35 -> no36
+        no28 [ shape = "box", label="SequencePegNode" ];
+        no28 -> no29
+        no28 -> no34
+        no28 -> no35
+        no38 [ shape = "box", label="/" ];
+        no38 -> no28
+        no38 -> no18
+        no39 [ shape = "box", label="/" ];
+        no39 -> no38
+        no39 -> no8
+        no41 [ shape = "box", label="TypeNode:int" ];
+        no40 [ shape = "box", label="DeclarationName:x1" ];
+        no40 -> no41
+        no43 [ shape = "box", label="TypeNode:int" ];
+        no42 [ shape = "box", label="DeclarationName:x" ];
+        no42 -> no43
+        no7 [ shape = "box", label="RuleGetName:b" ];
+        no7 -> no39
+        no7 -> no40
+        no7 -> no42
+        no48 [ shape = "box", label="Int:0" ];
+        no47 [ shape = "box", label="Assignment: x" ];
+        no47 -> no48
+        no46 [ shape = "box", label="[UpdatePegNode]" ];
+        no46 -> no47
+        no54 [ shape = "box", label="Atribute:x" ];
+        no55 [ shape = "box", label="Int:1" ];
+        no53 [ shape = "box", label="BinaryExpr (+)" ];
+        no53 -> no54
+        no53 -> no55
+        no52 [ shape = "box", label="Assignment: x" ];
+        no52 -> no53
+        no51 [ shape = "box", label="[UpdatePegNode]" ];
+        no51 -> no52
+        no56 [ shape = "box", label="LiteralPegNode:2" ];
+        no50 [ shape = "box", label="SequencePegNode" ];
+        no50 -> no51
+        no50 -> no56
+        no49 [ shape = "box", label="(StarPegNode)*" ];
+        no49 -> no50
+        no45 [ shape = "box", label="SequencePegNode" ];
+        no45 -> no46
+        no45 -> no49
+        no58 [ shape = "box", label="TypeNode:int" ];
+        no57 [ shape = "box", label="DeclarationName:x" ];
+        no57 -> no58
+        no44 [ shape = "box", label="RuleGetName:c" ];
+        no44 -> no45
+        no44 -> no57
+        no0 [ shape = "box", label="Grammar:notDiscardChanges" ];
+        no0 -> no1
+        no0 -> no7
+        no0 -> no44
+}

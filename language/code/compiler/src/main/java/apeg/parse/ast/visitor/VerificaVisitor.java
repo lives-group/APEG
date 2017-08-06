@@ -1,7 +1,5 @@
 package apeg.parse.ast.visitor;
 
-
-
 import java.util.Hashtable;
 import java.util.Map.Entry;
 
@@ -42,19 +40,25 @@ import apeg.parse.ast.TypeNode;
 import apeg.parse.ast.UpdatePegNode;
 import apeg.parse.ast.VarDeclarationNode;
 
-
-public class BuildingVisitor implements ASTNodeVisitor {
-
-	private String tipo = " ";
-	private RuleEntry r;
-	private VarEntry.AttrDirection atributo;
+public class VerificaVisitor implements ASTNodeVisitor {
 	
-    private Hashtable<String, RuleEntry> t;
-    
-    public BuildingVisitor(){
-    	
-    	t = new Hashtable<String,RuleEntry>();
-    }
+
+	String tipo = " ";
+	String non = " ";
+	
+	
+	
+	
+	 public VerificaVisitor(){
+		 
+		
+	    	
+	    }
+	 
+	
+	public void naoterminal(String non){
+		
+	}
 	
 	@Override
 	public void visit(AndExprNode expr) {
@@ -78,9 +82,7 @@ public class BuildingVisitor implements ASTNodeVisitor {
 	}
 
 	@Override
-	public void visit(BooleanExprNode expr) {
-		// TODO Auto-generated method stub
-
+	public void visit(BooleanExprNode expr) { ////////////////////////////////////////////
 		expr.getValue();
 	}
 
@@ -96,23 +98,21 @@ public class BuildingVisitor implements ASTNodeVisitor {
 	}
 
 	@Override
-	public void visit(EqualityExprNode expr) {
+	public void visit(EqualityExprNode expr) { 
 		expr.getLeftExpr().accept(this);
 		expr.getRightExpr().accept(this);
-		expr.getEqualityType(); //switch
+		expr.getEqualityType(); //switch 
 		
 	}
 
 	@Override
-	public void visit(FloatExprNode expr) {
-		expr.getValue();
-		
+	public void visit(FloatExprNode expr) { ////////////////////////////
+		expr.getValue();		
 	}
 
 	@Override
-	public void visit(IntExprNode expr) {
+	public void visit(IntExprNode expr) { ////////////////////////////////
 		expr.getValue();
-		
 	}
 
 	@Override
@@ -142,7 +142,7 @@ public class BuildingVisitor implements ASTNodeVisitor {
 	}
 
 	@Override
-	public void visit(StringExprNode expr) {
+	public void visit(StringExprNode expr) { ///////////////////////////
 		expr.getValue();
 		
 	}
@@ -202,7 +202,13 @@ public class BuildingVisitor implements ASTNodeVisitor {
 			p.accept(this);
 		}
 	    
-	     peg.getName();	
+		 peg.getName();
+	     non = peg.getName();	 
+	     System.out.println(non); //nesse caso sei q [e b
+	     naoterminal(non);
+	     
+	  
+	    
 	}
 
 	@Override
@@ -277,19 +283,15 @@ public class BuildingVisitor implements ASTNodeVisitor {
 		rule.getAnnotation();
 		rule.getExpr().accept(this);
 		rule.getName();
-		r = new RuleEntry(rule.getName());
 		
 		for(VarDeclarationNode param : rule.getParameters()){
-			atributo = VarEntry.AttrDirection.HERDADO;
 			param.accept(this);		
 		}
 		
 		for(VarDeclarationNode param : rule.getReturns()){
-			atributo = VarEntry.AttrDirection.SINTETIZADO;
 			param.accept(this);
 		}
-		t.put(rule.getName(), r);
-		r = null;
+		
 	}
 
 	@Override
@@ -325,16 +327,10 @@ public class BuildingVisitor implements ASTNodeVisitor {
 
 	@Override
 	public void visit(VarDeclarationNode var) {
+		var.getName();
 		var.getType().accept(this);
 		
-		VarEntry entry = new VarEntry(var.getName(),tipo, atributo);
-		r.getTable().put(var.getName(), entry);
 	}
-	
-	public void printTable(){
-		System.out.println("  ------ TABELA DE SIMBOLOS NAO TERMINAIS----- ");
-		for(Entry<String,RuleEntry> e : t.entrySet()){
-			System.out.println(e.getValue().toString());
-		}
-	}
+		
+
 }

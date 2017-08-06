@@ -380,7 +380,7 @@ public class PrettyPrintVisitor implements ASTNodeVisitor {
 		List<ST> l = new ArrayList<ST>();
 		for(ExprNode p:peg.getExprs()) {
 			p.accept(this);
-			l.add(peg_expr);
+			l.add(expr);
 		}
 	 	
 		

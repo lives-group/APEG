@@ -55,9 +55,6 @@ idType(name) ::= "<name>"
 and_expr(e,d) ::= "<e> && <d>" 
 atribute_expr(atribute) ::= "<atribute>"
 
-binary_expr(e,o,d) ::= "<e> <d>"
-equality_expr(e,tipo,d) ::= "<e> <d>"
-
 lt_expr(e,d) ::= "<e> \< <d>"
 mul_expr(e,d) ::= "<e> * <d>"
 add_expr(e,d) ::= "<e> + <d>"
@@ -80,11 +77,12 @@ string_expr(string) ::= "<string>"
 /** Template for parsing expression */
 and_peg(and) ::= "&&<and>"
 bind_peg(bind,variable) ::="<variable> = (<bind>)"
-choice_peg(e,d) ::= "<e>/<d>"
+choice_peg(e,d) ::= <<<e>
+/<d> >>
 constraint_peg(constraint) ::= "{?<constraint>}"
 gr_peg(gr) ::= "<gr>"
 literal_peg(l) ::= " '<l>' " 
-non_peg(name,exprr) ::= "<exprr> <name> "  
+non_peg(name,exprr) ::= << <name> \< <exprr; separator=", ", wrap> > >>
 no_peg(no) ::= "!."
 plus_peg(plus) ::= "(<plus>)+"
 optional_peg(optional) ::= "?<optional>"

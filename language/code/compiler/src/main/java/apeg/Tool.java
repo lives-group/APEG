@@ -19,6 +19,7 @@ import apeg.parse.ast.visitor.ASTNodeVisitor;
 import apeg.parse.ast.visitor.BuildingVisitor;
 import apeg.parse.ast.visitor.DOTVisitor;
 import apeg.parse.ast.visitor.PrettyPrintVisitor;
+import apeg.parse.ast.visitor.VerificaVisitor;
 import apeg.util.lang.LangInfo;
 import apeg.util.lang.java.JavaInfo;
 import apeg.util.path.AbsolutePath;
@@ -109,6 +110,10 @@ public class Tool {
 				
 				BuildingVisitor build = new BuildingVisitor();
 				g.accept(build);
+				build.printTable();
+				
+     			VerificaVisitor verifica = new VerificaVisitor();
+				g.accept(verifica);
 		
 				
 				

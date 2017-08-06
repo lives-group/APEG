@@ -2,9 +2,6 @@ package apeg.parse.ast.visitor;
 
 
 
-import java.util.Hashtable;
-import java.util.Map.Entry;
-
 import apeg.parse.ast.AndExprNode;
 import apeg.parse.ast.AndPegNode;
 import apeg.parse.ast.AnyPegNode;
@@ -42,19 +39,10 @@ import apeg.parse.ast.TypeNode;
 import apeg.parse.ast.UpdatePegNode;
 import apeg.parse.ast.VarDeclarationNode;
 
+public class FormalVisitor implements ASTNodeVisitor{
+	String tipo = " ";
+	String atributo = " ";
 
-public class BuildingVisitor implements ASTNodeVisitor {
-
-	private String tipo = " ";
-	private RuleEntry r;
-	private VarEntry.AttrDirection atributo;
-	
-    private Hashtable<String, RuleEntry> t;
-    
-    public BuildingVisitor(){
-    	
-    	t = new Hashtable<String,RuleEntry>();
-    }
 	
 	@Override
 	public void visit(AndExprNode expr) {
@@ -277,19 +265,15 @@ public class BuildingVisitor implements ASTNodeVisitor {
 		rule.getAnnotation();
 		rule.getExpr().accept(this);
 		rule.getName();
-		r = new RuleEntry(rule.getName());
 		
 		for(VarDeclarationNode param : rule.getParameters()){
-			atributo = VarEntry.AttrDirection.HERDADO;
 			param.accept(this);		
 		}
 		
 		for(VarDeclarationNode param : rule.getReturns()){
-			atributo = VarEntry.AttrDirection.SINTETIZADO;
 			param.accept(this);
 		}
-		t.put(rule.getName(), r);
-		r = null;
+		
 	}
 
 	@Override
@@ -325,16 +309,10 @@ public class BuildingVisitor implements ASTNodeVisitor {
 
 	@Override
 	public void visit(VarDeclarationNode var) {
-		var.getType().accept(this);
-		
-		VarEntry entry = new VarEntry(var.getName(),tipo, atributo);
-		r.getTable().put(var.getName(), entry);
+		var.getName();
+		var.getType().accept(this);		
 	}
+
 	
-	public void printTable(){
-		System.out.println("  ------ TABELA DE SIMBOLOS NAO TERMINAIS----- ");
-		for(Entry<String,RuleEntry> e : t.entrySet()){
-			System.out.println(e.getValue().toString());
-		}
-	}
+
 }

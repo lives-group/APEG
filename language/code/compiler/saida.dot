@@ -3,7 +3,7 @@ Digraph G {        no3 [ shape = "box", label="Int:0" ];
         no2 [ shape = "box", label="NonTerminalPegNode: b" ];
         no2 -> no3
         no2 -> no4
-        no6 [ shape = "box", label="TypeNode:int" ];
+        no6 [ shape = "box", label="TypeNode:float" ];
         no5 [ shape = "box", label="DeclarationName:k" ];
         no5 -> no6
         no1 [ shape = "box", label="RuleGetName:a" ];

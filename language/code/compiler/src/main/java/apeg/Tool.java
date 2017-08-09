@@ -104,7 +104,8 @@ public class Tool {
 								"./src/main/templates/prettyprint.stg"));
 				g.accept(prettyprint);
 				
-				DOTVisitor dot = new DOTVisitor("saida.dot");
+                // Generating a graphical view from AST 
+				DOTVisitor dot = new DOTVisitor(tool.getOutput().getAbsolutePath() + "/ast.dot");
 				g.accept(dot);
 				dot.closeFile();
 				
@@ -118,7 +119,7 @@ public class Tool {
 				
 				
 			} catch (FileNotFoundException e) {
-				System.err.println("File " + s + "do not exist");
+				System.err.println("File " + s + " do not exist");
 				continue;
 			} catch (IOException e) {
 				System.err.println(e.getMessage());

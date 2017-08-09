@@ -1,7 +1,7 @@
 group prettyprint;
 
 /** Defining the grammar specfication template */
-apeg(name, option, header, func_sources, rules) ::= <<
+apeg(name, option, header, functions, func_sources, rules) ::= <<
 apeg <name>;
 <if(option)>
 
@@ -19,79 +19,98 @@ header {
 
 <if(func_sources)>
 
-functions <functions; separator=" ", wrap> from {
+functions <if(functions)><functions; separator=" ", wrap> <endif>from {
   <func_sources; separator=" ", wrap>
 };
 <endif>
 
-<rules:rule(); separator="\n\n">
+<rules; separator="\n\n">
 >>
 
+
 /** Template for rules specification */
-rule(r) ::= <<
-<if(r.annotation)>
-@<r.annotation> 
+rule(annotation, name, inh_attr, syn_attr, ret_attr, peg_expr) ::= <<
+<if(annotation)>
+@<annotation> 
 <endif>
-<r.name><if(r.inh_attr)>[<r.inh_attr:decl(); separator=", ", wrap>]<endif><if(r.syn_attr)> returns[<r.syn_attr:decl(); separator=", ", wrap>]<endif><if(r.ret_attr)> locals[<r.ret_attr:decl(); separator=", ", wrap>]<endif>:
-  <r.peg_expr>
+<name><if(inh_attr)>[<inh_attr; separator=", ", wrap>]<endif><if(syn_attr)> returns[<syn_attr; separator=", ", wrap>]<endif><if(ret_attr)> locals[<ret_attr; separator=", ", wrap>]<endif>:
+  <peg_expr>
 ;
 >>
 
+
 /** Template for parameters declaration */
-decl(attr) ::= <<
-<attr.type> <attr.name>
+decl(type, name) ::= <<
+<type> <name>
 >>
 
 
-
 /** Template for types */
-int() ::= "int"
-float() ::= "float"
-string() ::= "string"
-boolean() ::= "boolean"
-grammar() ::= "grammar"
-ruleType() ::= "rule"
-idType(name) ::= "<name>"
-and_expr(e,d) ::= "<e> && <d>" 
-atribute_expr(atribute) ::= "<atribute>"
+int_type() ::= "int"
+float_type() ::= "float"
+string_type() ::= "string"
+boolean_type() ::= "boolean"
+grammar_type() ::= "grammar"
+rule_type() ::= "rule"
+user_type(name) ::= "<name>"
 
-lt_expr(e,d) ::= "<e> \< <d>"
-mul_expr(e,d) ::= "<e> * <d>"
-add_expr(e,d) ::= "<e> + <d>"
-gt_expr(e,d) ::= "<e> > <d>"
-sub_expr(e,d) ::= "<e> - <d>"
 
-eq_expr(e,d) ::= "<e> == <d>"
+/** Template for expressions */
+atribute_expr(name) ::= "<name>"
 
-boolean_expr(valor) ::= "<valor>"
-call_expr(name,param) ::=  "<name><param>" 
+gt_expr(left_expr, right_expr) ::= "(<left_expr>) \> (<right_expr>)"
+ge_expr(left_expr, right_expr) ::= "(<left_expr>) \>= (<right_expr>)"
+lt_expr(left_expr, right_expr) ::= "(<left_expr>) \< (<right_expr>)"
+le_expr(left_expr, right_expr) ::= "(<left_expr>) \<= (<right_expr>)"
+mul_expr(left_expr, right_expr) ::= "(<left_expr>) * (<right_expr>)"
+div_expr(left_expr, right_expr) ::= "(<left_expr>) / (<right_expr>)"
+mod_expr(left_expr, right_expr) ::= "(<left_expr>) % (<right_expr>)"
+add_expr(left_expr, right_expr) ::= "<left_expr> + <right_expr>"
+sub_expr(left_expr, right_expr) ::= "<left_expr> - <right_expr>"
 
-float_expr(valor) ::= "<valor>"
-int_expr(valor) ::= " <valor> "
-meta_expr(valor) ::= "@[ <valor> ]"
-minus_expr(minus) ::= "-<minus>"
-not_expr(not) ::= "!<not>"
-or_expr(e,d) ::= "<e> || <d>"
-string_expr(string) ::= "<string>"
+equals_expr(left_expr, right_expr) ::= "(<left_expr> == <right_expr>)"
+no_equals_expr(left_expr, right_expr) ::= "(<left_expr> != <right_expr>)"
+
+call_expr(name, params) ::=  "<name>(<params; separator=\", \", wrap>)" 
+
+boolean_expr(value) ::= "<value>"
+float_expr(value) ::= "<value>"
+int_expr(value) ::= "<value>"
+string_expr(value) ::= "'<value>'"
+meta_expr(expr) ::= "@[ <expr> ]"
+minus_expr(expr) ::= "-(<expr>)"
+not_expr(expr) ::= "!(<expr>)"
+or_expr(left_expr, right_expr) ::= "<left_expr> || <right_expr>"
+and_expr(left_expr, right_expr) ::= "(<left_expr>) && (<right_expr>)"
+
 
 /** Template for parsing expression */
-and_peg(and) ::= "&&<and>"
-bind_peg(bind,variable) ::="<variable> = (<bind>)"
-choice_peg(e,d) ::= <<<e>
-/<d> >>
-constraint_peg(constraint) ::= "{?<constraint>}"
-gr_peg(gr) ::= "<gr>"
-literal_peg(l) ::= " '<l>' " 
-non_peg(name,exprr) ::= << <name> \< <exprr; separator=", ", wrap> > >>
-no_peg(no) ::= "!."
-plus_peg(plus) ::= "(<plus>)+"
-optional_peg(optional) ::= "?<optional>"
-sequence_peg(sequence) ::= "<sequence>"
-star_peg(star) ::= "(<star>)*"
-update_peg(update) ::= "[<update>]"
+and_peg(peg_expr) ::= "&(<peg_expr>)"
+any_peg() ::= "."
+bind_peg(name, peg_expr) ::="<name>=(<peg_expr>)"
+choice_peg(left_peg, right_peg) ::= <<
+ <left_peg>
+/
+ <right_peg>
+>>
+constraint_peg(expr) ::= "{? <expr> }"
+group_peg(ranges) ::= "[<ranges>]"
+literal_peg(value) ::= "'<value>'"
+lambda_peg() ::= " " 
+nonterminal_peg(name, attrs) ::= "<name>\<<attrs; separator=\", \", wrap>>"
+not_peg(peg_expr) ::= "!(<peg_expr>)"
+plus_peg(peg_expr) ::= "(<peg_expr>)+"
+optional_peg(peg_expr) ::= "(<peg_expr>)?"
+sequence_peg(peg_exprs) ::= "<peg_exprs:{x | (<x>)}; separator=\" \">"
+star_peg(peg_expr) ::= "(<peg_expr>)*"
+update_peg(assigns) ::= <<[<assigns; separator=" ">]>>
 
-assign(as,a) ::= "<as> = <a>;"
-func(f) ::= "<f>"
+
+/** Template for assignment from update parsing expressions */
+assign(name, expr) ::= "<name> = <expr>;"
+
+
+/** func(f) ::= "<f>"  Not implemented yet */
 
 
 

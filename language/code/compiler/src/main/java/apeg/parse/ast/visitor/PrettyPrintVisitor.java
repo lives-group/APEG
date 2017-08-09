@@ -1,9 +1,8 @@
 package apeg.parse.ast.visitor;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.stringtemplate.v4.*;
+import org.stringtemplate.v4.ST;
+import org.stringtemplate.v4.STGroup;
+import org.stringtemplate.v4.STGroupFile;
 
 import apeg.parse.ast.AndExprNode;
 import apeg.parse.ast.AndPegNode;
@@ -49,438 +48,395 @@ public class PrettyPrintVisitor implements ASTNodeVisitor {
 	private STGroup groupTemplate;
 	private ST template;
 	
-	// List for declarations: inherited, synthesized attributes and so forth.
-	List<Object> attrs;
-	// curent Type
-	ST type;
-	
-	private ST peg_expr, expr;
-	
-	
+	// Template for current attribute: inherited, synthesized attributes and so forth.
+	private ST attr;
+	// Template for current type
+	private ST type;
+	// Template for current parsing expression, current expression and the last assignment visited 
+	private ST peg_expr, expr, assign;
 	
 	public PrettyPrintVisitor(Path filePath) {
 		groupTemplate = new STGroupFile(filePath.getAbsolutePath());
-		
 	}
 	
 	@Override
 	public void visit(AndExprNode expr) {
-   
-       expr.getLeftExpr().accept(this);
-		
-		ST aux_left = this.expr;
-		
-		
+		// set the current expression template
+		ST aux_expr = groupTemplate.getInstanceOf("and_expr");
+		// visit left expression
+		expr.getLeftExpr().accept(this);
+		// set the left expression attribute
+		aux_expr.add("left_expr", this.expr);
+		// visit right expression
 		expr.getRightExpr().accept(this);
-		
-		ST aux_right = this.expr;
-		
-		
-		this.expr = groupTemplate.getInstanceOf("and_expr");
-	
-		this.expr.add("e", aux_left);
-		this.expr.add("d", aux_right);
+		// set the right expression attribute
+		aux_expr.add("right_expr", this.expr);
+		// set the current expression
+		this.expr = aux_expr;
 	}
 
 	@Override
 	public void visit(AttributeExprNode expr) { 
-		
+		// set the current expression template
 		this.expr = groupTemplate.getInstanceOf("atribute_expr");
-		
-		this.expr.add("atribute", expr.getName());
-		
+		// set the name attribute
+		this.expr.add("name", expr.getName());
 	}
 
 	@Override
-	public void visit(BinaryExprNode expr) { 
-		
-        expr.getLeftExpr().accept(this);
-		
-		ST aux_left = this.expr;
-		
-		
-		expr.getRightExpr().accept(this);
-		
-		ST aux_right = this.expr;
-		
+	public void visit(BinaryExprNode expr) { 		
+		ST aux_expr;
 		switch(expr.getOperation()) {
-			case LT:
-				this.expr = groupTemplate.getInstanceOf("lt_expr");
+			case GT: // >
+				aux_expr = groupTemplate.getInstanceOf("gt_expr");
 				break;
-			case MUL:
-				this.expr = groupTemplate.getInstanceOf("mul_expr");
+			case GE: // >=
+				aux_expr = groupTemplate.getInstanceOf("ge_expr");
 				break;
-			case ADD:
-				this.expr = groupTemplate.getInstanceOf("add_expr");
+			case LT: // <
+				aux_expr = groupTemplate.getInstanceOf("lt_expr");
 				break;
-			case GT: 
-				this.expr = groupTemplate.getInstanceOf("gt_expr");
-				break;		
-			case SUB: 
-				this.expr = groupTemplate.getInstanceOf("sub_expr");
+			case LE: // <=
+				aux_expr = groupTemplate.getInstanceOf("le_expr");
 				break;
-				
-				
-		default:
-			this.expr = groupTemplate.getInstanceOf("binary_expr");
-			break;
+			case ADD: // +
+				aux_expr = groupTemplate.getInstanceOf("add_expr");
+				break;
+			case SUB: // -
+				aux_expr = groupTemplate.getInstanceOf("sub_expr");
+				break;
+			case MUL: // *
+				aux_expr = groupTemplate.getInstanceOf("mul_expr");
+				break;
+			case DIV: // /
+				aux_expr = groupTemplate.getInstanceOf("div_expr");
+				break;
+			case MOD: // %
+				aux_expr = groupTemplate.getInstanceOf("mod_expr");
+				break;
+			default: // Should never reach the default case
+				aux_expr = null;
+				break;
 		}
-
-		
-		this.expr.add("e", aux_left); 
-		//this.expr.add("o", expr.getOperation());
-		this.expr.add("d", aux_right);
-		
-
+		// visit left expression
+        expr.getLeftExpr().accept(this);
+        // set the left expression attribute
+     	aux_expr.add("left_expr", this.expr);
+		// visit the right expression
+		expr.getRightExpr().accept(this);
+		// set the right expression attribute
+		aux_expr.add("right_expr", this.expr);
+		// set the current expression
+		this.expr = aux_expr;
 	}
 
 	@Override
 	public void visit(BooleanExprNode expr) {
-	     
-	     this.expr = groupTemplate.getInstanceOf("boolean_expr");
-			
-		 this.expr.add("valor", expr.getValue());
-		
+		// set the current expression template
+		this.expr = groupTemplate.getInstanceOf("boolean_expr");
+		// set value propriety
+		this.expr.add("value", expr.getValue());
 	}
 
 	@Override
 	public void visit(CallExprNode expr) { 
-		
-		List<ST> l = new ArrayList<ST>();
-		for(ExprNode p : expr.getParameters()){
-			p.accept(this);
-			l.add(this.expr);
+		// set the current expression template
+		ST aux_expr = groupTemplate.getInstanceOf("call_expr");
+		// visit each function parameter expression
+		for(ExprNode e : expr.getParameters()){
+			e.accept(this);
+			// set the attribute params
+			aux_expr.add("params", this.expr);
 		}
+		// set the function name attribute
+		aux_expr.add("name", expr.getName());
 		
-		
-		this.expr = groupTemplate.getInstanceOf("call_expr");
-		
-		 this.expr.add("name", expr.getName());
-		 this.expr.add("param", l );
-		
-		
+		// set the current expression
+		this.expr = aux_expr;
 	}
 
 	@Override
-	public void visit(EqualityExprNode expr) { //equality type?
-		
-        expr.getLeftExpr().accept(this);
-		
-		ST aux_left = this.expr;
-		
-		
-		expr.getRightExpr().accept(this);
-		
-		ST aux_right = this.expr; 
-		
+	public void visit(EqualityExprNode expr) {
+		// set the current expression template
+		ST aux_expr;
 		switch(expr.getEqualityType()) {
-		case EQ:
-			this.expr = groupTemplate.getInstanceOf("eq_expr");
-			break;
-	
-	default:
-		this.expr = groupTemplate.getInstanceOf("equality_expr");
-		break;
-	}
-		
-		
-        //this.expr = groupTemplate.getInstanceOf("equality_expr");
-		
-        this.expr.add("e", aux_left);
-        this.expr.add("d", aux_right);
-      	
-        
+			case EQ:
+				aux_expr = groupTemplate.getInstanceOf("equals_expr");
+				break;
+			case NE:
+				aux_expr = groupTemplate.getInstanceOf("no_equals_expr");
+				break;
+			default: // Should never reach the default case
+				aux_expr = null;
+				break;
+		}
+		// visit left expression
+        expr.getLeftExpr().accept(this);
+        // set the left expression attribute
+     	aux_expr.add("left_expr", this.expr);
+		// visit the right expression
+		expr.getRightExpr().accept(this);
+		// set the right expression attribute
+		aux_expr.add("right_expr", this.expr);
+		// set the current expression
+		this.expr = aux_expr;
 	}
 
 	@Override
 	public void visit(FloatExprNode expr) { 
-		
+		// set the current expression template
 		this.expr = groupTemplate.getInstanceOf("float_expr");
-			
-		this.expr.add("valor", expr.getValue());
-	
-	
-
+		// set value propriety
+		this.expr.add("value", expr.getValue());
 	}
 
 	@Override
 	public void visit(IntExprNode expr) { 
-		
+		// set the current expression template
 		this.expr = groupTemplate.getInstanceOf("int_expr");
-		
-		this.expr.add("valor", expr.getValue());
-	
-
+		// set value propriety
+		this.expr.add("value", expr.getValue());
 	}
 
 	@Override
 	public void visit(MetaPegExprNode expr) { 
-		
-        expr.getExpr().accept(this);
-		
-		ST aux_expr = this.expr;
-		
-		this.expr = groupTemplate.getInstanceOf("meta_expr");
-		
-		this.expr.add("valor", aux_expr);
+		// set the current expression template
+		ST aux_expr = groupTemplate.getInstanceOf("meta_expr");
+		// visit expression
+		expr.getExpr().accept(this);
+		// set the expression attribute
+		aux_expr.add("expr", this.expr);
+		// set the current expression
+		this.expr = aux_expr;
 	}
 
 	@Override
 	public void visit(MinusExprNode expr) { 
-		
-        expr.getExpr().accept(this);
-		
-		ST aux_expr = this.expr;
-		
-        this.expr = groupTemplate.getInstanceOf("minus_expr");
-		
-        this.expr.add("minus", aux_expr);
-
+		// set the current expression template
+		ST aux_expr = groupTemplate.getInstanceOf("minus_expr");
+		// visit expression
+		expr.getExpr().accept(this);
+		// set the expression attribute
+		aux_expr.add("expr", this.expr);
+		// set the current expression
+		this.expr = aux_expr;
 	}
 
 	@Override
 	public void visit(NotExprNode expr) {
-        
+		// set the current expression template
+		ST aux_expr = groupTemplate.getInstanceOf("not_expr");
+		// visit expression
 		expr.getExpr().accept(this);
-		
-		ST aux_expr = this.expr;
-		
-		this.expr = groupTemplate.getInstanceOf("not_expr");
-		
-		this.expr.add("not", aux_expr);
-
-
+		// set the expression attribute
+		aux_expr.add("expr", this.expr);
+		// set the current expression
+		this.expr = aux_expr;
 	}
 
 	@Override
 	public void visit(OrExprNode expr) {
-	
-       expr.getLeftExpr().accept(this);
-		
-		ST aux_left = this.expr;
-			
+		// set the current expression template
+		ST aux_expr = groupTemplate.getInstanceOf("or_expr");
+		// visit left expression
+		expr.getLeftExpr().accept(this);
+		// set the left expression attribute
+		aux_expr.add("left_expr", this.expr);
+		// visit right expression
 		expr.getRightExpr().accept(this);
-		
-		ST aux_right = this.expr;
-			
-		this.expr = groupTemplate.getInstanceOf("or_expr");
-		
-		this.expr.add("e", aux_left);
-		this.expr.add("d", aux_right);
-
+		// set the right expression attribute
+		aux_expr.add("right_expr", this.expr);
+		// set the current expression
+		this.expr = aux_expr;
 	}
 
 	@Override
 	public void visit(StringExprNode expr) {
-		
+		// set the current expression template
 		this.expr = groupTemplate.getInstanceOf("string_expr");
-		
-		this.expr.add("string", expr.getValue()); 
-		
-
+		// set value propriety
+		this.expr.add("value", expr.getValue()); 
 	}
 
 	@Override
-	public void visit(AndPegNode peg) { 
-		
-        peg.getPeg().accept(this);
-		
-		ST aux_expr = peg_expr;
-		
-		peg_expr = groupTemplate.getInstanceOf("and_peg");
-		
-        peg_expr.add("and", aux_expr);
-
-
+	public void visit(AndPegNode peg) {
+		// set the current parsing expression template
+		ST aux_peg = groupTemplate.getInstanceOf("and_peg");
+		// visit the parsing expression
+		peg.getPeg().accept(this);
+		// set propriety for the bind parsing expression
+		aux_peg.add("peg_expr", peg_expr);
+		// set the current parsing expression
+		peg_expr = aux_peg;
 	}
 
 	@Override
 	public void visit(AnyPegNode peg) { 
-		
-    //peg.accept(this);
-    
+		peg_expr = groupTemplate.getInstanceOf("any_peg");
 	}
 
 	@Override
 	public void visit(BindPegNode peg) {
-		
+		// set the current parsing expression template
+		ST aux_peg = groupTemplate.getInstanceOf("bind_peg");
+		// set the variable name propriety
+		aux_peg.add("name", peg.getVariable());
+		// visit the parsing expression
 		peg.getPeg().accept(this);
-		ST aux_expr = peg_expr;
-		
-		peg_expr = groupTemplate.getInstanceOf("bind_peg");
-		
-		peg_expr.add("bind", aux_expr);
-		peg_expr.add("variable", peg.getVariable());
-
+		// set propriety for the bind parsing expression
+		aux_peg.add("peg_expr", peg_expr);
+		// set the current parsing expression
+		peg_expr = aux_peg;
 	}
+
 
 	@Override
 	public void visit(ChoicePegNode peg) {
-		
+		// set the current parsing expression template
+		ST aux_peg = groupTemplate.getInstanceOf("choice_peg");
+		// visit the left parsing expression
 		peg.getLeftPeg().accept(this);
-		
-		ST aux_left = peg_expr;
-		
-		
+		// set propriety for the left parsing expression
+		aux_peg.add("left_peg", peg_expr);
+		// visit the right parsing expression
 		peg.getRightPeg().accept(this);
-		
-		ST aux_right = peg_expr;
-			
-		peg_expr = groupTemplate.getInstanceOf("choice_peg");
-		
-		peg_expr.add("e", aux_left);
-		peg_expr.add("d", aux_right);
-		
+		// set propriety for the left parsing expression
+		aux_peg.add("right_peg", peg_expr);
+		// set the current parsing expression
+		peg_expr = aux_peg;
 	}
 
 	@Override
 	public void visit(ConstraintPegNode peg) {
-		
-		
-        peg.getExpr().accept(this);
-		
-		ST aux = expr;
-		
+		// set the current parsing expression template
 		peg_expr = groupTemplate.getInstanceOf("constraint_peg");
-		
-		peg_expr.add("constraint", aux);
+        // visit constraint expression
+		peg.getExpr().accept(this);
+		// set expression propriety
+		peg_expr.add("expr", expr);
 	}
 
 	@Override
 	public void visit(GroupPegNode peg) {
-	
-		peg_expr = groupTemplate.getInstanceOf("gr_peg");
-		
-		peg_expr.add("gr", peg.getRanges());
-
+		peg_expr = groupTemplate.getInstanceOf("group_peg");
+		peg_expr.add("ranges", peg.getRanges());
 	}
 
 	@Override
-	public void visit(LambdaPegNode peg) { // ??
-		
-		 //peg.accept(this); 
-		// peg_expr = groupTemplate.getInstanceOf("lambda");
-    
+	public void visit(LambdaPegNode peg) { // ?? 
+		peg_expr = groupTemplate.getInstanceOf("lambda_peg");
 	}
 
 	@Override
 	public void visit(LiteralPegNode peg) {
-		
 		peg_expr= groupTemplate.getInstanceOf("literal_peg");
-		
-		peg_expr.add("l", peg.getValue());
-		
-		
-
+		peg_expr.add("value", peg.getValue());
 	}
 
 	@Override
 	public void visit(NonterminalPegNode peg) {
+		// set the current parsing expression template
+		peg_expr = groupTemplate.getInstanceOf("nonterminal_peg");
 		
-		List<ST> l = new ArrayList<ST>();
-		for(ExprNode p:peg.getExprs()) {
-			p.accept(this);
-			l.add(expr);
-		}
-	 	
-		
-		peg_expr = groupTemplate.getInstanceOf("non_peg");
-		
+		// adding the name attribute
 		peg_expr.add("name", peg.getName());
-		peg_expr.add("exprr", l);
-
+		
+		// visit each attribute expression
+		for(ExprNode p : peg.getExprs()) {
+			p.accept(this);
+			// adding the expression on nonterminal template
+			peg_expr.add("attrs", expr);
+		}
 	}
 
 	@Override
 	public void visit(NotPegNode peg) {
-		
+		// set the current parsing expression template
+		ST aux_peg = groupTemplate.getInstanceOf("not_peg");
+		// visit the parsing expression
 		peg.getPeg().accept(this);
-		ST aux = peg_expr; 
-		
-		peg_expr = groupTemplate.getInstanceOf("no_peg");
-		peg_expr.add("no", aux);
-
+		// adding the parsing expression on star template
+		aux_peg.add("peg_expr", peg_expr);
+		peg_expr = aux_peg;
 	}
 
 	@Override
 	public void visit(OptionalPegNode peg) {
-		
-        peg.getPeg().accept(this);
-		
-		ST aux = peg_expr;
-		
-		peg_expr = groupTemplate.getInstanceOf("optional_peg");
-		peg_expr.add("optional", aux);
-
-
-		
+		// set the current parsing expression template
+		ST aux_peg = groupTemplate.getInstanceOf("optional_peg");
+		// visit the parsing expression
+		peg.getPeg().accept(this);
+		// adding the parsing expression on star template
+		aux_peg.add("peg_expr", peg_expr);
+		peg_expr = aux_peg;		
 	}
 
 	@Override
 	public void visit(PlusPegNode peg) {
-    
-       peg.getPeg().accept(this);
-		
-		ST aux = peg_expr;
-		
-		peg_expr = groupTemplate.getInstanceOf("plus_peg");
-		peg_expr.add("plus", aux);
-
+		// set the current parsing expression template
+		ST aux_peg = groupTemplate.getInstanceOf("plus_peg");
+		// visit the parsing expression
+		peg.getPeg().accept(this);
+		// adding the parsing expression on star template
+		aux_peg.add("peg_expr", peg_expr);
+		peg_expr = aux_peg;
 	}
 
 	@Override
 	public void visit(SequencePegNode peg) {
-		
-
-		List<ST> l = new ArrayList<ST>();
-		for(PegNode p:peg.getPegs()) {
+		// set the current parsing expression template
+		ST aux_peg = groupTemplate.getInstanceOf("sequence_peg");
+		for(PegNode p : peg.getPegs()) {
+			// visit a parsing expression
 			p.accept(this);
-			l.add(peg_expr);
+			// add the current parsing expression on the sequence template
+			aux_peg.add("peg_exprs", peg_expr);
 		}
-		peg_expr = groupTemplate.getInstanceOf("sequence_peg");
-		peg_expr.add("sequence", l);
-		
+		peg_expr = aux_peg;
 	}
 
 	@Override
 	public void visit(StarPegNode peg) {
-		
+		// set the current parsing expression template as a update parsing expression
+		ST aux_peg = groupTemplate.getInstanceOf("star_peg");
+		// visit the parsing expression
 		peg.getPeg().accept(this);
-		ST aux = peg_expr;
-		
-		peg_expr = groupTemplate.getInstanceOf("star_peg");
-		peg_expr.add("star", aux);
+		// adding the parsing expression on star template
+		aux_peg.add("peg_expr", peg_expr);
+		peg_expr = aux_peg;
 	}
 
 	@Override
 	public void visit(UpdatePegNode peg) {
-		
-		List<ST> l = new ArrayList<ST>();
-		for(AssignmentNode p:peg.getAssignments()) {
+		// set the current parsing expression template as a update parsing expression
+		peg_expr = groupTemplate.getInstanceOf("update_peg");		
+		for(AssignmentNode p : peg.getAssignments()) {
+			// visit each assignment node
 			p.accept(this);
-			l.add(peg_expr);
+			// add the current assignment visited
+			peg_expr.add("assigns", assign);
 		}
-		
-		peg_expr = groupTemplate.getInstanceOf("update_peg");
-		peg_expr.add("update", l);	
-		
 	}
 
 	@Override
 	public void visit(AssignmentNode assign) {
-		
+		// built the assignment template
+		this.assign = groupTemplate.getInstanceOf("assign");
+		// visit the assignment expression
 		assign.getExpr().accept(this);
-		ST aux = expr;
-		peg_expr = groupTemplate.getInstanceOf("assign");
-		peg_expr.add("as", assign.getVariable());
-		peg_expr.add("a", aux);
-	
+		// set the name template attribute
+		this.assign.add("name", assign.getVariable());
+		// set the expr template attribute
+		this.assign.add("expr", expr);	
 	}
 
 	@Override
 	public void visit(FunctionNode func) {
-		peg_expr= groupTemplate.getInstanceOf("func");
-		peg_expr.add("f", func.getName());
+		/**
+		 * Functionality not implemented yet
+		 */	
+		//peg_expr= groupTemplate.getInstanceOf("func");
+		//peg_expr.add("f", func.getName());
 	}
 
 	@Override
@@ -525,66 +481,46 @@ public class PrettyPrintVisitor implements ASTNodeVisitor {
 		for(RuleNode rule : grammar.getRules())
 			rule.accept(this);
 		
-		// rendering the template
-	
+		// rendering the template	
 		System.out.println(template.render());
-		
-		
 	}
 
 	@Override
 	public void visit(RuleNode rule) {
 		
-		RuleSymbol r = new RuleSymbol();
-		
+		ST r = groupTemplate.getInstanceOf("rule");
+				
 		// setting annotation 
 		switch(rule.getAnnotation()) {
 		case MEMOIZE:
-			r.annotation = "memoize";
+			r.add("annotation", "memoize");
 			break;
 		case NONE:
-			r.annotation = null;
 			break;
 		case TRANSIENT:
-			r.annotation = "transient";
+			r.add("annotation", "transient");
 			break;
 		default:
-			r.annotation = null;
 			break;
-		
 		}
 		
 		// setting rule name
-		r.name = rule.getName();
-		
+		r.add("name", rule.getName());	
 		// visit inherited attributes
-		attrs = new ArrayList<Object>();
 		for(VarDeclarationNode param : rule.getParameters()){
-		
 			param.accept(this);
-			
+			r.add("inh_attr", attr); // setting inherited attribute propriety
 		}
-		r.inh_attr = attrs;
-	
-		
-		
 		// visit synthesized attributes
-		attrs = new ArrayList<Object>();
 		for(VarDeclarationNode param : rule.getReturns()){
 			param.accept(this);
-		}
-		r.syn_attr = attrs;
-		
-		
+			r.add("syn_attr", attr); // setting synthesized attribute propriety
+		}		
 		// visit the parsing expression
 		rule.getExpr().accept(this);
-
-		r.peg_expr = peg_expr;
+		r.add("peg_expr", peg_expr); // setting parsing expression propriety
 		
-		
-		template.add("rules", r);
-		
-			
+		template.add("rules", r); // adding the rule template on the list of grammar rules		
 	}
 
 	@Override
@@ -592,25 +528,25 @@ public class PrettyPrintVisitor implements ASTNodeVisitor {
 		// create a template for the specific type
 		switch(type.getName()) {
 		case "int":
-			this.type = groupTemplate.getInstanceOf("int");
+			this.type = groupTemplate.getInstanceOf("int_type");
 			break;
 		case "float":
-			this.type = groupTemplate.getInstanceOf("float");
+			this.type = groupTemplate.getInstanceOf("float_type");
 			break;
 		case "string":
-			this.type = groupTemplate.getInstanceOf("string");
+			this.type = groupTemplate.getInstanceOf("string_type");
 			break;
 		case "boolean":
-			this.type = groupTemplate.getInstanceOf("boolean");
+			this.type = groupTemplate.getInstanceOf("boolean_type");
 			break;
 		case "grammar":
-			this.type = groupTemplate.getInstanceOf("grammar");
+			this.type = groupTemplate.getInstanceOf("grammar_type");
 			break;
 		case "rule":
-			this.type = groupTemplate.getInstanceOf("ruleType");
+			this.type = groupTemplate.getInstanceOf("rule_type");
 			break;
 		default:
-			this.type = groupTemplate.getInstanceOf("idType");
+			this.type = groupTemplate.getInstanceOf("user_type");
 			this.type.add("name", type.getName());
 			break;
 		}
@@ -618,27 +554,12 @@ public class PrettyPrintVisitor implements ASTNodeVisitor {
 
 	@Override
 	public void visit(VarDeclarationNode var) {
+		// set the current attribute template
+		attr = groupTemplate.getInstanceOf("decl");
 		// visit type
 		var.getType().accept(this);
 		// setting attributes values
-		VarSymbol v = new VarSymbol();
-		v.name = var.getName();
-		v.type = type;
-		attrs.add(v);
-
-	
-	
-	}
-
-	class RuleSymbol {
-		public String annotation, name;
-		public Object inh_attr, syn_attr, peg_expr, expr;
-		
-		
-	}
-	
-	class VarSymbol {
-		public String name;
-		public ST type;
+		attr.add("type", type);
+		attr.add("name", var.getName());
 	}
 }

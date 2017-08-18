@@ -1,0 +1,111 @@
+group dot;
+
+/** Template for grammar */
+apeg(name, option, header, functions, func_sources, rules) ::= <<
+Digraph <name> {
+  node [shape="box"];
+  grammar [label = "Grammar[<name>]<if(option)>:<option; separator=";">"<endif>];
+  <if(func_sources)>
+  functions [label = "FunctionsFrom:<func_sources; separator=";">"];
+  grammar -> functions;
+  <if(functions)><functions:{x | functions -> <x>;}; separator="\n", wrap><endif>
+  <endif>
+  
+  <rules; separator="\n">
+}
+>>
+
+
+/** Template for rule declaration */
+rule(annotation, rname, nodeName, inh_attr, syn_attr, peg_expr) ::= <<
+<nodeName> [label = "Rule[<rname>]<if(annotation)>:<annotation><endif>"];
+grammar -> <nodeName>;
+<if(inh_attr)>
+<inh_attr; separator="\n", wrap>
+<endif>
+<if(syn_attr)>
+<syn_attr; separator="\n", wrap>
+<endif>
+<peg_expr; separator="\n", wrap>
+>>
+
+
+/** Template for dot node and edges */
+node(parent, node, lable) ::= <<
+<node> [label = "<lable>"];
+<edge(parent, node)>
+>>
+
+edge(parent, node) ::= <<
+<parent> -> <node>;
+>>
+
+
+/** Template for parameters declaration */
+inh_label(attr) ::= "<\u2193><attr>"
+syn_label(attr) ::= "<\u2191><attr>"
+
+decl_label(name,type) ::= <<
+<name>:<type> 
+>>
+
+
+/** Template for types */
+int_type() ::= "int"
+float_type() ::= "float"
+string_type() ::= "string"
+boolean_type() ::= "boolean"
+grammar_type() ::= "grammar"
+rule_type() ::= "rule"
+user_type(name) ::= "<name>"
+
+
+/** Template for parsing expression */
+and_peg_lable() ::= "AndPegExpr(&)"
+any_peg_lable() ::= "AnyPegExpr(.)"
+bind_peg_lable(name) ::="BindPegExpr(=):<name>"
+choice_peg_lable() ::= "ChoicePegExpr(/)"
+constraint_peg_lable() ::= "ConstraintPegExpr({?})"
+group_peg_lable(ranges) ::= "[<ranges>]"
+literal_peg_lable(value) ::= "'<value>'"
+lambda_peg_lable() ::= "<\u03BB>" 
+nonterminal_peg_lable(name) ::= "NonterminalPegExpr:<name>"
+not_peg_lable() ::= "NotPegExpr(!)"
+plus_peg_lable() ::= "PlusPegExpr(+)"
+optional_peg_lable() ::= "OptionalPegExpr(?)"
+sequence_peg_lable() ::= "SequencePegExpr(.)"
+star_peg_lable() ::= "StarPegExpr(*)"
+update_peg_lable() ::= "UpdatePegExpr([\<-])"
+
+
+/** Template for assignment from update parsing expressions */
+assign_lable(var) ::= "Assignment:<var>"
+
+
+/** Template for expressions */
+attribute_expr_lable(name) ::= "<name>:var"
+
+gt_expr_lable() ::= "\>"
+ge_expr_lable() ::= "<\u2265>"
+lt_expr_lable() ::= "\<"
+le_expr_lable() ::= "<\u2264>"
+mul_expr_lable() ::= "*"
+div_expr_lable() ::= "/"
+mod_expr_lable() ::= "%"
+add_expr_lable() ::= "+"
+sub_expr_lable() ::= "-"
+
+equals_expr_lable() ::= "=="
+no_equals_expr_lable() ::= "<\u2260>"
+
+call_expr_lable(name) ::=  "FunctionCall:<name>" 
+
+boolean_expr_lable(value) ::= "<value>:boolean"
+float_expr_lable(value) ::= "<value>:float"
+int_expr_lable(value) ::= "<value>:int"
+string_expr_lable(value) ::= "'<value>':string"
+meta_expr_lable() ::= "@[ ]"
+minus_expr_lable() ::= "-"
+not_expr_lable() ::= "<\u00AC>"
+or_expr_lable() ::= "||"
+and_expr_lable() ::= "&&"

@@ -427,7 +427,7 @@ public class PrettyPrintVisitor implements ASTNodeVisitor {
 		// set the name template attribute
 		this.assign.add("name", assign.getVariable());
 		// set the expr template attribute
-		this.assign.add("expr", expr);	
+		this.assign.add("expr", expr);
 	}
 
 	@Override

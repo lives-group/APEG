@@ -1,5 +1,6 @@
 package apeg;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -67,11 +68,17 @@ public class Tool {
 			}
 			// Open a the grammar file
 			Path fpath;
+			String fName;
 			if (AbsolutePath.isAbsolute(s))
 				fpath = new AbsolutePath(s);
 			else
 				fpath = new RelativePath(new AbsolutePath(
 						System.getProperty("user.dir")), s);
+			int index = s.lastIndexOf(File.separatorChar, s.length()-5);
+			if(index != -1) // the string has a file separator
+				fName = s.substring(index+1, s.length()-5);
+			else // the string do not have a file separator
+				fName = s.substring(0, s.length()-5);
 			try {
 				FileReader file = new FileReader(fpath.getFile());
 				// Create an ANTLR input stream
@@ -101,13 +108,8 @@ public class Tool {
 				// Pretty printing the grammar. Just for testing
 				ASTNodeVisitor prettyprint = new PrettyPrintVisitor(
 						new RelativePath(new AbsolutePath("."),
-								"./src/main/templates/prettyprint.stg"));
+								"src/main/templates/prettyprint.stg"));
 				g.accept(prettyprint);
-				
-                // Generating a graphical view from AST 
-				DOTVisitor dot = new DOTVisitor(tool.getOutput().getAbsolutePath() + "/ast.dot");
-				g.accept(dot);
-				dot.closeFile();
 				
 				BuildingVisitor build = new BuildingVisitor();
 				g.accept(build);
@@ -116,6 +118,13 @@ public class Tool {
      			VerificaVisitor verifica = new VerificaVisitor();
 				g.accept(verifica);
 		
+				
+				// Generating a graphical view from AST 			
+				DOTVisitor dot = new DOTVisitor(
+						new RelativePath(tool.outputPath, fName + ".dot"),
+						new RelativePath(new AbsolutePath("."),
+								"src/main/templates/dot.stg"));
+				g.accept(dot);
 				
 				
 			} catch (FileNotFoundException e) {

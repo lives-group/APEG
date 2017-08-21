@@ -1,18 +1,15 @@
-package apeg.parse.ast.impl;
+package apeg.parse.ast;
 
-import apeg.parse.ast.ExprNode;
-import apeg.parse.ast.MinusExprNode;
 import apeg.parse.ast.visitor.ASTNodeVisitor;
 
-public class MinusExprNodeImpl implements MinusExprNode {
+public class MinusExprNode extends ExprNode {
 	
 	private ExprNode expr;
 	
-	public MinusExprNodeImpl(ExprNode expr) {
+	public MinusExprNode(ExprNode expr) {
 		this.expr = expr;
 	}
 
-	@Override
 	public ExprNode getExpr() {
 		return expr;
 	}

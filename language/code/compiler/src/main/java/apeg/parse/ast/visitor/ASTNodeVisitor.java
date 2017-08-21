@@ -8,15 +8,18 @@ import apeg.parse.ast.AttributeExprNode;
 import apeg.parse.ast.BinaryExprNode;
 import apeg.parse.ast.BindPegNode;
 import apeg.parse.ast.BooleanExprNode;
+import apeg.parse.ast.BooleanTypeNode;
 import apeg.parse.ast.CallExprNode;
 import apeg.parse.ast.ChoicePegNode;
 import apeg.parse.ast.ConstraintPegNode;
 import apeg.parse.ast.EqualityExprNode;
 import apeg.parse.ast.FloatExprNode;
-import apeg.parse.ast.FunctionNode;
+import apeg.parse.ast.FloatTypeNode;
 import apeg.parse.ast.GrammarNode;
+import apeg.parse.ast.GrammarTypeNode;
 import apeg.parse.ast.GroupPegNode;
 import apeg.parse.ast.IntExprNode;
+import apeg.parse.ast.IntTypeNode;
 import apeg.parse.ast.LambdaPegNode;
 import apeg.parse.ast.LiteralPegNode;
 import apeg.parse.ast.MetaPegExprNode;
@@ -28,20 +31,20 @@ import apeg.parse.ast.OptionalPegNode;
 import apeg.parse.ast.OrExprNode;
 import apeg.parse.ast.PlusPegNode;
 import apeg.parse.ast.RuleNode;
+import apeg.parse.ast.RuleTypeNode;
 import apeg.parse.ast.SequencePegNode;
 import apeg.parse.ast.StarPegNode;
 import apeg.parse.ast.StringExprNode;
-import apeg.parse.ast.TypeNode;
+import apeg.parse.ast.StringTypeNode;
 import apeg.parse.ast.UpdatePegNode;
+import apeg.parse.ast.UserTypeNode;
 import apeg.parse.ast.VarDeclarationNode;
-//import deise.Add;
 
 public interface ASTNodeVisitor {
 	/**
 	 * Visit method for each AST element
 	 */
 	// Expressions
-	
 	
 	void visit(AndExprNode expr);
 	void visit(AttributeExprNode expr);
@@ -74,11 +77,18 @@ public interface ASTNodeVisitor {
 	void visit(StarPegNode peg);
 	void visit(UpdatePegNode peg);	
 	
+	// Types
+	void visit(BooleanTypeNode type);
+	void visit(FloatTypeNode type);
+	void visit(GrammarTypeNode type);
+	void visit(IntTypeNode type);
+	void visit(RuleTypeNode type);
+	void visit(StringTypeNode type);
+	void visit(UserTypeNode type);
+	
 	// Others
 	void visit(AssignmentNode assign);
-	void visit(FunctionNode func);
 	void visit(GrammarNode grammar);
 	void visit(RuleNode rule);
-	void visit(TypeNode type);
 	void visit(VarDeclarationNode var);
 }

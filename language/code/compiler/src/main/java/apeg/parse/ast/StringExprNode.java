@@ -1,17 +1,15 @@
-package apeg.parse.ast.impl;
+package apeg.parse.ast;
 
-import apeg.parse.ast.StringExprNode;
 import apeg.parse.ast.visitor.ASTNodeVisitor;
 
-public class StringExprNodeImpl implements StringExprNode {
+public class StringExprNode extends ExprNode {
 	
 	private String value;
 	
-	public StringExprNodeImpl(String value) {
+	public StringExprNode(String value) {
 		this.value = value;
 	}
 
-	@Override
 	public String getValue() {
 		return value;
 	}

@@ -12,17 +12,20 @@ import apeg.parse.ast.AttributeExprNode;
 import apeg.parse.ast.BinaryExprNode;
 import apeg.parse.ast.BindPegNode;
 import apeg.parse.ast.BooleanExprNode;
+import apeg.parse.ast.BooleanTypeNode;
 import apeg.parse.ast.CallExprNode;
 import apeg.parse.ast.ChoicePegNode;
 import apeg.parse.ast.ConstraintPegNode;
 import apeg.parse.ast.EqualityExprNode;
 import apeg.parse.ast.ExprNode;
 import apeg.parse.ast.FloatExprNode;
-import apeg.parse.ast.FunctionNode;
+import apeg.parse.ast.FloatTypeNode;
 import apeg.parse.ast.GrammarNode;
 import apeg.parse.ast.GrammarNode.GrammarOption;
+import apeg.parse.ast.GrammarTypeNode;
 import apeg.parse.ast.GroupPegNode;
 import apeg.parse.ast.IntExprNode;
+import apeg.parse.ast.IntTypeNode;
 import apeg.parse.ast.LambdaPegNode;
 import apeg.parse.ast.LiteralPegNode;
 import apeg.parse.ast.MetaPegExprNode;
@@ -35,11 +38,13 @@ import apeg.parse.ast.OrExprNode;
 import apeg.parse.ast.PegNode;
 import apeg.parse.ast.PlusPegNode;
 import apeg.parse.ast.RuleNode;
+import apeg.parse.ast.RuleTypeNode;
 import apeg.parse.ast.SequencePegNode;
 import apeg.parse.ast.StarPegNode;
 import apeg.parse.ast.StringExprNode;
-import apeg.parse.ast.TypeNode;
+import apeg.parse.ast.StringTypeNode;
 import apeg.parse.ast.UpdatePegNode;
+import apeg.parse.ast.UserTypeNode;
 import apeg.parse.ast.VarDeclarationNode;
 import apeg.util.path.Path;
 
@@ -431,15 +436,6 @@ public class PrettyPrintVisitor implements ASTNodeVisitor {
 	}
 
 	@Override
-	public void visit(FunctionNode func) {
-		/**
-		 * Functionality not implemented yet
-		 */	
-		//peg_expr= groupTemplate.getInstanceOf("func");
-		//peg_expr.add("f", func.getName());
-	}
-
-	@Override
 	public void visit(GrammarNode grammar) {
 		template = groupTemplate.getInstanceOf("apeg");
 		
@@ -524,35 +520,6 @@ public class PrettyPrintVisitor implements ASTNodeVisitor {
 	}
 
 	@Override
-	public void visit(TypeNode type) {
-		// create a template for the specific type
-		switch(type.getName()) {
-		case "int":
-			this.type = groupTemplate.getInstanceOf("int_type");
-			break;
-		case "float":
-			this.type = groupTemplate.getInstanceOf("float_type");
-			break;
-		case "string":
-			this.type = groupTemplate.getInstanceOf("string_type");
-			break;
-		case "boolean":
-			this.type = groupTemplate.getInstanceOf("boolean_type");
-			break;
-		case "grammar":
-			this.type = groupTemplate.getInstanceOf("grammar_type");
-			break;
-		case "rule":
-			this.type = groupTemplate.getInstanceOf("rule_type");
-			break;
-		default:
-			this.type = groupTemplate.getInstanceOf("user_type");
-			this.type.add("name", type.getName());
-			break;
-		}
-	}
-
-	@Override
 	public void visit(VarDeclarationNode var) {
 		// set the current attribute template
 		attr = groupTemplate.getInstanceOf("decl");
@@ -561,5 +528,41 @@ public class PrettyPrintVisitor implements ASTNodeVisitor {
 		// setting attributes values
 		attr.add("type", type);
 		attr.add("name", var.getName());
+	}
+
+	@Override
+	public void visit(BooleanTypeNode type) {
+		this.type = groupTemplate.getInstanceOf("boolean_type");		
+	}
+
+	@Override
+	public void visit(FloatTypeNode type) {
+		this.type = groupTemplate.getInstanceOf("float_type");		
+	}
+
+	@Override
+	public void visit(GrammarTypeNode type) {
+		this.type = groupTemplate.getInstanceOf("grammar_type");		
+	}
+
+	@Override
+	public void visit(IntTypeNode type) {
+		this.type = groupTemplate.getInstanceOf("int_type");		
+	}
+
+	@Override
+	public void visit(RuleTypeNode type) {
+		this.type = groupTemplate.getInstanceOf("rule_type");		
+	}
+
+	@Override
+	public void visit(StringTypeNode type) {
+		this.type = groupTemplate.getInstanceOf("string_type");		
+	}
+
+	@Override
+	public void visit(UserTypeNode type) {
+		this.type = groupTemplate.getInstanceOf("user_type");
+		this.type.add("name", type.getName());
 	}
 }

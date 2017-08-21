@@ -9,7 +9,7 @@ import apeg.parse.ast.RuleNode.Annotation;
 
 //import apeg.util.Pair;
 
-public interface AstFactory {
+public interface ASTFactory {
 	/**
 	 * @param left
 	 *            the left-hand side expression
@@ -135,8 +135,6 @@ public interface AstFactory {
 	 */
 	public TypeNode newFloatType();
 
-	// public FunctionNode newFunction();
-	// FunctionYpe ?????
 	/**
 	 * @param name
 	 *            grammar name
@@ -307,7 +305,7 @@ public interface AstFactory {
 	 *            type name
 	 * @return an user type node
 	 */
-	public TypeNode newType(String type);
+	public TypeNode newUserType(String type);
 
 	/**
 	 * @param assigs

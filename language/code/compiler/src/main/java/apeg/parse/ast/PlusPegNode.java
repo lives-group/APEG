@@ -1,18 +1,15 @@
-package apeg.parse.ast.impl;
+package apeg.parse.ast;
 
-import apeg.parse.ast.PegNode;
-import apeg.parse.ast.PlusPegNode;
 import apeg.parse.ast.visitor.ASTNodeVisitor;
 
-public class PlusPegNodeImpl implements PlusPegNode {
+public class PlusPegNode extends PegNode {
 	
 	private PegNode peg;
 	
-	public PlusPegNodeImpl(PegNode peg) {
+	public PlusPegNode(PegNode peg) {
 		this.peg = peg;
 	}
 
-	@Override
 	public PegNode getPeg() {
 		return peg;
 	}

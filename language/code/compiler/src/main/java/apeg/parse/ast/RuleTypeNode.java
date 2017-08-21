@@ -1,11 +1,16 @@
-package apeg.parse.ast.impl;
+package apeg.parse.ast;
 
 import apeg.parse.ast.TypeNode;
+import apeg.parse.ast.visitor.ASTNodeVisitor;
 
-public class RuleTypeNodeImpl extends TypeNodeImpl implements TypeNode {
+public class RuleTypeNode extends TypeNode {
 
-	public RuleTypeNodeImpl() {
+	public RuleTypeNode() {
 		super("rule");
 	}
 
+	@Override
+	public void accept(ASTNodeVisitor v) {
+		v.visit(this);
+	}
 }

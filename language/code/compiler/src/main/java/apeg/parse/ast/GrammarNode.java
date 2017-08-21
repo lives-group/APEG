@@ -1,19 +1,17 @@
-package apeg.parse.ast.impl;
+package apeg.parse.ast;
 
 import java.util.List;
 
-import apeg.parse.ast.GrammarNode;
-import apeg.parse.ast.RuleNode;
 import apeg.parse.ast.visitor.ASTNodeVisitor;
 
-public class GrammarNodeImpl implements GrammarNode {
+public class GrammarNode extends ASTNode {
 
 	private String name, preamble;
 	private List<GrammarOption> opts;
 	private List<RuleNode> rules;
 	List<String> funcs, sfuncs;
 	
-	public GrammarNodeImpl(String name, List<GrammarOption> opts, String preamble,
+	public GrammarNode(String name, List<GrammarOption> opts, String preamble,
 			List<RuleNode> rules, List<String> func, List<String> sfuncs) {
 		this.name = name;
 		this.opts = opts;
@@ -23,39 +21,41 @@ public class GrammarNodeImpl implements GrammarNode {
 		this.sfuncs = sfuncs;
 	}
 	
-	@Override
 	public String getName() {
 		return name;
 	}
 
-	@Override
 	public List<GrammarOption> getOptions() {
 		return opts;
 	}
 
-	@Override
 	public String getPreamble() {
 		return preamble;
 	}
 
-	@Override
 	public List<String> getFunctions() {
 		return funcs;
 	}
 
-	@Override
 	public List<String> getFunctionsSources() {
 		return sfuncs;
 	}
 	
-	@Override
 	public List<RuleNode> getRules() {
 		return rules;
 	}
 
-	@Override
 	public void accept(ASTNodeVisitor v) {
 		v.visit(this);
 	}
 
+	public enum GrammarOption {
+		ADAPTABLE, // if the grammar is adaptable
+		NO_ADAPTABLE, // if the grammar is not adaptable
+		MEMOIZE, // if it is to memoize intermediate results
+		NO_MEMOIZE, // if it is not to memoize intermediate results
+		USUAL_SEMANTICS, // if it is to use conventional APEG choice semantics
+		SIMPLE_ENV_SEMANTICS // if it is to use non conventional APEG semantics
+	}
+	
 }

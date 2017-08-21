@@ -1,11 +1,16 @@
-package apeg.parse.ast.impl;
+package apeg.parse.ast;
 
 import apeg.parse.ast.TypeNode;
+import apeg.parse.ast.visitor.ASTNodeVisitor;
 
-public class FloatTypeNodeImpl extends TypeNodeImpl implements TypeNode {
+public class FloatTypeNode extends TypeNode {
 
-	public FloatTypeNodeImpl() {
+	public FloatTypeNode() {
 		super("float");
 	}
 
+	@Override
+	public void accept(ASTNodeVisitor v) {
+		v.visit(this);
+	}
 }

@@ -12,9 +12,9 @@ grammar APEG;
 
 @parser::members
 {
-	AstFactory factory;
+	ASTFactory factory;
 	
-	public APEGParser(AstFactory factory, TokenStream input) {
+	public APEGParser(ASTFactory factory, TokenStream input) {
 		this(input);
 		this.factory = factory;
 	}	
@@ -170,7 +170,7 @@ type returns[TypeNode tp]:
  |
   RULE_TYPE {$tp = factory.newRuleType();}
  |
-  ID {$tp = factory.newType($ID.text);}
+  ID {$tp = factory.newUserType($ID.text);}
 ;
 
 /***

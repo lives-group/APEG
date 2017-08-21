@@ -1,17 +1,15 @@
-package apeg.parse.ast.impl;
+package apeg.parse.ast;
 
-import apeg.parse.ast.FloatExprNode;
 import apeg.parse.ast.visitor.ASTNodeVisitor;
 
-public class FloatExprNodeImpl implements FloatExprNode {
+public class FloatExprNode extends ExprNode {
 	
 	private double value;
 	
-	public FloatExprNodeImpl(double value) {
+	public FloatExprNode(double value) {
 		this.value = value;
 	}
 
-	@Override
 	public double getValue() {
 		return value;
 	}

@@ -1,24 +1,20 @@
-package apeg.parse.ast.impl;
+package apeg.parse.ast;
 
-import apeg.parse.ast.ChoicePegNode;
-import apeg.parse.ast.PegNode;
 import apeg.parse.ast.visitor.ASTNodeVisitor;
 
-public class ChoicePegNodeImpl implements ChoicePegNode {
+public class ChoicePegNode extends PegNode {
 
 	private PegNode left, right;
 	
-	public ChoicePegNodeImpl(PegNode left, PegNode right) {
+	public ChoicePegNode(PegNode left, PegNode right) {
 		this.left = left;
 		this.right = right;
 	}
 	
-	@Override
 	public PegNode getLeftPeg() {
 		return left;
 	}
 
-	@Override
 	public PegNode getRightPeg() {
 		return right;
 	}

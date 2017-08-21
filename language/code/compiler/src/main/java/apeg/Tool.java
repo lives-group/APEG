@@ -13,9 +13,9 @@ import org.antlr.v4.runtime.Recognizer;
 import apeg.option.HandlerOption;
 import apeg.parse.APEGLexer;
 import apeg.parse.APEGParser;
-import apeg.parse.ast.AstFactory;
+import apeg.parse.ast.ASTFactory;
+import apeg.parse.ast.ASTFactoryImpl;
 import apeg.parse.ast.GrammarNode;
-import apeg.parse.ast.impl.AstFactoryImpl;
 import apeg.parse.ast.visitor.ASTNodeVisitor;
 import apeg.parse.ast.visitor.BuildingVisitor;
 import apeg.parse.ast.visitor.DOTVisitor;
@@ -89,7 +89,7 @@ public class Tool {
 				CommonTokenStream tokens = new CommonTokenStream(lexer);
 				
 				// create an AST factory
-				AstFactory factory = new AstFactoryImpl();				
+				ASTFactory factory = new ASTFactoryImpl();				
 				// create a parser that feeds off the tokens buffer
 				APEGParser parser = new APEGParser(factory, tokens);
 				// tell ANTLR to does not automatically build an AST

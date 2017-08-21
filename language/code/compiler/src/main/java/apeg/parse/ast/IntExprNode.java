@@ -1,17 +1,15 @@
-package apeg.parse.ast.impl;
+package apeg.parse.ast;
 
-import apeg.parse.ast.IntExprNode;
 import apeg.parse.ast.visitor.ASTNodeVisitor;
 
-public class IntExprNodeImpl implements IntExprNode {
+public class IntExprNode extends ExprNode {
 	
 	private int value;
 	
-	public IntExprNodeImpl(int value) {
+	public IntExprNode(int value) {
 		this.value = value;
 	}
 
-	@Override
 	public int getValue() {
 		return value;
 	}

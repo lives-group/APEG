@@ -1,18 +1,15 @@
-package apeg.parse.ast.impl;
+package apeg.parse.ast;
 
-import apeg.parse.ast.ExprNode;
-import apeg.parse.ast.MetaPegExprNode;
 import apeg.parse.ast.visitor.ASTNodeVisitor;
 
-public class MetaPegExprNodeImpl implements MetaPegExprNode {
+public class MetaPegExprNode extends ExprNode {
 
 	private ExprNode expr;
 	
-	public MetaPegExprNodeImpl(ExprNode expr) {
+	public MetaPegExprNode(ExprNode expr) {
 		this.expr = expr;
 	}
 	
-	@Override
 	public ExprNode getExpr() {
 		return expr;
 	}

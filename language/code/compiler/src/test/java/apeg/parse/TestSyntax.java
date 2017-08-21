@@ -5,9 +5,9 @@ import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Recognizer;
 
-import apeg.parse.ast.AstFactory;
+import apeg.parse.ast.ASTFactory;
+import apeg.parse.ast.ASTFactoryImpl;
 import apeg.parse.ast.GrammarNode;
-import apeg.parse.ast.impl.AstFactoryImpl;
 
 /**
  * Class for testing the APEG syntax
@@ -41,7 +41,7 @@ public class TestSyntax {
 		String nonTerminal = args[1];
 
 		// create an AST factory
-		AstFactory factory = new AstFactoryImpl();
+		ASTFactory factory = new ASTFactoryImpl();
 		// create a CharStream that reads from a file
 		ANTLRInputStream input = new ANTLRFileStream(fileName);
 		// create a lexer that feeds off of input CharStream

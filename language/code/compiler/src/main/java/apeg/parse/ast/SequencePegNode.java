@@ -1,20 +1,17 @@
-package apeg.parse.ast.impl;
+package apeg.parse.ast;
 
 import java.util.List;
 
-import apeg.parse.ast.PegNode;
-import apeg.parse.ast.SequencePegNode;
 import apeg.parse.ast.visitor.ASTNodeVisitor;
 
-public class SequencePegNodeImpl implements SequencePegNode {
+public class SequencePegNode extends PegNode {
 
 	private List<PegNode> pegs;
 	
-	public SequencePegNodeImpl(List<PegNode> pegs) {
+	public SequencePegNode(List<PegNode> pegs) {
 		this.pegs = pegs;
 	}
 	
-	@Override
 	public List<PegNode> getPegs() {
 		return pegs;
 	}

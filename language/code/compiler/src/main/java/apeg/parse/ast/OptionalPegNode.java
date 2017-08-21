@@ -1,18 +1,15 @@
-package apeg.parse.ast.impl;
+package apeg.parse.ast;
 
-import apeg.parse.ast.OptionalPegNode;
-import apeg.parse.ast.PegNode;
 import apeg.parse.ast.visitor.ASTNodeVisitor;
 
-public class OptionalPegNodeImpl implements OptionalPegNode {
+public class OptionalPegNode extends PegNode {
 	
 	private PegNode peg;
 	
-	public OptionalPegNodeImpl(PegNode peg) {
+	public OptionalPegNode(PegNode peg) {
 		this.peg = peg;
 	}
 
-	@Override
 	public PegNode getPeg() {
 		return peg;
 	}

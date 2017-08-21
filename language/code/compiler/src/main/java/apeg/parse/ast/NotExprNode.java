@@ -1,23 +1,19 @@
-package apeg.parse.ast.impl;
+package apeg.parse.ast;
 
-import apeg.parse.ast.ExprNode;
-import apeg.parse.ast.NotExprNode;
 import apeg.parse.ast.visitor.ASTNodeVisitor;
 
-public class NotExprNodeImpl implements NotExprNode {
+public class NotExprNode extends ExprNode {
 	
 	private ExprNode expr;
 	
-	public NotExprNodeImpl(ExprNode expr) {
+	public NotExprNode(ExprNode expr) {
 		this.expr = expr;
 	}
 
-	@Override
 	public ExprNode getExpr() {
 		return expr;
 	}
 
-	@Override
 	public void accept(ASTNodeVisitor v) {
 		v.visit(this);
 	}

@@ -1,24 +1,20 @@
-package apeg.parse.ast.impl;
+package apeg.parse.ast;
 
-import apeg.parse.ast.TypeNode;
 import apeg.parse.ast.visitor.ASTNodeVisitor;
 
-public class TypeNodeImpl implements TypeNode {
+public abstract class TypeNode extends ASTNode {
 
 	private String type;
 	
-	public TypeNodeImpl(String type) {
+	public TypeNode(String type) {
 		this.type = type;
 	}
 	
-	@Override
 	public String getName() {
 		return type;
 	}
 
-	@Override
-	public void accept(ASTNodeVisitor v) {
-		v.visit(this);
+	public boolean match(TypeNode type) {
+		return this.type.equals(type.getName());
 	}
-
 }

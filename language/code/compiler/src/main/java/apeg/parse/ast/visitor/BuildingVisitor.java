@@ -13,16 +13,19 @@ import apeg.parse.ast.AttributeExprNode;
 import apeg.parse.ast.BinaryExprNode;
 import apeg.parse.ast.BindPegNode;
 import apeg.parse.ast.BooleanExprNode;
+import apeg.parse.ast.BooleanTypeNode;
 import apeg.parse.ast.CallExprNode;
 import apeg.parse.ast.ChoicePegNode;
 import apeg.parse.ast.ConstraintPegNode;
 import apeg.parse.ast.EqualityExprNode;
 import apeg.parse.ast.ExprNode;
 import apeg.parse.ast.FloatExprNode;
-import apeg.parse.ast.FunctionNode;
+import apeg.parse.ast.FloatTypeNode;
 import apeg.parse.ast.GrammarNode;
+import apeg.parse.ast.GrammarTypeNode;
 import apeg.parse.ast.GroupPegNode;
 import apeg.parse.ast.IntExprNode;
+import apeg.parse.ast.IntTypeNode;
 import apeg.parse.ast.LambdaPegNode;
 import apeg.parse.ast.LiteralPegNode;
 import apeg.parse.ast.MetaPegExprNode;
@@ -35,11 +38,13 @@ import apeg.parse.ast.OrExprNode;
 import apeg.parse.ast.PegNode;
 import apeg.parse.ast.PlusPegNode;
 import apeg.parse.ast.RuleNode;
+import apeg.parse.ast.RuleTypeNode;
 import apeg.parse.ast.SequencePegNode;
 import apeg.parse.ast.StarPegNode;
 import apeg.parse.ast.StringExprNode;
-import apeg.parse.ast.TypeNode;
+import apeg.parse.ast.StringTypeNode;
 import apeg.parse.ast.UpdatePegNode;
+import apeg.parse.ast.UserTypeNode;
 import apeg.parse.ast.VarDeclarationNode;
 
 
@@ -254,12 +259,6 @@ public class BuildingVisitor implements ASTNodeVisitor {
 	}
 
 	@Override
-	public void visit(FunctionNode func) {
-		func.getName();
-		
-	}
-
-	@Override
 	public void visit(GrammarNode grammar) {
 		grammar.getFunctions();
 		grammar.getFunctionsSources(); //lista
@@ -293,37 +292,6 @@ public class BuildingVisitor implements ASTNodeVisitor {
 	}
 
 	@Override
-	public void visit(TypeNode type) {
-		type.getName();
-		
-		switch(type.getName()) {
-		case "int":
-			tipo="int";
-			break;
-		case "float":
-			tipo="float";
-			break;
-		case "string":
-			tipo="string";
-			break;
-		case "boolean":
-			tipo="boolean";
-			break;
-		case "grammar":
-			tipo="grammar";
-			break;
-		case "rule":
-			tipo="ruleType";
-			break;
-		default:
-		    tipo="idType";
-		    break;
-		}
-		
-		
-	}
-
-	@Override
 	public void visit(VarDeclarationNode var) {
 		var.getType().accept(this);
 		
@@ -336,5 +304,40 @@ public class BuildingVisitor implements ASTNodeVisitor {
 		for(Entry<String,RuleEntry> e : t.entrySet()){
 			System.out.println(e.getValue().toString());
 		}
+	}
+
+	@Override
+	public void visit(BooleanTypeNode type) {
+		tipo = "boolean";		
+	}
+
+	@Override
+	public void visit(FloatTypeNode type) {
+		tipo = "float";		
+	}
+
+	@Override
+	public void visit(GrammarTypeNode type) {
+		tipo = "grammar";		
+	}
+
+	@Override
+	public void visit(IntTypeNode type) {
+		tipo = "int";		
+	}
+
+	@Override
+	public void visit(RuleTypeNode type) {
+		tipo = "rule";		
+	}
+
+	@Override
+	public void visit(StringTypeNode type) {
+		tipo = "string";		
+	}
+
+	@Override
+	public void visit(UserTypeNode type) {
+		tipo = type.getName();		
 	}
 }

@@ -1,11 +1,9 @@
-package apeg.parse.ast.impl;
+package apeg.parse.ast;
 
-import apeg.parse.ast.AttributeExprNode;
 
-public class AttributeGrammarExprNodeImpl extends AttributeExprNodeImpl
-		implements AttributeExprNode {
+public class AttributeGrammarExprNode extends AttributeExprNode {
 
-	public AttributeGrammarExprNodeImpl() {
+	public AttributeGrammarExprNode() {
 		super("$g");
 	}
 

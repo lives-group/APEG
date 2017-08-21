@@ -1,9 +1,8 @@
-package apeg.parse.ast.impl;
+package apeg.parse.ast;
 
-import apeg.parse.ast.AnyPegNode;
 import apeg.parse.ast.visitor.ASTNodeVisitor;
 
-public class AnyPegNodeImpl implements AnyPegNode {
+public class AnyPegNode extends PegNode {
 
 	@Override
 	public void accept(ASTNodeVisitor v) {

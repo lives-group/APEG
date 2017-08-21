@@ -1,31 +1,26 @@
-package apeg.parse.ast.impl;
+package apeg.parse.ast;
 
-import apeg.parse.ast.BinaryExprNode;
-import apeg.parse.ast.ExprNode;
 import apeg.parse.ast.visitor.ASTNodeVisitor;
 
-public class BinaryExprNodeImpl implements BinaryExprNode {
+public class BinaryExprNode extends ExprNode {
 
 	private ExprNode left, right;
 	private Operator op;
 	
-	public BinaryExprNodeImpl(ExprNode left, ExprNode right, Operator op) {
+	public BinaryExprNode(ExprNode left, ExprNode right, Operator op) {
 		this.left = left;
 		this.right = right;
 		this.op = op;
 	}
 
-	@Override
 	public Operator getOperation() {
 		return op;
 	}
 
-	@Override
 	public ExprNode getLeftExpr() {
 		return left;
 	}
 
-	@Override
 	public ExprNode getRightExpr() {
 		return right;
 	}
@@ -35,4 +30,9 @@ public class BinaryExprNodeImpl implements BinaryExprNode {
 		v.visit(this);
 	}
 
+	public enum Operator {
+		GT, GE, LT, LE, // Relational operators
+		ADD, SUB, MUL, DIV, MOD; // Arithmetic operators
+	}
+	
 }

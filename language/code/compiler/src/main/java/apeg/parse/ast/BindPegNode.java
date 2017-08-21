@@ -1,26 +1,21 @@
-package apeg.parse.ast.impl;
+package apeg.parse.ast;
 
-import apeg.parse.ast.AttributeExprNode;
-import apeg.parse.ast.BindPegNode;
-import apeg.parse.ast.PegNode;
 import apeg.parse.ast.visitor.ASTNodeVisitor;
 
-public class BindPegNodeImpl implements BindPegNode {
+public class BindPegNode extends PegNode {
 
 	private AttributeExprNode attr;
 	private PegNode peg;
 	
-	public BindPegNodeImpl(AttributeExprNode attr, PegNode peg) {
+	public BindPegNode(AttributeExprNode attr, PegNode peg) {
 		this.attr = attr;
 		this.peg = peg;
 	}
 	
-	@Override
 	public String getVariable() {
 		return attr.getName();
 	}
 
-	@Override
 	public PegNode getPeg() {
 		return peg;
 	}

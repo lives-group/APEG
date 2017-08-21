@@ -1,12 +1,16 @@
-package apeg.parse.ast.impl;
+package apeg.parse.ast;
 
 import java.util.List;
 
+
+
+
+
+//import apeg.parse.ast.FunctionNode;
 import apeg.parse.ast.AndExprNode;
 import apeg.parse.ast.AndPegNode;
 import apeg.parse.ast.AnyPegNode;
 import apeg.parse.ast.AssignmentNode;
-import apeg.parse.ast.AstFactory;
 import apeg.parse.ast.AttributeExprNode;
 import apeg.parse.ast.BinaryExprNode;
 import apeg.parse.ast.BinaryExprNode.Operator;
@@ -17,9 +21,7 @@ import apeg.parse.ast.ChoicePegNode;
 import apeg.parse.ast.ConstraintPegNode;
 import apeg.parse.ast.EqualityExprNode;
 import apeg.parse.ast.EqualityExprNode.EqualityOperator;
-import apeg.parse.ast.ExprNode;
 import apeg.parse.ast.FloatExprNode;
-import apeg.parse.ast.FunctionNode;
 import apeg.parse.ast.GrammarNode;
 import apeg.parse.ast.GrammarNode.GrammarOption;
 import apeg.parse.ast.GroupPegNode;
@@ -33,7 +35,6 @@ import apeg.parse.ast.NotExprNode;
 import apeg.parse.ast.NotPegNode;
 import apeg.parse.ast.OptionalPegNode;
 import apeg.parse.ast.OrExprNode;
-import apeg.parse.ast.PegNode;
 import apeg.parse.ast.PlusPegNode;
 import apeg.parse.ast.RuleNode;
 import apeg.parse.ast.RuleNode.Annotation;
@@ -44,213 +45,213 @@ import apeg.parse.ast.TypeNode;
 import apeg.parse.ast.UpdatePegNode;
 import apeg.parse.ast.VarDeclarationNode;
 
-public class AstFactoryImpl implements AstFactory {
+public class ASTFactoryImpl implements ASTFactory {
 
 	@Override
 	public AndExprNode newAndExpr(ExprNode left, ExprNode right) {
-		return new AndExprNodeImpl(left, right);
+		return new AndExprNode(left, right);
 	}
 
 	@Override
 	public AndPegNode newAndPeg(PegNode peg) {
-		return new AndPegNodeImpl(peg);
+		return new AndPegNode(peg);
 	}
 
 	@Override
 	public AnyPegNode newAnyPeg() {
-		return new AnyPegNodeImpl();
+		return new AnyPegNode();
 	}
 
 	@Override
 	public AssignmentNode newAssignment(AttributeExprNode varName, ExprNode expr) {
-		return new AssignmentNodeImpl(varName, expr);
+		return new AssignmentNode(varName, expr);
 	}
 
 	@Override
 	public AttributeExprNode newAttributeExpr(String attrName) {
-		return new AttributeExprNodeImpl(attrName);
+		return new AttributeExprNode(attrName);
 	}
 
 	@Override
 	public AttributeExprNode newAttributeGrammarExpr() {
-		return new AttributeGrammarExprNodeImpl();
+		return new AttributeGrammarExprNode();
 	}
 
 	@Override
 	public BinaryExprNode newBinaryExpr(ExprNode left, ExprNode right,
 			Operator op) {
-		return new BinaryExprNodeImpl(left, right, op);
+		return new BinaryExprNode(left, right, op);
 	}
 
 	@Override
 	public BindPegNode newBindPeg(AttributeExprNode attrName, PegNode peg) {
-		return new BindPegNodeImpl(attrName, peg);
+		return new BindPegNode(attrName, peg);
 	}
 
 	@Override
 	public BooleanExprNode newBooleanExpr(boolean value) {
-		return new BooleanExprNodeImpl(value);
+		return new BooleanExprNode(value);
 	}
 
 	@Override
 	public TypeNode newBooleanType() {
-		return new BooleanTypeNodeImpl();
+		return new BooleanTypeNode();
 	}
 
 	@Override
 	public CallExprNode newCallExpr(String funcName, List<ExprNode> param) {
-		return new CallExprNodeImpl(funcName, param);
+		return new CallExprNode(funcName, param);
 	}
 
 	@Override
 	public ChoicePegNode newChoicePeg(PegNode left, PegNode right) {
-		return new ChoicePegNodeImpl(left, right);
+		return new ChoicePegNode(left, right);
 	}
 
 	@Override
 	public ConstraintPegNode newConstraintPeg(ExprNode expr) {
-		return new ConstraintPegNodeImpl(expr);
+		return new ConstraintPegNode(expr);
 	}
 
 	@Override
 	public EqualityExprNode newEqualityExpr(ExprNode left, ExprNode right,
 			EqualityOperator op) {
-		return new EqualityExprNodeImpl(left, right, op);
+		return new EqualityExprNode(left, right, op);
 	}
 
 	@Override
 	public FloatExprNode newFloatExpr(double value) {
-		return new FloatExprNodeImpl(value);
+		return new FloatExprNode(value);
 	}
 
 	@Override
 	public TypeNode newFloatType() {
-		return new FloatTypeNodeImpl();
+		return new FloatTypeNode();
 	}
 
 	@Override
 	public GrammarNode newGrammar(String name, List<GrammarOption> opts,
 			String preamble, List<RuleNode> rules, List<String> func,
 			List<String> fsource) {
-		return new GrammarNodeImpl(name, opts, preamble, rules, func, fsource);
+		return new GrammarNode(name, opts, preamble, rules, func, fsource);
 	}
 
 	@Override
 	public TypeNode newGrammarType() {
-		return new GrammarTypeNodeImpl();
+		return new GrammarTypeNode();
 	}
 
 	@Override
 	public GroupPegNode newGroupPeg(String ranges) {
-		return new GroupPegNodeImpl(ranges);
+		return new GroupPegNode(ranges);
 	}
 
 	@Override
 	public IntExprNode newIntExpr(int value) {
-		return new IntExprNodeImpl(value);
+		return new IntExprNode(value);
 	}
 
 	@Override
 	public TypeNode newIntType() {
-		return new IntTypeNodeImpl();
+		return new IntTypeNode();
 	}
 
 	@Override
 	public LambdaPegNode newLambdaPeg() {
-		return new LambdaPegNodeImpl();
+		return new LambdaPegNode();
 	}
 
 	@Override
 	public LiteralPegNode newLiteralPeg(String value) {
-		return new LiteralPegNodeImpl(value);
+		return new LiteralPegNode(value);
 	}
 
 	@Override
 	public MetaPegExprNode newMetaPeg(ExprNode expr) {
-		return new MetaPegExprNodeImpl(expr);
+		return new MetaPegExprNode(expr);
 	}
 
 	@Override
 	public MinusExprNode newMinusExpr(ExprNode expr) {
-		return new MinusExprNodeImpl(expr);
+		return new MinusExprNode(expr);
 	}
 
 	@Override
 	public NonterminalPegNode newNonterminalPeg(String name,
 			List<ExprNode> attrs) {
-		return new NonterminalPegNodeImpl(name, attrs);
+		return new NonterminalPegNode(name, attrs);
 	}
 
 	@Override
 	public NotExprNode newNotExpr(ExprNode expr) {
-		return new NotExprNodeImpl(expr);
+		return new NotExprNode(expr);
 	}
 
 	@Override
 	public NotPegNode newNotPeg(PegNode peg) {
-		return new NotPegNodeImpl(peg);
+		return new NotPegNode(peg);
 	}
 
 	@Override
 	public OptionalPegNode newOptionalPeg(PegNode peg) {
-		return new OptionalPegNodeImpl(peg);
+		return new OptionalPegNode(peg);
 	}
 
 	@Override
 	public OrExprNode newOrExpr(ExprNode left, ExprNode right) {
-		return new OrExprNodeImpl(left, right);
+		return new OrExprNode(left, right);
 	}
 
 	@Override
 	public PlusPegNode newPlusPeg(PegNode peg) {
-		return new PlusPegNodeImpl(peg);
+		return new PlusPegNode(peg);
 	}
 
 	@Override
 	public RuleNode newRule(String name, Annotation anno,
 			List<VarDeclarationNode> param, List<VarDeclarationNode> ret,
 			PegNode peg) {
-		return new RuleNodeImpl(name, anno, param, ret, peg);
+		return new RuleNode(name, anno, param, ret, peg);
 	}
 
 	@Override
 	public TypeNode newRuleType() {
-		return new RuleTypeNodeImpl();
+		return new RuleTypeNode();
 	}
 
 	@Override
 	public SequencePegNode newSequencePeg(List<PegNode> pegs) {
-		return new SequencePegNodeImpl(pegs);
+		return new SequencePegNode(pegs);
 	}
 
 	@Override
 	public StarPegNode newStarPeg(PegNode peg) {
-		return new StarPegNodeImpl(peg);
+		return new StarPegNode(peg);
 	}
 
 	@Override
 	public StringExprNode newStringExpr(String value) {
-		return new StringExprNodeImpl(value);
+		return new StringExprNode(value);
 	}
 
 	@Override
 	public TypeNode newStringType() {
-		return new StringTypeNodeImpl();
+		return new StringTypeNode();
 	}
 
 	@Override
-	public TypeNode newType(String type) {
-		return new TypeNodeImpl(type);
+	public TypeNode newUserType(String type) {
+		return new UserTypeNode(type);
 	}
 
 	@Override
 	public UpdatePegNode newUpdatePeg(List<AssignmentNode> assigs) {
-		return new UpdatePegNodeImpl(assigs);
+		return new UpdatePegNode(assigs);
 	}
 
 	@Override
 	public VarDeclarationNode newVarDeclaration(String name, TypeNode type) {
-		return new VarDeclarationNodeImpl(name, type);
+		return new VarDeclarationNode(name, type);
 	}
 
 }

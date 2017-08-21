@@ -1,20 +1,17 @@
-package apeg.parse.ast.impl;
+package apeg.parse.ast;
 
 import java.util.List;
 
-import apeg.parse.ast.PegNode;
-import apeg.parse.ast.RuleNode;
-import apeg.parse.ast.VarDeclarationNode;
 import apeg.parse.ast.visitor.ASTNodeVisitor;
 
-public class RuleNodeImpl implements RuleNode {
+public class RuleNode extends ASTNode {
 	
 	private String name;
 	private Annotation anno;
 	private List<VarDeclarationNode> params, returns;
 	private PegNode peg;
 	
-	public RuleNodeImpl(String name, Annotation anno,
+	public RuleNode(String name, Annotation anno,
 			List<VarDeclarationNode> param, List<VarDeclarationNode> returns,
 			PegNode peg) {
 		this.anno = anno;
@@ -24,34 +21,33 @@ public class RuleNodeImpl implements RuleNode {
 		this.peg = peg;
 	}
 
-	@Override
 	public String getName() {
 		return name;
 	}
 
-	@Override
 	public Annotation getAnnotation() {
 		return anno;
 	}
 
-	@Override
 	public List<VarDeclarationNode> getParameters() {
 		return params;
 	}
 
-	@Override
 	public List<VarDeclarationNode> getReturns() {
 		return returns;
 	}
 
-	@Override
 	public PegNode getExpr() {
 		return peg;
 	}
 
-	@Override
 	public void accept(ASTNodeVisitor v) {
 		v.visit(this);
 	}
 
+	public enum Annotation {
+		MEMOIZE, // to memoize intermediate results of a specific rule
+		TRANSIENT, // to ignore the intermediate results of a specific rule
+		NONE // no annotation
+	}
 }

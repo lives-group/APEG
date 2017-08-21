@@ -1,11 +1,16 @@
-package apeg.parse.ast.impl;
+package apeg.parse.ast;
 
 import apeg.parse.ast.TypeNode;
+import apeg.parse.ast.visitor.ASTNodeVisitor;
 
-public class GrammarTypeNodeImpl extends TypeNodeImpl implements TypeNode {
+public class GrammarTypeNode extends TypeNode {
 
-	public GrammarTypeNodeImpl() {
+	public GrammarTypeNode() {
 		super("grammar");
 	}
 
+	@Override
+	public void accept(ASTNodeVisitor v) {
+		v.visit(this);
+	}
 }

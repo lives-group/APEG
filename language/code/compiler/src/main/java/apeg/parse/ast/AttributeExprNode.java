@@ -1,17 +1,16 @@
-package apeg.parse.ast.impl;
+package apeg.parse.ast;
 
 import apeg.parse.ast.AttributeExprNode;
 import apeg.parse.ast.visitor.ASTNodeVisitor;
 
-public class AttributeExprNodeImpl implements AttributeExprNode {
+public class AttributeExprNode extends ExprNode {
 
 	private String name;
 	
-	public AttributeExprNodeImpl(String name) {
+	public AttributeExprNode(String name) {
 		this.name = name;
 	}
 	
-	@Override
 	public String getName() {
 		return name;
 	}

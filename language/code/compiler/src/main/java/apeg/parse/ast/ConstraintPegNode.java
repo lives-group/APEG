@@ -1,18 +1,15 @@
-package apeg.parse.ast.impl;
+package apeg.parse.ast;
 
-import apeg.parse.ast.ConstraintPegNode;
-import apeg.parse.ast.ExprNode;
 import apeg.parse.ast.visitor.ASTNodeVisitor;
 
-public class ConstraintPegNodeImpl implements ConstraintPegNode {
+public class ConstraintPegNode extends PegNode {
 
 	private ExprNode expr;
 	
-	public ConstraintPegNodeImpl(ExprNode expr) {
+	public ConstraintPegNode(ExprNode expr) {
 		this.expr = expr;
 	}
 	
-	@Override
 	public ExprNode getExpr() {
 		return expr;
 	}

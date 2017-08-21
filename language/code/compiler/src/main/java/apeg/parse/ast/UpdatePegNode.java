@@ -1,25 +1,21 @@
-package apeg.parse.ast.impl;
+package apeg.parse.ast;
 
 import java.util.List;
 
-import apeg.parse.ast.AssignmentNode;
-import apeg.parse.ast.UpdatePegNode;
 import apeg.parse.ast.visitor.ASTNodeVisitor;
 
-public class UpdatePegNodeImpl implements UpdatePegNode {
+public class UpdatePegNode extends PegNode {
 	
 	private List<AssignmentNode> assigs;
 	
-	public UpdatePegNodeImpl(List<AssignmentNode> assigs) {
+	public UpdatePegNode(List<AssignmentNode> assigs) {
 		this.assigs = assigs;
 	}
 
-	@Override
 	public List<AssignmentNode> getAssignments() {
 		return assigs;
 	}
 
-	@Override
 	public void accept(ASTNodeVisitor v) {
 		v.visit(this);
 	}

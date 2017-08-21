@@ -1,17 +1,15 @@
-package apeg.parse.ast.impl;
+package apeg.parse.ast;
 
-import apeg.parse.ast.BooleanExprNode;
 import apeg.parse.ast.visitor.ASTNodeVisitor;
 
-public class BooleanExprNodeImpl implements BooleanExprNode {
+public class BooleanExprNode extends ExprNode {
 
 	private boolean value;
 	
-	public BooleanExprNodeImpl(boolean value) {
+	public BooleanExprNode(boolean value) {
 		this.value = value;
 	}
 	
-	@Override
 	public boolean getValue() {
 		return value;
 	}

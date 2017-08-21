@@ -1,11 +1,16 @@
-package apeg.parse.ast.impl;
+package apeg.parse.ast;
 
 import apeg.parse.ast.TypeNode;
+import apeg.parse.ast.visitor.ASTNodeVisitor;
 
-public class BooleanTypeNodeImpl extends TypeNodeImpl implements TypeNode {
+public class BooleanTypeNode extends TypeNode {
 
-	public BooleanTypeNodeImpl() {
+	public BooleanTypeNode() {
 		super("boolean");
 	}
 
+	@Override
+	public void accept(ASTNodeVisitor v) {
+		v.visit(this);
+	}
 }

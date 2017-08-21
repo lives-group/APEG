@@ -1,16 +1,24 @@
-package apeg.parse.ast;
+package apeg.parse.ast.impl;
 
-//import java.util.List;
-//import apeg.util.Pair;
+import apeg.parse.ast.GroupPegNode;
+import apeg.parse.ast.visitor.ASTNodeVisitor;
 
-public interface GroupPegNode extends PegNode {
-	/**
-	 * @return a set of ranges 
-	 */
-	//public List<Pair<Character,Character> > getRanges();
+public class GroupPegNodeImpl implements GroupPegNode {
+
+	private String ranges;
 	
-	/**
-	 * @return a string representing the ranges specification 
-	 */
-	public String getRanges();
+	public GroupPegNodeImpl(String ranges) {
+		this.ranges = ranges;
+	}
+	
+	@Override
+	public String getRanges() {
+		return ranges;
+	}
+
+	@Override
+	public void accept(ASTNodeVisitor v) {
+		v.visit(this);
+	}
+
 }

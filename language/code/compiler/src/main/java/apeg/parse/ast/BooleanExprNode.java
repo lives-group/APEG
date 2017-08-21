@@ -1,8 +1,24 @@
-package apeg.parse.ast;
+package apeg.parse.ast.impl;
 
-public interface BooleanExprNode extends ExprNode {
-	/**
-	 * @return boolean expression value
-	 */
-	public boolean getValue();
+import apeg.parse.ast.BooleanExprNode;
+import apeg.parse.ast.visitor.ASTNodeVisitor;
+
+public class BooleanExprNodeImpl implements BooleanExprNode {
+
+	private boolean value;
+	
+	public BooleanExprNodeImpl(boolean value) {
+		this.value = value;
+	}
+	
+	@Override
+	public boolean getValue() {
+		return value;
+	}
+
+	@Override
+	public void accept(ASTNodeVisitor v) {
+		v.visit(this);
+	}
+
 }

@@ -1,10 +1,24 @@
-package apeg.parse.ast;
+package apeg.parse.ast.impl;
 
-import apeg.parse.ast.visitor.ElementVisitor;
+import apeg.parse.ast.TypeNode;
+import apeg.parse.ast.visitor.ASTNodeVisitor;
 
-public interface TypeNode extends ElementVisitor {
-	/**
-	 * @return type name
-	 */
-	public String getName();
+public class TypeNodeImpl implements TypeNode {
+
+	private String type;
+	
+	public TypeNodeImpl(String type) {
+		this.type = type;
+	}
+	
+	@Override
+	public String getName() {
+		return type;
+	}
+
+	@Override
+	public void accept(ASTNodeVisitor v) {
+		v.visit(this);
+	}
+
 }

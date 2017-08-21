@@ -1,12 +1,31 @@
-package apeg.parse.ast;
+package apeg.parse.ast.impl;
 
-public interface ChoicePegNode extends PegNode {
-	/**
-	 * @return first parsing expression of the choice
-	 */
-	public PegNode getLeftPeg();
-	/**
-	 * @return last parsing expression of the choice
-	 */
-	public PegNode getRightPeg();
+import apeg.parse.ast.ChoicePegNode;
+import apeg.parse.ast.PegNode;
+import apeg.parse.ast.visitor.ASTNodeVisitor;
+
+public class ChoicePegNodeImpl implements ChoicePegNode {
+
+	private PegNode left, right;
+	
+	public ChoicePegNodeImpl(PegNode left, PegNode right) {
+		this.left = left;
+		this.right = right;
+	}
+	
+	@Override
+	public PegNode getLeftPeg() {
+		return left;
+	}
+
+	@Override
+	public PegNode getRightPeg() {
+		return right;
+	}
+
+	@Override
+	public void accept(ASTNodeVisitor v) {
+		v.visit(this);
+	}
+
 }

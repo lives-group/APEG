@@ -1,47 +1,61 @@
-package apeg.parse.ast;
+package apeg.parse.ast.impl;
 
 import java.util.List;
 
-import apeg.parse.ast.visitor.ElementVisitor;
+import apeg.parse.ast.GrammarNode;
+import apeg.parse.ast.RuleNode;
+import apeg.parse.ast.visitor.ASTNodeVisitor;
 
-/**
- * A node representing a definition of an APEG grammar
- * @author Leonardo Reis
- */
-public interface GrammarNode extends ElementVisitor {
-	/**
-	 * @return grammar name
-	 */
-	public String getName();
-	/**
-	 * @return possible grammar option, e.g., whether it is adaptable.
-	 */
-	public List<GrammarOption> getOptions();
-	/**
-	 * @return any code (unchecked string) to be inserted
-	 * at the begin of the generated code
-	 */
-	public String getPreamble();
-	/**
-	 * @return set of external functions that can be used in expressions
-	 */
-	public List<String> getFunctions();
-	/**
-	 * 
-	 * @return set of file where to find external functions
-	 */
-	public List<String> getFunctionsSources();	
-	/**
-	 * @return set of grammar rules
-	 */
-	public List<RuleNode> getRules();
+public class GrammarNodeImpl implements GrammarNode {
+
+	private String name, preamble;
+	private List<GrammarOption> opts;
+	private List<RuleNode> rules;
+	List<String> funcs, sfuncs;
 	
-	public enum GrammarOption {
-		ADAPTABLE, // if the grammar is adaptable
-		NO_ADAPTABLE, // if the grammar is not adaptable
-		MEMOIZE, // if it is to memoize intermediate results
-		NO_MEMOIZE, // if it is not to memoize intermediate results
-		USUAL_SEMANTICS, // if it is to use conventional APEG choice semantics
-		SIMPLE_ENV_SEMANTICS // if it is to use non conventional APEG semantics
+	public GrammarNodeImpl(String name, List<GrammarOption> opts, String preamble,
+			List<RuleNode> rules, List<String> func, List<String> sfuncs) {
+		this.name = name;
+		this.opts = opts;
+		this.preamble = preamble;
+		this.rules = rules;
+		this.funcs = func;
+		this.sfuncs = sfuncs;
 	}
+	
+	@Override
+	public String getName() {
+		return name;
+	}
+
+	@Override
+	public List<GrammarOption> getOptions() {
+		return opts;
+	}
+
+	@Override
+	public String getPreamble() {
+		return preamble;
+	}
+
+	@Override
+	public List<String> getFunctions() {
+		return funcs;
+	}
+
+	@Override
+	public List<String> getFunctionsSources() {
+		return sfuncs;
+	}
+	
+	@Override
+	public List<RuleNode> getRules() {
+		return rules;
+	}
+
+	@Override
+	public void accept(ASTNodeVisitor v) {
+		v.visit(this);
+	}
+
 }

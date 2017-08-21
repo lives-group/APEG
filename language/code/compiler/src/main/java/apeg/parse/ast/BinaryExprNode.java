@@ -1,21 +1,38 @@
-package apeg.parse.ast;
+package apeg.parse.ast.impl;
 
-public interface BinaryExprNode extends ExprNode {
-	/**
-	 * @return binary operator type
-	 */
-	public Operator getOperation();	
-	/**
-	 * @return left-hand side expression
-	 */
-	public ExprNode getLeftExpr();
-	/**
-	 * @return right-hand side expression
-	 */
-	public ExprNode getRightExpr();
+import apeg.parse.ast.BinaryExprNode;
+import apeg.parse.ast.ExprNode;
+import apeg.parse.ast.visitor.ASTNodeVisitor;
+
+public class BinaryExprNodeImpl implements BinaryExprNode {
+
+	private ExprNode left, right;
+	private Operator op;
 	
-	public enum Operator {
-		GT, GE, LT, LE, // Relational operators
-		ADD, SUB, MUL, DIV, MOD; // Arithmetic operators
+	public BinaryExprNodeImpl(ExprNode left, ExprNode right, Operator op) {
+		this.left = left;
+		this.right = right;
+		this.op = op;
 	}
+
+	@Override
+	public Operator getOperation() {
+		return op;
+	}
+
+	@Override
+	public ExprNode getLeftExpr() {
+		return left;
+	}
+
+	@Override
+	public ExprNode getRightExpr() {
+		return right;
+	}
+
+	@Override
+	public void accept(ASTNodeVisitor v) {
+		v.visit(this);
+	}
+
 }

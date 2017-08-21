@@ -1,21 +1,38 @@
-package apeg.parse.ast;
+package apeg.parse.ast.impl;
 
-public interface EqualityExprNode extends ExprNode {
+import apeg.parse.ast.EqualityExprNode;
+import apeg.parse.ast.ExprNode;
+import apeg.parse.ast.visitor.ASTNodeVisitor;
+
+public class EqualityExprNodeImpl implements EqualityExprNode {
+
+	private ExprNode left, right;
+	private EqualityOperator op;
 	
-	public enum EqualityOperator {
-		NE, EQ;
+	public EqualityExprNodeImpl(ExprNode left, ExprNode right, EqualityOperator op) {
+		this.left = left;
+		this.right = right;
+		this.op = op;
 	}
 	
-	/**
-	 * @return left-hand side expression
-	 */
-	public ExprNode getLeftExpr();
-	/**
-	 * @return right-hand side expression
-	 */
-	public ExprNode getRightExpr();
-	/**
-	 * @return type of the comparator operator: equal or not equal
-	 */
-	public EqualityOperator getEqualityType();
+	@Override
+	public ExprNode getLeftExpr() {
+		return left;
+	}
+
+	@Override
+	public ExprNode getRightExpr() {
+		return right;
+	}
+
+	@Override
+	public EqualityOperator getEqualityType() {
+		return op;
+	}
+
+	@Override
+	public void accept(ASTNodeVisitor v) {
+		v.visit(this);
+	}
+
 }

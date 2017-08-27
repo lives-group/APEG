@@ -13,7 +13,7 @@ header {
   }
 }
 
-a returns[float k] : b<0,k> ;
+a returns[float k] : b<0,k,m> ;
  
 b[int x] returns[int x1] :
   { x = x + 1; } '0' { x1 = x; }

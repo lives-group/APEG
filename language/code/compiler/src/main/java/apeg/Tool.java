@@ -115,7 +115,7 @@ public class Tool {
 				g.accept(build);
 				build.printTable();
 				
-     			VerificaVisitor verifica = new VerificaVisitor();
+     			VerificaVisitor verifica = new VerificaVisitor(build.getTable());
 				g.accept(verifica);
 		
 				

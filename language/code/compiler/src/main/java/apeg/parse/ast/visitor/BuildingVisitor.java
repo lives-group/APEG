@@ -340,4 +340,8 @@ public class BuildingVisitor implements ASTNodeVisitor {
 	public void visit(UserTypeNode type) {
 		tipo = type.getName();		
 	}
+	
+	public Hashtable<String, RuleEntry> getTable() {
+		return t;
+	}
 }

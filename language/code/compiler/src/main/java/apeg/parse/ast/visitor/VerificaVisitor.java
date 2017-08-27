@@ -1,5 +1,6 @@
 package apeg.parse.ast.visitor;
 
+import java.util.Hashtable;
 import apeg.parse.ast.AndExprNode;
 import apeg.parse.ast.AndPegNode;
 import apeg.parse.ast.AnyPegNode;
@@ -38,6 +39,7 @@ import apeg.parse.ast.SequencePegNode;
 import apeg.parse.ast.StarPegNode;
 import apeg.parse.ast.StringExprNode;
 import apeg.parse.ast.StringTypeNode;
+import apeg.parse.ast.TypeNode;
 import apeg.parse.ast.UpdatePegNode;
 import apeg.parse.ast.UserTypeNode;
 import apeg.parse.ast.VarDeclarationNode;
@@ -45,34 +47,31 @@ import apeg.parse.ast.VarDeclarationNode;
 public class VerificaVisitor implements ASTNodeVisitor {
 	
 
-	String tipo = " ";
-	String non = " ";
+	
+	private String non= "" ;
+	private String atribute= "" ;
+	private String regra= "" ;
+	private int contador=0;
+	private int count = 0;
+	private final Hashtable<String, RuleEntry> table;
 	
 	
-	
-	
-	 public VerificaVisitor(){
+	 public VerificaVisitor(Hashtable<String, RuleEntry> t){
+		 table=t;
 		 
-		
-	    	
-	    }
+	 }
 	 
-	
-	public void naoterminal(String non){
-		
-	}
-	
+  
 	@Override
 	public void visit(AndExprNode expr) {
 		expr.getLeftExpr().accept(this);
 		expr.getRightExpr().accept(this);
-
 	}
 
 	@Override
 	public void visit(AttributeExprNode expr) {
 		expr.getName();
-		
+		atribute = expr.getName();
 	}
 
 	@Override
@@ -86,6 +85,7 @@ public class VerificaVisitor implements ASTNodeVisitor {
 	@Override
 	public void visit(BooleanExprNode expr) { ////////////////////////////////////////////
 		expr.getValue();
+		System.out.println(expr.getValue());
 	}
 
 	@Override
@@ -115,6 +115,7 @@ public class VerificaVisitor implements ASTNodeVisitor {
 	@Override
 	public void visit(IntExprNode expr) { ////////////////////////////////
 		expr.getValue();
+		//System.out.println(expr.getValue());
 	}
 
 	@Override
@@ -146,7 +147,6 @@ public class VerificaVisitor implements ASTNodeVisitor {
 	@Override
 	public void visit(StringExprNode expr) { ///////////////////////////
 		expr.getValue();
-		
 	}
 
 	@Override
@@ -163,8 +163,7 @@ public class VerificaVisitor implements ASTNodeVisitor {
 	@Override
 	public void visit(BindPegNode peg) {
 		peg.getPeg().accept(this);
-		peg.getVariable();
-		
+		peg.getVariable();	//se o tipo e string
 	}
 
 	@Override
@@ -176,41 +175,55 @@ public class VerificaVisitor implements ASTNodeVisitor {
 	@Override
 	public void visit(ConstraintPegNode peg) {
 		peg.getExpr().accept(this);
-		
 	}
 
 	@Override
 	public void visit(GroupPegNode peg) {
 		peg.getRanges();
-		
 	}
 
 	@Override
 	public void visit(LambdaPegNode peg) {
-		peg.accept(this);
-		
 	}
 
 	@Override
 	public void visit(LiteralPegNode peg) {
 		peg.getValue();
-		
 	}
 
 	@Override
-	public void visit(NonterminalPegNode peg) {
+	public void visit(NonterminalPegNode peg) { ////////////////////////////////
 	
 		for(ExprNode p:peg.getExprs()) {
 			p.accept(this);
+			contador += count + 1;
 		}
-	    
-		 peg.getName();
-	     non = peg.getName();	 
-	     System.out.println(non); //nesse caso sei q [e b
-	     naoterminal(non);
-	     
+		
+		// contador = peg.getExprs().size();
+		
 	  
+		 peg.getName();
+	     non = peg.getName();
+	     System.out.println("Non:"+non);
 	    
+	    
+	     System.out.println("Contador: "+contador+ " parâmetros\n");
+	     
+	     if(!(table.get(regra).getTable().containsKey(atribute))){
+	    	 
+	    	 System.err.println("Parâmetro " + atribute + " nao declarado");
+	     }
+
+	     //VarEntry var = table.get(regra).getTable().get(atribute);
+	     //String type = var.getType();
+	   
+	     if(table.get(non).getTable().size() != contador){
+	    	 System.err.println("Error: Quantidade errada de parâmetros!!!!\n");
+				}
+	     
+	     atribute = " ";
+	     contador = 0;
+	         
 	}
 
 	@Override
@@ -262,6 +275,12 @@ public class VerificaVisitor implements ASTNodeVisitor {
 	}
 
 	@Override
+	//public void visit(FunctionNode func) {
+	//	func.getName();
+		
+	//}
+
+	
 	public void visit(GrammarNode grammar) {
 		grammar.getFunctions();
 		grammar.getFunctionsSources(); //lista
@@ -269,8 +288,12 @@ public class VerificaVisitor implements ASTNodeVisitor {
 		grammar.getOptions(); //lista
 		grammar.getPreamble();
 		
-		for(RuleNode rule : grammar.getRules())
-			rule.accept(this);
+		for(RuleNode r : grammar.getRules()){
+			System.out.println("\n*******************REGRA: "+ r.getName()+"*********************");
+			regra = r.getName();
+			r.accept(this);
+		}
+		
 		
 	}
 
@@ -279,6 +302,7 @@ public class VerificaVisitor implements ASTNodeVisitor {
 		rule.getAnnotation();
 		rule.getExpr().accept(this);
 		rule.getName();
+	
 		
 		for(VarDeclarationNode param : rule.getParameters()){
 			param.accept(this);		
@@ -288,6 +312,11 @@ public class VerificaVisitor implements ASTNodeVisitor {
 			param.accept(this);
 		}
 		
+		
+	}
+
+	public void visit(TypeNode type) {
+		type.getName();		
 	}
 
 	@Override
@@ -300,43 +329,50 @@ public class VerificaVisitor implements ASTNodeVisitor {
 
 	@Override
 	public void visit(BooleanTypeNode type) {
-		tipo = "boolean";		
+		// TODO Auto-generated method stub
+		
 	}
 
 
 	@Override
 	public void visit(FloatTypeNode type) {
-		tipo = "float";		
+		// TODO Auto-generated method stub
+		
 	}
 
 
 	@Override
 	public void visit(GrammarTypeNode type) {
-		tipo = "grammar";		
+		// TODO Auto-generated method stub
+		
 	}
 
 
 	@Override
 	public void visit(IntTypeNode type) {
-		tipo = "int";		
+		// TODO Auto-generated method stub
+		
 	}
 
 
 	@Override
 	public void visit(RuleTypeNode type) {
-		tipo = "rule";		
+		// TODO Auto-generated method stub
+		
 	}
 
 
 	@Override
 	public void visit(StringTypeNode type) {
-		tipo = "string";		
+		// TODO Auto-generated method stub
+		
 	}
 
 
 	@Override
 	public void visit(UserTypeNode type) {
-		tipo = type.getName();		
-	}
+		// TODO Auto-generated method stub
+		
+	}	
 
 }

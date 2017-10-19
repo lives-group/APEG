@@ -12,6 +12,9 @@ public class VarEntry {
 		HERDADO, SINTETIZADO	
 	}
 	
+	public VarEntry(){	
+	    }
+	
     public VarEntry(String nome, String tipo, AttrDirection atributo){	
 	   this.nome = nome;
 	   this.type = tipo;

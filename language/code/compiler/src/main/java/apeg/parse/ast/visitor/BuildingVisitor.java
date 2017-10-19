@@ -47,15 +47,25 @@ import apeg.parse.ast.UpdatePegNode;
 import apeg.parse.ast.UserTypeNode;
 import apeg.parse.ast.VarDeclarationNode;
 
+/**
+ * @class BuildingVisitor : E resposavel pela construcao das tabelas de tipos e por coletar e verificar informacoes sobre
+ *                          sobre nao terminais e atributos.
+ * @author deise
+ *
+ */
+
 
 public class BuildingVisitor implements ASTNodeVisitor {
 
 	private String tipo = " ";
 	private RuleEntry r;
 	private VarEntry.AttrDirection atributo;
-	
+	private NTType ntt; // Tipo de um dado nao terminal
     private Hashtable<String, RuleEntry> t;
     
+    /**
+     * BuildingVisitor(): Construtor padrao. Inicializa as tabelas de simbolos. 
+     */
     public BuildingVisitor(){
     	
     	t = new Hashtable<String,RuleEntry>();
@@ -202,7 +212,7 @@ public class BuildingVisitor implements ASTNodeVisitor {
 
 	@Override
 	public void visit(NonterminalPegNode peg) {
-	
+	    
 		for(ExprNode p:peg.getExprs()) {
 			p.accept(this);
 		}
@@ -254,8 +264,7 @@ public class BuildingVisitor implements ASTNodeVisitor {
 	@Override
 	public void visit(AssignmentNode assign) {
 	   assign.getExpr().accept(this);
-	   assign.getVariable();
-		
+	   assign.getVariable();	
 	}
 
 	@Override
@@ -277,7 +286,7 @@ public class BuildingVisitor implements ASTNodeVisitor {
 		rule.getExpr().accept(this);
 		rule.getName();
 		r = new RuleEntry(rule.getName());
-		
+		ntt = new NTType(rule.getParameters().size() + rule.getReturns().size(),rule.getParameters().size()) ;
 		for(VarDeclarationNode param : rule.getParameters()){
 			atributo = VarEntry.AttrDirection.HERDADO;
 			param.accept(this);		
@@ -287,14 +296,16 @@ public class BuildingVisitor implements ASTNodeVisitor {
 			atributo = VarEntry.AttrDirection.SINTETIZADO;
 			param.accept(this);
 		}
+		r.setNTType(ntt);
 		t.put(rule.getName(), r);
 		r = null;
+		ntt = null;
 	}
 
 	@Override
 	public void visit(VarDeclarationNode var) {
 		var.getType().accept(this);
-		
+		ntt.add(var.getType());
 		VarEntry entry = new VarEntry(var.getName(),tipo, atributo);
 		r.getTable().put(var.getName(), entry);
 	}

@@ -46,8 +46,6 @@ import apeg.parse.ast.VarDeclarationNode;
 
 public class VerificaVisitor implements ASTNodeVisitor {
 	
-
-	
 	private String non= "" ;
 	private String atribute= "" ;
 	private String regra= "" ;
@@ -61,7 +59,6 @@ public class VerificaVisitor implements ASTNodeVisitor {
 		 
 	 }
 	 
-  
 	@Override
 	public void visit(AndExprNode expr) {
 		expr.getLeftExpr().accept(this);
@@ -201,10 +198,14 @@ public class VerificaVisitor implements ASTNodeVisitor {
 		
 		// contador = peg.getExprs().size();
 		
-	  
 		 peg.getName();
 	     non = peg.getName();
 	     System.out.println("Non:"+non);
+	     
+	     //System.out.println(table.get(non));
+
+	     //VarEntry var = table.get(regra).getTable().get(atribute);
+	     //String type = var.getType();
 	    
 	    
 	     System.out.println("Contador: "+contador+ " parâmetros\n");
@@ -213,9 +214,6 @@ public class VerificaVisitor implements ASTNodeVisitor {
 	    	 
 	    	 System.err.println("Parâmetro " + atribute + " nao declarado");
 	     }
-
-	     //VarEntry var = table.get(regra).getTable().get(atribute);
-	     //String type = var.getType();
 	   
 	     if(table.get(non).getTable().size() != contador){
 	    	 System.err.println("Error: Quantidade errada de parâmetros!!!!\n");
@@ -294,7 +292,6 @@ public class VerificaVisitor implements ASTNodeVisitor {
 			r.accept(this);
 		}
 		
-		
 	}
 
 	@Override
@@ -316,7 +313,7 @@ public class VerificaVisitor implements ASTNodeVisitor {
 	}
 
 	public void visit(TypeNode type) {
-		type.getName();		
+		type.getName();
 	}
 
 	@Override

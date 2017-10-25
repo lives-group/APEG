@@ -1,4 +1,4 @@
-package apeg.parse.ast.visitor;
+package apeg.parse.ast.visitor.Environments;
 
 import apeg.parse.ast.TypeNode;
 
@@ -6,8 +6,18 @@ public class NTType {
    private TypeNode[] types;
    private int inherited;
    
-   public NTType(TypeNode params, TypeNode returns[]){
-	   
+   public NTType(TypeNode params[], TypeNode returns[]){
+	   types = new TypeNode[params.length + returns.length]; 
+	   int i = 0;
+	   inherited = params.length;
+	   for(TypeNode n : params){
+		   types[i] = n;
+		   i++;
+	   }
+	   for(TypeNode n : returns){
+		   types[i] = n;
+		   i++;
+	   }
    }
    
    public boolean match(TypeNode[] args){
@@ -21,7 +31,6 @@ public class NTType {
 	   }
 	   return false;
    }
-   
    
    public String toString(){
 	  String s = "("; 

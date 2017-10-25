@@ -42,10 +42,7 @@ import apeg.parse.ast.UpdatePegNode;
 import apeg.parse.ast.UserTypeNode;
 import apeg.parse.ast.VarDeclarationNode;
 
-public class FormalVisitor implements ASTNodeVisitor{
-	String tipo = " ";
-	String atributo = " ";
-
+public abstract class FormalVisitor implements ASTNodeVisitor{
 	
 	@Override
 	public void visit(AndExprNode expr) {
@@ -280,44 +277,37 @@ public class FormalVisitor implements ASTNodeVisitor{
 	}
 
 	@Override
-	public void visit(BooleanTypeNode type) {
-		tipo = "boolean";		
+	public void visit(BooleanTypeNode type) {	
 	}
 
 
 	@Override
-	public void visit(FloatTypeNode type) {
-		tipo = "float";		
+	public void visit(FloatTypeNode type) {		
 	}
 
 
 	@Override
 	public void visit(GrammarTypeNode type) {
-		tipo = "grammar";		
 	}
 
 
 	@Override
 	public void visit(IntTypeNode type) {
-		tipo = "int";		
 	}
 
 
 	@Override
 	public void visit(RuleTypeNode type) {
-		tipo = "rule";		
 	}
 
 
 	@Override
 	public void visit(StringTypeNode type) {
-		tipo = "string";		
 	}
 
 
 	@Override
 	public void visit(UserTypeNode type) {
-		tipo = type.getName();		
 	}
 
 }

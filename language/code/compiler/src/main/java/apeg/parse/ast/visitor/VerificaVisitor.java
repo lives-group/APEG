@@ -43,6 +43,8 @@ import apeg.parse.ast.TypeNode;
 import apeg.parse.ast.UpdatePegNode;
 import apeg.parse.ast.UserTypeNode;
 import apeg.parse.ast.VarDeclarationNode;
+import apeg.parse.ast.visitor.Environments.NTType;
+import apeg.parse.ast.visitor.Environments.RuleEnvironment;
 
 public class VerificaVisitor implements ASTNodeVisitor {
 	
@@ -51,7 +53,7 @@ public class VerificaVisitor implements ASTNodeVisitor {
 	private String regra= "" ;
 	private int contador=0;
 	private int count = 0;
-	private final Hashtable<String, RuleEntry> table;
+	private final Hashtable<String, RuleEnvironment> table;
 	
 	private TypeNode[] verifica;
 	
@@ -59,7 +61,7 @@ public class VerificaVisitor implements ASTNodeVisitor {
 	TypeNode tipos;
 	
 	
-	 public VerificaVisitor(Hashtable<String, RuleEntry> t){
+	 public VerificaVisitor(Hashtable<String, RuleEnvironment> t){
 		 table=t;
 	 }
 	 

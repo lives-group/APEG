@@ -5,17 +5,15 @@ import apeg.parse.ast.TypeNode;
 public class NTType {
    private TypeNode[] types;
    private int inherited;
-   private int last;
    
-   public NTType(int numParam, int numInheriteds){
-	   types = new TypeNode[numParam];
-	   inherited = numInheriteds;
-	   last = 0;
+   public NTType(TypeNode params, TypeNode returns[]){
+	   
    }
    
    public boolean match(TypeNode[] args){
 	   boolean b = true;
 	   if(types.length == args.length){
+		   System.out.println("Quantidade errada de arguementos");
 		   for(int k = 0; (k < types.length) && b; k++){
 			   b = b && types[k].match(args[k]);
 		   }
@@ -24,11 +22,6 @@ public class NTType {
 	   return false;
    }
    
-   public void add(TypeNode n){
-       if(last >= types.length){ return; }
-	   types[last]  = n;
-       last++;
-   }
    
    public String toString(){
 	  String s = "("; 

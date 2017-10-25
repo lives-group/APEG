@@ -53,10 +53,14 @@ public class VerificaVisitor implements ASTNodeVisitor {
 	private int count = 0;
 	private final Hashtable<String, RuleEntry> table;
 	
+	private TypeNode[] verifica;
+	
+	private NTType ntt;
+	TypeNode tipos;
+	
 	
 	 public VerificaVisitor(Hashtable<String, RuleEntry> t){
 		 table=t;
-		 
 	 }
 	 
 	@Override
@@ -196,25 +200,23 @@ public class VerificaVisitor implements ASTNodeVisitor {
 			contador += count + 1;
 		}
 		
-		// contador = peg.getExprs().size();
-		
-		 peg.getName();
-	     non = peg.getName();
-	     System.out.println("Non:"+non);
-	     
-	     //System.out.println(table.get(non));
-
-	     //VarEntry var = table.get(regra).getTable().get(atribute);
-	     //String type = var.getType();
-	    
-	    
-	     System.out.println("Contador: "+contador+ " parâmetros\n");
-	     
-	     if(!(table.get(regra).getTable().containsKey(atribute))){
+		if(!(table.get(regra).getTable().containsKey(atribute))){
 	    	 
 	    	 System.err.println("Parâmetro " + atribute + " nao declarado");
 	     }
 	   
+		//ntt.match(verifica);
+		
+		
+		
+		 peg.getName();
+	     non = peg.getName();
+	     System.out.println("Non:"+non);
+	    
+	    
+	     System.out.println("Quantidade de parametros passados para o nao terminal "+ non + ":" + contador+ " parâmetros\n");
+	     
+	     
 	     if(table.get(non).getTable().size() != contador){
 	    	 System.err.println("Error: Quantidade errada de parâmetros!!!!\n");
 				}
@@ -272,12 +274,11 @@ public class VerificaVisitor implements ASTNodeVisitor {
 		
 	}
 
-	@Override
 	//public void visit(FunctionNode func) {
 	//	func.getName();
 		
 	//}
-
+	
 	
 	public void visit(GrammarNode grammar) {
 		grammar.getFunctions();
@@ -300,15 +301,15 @@ public class VerificaVisitor implements ASTNodeVisitor {
 		rule.getExpr().accept(this);
 		rule.getName();
 	
-		
+	  	
 		for(VarDeclarationNode param : rule.getParameters()){
-			param.accept(this);		
+			param.accept(this);
 		}
 		
 		for(VarDeclarationNode param : rule.getReturns()){
 			param.accept(this);
 		}
-		
+	
 		
 	}
 
@@ -323,17 +324,16 @@ public class VerificaVisitor implements ASTNodeVisitor {
 		
 	}
 
-
 	@Override
 	public void visit(BooleanTypeNode type) {
 		// TODO Auto-generated method stub
-		
 	}
 
 
 	@Override
 	public void visit(FloatTypeNode type) {
 		// TODO Auto-generated method stub
+		 
 		
 	}
 

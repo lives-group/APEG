@@ -53,16 +53,14 @@ public class VerificaVisitor implements ASTNodeVisitor {
 	private String regra= "" ;
 	private int contador=0;
 	private int count = 0;
-	private final Hashtable<String, RuleEnvironment> table;
+	private final RuleEnvironment table;
 	
-	private TypeNode[] verifica;
 	
-	private NTType ntt;
 	TypeNode tipos;
 	
 	
-	 public VerificaVisitor(Hashtable<String, RuleEnvironment> t){
-		 table=t;
+	 public VerificaVisitor(RuleEnvironment ruleEnvironment){
+		 table=ruleEnvironment;
 	 }
 	 
 	@Override
@@ -201,27 +199,23 @@ public class VerificaVisitor implements ASTNodeVisitor {
 			p.accept(this);
 			contador += count + 1;
 		}
-		
-		if(!(table.get(regra).getTable().containsKey(atribute))){
-	    	 
-	    	 System.err.println("Parâmetro " + atribute + " nao declarado");
-	     }
-	   
-		//ntt.match(verifica);
-		
-		
-		
-		 peg.getName();
-	     non = peg.getName();
-	     System.out.println("Non:"+non);
+		 
+	    // non = peg.getName();
+	     //System.out.println("Non:"+non);
+	     
+	     //System.out.println("Keys: "+ table.getTable().get(non));
 	    
 	    
-	     System.out.println("Quantidade de parametros passados para o nao terminal "+ non + ":" + contador+ " parâmetros\n");
+	     //System.out.println("Quantidade de parametros passados para o nao terminal "+ non + ":" + contador+ " parâmetros\n");
 	     
-	     
-	     if(table.get(non).getTable().size() != contador){
-	    	 System.err.println("Error: Quantidade errada de parâmetros!!!!\n");
-				}
+	   //if(!(table.get(regra).getTable().containsKey(atribute))){
+    	 // System.err.println("Parâmetro " + atribute + " nao declarado");
+       //}
+   
+	  //ntt.match(verifica);
+	     //if(table.get(non).getTable().size() != contador){
+	    	// System.err.println("Error: Quantidade errada de parâmetros!!!!\n");
+				//}
 	     
 	     atribute = " ";
 	     contador = 0;
@@ -302,17 +296,15 @@ public class VerificaVisitor implements ASTNodeVisitor {
 		rule.getAnnotation();
 		rule.getExpr().accept(this);
 		rule.getName();
+		
 	
-	  	
 		for(VarDeclarationNode param : rule.getParameters()){
 			param.accept(this);
 		}
 		
-		for(VarDeclarationNode param : rule.getReturns()){
+		for(VarDeclarationNode param : rule.getReturns()){ 
 			param.accept(this);
 		}
-	
-		
 	}
 
 	public void visit(TypeNode type) {

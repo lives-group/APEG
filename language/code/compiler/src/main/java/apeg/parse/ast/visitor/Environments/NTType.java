@@ -7,7 +7,7 @@ public class NTType {
    private int inherited;
    
    public NTType(TypeNode params[], TypeNode returns[]){
-	   types = new TypeNode[params.length + returns.length]; 
+	   types = new TypeNode[params.length + returns.length];
 	   int i = 0;
 	   inherited = params.length;
 	   for(TypeNode n : params){
@@ -16,7 +16,7 @@ public class NTType {
 	   }
 	   for(TypeNode n : returns){
 		   types[i] = n;
-		   i++;
+		   i++;   
 	   }
    }
    

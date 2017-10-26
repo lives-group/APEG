@@ -115,8 +115,8 @@ public class Tool {
 				g.accept(build);
 				build.printTable();
 				
-     			//VerificaVisitor verifica = new VerificaVisitor(build.getTable());
-				//g.accept(verifica);
+     			VerificaVisitor verifica = new VerificaVisitor(build.getTable());
+				g.accept(verifica);
 		
 				
 				// Generating a graphical view from AST 			

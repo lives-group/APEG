@@ -20,10 +20,23 @@ public class NTType {
 	   }
    }
    
-   public boolean match(TypeNode[] args){
+   public int getNumSintetized(){ return inherited;}
+   
+   public int getNumInherited(){ return types.length - inherited;}
+   
+   TypeNode getParamAt(int i){
+       if(i >= inherited){ throw new ArrayIndexOutOfBoundsException("Index:  " + i);} 
+	   return types[i];
+   }
+   
+   TypeNode getReturnAt(int i){
+       if(i >= inherited){ throw new ArrayIndexOutOfBoundsException("Index:  " + i);} 
+	   return types[i];
+   }
+/*   public boolean match(TypeNode[] args){
 	   boolean b = true;
 	   if(types.length == args.length){
-		   System.out.println("Quantidade errada de arguementos");
+		   System.out.println("Quantidade errada de argumentos");
 		   for(int k = 0; (k < types.length) && b; k++){
 			   b = b && types[k].match(args[k]);
 		   }
@@ -31,7 +44,7 @@ public class NTType {
 	   }
 	   return false;
    }
-   
+*/   
    public String toString(){
 	  String s = "("; 
       if(inherited > 0){

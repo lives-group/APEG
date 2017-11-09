@@ -17,7 +17,7 @@ import apeg.parse.ast.ASTFactory;
 import apeg.parse.ast.ASTFactoryImpl;
 import apeg.parse.ast.GrammarNode;
 import apeg.parse.ast.visitor.ASTNodeVisitor;
-import apeg.parse.ast.visitor.BuildingVisitor;
+import apeg.parse.ast.visitor.BuildRuleEnvironmetVisitor;
 import apeg.parse.ast.visitor.DOTVisitor;
 import apeg.parse.ast.visitor.PrettyPrintVisitor;
 import apeg.parse.ast.visitor.VerificaVisitor;
@@ -111,7 +111,7 @@ public class Tool {
 								"src/main/templates/prettyprint.stg"));
 				g.accept(prettyprint);
 				
-				BuildingVisitor build = new BuildingVisitor();
+				BuildRuleEnvironmetVisitor build = new BuildRuleEnvironmetVisitor();
 				g.accept(build);
 				build.printTable();
 				

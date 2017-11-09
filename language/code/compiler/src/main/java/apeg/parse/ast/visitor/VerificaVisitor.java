@@ -1,6 +1,11 @@
 package apeg.parse.ast.visitor;
 
 import java.util.Hashtable;
+import java.util.List;
+import java.util.Set;
+
+import org.stringtemplate.v4.ST;
+
 import apeg.parse.ast.AndExprNode;
 import apeg.parse.ast.AndPegNode;
 import apeg.parse.ast.AnyPegNode;
@@ -43,20 +48,25 @@ import apeg.parse.ast.TypeNode;
 import apeg.parse.ast.UpdatePegNode;
 import apeg.parse.ast.UserTypeNode;
 import apeg.parse.ast.VarDeclarationNode;
+import apeg.parse.ast.visitor.Environments.NTType;
+import apeg.parse.ast.visitor.Environments.RuleEnvironment;
 
 public class VerificaVisitor implements ASTNodeVisitor {
 	
-	private String non= "" ;
-	private String atribute= "" ;
-	private String regra= "" ;
-	private int contador=0;
-	private int count = 0;
-	private final Hashtable<String, RuleEntry> table;
+	
+	private String currentRule= "" ;
+	private final RuleEnvironment table;
+	RuleEnvironment ruleEnvironment;
+	private List<String> erros;
+	private List<String> warnings;
+
 	
 	
-	 public VerificaVisitor(Hashtable<String, RuleEntry> t){
-		 table=t;
-		 
+	TypeNode tipos;
+	
+	
+	 public VerificaVisitor(RuleEnvironment ruleEnvironment){
+		 table=ruleEnvironment;
 	 }
 	 
 	@Override
@@ -68,7 +78,6 @@ public class VerificaVisitor implements ASTNodeVisitor {
 	@Override
 	public void visit(AttributeExprNode expr) {
 		expr.getName();
-		atribute = expr.getName();
 	}
 
 	@Override
@@ -192,36 +201,20 @@ public class VerificaVisitor implements ASTNodeVisitor {
 	public void visit(NonterminalPegNode peg) { ////////////////////////////////
 	
 		for(ExprNode p:peg.getExprs()) {
-			p.accept(this);
-			contador += count + 1;
+			p.accept(this);	
 		}
-		
-		// contador = peg.getExprs().size();
-		
-		 peg.getName();
-	     non = peg.getName();
-	     System.out.println("Non:"+non);
-	     
-	     //System.out.println(table.get(non));
-
-	     //VarEntry var = table.get(regra).getTable().get(atribute);
-	     //String type = var.getType();
-	    
-	    
-	     System.out.println("Contador: "+contador+ " parâmetros\n");
-	     
-	     if(!(table.get(regra).getTable().containsKey(atribute))){
-	    	 
-	    	 System.err.println("Parâmetro " + atribute + " nao declarado");
+		 
+	     System.out.println(peg.getName());
+	     if(!table.getTable().containsKey(peg.getName())){
+	    	 System.out.println("(" + peg.getLine() + ", " + peg.getColunm()+ ") : O nao terminal " +peg.getName()+ " chamado na regra "+ currentRule +" nao existe");
 	     }
-	   
-	     if(table.get(non).getTable().size() != contador){
-	    	 System.err.println("Error: Quantidade errada de parâmetros!!!!\n");
-				}
 	     
-	     atribute = " ";
-	     contador = 0;
-	         
+	     if(table.getRuleNames().contains(peg.getName())){
+		    	table.getRuleNames().remove(peg.getName());
+		    	System.out.println("teste" + table.getRuleNames());
+		    }
+	   
+	   
 	}
 
 	@Override
@@ -272,12 +265,11 @@ public class VerificaVisitor implements ASTNodeVisitor {
 		
 	}
 
-	@Override
 	//public void visit(FunctionNode func) {
 	//	func.getName();
 		
 	//}
-
+	
 	
 	public void visit(GrammarNode grammar) {
 		grammar.getFunctions();
@@ -288,10 +280,10 @@ public class VerificaVisitor implements ASTNodeVisitor {
 		
 		for(RuleNode r : grammar.getRules()){
 			System.out.println("\n*******************REGRA: "+ r.getName()+"*********************");
-			regra = r.getName();
+			currentRule = r.getName();
 			r.accept(this);
 		}
-		
+		currentRule = null;
 	}
 
 	@Override
@@ -299,17 +291,15 @@ public class VerificaVisitor implements ASTNodeVisitor {
 		rule.getAnnotation();
 		rule.getExpr().accept(this);
 		rule.getName();
+		
 	
-		
 		for(VarDeclarationNode param : rule.getParameters()){
-			param.accept(this);		
-		}
-		
-		for(VarDeclarationNode param : rule.getReturns()){
 			param.accept(this);
 		}
 		
-		
+		for(VarDeclarationNode param : rule.getReturns()){ 
+			param.accept(this);
+		}
 	}
 
 	public void visit(TypeNode type) {
@@ -323,17 +313,16 @@ public class VerificaVisitor implements ASTNodeVisitor {
 		
 	}
 
-
 	@Override
 	public void visit(BooleanTypeNode type) {
 		// TODO Auto-generated method stub
-		
 	}
 
 
 	@Override
 	public void visit(FloatTypeNode type) {
 		// TODO Auto-generated method stub
+		 
 		
 	}
 

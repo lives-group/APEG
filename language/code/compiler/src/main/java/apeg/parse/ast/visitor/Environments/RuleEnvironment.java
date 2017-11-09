@@ -2,6 +2,7 @@ package apeg.parse.ast.visitor.Environments;
 
 import java.util.Hashtable;
 import java.util.Map.Entry;
+import java.util.Set;
 
 public class RuleEnvironment {
 
@@ -26,5 +27,10 @@ public class RuleEnvironment {
 		
 		public void add(String ruleName, NTType ruleType){
 			t.put(ruleName, ruleType);
+		}
+		
+		public Set<String> getRuleNames(){
+			//System.out.println("chave: "+ t.keySet());
+			return t.keySet();
 		}
 }

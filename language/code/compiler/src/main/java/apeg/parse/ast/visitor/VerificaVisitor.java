@@ -1,5 +1,6 @@
 package apeg.parse.ast.visitor;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Set;
@@ -57,8 +58,9 @@ public class VerificaVisitor implements ASTNodeVisitor {
 	private String currentRule= "" ;
 	private final RuleEnvironment table;
 	RuleEnvironment ruleEnvironment;
-	private List<String> erros;
-	private List<String> warnings;
+	private ArrayList<String> erros;
+	private ArrayList<String> warnings;
+	private NTType ntt;
 
 	
 	
@@ -66,7 +68,8 @@ public class VerificaVisitor implements ASTNodeVisitor {
 	
 	
 	 public VerificaVisitor(RuleEnvironment ruleEnvironment){
-		 table=ruleEnvironment;
+		 table = ruleEnvironment;
+		 erros = new ArrayList<String>();
 	 }
 	 
 	@Override
@@ -204,18 +207,26 @@ public class VerificaVisitor implements ASTNodeVisitor {
 			p.accept(this);	
 		}
 		 
-	     System.out.println(peg.getName());
-	     if(!table.getTable().containsKey(peg.getName())){
-	    	 System.out.println("(" + peg.getLine() + ", " + peg.getColunm()+ ") : O nao terminal " +peg.getName()+ " chamado na regra "+ currentRule +" nao existe");
+	     System.out.println("Nao terminal encontrado " + peg.getName());
+	     
+	     // **Não terminal não definido utilizado **
+	     if(!table.getTable().containsKey(peg.getName())){ 
+	    	 //System.out.println("(" + peg.getLine() + ", " + peg.getColunm()+ ") : O nao terminal " +peg.getName()+ " chamado na regra "+ currentRule +" nao existe");
+	     erros.add("(" +peg.getLine() + ", " + peg.getColunm()+ ") : O nao terminal " +peg.getName()+ " chamado na regra "+ currentRule +" nao existe");
+	    
 	     }
 	     
+	     // **Terminais não usados**
 	     if(table.getRuleNames().contains(peg.getName())){
 		    	table.getRuleNames().remove(peg.getName());
-		    	System.out.println("teste" + table.getRuleNames());
+		    	//System.out.println(table.getRuleNames());
 		    }
+	     
+	     
 	   
-	   
-	}
+	     //ntt.getNumInherited();
+	     //System.out.println(ntt.getNumInherited());
+	} 
 
 	@Override
 	public void visit(NotPegNode peg) {
@@ -339,8 +350,7 @@ public class VerificaVisitor implements ASTNodeVisitor {
 		// TODO Auto-generated method stub
 		
 	}
-
-
+	
 	@Override
 	public void visit(RuleTypeNode type) {
 		// TODO Auto-generated method stub

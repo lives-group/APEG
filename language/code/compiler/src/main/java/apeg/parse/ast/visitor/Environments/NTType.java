@@ -6,6 +6,8 @@ public class NTType {
    private TypeNode[] types;
    private int inherited;
    
+ 
+   
    public NTType(TypeNode params[], TypeNode returns[]){
 	   types = new TypeNode[params.length + returns.length];
 	   int i = 0;
@@ -20,9 +22,13 @@ public class NTType {
 	   }
    }
    
-   public int getNumSintetized(){ return inherited;}
+   public int getNumSintetized(){ 
+	   return inherited;
+   }
    
-   public int getNumInherited(){ return types.length - inherited;}
+   public int getNumInherited(){ 
+	   return types.length - inherited;
+   }
    
    TypeNode getParamAt(int i){
        if(i >= inherited){ throw new ArrayIndexOutOfBoundsException("Index:  " + i);} 
@@ -33,6 +39,7 @@ public class NTType {
        if(i >= inherited){ throw new ArrayIndexOutOfBoundsException("Index:  " + i);} 
 	   return types[i];
    }
+   
 /*   public boolean match(TypeNode[] args){
 	   boolean b = true;
 	   if(types.length == args.length){

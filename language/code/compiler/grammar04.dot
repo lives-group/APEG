@@ -1,6 +1,6 @@
 Digraph notDiscardChanges {
   node [shape="box"];
-  grammar [label = "Grammar[notDiscardChanges]];
+  grammar [label = "Grammar[notDiscardChanges]"];
 
   aRule [label = "Rule[a]"];
   grammar -> aRule;

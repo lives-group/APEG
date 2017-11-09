@@ -210,10 +210,7 @@ public class VerificaVisitor implements ASTNodeVisitor {
 	     }
 	     
 	   
-	    if(table.getRuleNames().contains(peg.getName())){
-	    	table.getRuleNames().remove(peg.getName());
-	    	System.out.println("teste" + table.getRuleNames());
-	    }
+	   
 	   
 	}
 

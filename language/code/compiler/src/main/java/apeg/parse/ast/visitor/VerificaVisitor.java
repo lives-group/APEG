@@ -209,7 +209,10 @@ public class VerificaVisitor implements ASTNodeVisitor {
 	    	 System.out.println("(" + peg.getLine() + ", " + peg.getColunm()+ ") : O nao terminal " +peg.getName()+ " chamado na regra "+ currentRule +" nao existe");
 	     }
 	     
-	   
+	     if(table.getRuleNames().contains(peg.getName())){
+		    	table.getRuleNames().remove(peg.getName());
+		    	System.out.println("teste" + table.getRuleNames());
+		    }
 	   
 	   
 	}

@@ -55,21 +55,24 @@ import apeg.parse.ast.visitor.Environments.RuleEnvironment;
 public class VerificaVisitor implements ASTNodeVisitor {
 	
 	
-	private String currentRule= "" ;
+	private String currentRule;
+	private int ruleCount;
+	private String startRule;
 	private final RuleEnvironment table;
-	RuleEnvironment ruleEnvironment;
-	private ArrayList<String> erros;
-	private ArrayList<String> warnings;
-	private NTType ntt;
+	private Set<String> ruleNames;
 
-	
-	
+	private NTType ntt;
 	TypeNode tipos;
 	
 	
 	 public VerificaVisitor(RuleEnvironment ruleEnvironment){
 		 table = ruleEnvironment;
 		 erros = new ArrayList<String>();
+		 warnings = new ArrayList<String>();
+		 ruleNames = table.getRuleNames();
+		 ruleCount = 0;
+		 currentRule = "";
+		 startRule = "";
 	 }
 	 
 	@Override
@@ -207,22 +210,27 @@ public class VerificaVisitor implements ASTNodeVisitor {
 			p.accept(this);	
 		}
 		 
-	     System.out.println("Nao terminal encontrado " + peg.getName());
+	     //System.out.println("Nao terminal encontrado " + peg.getName());
 	     
-	     // **Não terminal não definido utilizado **
-	     if(!table.getTable().containsKey(peg.getName())){ 
+	     // **O Não terminal utilizado nao foi definido**
+	     if(!table.contains(peg.getName()) ){ 
 	    	 //System.out.println("(" + peg.getLine() + ", " + peg.getColunm()+ ") : O nao terminal " +peg.getName()+ " chamado na regra "+ currentRule +" nao existe");
 	     erros.add("(" +peg.getLine() + ", " + peg.getColunm()+ ") : O nao terminal " +peg.getName()+ " chamado na regra "+ currentRule +" nao existe");
 	    
 	     }
 	     
-	     // **Terminais não usados**
-	     if(table.getRuleNames().contains(peg.getName())){
-		    	table.getRuleNames().remove(peg.getName());
-		    	//System.out.println(table.getRuleNames());
-		    }
+	     // **Terminais não usados** *****************Fazer outra funcao**********************
+	     if(ruleNames.contains(peg.getName())){
+		    	ruleNames.remove(peg.getName());
+		 }
 	     
 	     
+	     if(table.get(peg.getName()) != null){
+	         System.out.println("   Declarado : " + table.get(peg.getName()).getNumParams());
+	         System.out.println("   Uso: " + peg.getExprs().size());
+	     }
+	     
+	     //ntt.getNumParams(); 
 	   
 	     //ntt.getNumInherited();
 	     //System.out.println(ntt.getNumInherited());
@@ -303,6 +311,9 @@ public class VerificaVisitor implements ASTNodeVisitor {
 		rule.getExpr().accept(this);
 		rule.getName();
 		
+		if(ruleCount == 0){
+			startRule = rule.getName();
+		}
 	
 		for(VarDeclarationNode param : rule.getParameters()){
 			param.accept(this);
@@ -311,6 +322,8 @@ public class VerificaVisitor implements ASTNodeVisitor {
 		for(VarDeclarationNode param : rule.getReturns()){ 
 			param.accept(this);
 		}
+		
+		ruleCount++;
 	}
 
 	public void visit(TypeNode type) {
@@ -370,5 +383,36 @@ public class VerificaVisitor implements ASTNodeVisitor {
 		// TODO Auto-generated method stub
 		
 	}	
+	
+	//Retorna um set com todas as regras nao utilizadas
+	public String[] getUnusedNames(){
+		return (String[])ruleNames.toArray();
+	}
+	
+	public boolean hasErrors(){
+		return !erros.isEmpty();
+	}
+	
+	public boolean hasWarnings(){
+		if(!ruleNames.isEmpty()){
+			for(String i : ruleNames){
+				if(!i.equals(startRule)){
+				   warnings.add("Não terminal não utilizado: " + i);
+				}
+			}
+		}
+		return !warnings.isEmpty();
+	}
+	
+	public ArrayList<String> getErros() {
+		return erros;
+	}
+
+	public ArrayList<String> getWarnings() {
+		return warnings;
+	}
+
+	private ArrayList<String> erros;
+	private ArrayList<String> warnings;	
 
 }

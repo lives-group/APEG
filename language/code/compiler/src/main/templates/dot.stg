@@ -4,7 +4,7 @@ group dot;
 apeg(name, option, header, functions, func_sources, rules) ::= <<
 Digraph <name> {
   node [shape="box"];
-  grammar [label = "Grammar[<name>]<if(option)>:<option; separator=";">"<endif>];
+  grammar [label = "Grammar[<name>]<if(option)>:<option; separator=";"><endif>"];
   <if(func_sources)>
   functions [label = "FunctionsFrom:<func_sources; separator=";">"];
   grammar -> functions;

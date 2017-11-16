@@ -40,6 +40,10 @@ public class NTType {
 	   return types[i];
    }
    
+   public int getNumParams(){
+	   return types.length;
+   }
+   
 /*   public boolean match(TypeNode[] args){
 	   boolean b = true;
 	   if(types.length == args.length){

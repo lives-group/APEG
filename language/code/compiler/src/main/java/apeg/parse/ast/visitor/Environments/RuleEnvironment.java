@@ -21,12 +21,20 @@ public class RuleEnvironment {
 	    	return s;
 	    }
 	    
-		public Hashtable<String, NTType> getTable() {
-			return t;
-		}
+		//public Hashtable<String, NTType> getTable() {
+		//	return t;
+		//}
 		
 		public void add(String ruleName, NTType ruleType){
 			t.put(ruleName, ruleType);
+		}
+		
+		public NTType get(String s){
+			return t.get(s);
+		}
+		
+		public boolean contains(String s){
+			return t.containsKey(s);
 		}
 		
 		public Set<String> getRuleNames(){

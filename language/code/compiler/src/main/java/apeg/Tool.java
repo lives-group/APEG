@@ -117,6 +117,19 @@ public class Tool {
 				
      			VerificaVisitor verifica = new VerificaVisitor(build.getTable());
 				g.accept(verifica);
+			    if (verifica.hasErrors()){ 
+			        System.err.println("---------- Errors --------- ");
+			        for (String i : verifica.getErros()){
+			        	System.err.println(i);
+			        }
+			    }
+			    if(verifica.hasWarnings()){
+			    	System.err.println("---------- Warnings --------- ");
+			        for (String i : verifica.getWarnings()){
+			        	System.err.println(i);
+			        }
+			    }
+			    
 		
 				
 				// Generating a graphical view from AST 			

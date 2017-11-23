@@ -30,7 +30,7 @@ public class NTType {
 	   return types.length - inherited;
    }
    
-   TypeNode getParamAt(int i){
+   public TypeNode getParamAt(int i){
        if(i >= inherited){ throw new ArrayIndexOutOfBoundsException("Index:  " + i);} 
 	   return types[i];
    }

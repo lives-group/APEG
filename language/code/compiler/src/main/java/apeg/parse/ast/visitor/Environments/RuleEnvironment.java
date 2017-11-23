@@ -1,5 +1,6 @@
 package apeg.parse.ast.visitor.Environments;
 
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -39,6 +40,10 @@ public class RuleEnvironment {
 		
 		public Set<String> getRuleNames(){
 			//System.out.println("chave: "+ t.keySet());
-			return t.keySet();
+			HashSet<String> s = new HashSet<String>();
+			for( String i : t.keySet()){
+			    s.add(i);
+			}
+			return s;
 		}
 }

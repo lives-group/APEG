@@ -14,7 +14,7 @@ Digraph notDiscardChanges {
   p_expr_nonterminal1 -> expr_int0;
   expr_var1 [label = "k:var"];
   p_expr_nonterminal1 -> expr_var1;
-  expr_var2 [label = "t:var"];
+  expr_var2 [label = "x:var"];
   p_expr_nonterminal1 -> expr_var2;
   p_expr_nonterminal2 [label = "NonterminalPegExpr:d"];
   p_expr_sequence0 -> p_expr_nonterminal2;

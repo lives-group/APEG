@@ -60,19 +60,22 @@ public class VerificaVisitor implements ASTNodeVisitor {
 	private String startRule;
 	private final RuleEnvironment table;
 	private Set<String> ruleNames;
+	private ArrayList<String> erros;
+	private ArrayList<String> warnings;	
 
 	private NTType ntt;
 	TypeNode tipos;
 	
 	
 	 public VerificaVisitor(RuleEnvironment ruleEnvironment){
-		 table = ruleEnvironment;
+		 
 		 erros = new ArrayList<String>();
 		 warnings = new ArrayList<String>();
-		 ruleNames = table.getRuleNames();
 		 ruleCount = 0;
 		 currentRule = "";
 		 startRule = "";
+		 table = ruleEnvironment;
+		 ruleNames = table.getRuleNames();			 
 	 }
 	 
 	@Override
@@ -219,21 +222,30 @@ public class VerificaVisitor implements ASTNodeVisitor {
 	    
 	     }
 	     
-	     // **Terminais não usados** *****************Fazer outra funcao**********************
+	     // **Terminais não usados**
 	     if(ruleNames.contains(peg.getName())){
 		    	ruleNames.remove(peg.getName());
 		 }
 	     
-	     
-	     if(table.get(peg.getName()) != null){
-	         System.out.println("   Declarado : " + table.get(peg.getName()).getNumParams());
-	         System.out.println("   Uso: " + peg.getExprs().size());
-	     }
-	     
-	     //ntt.getNumParams(); 
+	     // **Inteiros no lugar do parametro que recebe o retorno**
+	     // Quantidade de parametros passados é diferente do definido na regra em questão
+	     List<ExprNode> l = peg.getExprs();
+	     NTType temp = table.get(peg.getName());
+	     if(temp != null){
+	    	 if(temp.getNumParams() != peg.getExprs().size()){
+	        	  erros.add("(" + peg.getLine() +", " + peg.getColunm() + ") Aridade de não terminal incosistente: " + 
+	    	                peg.getName() + " usado com " + peg.getExprs().size() + " argumentos mas definido com " + 
+	        			    temp.getNumParams() + " parametros.");
+	         }else if(temp.getNumParams() > temp.getNumInherited()){
+	    	    for(int i =temp.getNumInherited(); i< temp.getNumParams(); i++ ){
+	    	    	if(!(l.get(i) instanceof AttributeExprNode)){
+	    	    		erros.add("(" + peg.getLine() +", " + peg.getColunm() + ") Atributo variável esperado aqui, mas expressão " +l.get(i).toString() + " encontrada.");
+	    	    	}
+	    	    }
+	    	 }
+	    	 
+	     } 
 	   
-	     //ntt.getNumInherited();
-	     //System.out.println(ntt.getNumInherited());
 	} 
 
 	@Override
@@ -388,11 +400,11 @@ public class VerificaVisitor implements ASTNodeVisitor {
 	public String[] getUnusedNames(){
 		return (String[])ruleNames.toArray();
 	}
-	
+	//verifica se o programa possui erros, se a lista erros está vazia
 	public boolean hasErrors(){
 		return !erros.isEmpty();
 	}
-	
+	//verifica se o programa possui erros, se a lista erros está vazia
 	public boolean hasWarnings(){
 		if(!ruleNames.isEmpty()){
 			for(String i : ruleNames){
@@ -411,8 +423,5 @@ public class VerificaVisitor implements ASTNodeVisitor {
 	public ArrayList<String> getWarnings() {
 		return warnings;
 	}
-
-	private ArrayList<String> erros;
-	private ArrayList<String> warnings;	
 
 }

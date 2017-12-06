@@ -3,8 +3,8 @@ package apeg.parse.ast.visitor;
 import apeg.parse.ast.TypeNode;
 import apeg.parse.ast.RuleNode;
 import apeg.parse.ast.VarDeclarationNode;
+import apeg.parse.ast.visitor.Environments.Environment;
 import apeg.parse.ast.visitor.Environments.NTType;
-import apeg.parse.ast.visitor.Environments.RuleEnvironment;
 
 /**
  * @class BuildingVisitor : E resposavel pela construcao das tabelas de tipos e por coletar e verificar informacoes sobre
@@ -15,13 +15,13 @@ import apeg.parse.ast.visitor.Environments.RuleEnvironment;
 
 public class BuildRuleEnvironmetVisitor extends FormalVisitor {
 
-	private RuleEnvironment r;
+	private Environment<String,NTType> r;
     
     /**
      * BuildingVisitor(): Construtor padrao. Inicializa as tabelas de simbolos. 
      */
     public BuildRuleEnvironmetVisitor(){
-    	r = new RuleEnvironment();
+    	r = new Environment<String, NTType>();
     }
 	
 	@Override
@@ -45,7 +45,7 @@ public class BuildRuleEnvironmetVisitor extends FormalVisitor {
 	   System.out.println(r.toString());
 	}
 
-	public RuleEnvironment getTable() {
+	public Environment<String, NTType> getTable() {
 		return r;
 	}
 }

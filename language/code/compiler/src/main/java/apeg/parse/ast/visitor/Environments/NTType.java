@@ -6,8 +6,6 @@ public class NTType {
    private TypeNode[] types;
    private int inherited;
    
- 
-   
    public NTType(TypeNode params[], TypeNode returns[]){
 	   types = new TypeNode[params.length + returns.length];
 	   int i = 0;
@@ -23,11 +21,11 @@ public class NTType {
    }
    
    public int getNumSintetized(){ 
-	   return inherited;
+	   return types.length - inherited;
    }
    
    public int getNumInherited(){ 
-	   return types.length - inherited;
+	   return inherited;
    }
    
    public TypeNode getParamAt(int i){
@@ -35,27 +33,20 @@ public class NTType {
 	   return types[i];
    }
    
-   TypeNode getReturnAt(int i){
-       if(i >= inherited){ throw new ArrayIndexOutOfBoundsException("Index:  " + i);} 
-	   return types[i];
+   public TypeNode getReturnAt(int i){
+       if(i > getNumSintetized()){ throw new ArrayIndexOutOfBoundsException("Index:  " + i);} 
+	   return types[inherited+i];
    }
    
    public int getNumParams(){
 	   return types.length;
    }
    
-/*   public boolean match(TypeNode[] args){
-	   boolean b = true;
-	   if(types.length == args.length){
-		   System.out.println("Quantidade errada de argumentos");
-		   for(int k = 0; (k < types.length) && b; k++){
-			   b = b && types[k].match(args[k]);
-		   }
-		   return b;
-	   }
-	   return false;
+   public TypeNode getType(int i){
+	return types[i];
+	   
    }
-*/   
+     
    public String toString(){
 	  String s = "("; 
       if(inherited > 0){

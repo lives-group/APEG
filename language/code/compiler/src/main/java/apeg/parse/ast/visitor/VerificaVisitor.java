@@ -4,53 +4,14 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Set;
-
+import java.util.Stack;
 import org.stringtemplate.v4.ST;
-
-import apeg.parse.ast.AndExprNode;
-import apeg.parse.ast.AndPegNode;
-import apeg.parse.ast.AnyPegNode;
-import apeg.parse.ast.AssignmentNode;
-import apeg.parse.ast.AttributeExprNode;
-import apeg.parse.ast.BinaryExprNode;
-import apeg.parse.ast.BindPegNode;
-import apeg.parse.ast.BooleanExprNode;
-import apeg.parse.ast.BooleanTypeNode;
-import apeg.parse.ast.CallExprNode;
-import apeg.parse.ast.ChoicePegNode;
-import apeg.parse.ast.ConstraintPegNode;
-import apeg.parse.ast.EqualityExprNode;
-import apeg.parse.ast.ExprNode;
-import apeg.parse.ast.FloatExprNode;
-import apeg.parse.ast.FloatTypeNode;
-import apeg.parse.ast.GrammarNode;
-import apeg.parse.ast.GrammarTypeNode;
-import apeg.parse.ast.GroupPegNode;
-import apeg.parse.ast.IntExprNode;
-import apeg.parse.ast.IntTypeNode;
-import apeg.parse.ast.LambdaPegNode;
-import apeg.parse.ast.LiteralPegNode;
-import apeg.parse.ast.MetaPegExprNode;
-import apeg.parse.ast.MinusExprNode;
-import apeg.parse.ast.NonterminalPegNode;
-import apeg.parse.ast.NotExprNode;
-import apeg.parse.ast.NotPegNode;
-import apeg.parse.ast.OptionalPegNode;
-import apeg.parse.ast.OrExprNode;
-import apeg.parse.ast.PegNode;
-import apeg.parse.ast.PlusPegNode;
-import apeg.parse.ast.RuleNode;
-import apeg.parse.ast.RuleTypeNode;
-import apeg.parse.ast.SequencePegNode;
-import apeg.parse.ast.StarPegNode;
-import apeg.parse.ast.StringExprNode;
-import apeg.parse.ast.StringTypeNode;
-import apeg.parse.ast.TypeNode;
-import apeg.parse.ast.UpdatePegNode;
-import apeg.parse.ast.UserTypeNode;
-import apeg.parse.ast.VarDeclarationNode;
+import apeg.parse.ast.*;
+import apeg.parse.ast.visitor.Environments.Environment;
 import apeg.parse.ast.visitor.Environments.NTType;
-import apeg.parse.ast.visitor.Environments.RuleEnvironment;
+import apeg.parse.ast.visitor.Environments.TypeError;
+import apeg.parse.ast.visitor.Environments.VarType;
+
 
 public class VerificaVisitor implements ASTNodeVisitor {
 	
@@ -58,49 +19,119 @@ public class VerificaVisitor implements ASTNodeVisitor {
 	private String currentRule;
 	private int ruleCount;
 	private String startRule;
-	private final RuleEnvironment table;
+	private Environment<String,NTType> ruleTable;
 	private Set<String> ruleNames;
 	private ArrayList<String> erros;
 	private ArrayList<String> warnings;	
-
-	private NTType ntt;
+	private Stack<TypeNode> stk; 
+	private Environment<String,VarType> varTable;
+	private Environment<String,ArrayList<NTType>> func; // Ambeinte de typos de operadores e funcoes
+	
+	//private NTType ntt;
 	TypeNode tipos;
 	
 	
-	 public VerificaVisitor(RuleEnvironment ruleEnvironment){
+	 public VerificaVisitor(Environment<String,NTType> r, Environment<String,ArrayList<NTType>> f){
 		 
 		 erros = new ArrayList<String>();
 		 warnings = new ArrayList<String>();
 		 ruleCount = 0;
 		 currentRule = "";
 		 startRule = "";
-		 table = ruleEnvironment;
-		 ruleNames = table.getRuleNames();			 
+		 ruleTable = r;
+		 ruleNames = ruleTable.getNames();
+		 varTable = new Environment<String,VarType>();
+		 stk = new Stack<TypeNode>();
+		 func = f;
 	 }
+	 
+	 private TypeNode resolveOp(String op, TypeNode e, TypeNode d){
+	    TypeNode r = null;
+	    ArrayList<NTType> arr = func.get(op);
+	    if(arr != null){
+	    	for(NTType ty : arr){
+	    		if(ty.getParamAt(0).match(e) && ty.getParamAt(0).match(d)){
+	    			r = ty.getReturnAt(0);
+	    			break;
+	    		}
+	    	}
+	    }
+	    return r;
+	 }
+	 
+	 private void binOp(BinaryExprNode expr){
+		TypeNode result = null;
+		if(stk.size()<2){
+			erros.add("("+ expr.getLine()+","+ expr.getColunm()+"): Numero de operandos insuficientes para o operador and");
+		}else{
+			TypeNode te = stk.pop();
+			TypeNode td = stk.pop();
+			result = resolveOp(expr.getOperation().name(),te,td);
+			if(result == null){
+				erros.add("("+ expr.getLine()+","+ expr.getColunm()+"): Nenhuma definição do operador "+ expr.getOperation().name() +"se aplica aod tipo " + te.getName() + " e " + td.getName());
+			    result = new TypeError();
+			}
+			stk.push(result);
+		}
+	}
 	 
 	@Override
 	public void visit(AndExprNode expr) {
 		expr.getLeftExpr().accept(this);
 		expr.getRightExpr().accept(this);
+		
 	}
+	
 
 	@Override
 	public void visit(AttributeExprNode expr) {
 		expr.getName();
+		
 	}
 
 	@Override
 	public void visit(BinaryExprNode expr) {
 		expr.getLeftExpr().accept(this);
 		expr.getRightExpr().accept(this);
-		expr.getOperation();
+		binOp(expr);
+		
+//		switch(expr.getOperation()) {
+//		case GT: // >
+//			
+//			break;
+//		case GE: // >=
+//			
+//			break;
+//		case LT: // <
+//			
+//			break;
+//		case LE: // <=
+//			
+//			break;
+//		case ADD: // +
+//		
+//			break;
+//		case SUB: // -
+//			
+//			break;
+//		case MUL: // *
+//			
+//			break;
+//		case DIV: // /
+//			
+//			break;
+//		case MOD: // %
+//			
+//			break;
+//		default: // Should never reach the default case
+//			break;
+//	}
 		
 	}
 
 	@Override
 	public void visit(BooleanExprNode expr) { ////////////////////////////////////////////
-		expr.getValue();
-		System.out.println(expr.getValue());
+		stk.push(new BooleanTypeNode());
 	}
 
 	@Override
@@ -118,25 +149,35 @@ public class VerificaVisitor implements ASTNodeVisitor {
 	public void visit(EqualityExprNode expr) { 
 		expr.getLeftExpr().accept(this);
 		expr.getRightExpr().accept(this);
-		expr.getEqualityType(); //switch 
+		
+		
+		switch(expr.getEqualityType()) {
+		case EQ: //==
+			
+			break;
+		case NE: // /=
+			
+			break;
+		default: // Should never reach the default case
+			
+			break;
+	}
 		
 	}
 
 	@Override
 	public void visit(FloatExprNode expr) { ////////////////////////////
-		expr.getValue();		
+		stk.push(new FloatTypeNode());	
 	}
 
 	@Override
 	public void visit(IntExprNode expr) { ////////////////////////////////
-		expr.getValue();
-		//System.out.println(expr.getValue());
+		stk.push(new IntTypeNode());
 	}
 
 	@Override
 	public void visit(MetaPegExprNode expr) {
 		expr.getExpr().accept(this);
-		
 	}
 
 	@Override
@@ -146,8 +187,21 @@ public class VerificaVisitor implements ASTNodeVisitor {
 	}
 
 	@Override
-	public void visit(NotExprNode expr) {
-		expr.getExpr().accept(this);
+	public void visit(NotExprNode expr) { //bool tbem?
+		expr.getExpr().accept(this); 
+		
+		if(stk.size()<2){
+			erros.add("("+ expr.getLine()+","+ expr.getColunm()+"): Numero de operandos insuficientes para o operador and");
+		}else{
+			TypeNode t = stk.pop();
+			if(!stk.peek().match(t)){
+				if(!stk.peek().match(new BooleanTypeNode())){
+					stk.pop();
+					stk.push(new BooleanTypeNode());
+				}
+				erros.add("("+ expr.getLine()+","+ expr.getColunm()+"): Operandos de tipo incompatíveis");
+			}
+		}
 		
 	}
 
@@ -157,11 +211,26 @@ public class VerificaVisitor implements ASTNodeVisitor {
 		expr.getLeftExpr().accept(this);
 		expr.getRightExpr().accept(this);
 		
+		if(stk.size()<2){
+			erros.add("("+ expr.getLine()+","+ expr.getColunm()+"): Numero de operandos insuficientes para o operador and");
+		}else{
+			TypeNode t = stk.pop();
+			if(!stk.peek().match(t)){ 
+				if(!stk.peek().match(new BooleanTypeNode())){
+					stk.pop();
+					stk.push(new BooleanTypeNode());
+				}
+				erros.add("("+ expr.getLine()+","+ expr.getColunm()+"): Operandos de tipo incompatíveis");
+			}
+		}
+		
 	}
 
 	@Override
-	public void visit(StringExprNode expr) { ///////////////////////////
-		expr.getValue();
+	public void visit(StringExprNode expr) { // oq faco em relacao a string?
+		stk.push(new StringTypeNode());
+		
+		
 	}
 
 	@Override
@@ -209,17 +278,12 @@ public class VerificaVisitor implements ASTNodeVisitor {
 	@Override
 	public void visit(NonterminalPegNode peg) { ////////////////////////////////
 	
-		for(ExprNode p:peg.getExprs()) {
-			p.accept(this);	
-		}
-		 
-	     //System.out.println("Nao terminal encontrado " + peg.getName());
-	     
+		for(ExprNode p:peg.getExprs()) { p.accept(this); }
+	    
 	     // **O Não terminal utilizado nao foi definido**
-	     if(!table.contains(peg.getName()) ){ 
+	     if(!ruleTable.contains(peg.getName()) ){ 
 	    	 //System.out.println("(" + peg.getLine() + ", " + peg.getColunm()+ ") : O nao terminal " +peg.getName()+ " chamado na regra "+ currentRule +" nao existe");
 	     erros.add("(" +peg.getLine() + ", " + peg.getColunm()+ ") : O nao terminal " +peg.getName()+ " chamado na regra "+ currentRule +" nao existe");
-	    
 	     }
 	     
 	     // **Terminais não usados**
@@ -230,7 +294,7 @@ public class VerificaVisitor implements ASTNodeVisitor {
 	     // **Inteiros no lugar do parametro que recebe o retorno**
 	     // Quantidade de parametros passados é diferente do definido na regra em questão
 	     List<ExprNode> l = peg.getExprs();
-	     NTType temp = table.get(peg.getName());
+	     NTType temp = ruleTable.get(peg.getName());
 	     if(temp != null){
 	    	 if(temp.getNumParams() != peg.getExprs().size()){
 	        	  erros.add("(" + peg.getLine() +", " + peg.getColunm() + ") Aridade de não terminal incosistente: " + 
@@ -241,11 +305,28 @@ public class VerificaVisitor implements ASTNodeVisitor {
 	    	    	if(!(l.get(i) instanceof AttributeExprNode)){
 	    	    		erros.add("(" + peg.getLine() +", " + peg.getColunm() + ") Atributo variável esperado aqui, mas expressão " +l.get(i).toString() + " encontrada.");
 	    	    	}
+	    	    } 
+	    	    
+	    	    // se getnumparams == getexprs.size
+	    	    
+	    	    System.out.println(peg.getName() +" : num param sintetizado " + temp.getNumSintetized()); //quantidade sintetizado
+	    	    
+	    	    for(int i=0; i< temp.getNumSintetized(); i++){  
+	    	    	System.out.println(peg.getName() +" primeiro param sintetizado " + temp.getType(i).getName());
 	    	    }
-	    	 }
+	    	    
+	    	    
+	    	    System.out.println(peg.getName() +" : num param herdado " + temp.getNumInherited()); //quantidade herdado 
+	    	    
+	    	    for(int i= temp.getNumSintetized(); i< temp.getNumParams(); i++){  
+	    	    	System.out.println(peg.getName() +" primeiro param sintetizado " + temp.getType(i).getName());
+	    	    }
+	    	    
 	    	 
-	     } 
-	   
+	    	    }
+	    	 }  
+	     
+	     
 	} 
 
 	@Override
@@ -322,17 +403,20 @@ public class VerificaVisitor implements ASTNodeVisitor {
 		rule.getAnnotation();
 		rule.getExpr().accept(this);
 		rule.getName();
+	    	
+		varTable.clear();
 		
 		if(ruleCount == 0){
 			startRule = rule.getName();
 		}
-	
 		for(VarDeclarationNode param : rule.getParameters()){
-			param.accept(this);
+			 VarType v = new VarType(param.getType(), VarType.AttrDirection.HERDADO);
+			 varTable.add(param.getName(), v);
 		}
 		
 		for(VarDeclarationNode param : rule.getReturns()){ 
-			param.accept(this);
+			 VarType v = new VarType(param.getType(), VarType.AttrDirection.SINTETIZADO);
+			 varTable.add(param.getName(), v);	
 		}
 		
 		ruleCount++;
@@ -346,7 +430,6 @@ public class VerificaVisitor implements ASTNodeVisitor {
 	public void visit(VarDeclarationNode var) {
 		var.getName();
 		var.getType().accept(this);
-		
 	}
 
 	@Override
@@ -357,29 +440,24 @@ public class VerificaVisitor implements ASTNodeVisitor {
 
 	@Override
 	public void visit(FloatTypeNode type) {
-		// TODO Auto-generated method stub
-		 
-		
+		// TODO Auto-generated method stub	
 	}
 
 
 	@Override
 	public void visit(GrammarTypeNode type) {
 		// TODO Auto-generated method stub
-		
 	}
 
 
 	@Override
 	public void visit(IntTypeNode type) {
 		// TODO Auto-generated method stub
-		
 	}
 	
 	@Override
 	public void visit(RuleTypeNode type) {
 		// TODO Auto-generated method stub
-		
 	}
 
 

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Stack;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
@@ -15,12 +16,15 @@ import apeg.parse.APEGLexer;
 import apeg.parse.APEGParser;
 import apeg.parse.ast.ASTFactory;
 import apeg.parse.ast.ASTFactoryImpl;
+import apeg.parse.ast.BinaryExprNode;
 import apeg.parse.ast.GrammarNode;
 import apeg.parse.ast.visitor.ASTNodeVisitor;
 import apeg.parse.ast.visitor.BuildRuleEnvironmetVisitor;
 import apeg.parse.ast.visitor.DOTVisitor;
 import apeg.parse.ast.visitor.PrettyPrintVisitor;
 import apeg.parse.ast.visitor.VerificaVisitor;
+import apeg.parse.ast.visitor.Environments.Environment;
+import apeg.parse.ast.visitor.Environments.NTType;
 import apeg.util.lang.LangInfo;
 import apeg.util.lang.java.JavaInfo;
 import apeg.util.path.AbsolutePath;
@@ -115,7 +119,7 @@ public class Tool {
 				g.accept(build);
 				build.printTable();
 				
-     			VerificaVisitor verifica = new VerificaVisitor(build.getTable());
+     			VerificaVisitor verifica = new VerificaVisitor(build.getTable(),new Environment<String,ArrayList<NTType>>());
 				g.accept(verifica);
 			    if (verifica.hasErrors()){ 
 			        System.err.println("---------- Errors --------- ");

@@ -63,6 +63,38 @@ public abstract class FormalVisitor implements ASTNodeVisitor{
 		expr.getRightExpr().accept(this);
 		expr.getOperation();
 		
+		switch(expr.getOperation()) {
+		case GT: // >
+			
+			break;
+		case GE: // >=
+			
+			break;
+		case LT: // <
+			
+			break;
+		case LE: // <=
+			
+			break;
+		case ADD: // +
+		
+			break;
+		case SUB: // -
+			
+			break;
+		case MUL: // *
+			
+			break;
+		case DIV: // /
+			
+			break;
+		case MOD: // %
+			
+			break;
+		default: // Should never reach the default case
+			break;
+	}
+		
 	}
 
 	@Override
@@ -87,7 +119,7 @@ public abstract class FormalVisitor implements ASTNodeVisitor{
 	public void visit(EqualityExprNode expr) {
 		expr.getLeftExpr().accept(this);
 		expr.getRightExpr().accept(this);
-		expr.getEqualityType(); //switch
+		expr.getEqualityType(); 
 		
 	}
 

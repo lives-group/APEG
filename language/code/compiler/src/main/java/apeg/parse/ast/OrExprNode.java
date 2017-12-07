@@ -2,21 +2,15 @@ package apeg.parse.ast;
 
 import apeg.parse.ast.visitor.ASTNodeVisitor;
 
-public class OrExprNode extends ExprNode {
+public class OrExprNode extends LogicalBinOp {
 	
-	private ExprNode left, right;
-	
+
 	public OrExprNode(ExprNode left, ExprNode right) {
-		this.left = left;
-		this.right = right;
+		super(left,right);
 	}
 
-	public ExprNode getLeftExpr() {
-		return left;
-	}
-
-	public ExprNode getRightExpr() {
-		return right;
+	public String getOpName(){
+		return "OR";
 	}
 
 	@Override

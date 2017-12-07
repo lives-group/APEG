@@ -25,6 +25,7 @@ import apeg.parse.ast.visitor.PrettyPrintVisitor;
 import apeg.parse.ast.visitor.VerificaVisitor;
 import apeg.parse.ast.visitor.Environments.Environment;
 import apeg.parse.ast.visitor.Environments.NTType;
+import apeg.parse.ast.visitor.Environments.OperatorTables;
 import apeg.util.lang.LangInfo;
 import apeg.util.lang.java.JavaInfo;
 import apeg.util.path.AbsolutePath;
@@ -119,7 +120,8 @@ public class Tool {
 				g.accept(build);
 				build.printTable();
 				
-     			VerificaVisitor verifica = new VerificaVisitor(build.getTable(),new Environment<String,ArrayList<NTType>>());
+				
+     			VerificaVisitor verifica = new VerificaVisitor(build.getTable(),OperatorTables.mkArithmeticEnv());
 				g.accept(verifica);
 			    if (verifica.hasErrors()){ 
 			        System.err.println("---------- Errors --------- ");

@@ -45,6 +45,17 @@ public class VerificaVisitor implements ASTNodeVisitor {
 		 func = f;
 	 }
 	 
+	 /**
+	  * Resolves an overload operator name to it's result type.
+	  * Retrieve the operator's types from the operator's table, and look for a type whose parameters match the 
+	  * arguments. Returns the result type of the first successful match or null if no match is found.
+	  *  
+	  * @param op The name of the operator.
+	  * @param e The type of the left argument.
+	  * @param d The type of the right argument.
+	  * @return The result from the operator to the types from the stack.
+	  */
+	 
 	 private TypeNode resolveOp(String op, TypeNode e, TypeNode d){
 	    TypeNode r = null;
 	    ArrayList<NTType> arr = func.get(op);
@@ -59,7 +70,40 @@ public class VerificaVisitor implements ASTNodeVisitor {
 	    return r;
 	 }
 	 
-	 private void binOp(BinaryExprNode expr){
+	 /**
+	  * Verify the types of the arithmetical operators.
+	  * Pop two elements from the stack and match their types. This function uses the func Table that describes 
+	  * the types of the parameters and the result of the operator. This function registers any errors on the 
+	  * errors message list.
+	  * 
+	  * @param expr The BinaryExprNode to be verified.
+	  */
+	 
+	 private void logicalBinOp(LogicalBinOp expr){ 
+			TypeNode result = null;
+			if(stk.size()<2){
+				erros.add("("+ expr.getLine()+","+ expr.getColunm()+"): Numero de operandos insuficientes para o operador and");
+			}else{
+				TypeNode te = stk.pop();
+				TypeNode td = stk.pop();
+				result = resolveOp(expr.getOpName(),te,td);
+				if(result == null){
+					erros.add("("+ expr.getLine()+","+ expr.getColunm()+"): Nenhuma definição do operador "+ expr.getOpName() +"se aplica aod tipo " + te.getName() + " e " + td.getName());
+				    result = new TypeError();
+				}
+				stk.push(result);
+			}
+		}
+	 
+	 /**
+	  * Verify the types of the arithmetical operators and the operators >,<, >= ,<=.
+	  * Pop two elements from the stack and match their types. This function uses the func Table that describes 
+	  * the types of the parameters and the result of the operator. This function registers any errors on the 
+	  * errors message list.
+	  * 
+	  * @param expr The BinaryExprNode to be verified.
+	  */
+	 private void arithBinOp(BinaryExprNode expr){ 
 		TypeNode result = null;
 		if(stk.size()<2){
 			erros.add("("+ expr.getLine()+","+ expr.getColunm()+"): Numero de operandos insuficientes para o operador and");
@@ -80,12 +124,20 @@ public class VerificaVisitor implements ASTNodeVisitor {
 		expr.getLeftExpr().accept(this);
 		expr.getRightExpr().accept(this);
 		
+		logicalBinOp(expr);
 	}
 	
 
 	@Override
 	public void visit(AttributeExprNode expr) {
-		expr.getName();
+		
+		VarType t = varTable.get(expr.getName());
+		
+		if(t != null){
+		  stk.push(t.getType());	
+		}else{
+			 erros.add("("+ expr.getLine() + "," +expr.getColunm() +"): Variavel " + expr.getName()+" nao foi declarada. ");  
+		}
 		
 	}
 
@@ -93,39 +145,7 @@ public class VerificaVisitor implements ASTNodeVisitor {
 	public void visit(BinaryExprNode expr) {
 		expr.getLeftExpr().accept(this);
 		expr.getRightExpr().accept(this);
-		binOp(expr);
-		
-//		switch(expr.getOperation()) {
-//		case GT: // >
-//			
-//			break;
-//		case GE: // >=
-//			
-//			break;
-//		case LT: // <
-//			
-//			break;
-//		case LE: // <=
-//			
-//			break;
-//		case ADD: // +
-//		
-//			break;
-//		case SUB: // -
-//			
-//			break;
-//		case MUL: // *
-//			
-//			break;
-//		case DIV: // /
-//			
-//			break;
-//		case MOD: // %
-//			
-//			break;
-//		default: // Should never reach the default case
-//			break;
-//	}
+		arithBinOp(expr);
 		
 	}
 
@@ -149,19 +169,6 @@ public class VerificaVisitor implements ASTNodeVisitor {
 	public void visit(EqualityExprNode expr) { 
 		expr.getLeftExpr().accept(this);
 		expr.getRightExpr().accept(this);
-		
-		
-		switch(expr.getEqualityType()) {
-		case EQ: //==
-			
-			break;
-		case NE: // /=
-			
-			break;
-		default: // Should never reach the default case
-			
-			break;
-	}
 		
 	}
 
@@ -190,19 +197,6 @@ public class VerificaVisitor implements ASTNodeVisitor {
 	public void visit(NotExprNode expr) { //bool tbem?
 		expr.getExpr().accept(this); 
 		
-		if(stk.size()<2){
-			erros.add("("+ expr.getLine()+","+ expr.getColunm()+"): Numero de operandos insuficientes para o operador and");
-		}else{
-			TypeNode t = stk.pop();
-			if(!stk.peek().match(t)){
-				if(!stk.peek().match(new BooleanTypeNode())){
-					stk.pop();
-					stk.push(new BooleanTypeNode());
-				}
-				erros.add("("+ expr.getLine()+","+ expr.getColunm()+"): Operandos de tipo incompatíveis");
-			}
-		}
-		
 	}
 
 	@Override
@@ -211,23 +205,12 @@ public class VerificaVisitor implements ASTNodeVisitor {
 		expr.getLeftExpr().accept(this);
 		expr.getRightExpr().accept(this);
 		
-		if(stk.size()<2){
-			erros.add("("+ expr.getLine()+","+ expr.getColunm()+"): Numero de operandos insuficientes para o operador and");
-		}else{
-			TypeNode t = stk.pop();
-			if(!stk.peek().match(t)){ 
-				if(!stk.peek().match(new BooleanTypeNode())){
-					stk.pop();
-					stk.push(new BooleanTypeNode());
-				}
-				erros.add("("+ expr.getLine()+","+ expr.getColunm()+"): Operandos de tipo incompatíveis");
-			}
-		}
+		logicalBinOp(expr);
 		
 	}
 
 	@Override
-	public void visit(StringExprNode expr) { // oq faco em relacao a string?
+	public void visit(StringExprNode expr) { 
 		stk.push(new StringTypeNode());
 		
 		
@@ -373,7 +356,18 @@ public class VerificaVisitor implements ASTNodeVisitor {
 	@Override
 	public void visit(AssignmentNode assign) {
 	   assign.getExpr().accept(this);
-	   assign.getVariable();
+	   System.out.println(stk.toString());
+	   VarType v = varTable.get(assign.getVariable());
+         
+	   if(v != null){
+	      if(!(v.getType().match(stk.peek()))){  
+    	      erros.add("("+ assign.getLine() + "," +assign.getColunm() +"): Atribuicao de tipos incompativeis: " +stk.peek().getName() + " e " + v.getType().getName());  
+          }
+	   }else{
+		   erros.add("("+ assign.getLine() + "," +assign.getColunm() +"): Variavel " + assign.getVariable()+" nao foi declarada. ");  
+	   }
+       
+	   stk.pop(); 
 		
 	}
 

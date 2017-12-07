@@ -2,7 +2,7 @@ package apeg.parse.ast;
 
 import apeg.parse.ast.visitor.ASTNodeVisitor;
 
-public class AndExprNode extends LogicalBinOp {
+public class AndExprNode extends LogicalBinExpr {
 
 	
 	public AndExprNode(ExprNode left, ExprNode right) {

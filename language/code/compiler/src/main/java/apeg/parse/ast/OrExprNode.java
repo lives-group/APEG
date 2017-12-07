@@ -2,7 +2,7 @@ package apeg.parse.ast;
 
 import apeg.parse.ast.visitor.ASTNodeVisitor;
 
-public class OrExprNode extends LogicalBinOp {
+public class OrExprNode extends LogicalBinExpr {
 	
 
 	public OrExprNode(ExprNode left, ExprNode right) {

@@ -79,7 +79,7 @@ public class VerificaVisitor implements ASTNodeVisitor {
 	  * @param expr The BinaryExprNode to be verified.
 	  */
 	 
-	 private void logicalBinOp(LogicalBinOp expr){ 
+	 private void logicalBinOp(LogicalBinExpr expr){ 
 			TypeNode result = null;
 			if(stk.size()<2){
 				erros.add("("+ expr.getLine()+","+ expr.getColunm()+"): Numero de operandos insuficientes para o operador and");

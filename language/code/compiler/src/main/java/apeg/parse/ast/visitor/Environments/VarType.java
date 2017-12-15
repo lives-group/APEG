@@ -18,7 +18,7 @@ public class VarType {
     }
 
     public String toString(){
-    	String s = " :: " + type.toString() +  (atributo == AttrDirection.HERDADO ? " H " : " S "); 
+    	String s = " :: " + type.getName() +  (atributo == AttrDirection.HERDADO ? " H " : " S "); 
     	return s;
     }
     
@@ -29,4 +29,5 @@ public class VarType {
 	public AttrDirection getAtributo() {
 		return atributo;
 	}
+ 
 }

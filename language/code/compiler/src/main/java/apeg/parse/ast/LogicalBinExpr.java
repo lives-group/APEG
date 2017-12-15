@@ -1,7 +1,5 @@
 package apeg.parse.ast;
 
-import apeg.parse.ast.visitor.ASTNodeVisitor;
-
 public abstract class LogicalBinExpr extends ExprNode {
 	
 	private ExprNode left, right;

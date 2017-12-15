@@ -1,11 +1,9 @@
 package apeg.parse.ast.visitor;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Set;
 import java.util.Stack;
-import org.stringtemplate.v4.ST;
 import apeg.parse.ast.*;
 import apeg.parse.ast.visitor.Environments.Environment;
 import apeg.parse.ast.visitor.Environments.NTType;
@@ -70,13 +68,41 @@ public class VerificaVisitor implements ASTNodeVisitor {
 	    return r;
 	 }
 	 
+	 
 	 /**
 	  * Verify the types of the arithmetical operators.
 	  * Pop two elements from the stack and match their types. This function uses the func Table that describes 
 	  * the types of the parameters and the result of the operator. This function registers any errors on the 
 	  * errors message list.
 	  * 
-	  * @param expr The BinaryExprNode to be verified.
+	  * @param expr The EqualityExprNode to be verified.
+	  */
+	 
+	 private void equalityBinOp(EqualityExprNode expr){ 
+			TypeNode result = null;
+			if(stk.size()<2){
+				erros.add("("+ expr.getLine()+","+ expr.getColunm()+"): Numero de operandos insuficientes para o operador and");
+			}else{
+				System.out.print("EQUALITY: "); 
+				pprintStak();
+				TypeNode te = stk.pop();
+				TypeNode td = stk.pop();
+				result = resolveOp(expr.getEqualityType().name(),te,td);
+				if(result == null){
+					erros.add("("+ expr.getLine()+","+ expr.getColunm()+"): Nenhuma definição do operador "+ expr.getEqualityType().name() +" se aplica ao tipo " + te.getName() + " e " + td.getName());
+				    result = new TypeError();
+				}
+				stk.push(result);
+			}
+		}
+	 
+	 /**
+	  * Verify the types of the arithmetical operators.
+	  * Pop two elements from the stack and match their types. This function uses the func Table that describes 
+	  * the types of the parameters and the result of the operator. This function registers any errors on the 
+	  * errors message list.
+	  * 
+	  * @param expr The LogicalBinExpr to be verified.
 	  */
 	 
 	 private void logicalBinOp(LogicalBinExpr expr){ 
@@ -84,14 +110,19 @@ public class VerificaVisitor implements ASTNodeVisitor {
 			if(stk.size()<2){
 				erros.add("("+ expr.getLine()+","+ expr.getColunm()+"): Numero de operandos insuficientes para o operador and");
 			}else{
+				System.out.print("Logical OP IN: ");
+				pprintStak();
 				TypeNode te = stk.pop();
 				TypeNode td = stk.pop();
 				result = resolveOp(expr.getOpName(),te,td);
 				if(result == null){
-					erros.add("("+ expr.getLine()+","+ expr.getColunm()+"): Nenhuma definição do operador "+ expr.getOpName() +"se aplica aod tipo " + te.getName() + " e " + td.getName());
+					erros.add("("+ expr.getLine()+","+ expr.getColunm()+"): Nenhuma definição do operador "+ expr.getOpName() +" se aplica ao tipo " + te.getName() + " e " + td.getName());
 				    result = new TypeError();
 				}
 				stk.push(result);
+				System.out.print("Logical OP EXIT: ");
+				pprintStak();
+				
 			}
 		}
 	 
@@ -108,14 +139,18 @@ public class VerificaVisitor implements ASTNodeVisitor {
 		if(stk.size()<2){
 			erros.add("("+ expr.getLine()+","+ expr.getColunm()+"): Numero de operandos insuficientes para o operador and");
 		}else{
+			System.out.print("Arith OP IN: ");
+			pprintStak();
 			TypeNode te = stk.pop();
 			TypeNode td = stk.pop();
 			result = resolveOp(expr.getOperation().name(),te,td);
 			if(result == null){
-				erros.add("("+ expr.getLine()+","+ expr.getColunm()+"): Nenhuma definição do operador "+ expr.getOperation().name() +"se aplica aod tipo " + te.getName() + " e " + td.getName());
+				erros.add("("+ expr.getLine()+","+ expr.getColunm()+"): Nenhuma definição do operador "+ expr.getOperation().name() +" se aplica ao tipo " + te.getName() + " e " + td.getName());
 			    result = new TypeError();
 			}
 			stk.push(result);
+			System.out.print("Arith OP EXIT: ");
+			pprintStak();
 		}
 	}
 	 
@@ -127,12 +162,39 @@ public class VerificaVisitor implements ASTNodeVisitor {
 		logicalBinOp(expr);
 	}
 	
+	@Override
+	public void visit(NotExprNode expr) { //bool tbem?
+		expr.getExpr().accept(this); 
+		
+        ArrayList<NTType> a = func.get("NOT");
+		
+		if(a == null){
+			erros.add("(" + expr.getLine() + "," + expr.getColunm() + " ): Operador nao existe.");
+		}else{
+			for(NTType n : a){
+				if(stk.peek().match(n.getParamAt(0))){
+					stk.pop();
+					stk.push(n.getReturnAt(0));
+					return ;
+				}
+			}
+			erros.add("(" + expr.getLine() + "," + expr.getColunm() + " ): Nenhuma definicao do operador MINUS se aplica ao tipo " + stk.peek().getName());
+		}
+	}
+
+	@Override
+	public void visit(OrExprNode expr){
+		expr.getLeftExpr().accept(this);
+		expr.getRightExpr().accept(this);
+		
+		logicalBinOp(expr);	
+	}
+	
 
 	@Override
 	public void visit(AttributeExprNode expr) {
 		
 		VarType t = varTable.get(expr.getName());
-		
 		if(t != null){
 		  stk.push(t.getType());	
 		}else{
@@ -170,6 +232,8 @@ public class VerificaVisitor implements ASTNodeVisitor {
 		expr.getLeftExpr().accept(this);
 		expr.getRightExpr().accept(this);
 		
+		equalityBinOp(expr);
+		
 	}
 
 	@Override
@@ -191,23 +255,24 @@ public class VerificaVisitor implements ASTNodeVisitor {
 	public void visit(MinusExprNode expr) {
 		expr.getExpr().accept(this);
 		
-	}
-
-	@Override
-	public void visit(NotExprNode expr) { //bool tbem?
-		expr.getExpr().accept(this); 
+		ArrayList<NTType> a = func.get("MINUS");
+		
+		if(a == null){
+			erros.add("(" + expr.getLine() + "," + expr.getColunm() + " ): Operador nao existe.");
+		}else{
+			for(NTType n : a){
+				if(stk.peek().match(n.getParamAt(0))){
+					stk.pop();
+					stk.push(n.getReturnAt(0));
+					return ;
+				}
+			}
+			erros.add("(" + expr.getLine() + "," + expr.getColunm() + " ): Nenhuma definicao do operador MINUS se aplica ao tipo " + stk.peek().getName());
+		}
 		
 	}
 
-	@Override
-	public void visit(OrExprNode expr) {
-		
-		expr.getLeftExpr().accept(this);
-		expr.getRightExpr().accept(this);
-		
-		logicalBinOp(expr);
-		
-	}
+
 
 	@Override
 	public void visit(StringExprNode expr) { 
@@ -356,7 +421,6 @@ public class VerificaVisitor implements ASTNodeVisitor {
 	@Override
 	public void visit(AssignmentNode assign) {
 	   assign.getExpr().accept(this);
-	   System.out.println(stk.toString());
 	   VarType v = varTable.get(assign.getVariable());
          
 	   if(v != null){
@@ -394,9 +458,8 @@ public class VerificaVisitor implements ASTNodeVisitor {
 
 	@Override
 	public void visit(RuleNode rule) {
-		rule.getAnnotation();
-		rule.getExpr().accept(this);
-		rule.getName();
+		
+		
 	    	
 		varTable.clear();
 		
@@ -412,7 +475,7 @@ public class VerificaVisitor implements ASTNodeVisitor {
 			 VarType v = new VarType(param.getType(), VarType.AttrDirection.SINTETIZADO);
 			 varTable.add(param.getName(), v);	
 		}
-		
+		rule.getExpr().accept(this);
 		ruleCount++;
 	}
 
@@ -494,6 +557,14 @@ public class VerificaVisitor implements ASTNodeVisitor {
 
 	public ArrayList<String> getWarnings() {
 		return warnings;
+	}
+	
+	private void pprintStak(){
+	   System.out.print("Stack -> ");
+	   for(TypeNode tn : stk ){
+		   System.out.print(tn.getName() + ", ");
+	   }
+	   System.out.println(" <-Topo ");
 	}
 
 }

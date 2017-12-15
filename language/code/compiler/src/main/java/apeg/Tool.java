@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Stack;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
@@ -16,15 +15,12 @@ import apeg.parse.APEGLexer;
 import apeg.parse.APEGParser;
 import apeg.parse.ast.ASTFactory;
 import apeg.parse.ast.ASTFactoryImpl;
-import apeg.parse.ast.BinaryExprNode;
 import apeg.parse.ast.GrammarNode;
 import apeg.parse.ast.visitor.ASTNodeVisitor;
 import apeg.parse.ast.visitor.BuildRuleEnvironmetVisitor;
 import apeg.parse.ast.visitor.DOTVisitor;
 import apeg.parse.ast.visitor.PrettyPrintVisitor;
 import apeg.parse.ast.visitor.VerificaVisitor;
-import apeg.parse.ast.visitor.Environments.Environment;
-import apeg.parse.ast.visitor.Environments.NTType;
 import apeg.parse.ast.visitor.Environments.OperatorTables;
 import apeg.util.lang.LangInfo;
 import apeg.util.lang.java.JavaInfo;
@@ -109,7 +105,7 @@ public class Tool {
 					// ARTLR has already printed error messages, thus we stop
 					continue;
 				}
-				
+								
 				// Pretty printing the grammar. Just for testing
 				ASTNodeVisitor prettyprint = new PrettyPrintVisitor(
 						new RelativePath(new AbsolutePath("."),

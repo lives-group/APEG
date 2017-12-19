@@ -33,6 +33,42 @@ public class NTType {
 	   return types[i];
    }
    
+   public boolean match(NTType n){
+	   boolean r = false;
+	   if(getNumInherited() == n.getNumInherited() && getNumSintetized() == n.getNumSintetized()){
+		   r = true;
+		   for(int i = 0; i < n.getNumParams(); i++){
+			  r = r && getParamAt(i).match(n.getParamAt(i)); 
+		   }
+	   }
+	   return r;
+	   
+   }
+   
+   public boolean matchInherited(TypeNode n[]){
+	   boolean r = false;
+	   if(getNumInherited() == n.length){
+		   r = true;
+		   for(int i=0; i< n.length; i++){
+			   r = r && getParamAt(i).match(n[i]);
+		   }
+	   }
+	   return r;
+   }
+   
+   public boolean matchSintetized(TypeNode n[]){
+	   boolean r = false;
+	   if(getNumSintetized() == n.length){
+		   r = true;
+		   for(int i=0; i< n.length; i++){
+			   r = r && getReturnAt(i).match(n[i]);
+		   }
+	   }
+	   return r;
+   }
+   
+   
+   
    public TypeNode getReturnAt(int i){
        if(i > getNumSintetized()){ throw new ArrayIndexOutOfBoundsException("Index:  " + i);} 
 	   return types[inherited+i];

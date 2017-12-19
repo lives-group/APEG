@@ -23,7 +23,7 @@ public class VerificaVisitor implements ASTNodeVisitor {
 	private ArrayList<String> warnings;	
 	private Stack<TypeNode> stk; 
 	private Environment<String,VarType> varTable;
-	private Environment<String,ArrayList<NTType>> func; // Ambeinte de typos de operadores e funcoes
+	private Environment<String,ArrayList<NTType>> func; // Ambiente de typos de operadores e funcoes
 	
 	//private NTType ntt;
 	TypeNode tipos;
@@ -44,9 +44,7 @@ public class VerificaVisitor implements ASTNodeVisitor {
 	 }
 	 
 	 /**
-	  * Resolves an overload operator name to it's result type.
-	  * Retrieve the operator's types from the operator's table, and look for a type whose parameters match the 
-	  * arguments. Returns the result type of the first successful match or null if no match is found.
+	  * ResolveOp is a particular case of the  resolveSymbol. 
 	  *  
 	  * @param op The name of the operator.
 	  * @param e The type of the left argument.
@@ -55,19 +53,31 @@ public class VerificaVisitor implements ASTNodeVisitor {
 	  */
 	 
 	 private TypeNode resolveOp(String op, TypeNode e, TypeNode d){
-	    TypeNode r = null;
-	    ArrayList<NTType> arr = func.get(op);
-	    if(arr != null){
-	    	for(NTType ty : arr){
-	    		if(ty.getParamAt(0).match(e) && ty.getParamAt(0).match(d)){
-	    			r = ty.getReturnAt(0);
-	    			break;
-	    		}
-	    	}
-	    }
-	    return r;
+		return resolveSymbol(op,new TypeNode[]{e,d});
 	 }
 	 
+	 /**
+	  * Resolves an overloaded symbol name to it's result type.
+	  * Retrieve the symbol's types from the operator's table, and look for a type whose parameters match the 
+	  * arguments. Returns the result type of the first successful match or null if no match is found.
+	  *  
+	  * @param op The name of operator
+	  * @param t The array with the types of the parameters of the intended function call.
+	  * @return  The result type from the function.
+	  */ 
+	 private TypeNode resolveSymbol(String op, TypeNode[] t){
+		    TypeNode r = null;
+		    ArrayList<NTType> arr = func.get(op);
+		    if(arr != null){
+		    	for(NTType ty : arr){
+		    	  if(ty.matchInherited(t)){
+		    			r = ty.getReturnAt(0);
+		    			break;
+		    	  }
+		    	}
+		     }
+		     return r;
+	 }
 	 
 	 /**
 	  * Verify the types of the arithmetical operators.
@@ -163,22 +173,19 @@ public class VerificaVisitor implements ASTNodeVisitor {
 	}
 	
 	@Override
-	public void visit(NotExprNode expr) { //bool tbem?
-		expr.getExpr().accept(this); 
-		
-        ArrayList<NTType> a = func.get("NOT");
-		
-		if(a == null){
-			erros.add("(" + expr.getLine() + "," + expr.getColunm() + " ): Operador nao existe.");
+	public void visit(NotExprNode expr) {
+		expr.getExpr().accept(this); 	
+		TypeNode r;
+		if(!stk.isEmpty()){
+		  r = resolveSymbol("NOT", new TypeNode[]{stk.peek()});
+		  if(r == null){
+			  erros.add("(" + expr.getLine() + "," + expr.getColunm() + " ): Nenhuma definicao do operador NOT se aplica ao tipo " + stk.peek().getName());  
+		      r = new TypeError(); 
+		  }
+		  stk.pop();
+		  stk.push(r);
 		}else{
-			for(NTType n : a){
-				if(stk.peek().match(n.getParamAt(0))){
-					stk.pop();
-					stk.push(n.getReturnAt(0));
-					return ;
-				}
-			}
-			erros.add("(" + expr.getLine() + "," + expr.getColunm() + " ): Nenhuma definicao do operador MINUS se aplica ao tipo " + stk.peek().getName());
+			erros.add("(" + expr.getLine() + "," + expr.getColunm() + " ): Operador NOT não está aplicado a nenhum argumento. ");  		
 		}
 	}
 
@@ -254,31 +261,23 @@ public class VerificaVisitor implements ASTNodeVisitor {
 	@Override
 	public void visit(MinusExprNode expr) {
 		expr.getExpr().accept(this);
-		
-		ArrayList<NTType> a = func.get("MINUS");
-		
-		if(a == null){
-			erros.add("(" + expr.getLine() + "," + expr.getColunm() + " ): Operador nao existe.");
+		TypeNode r;
+		if(!stk.isEmpty()){
+		  r = resolveSymbol("MINUS", new TypeNode[]{stk.peek()});
+		  if(r == null){
+			  erros.add("(" + expr.getLine() + "," + expr.getColunm() + " ): Nenhuma definicao do operador MINUS se aplica ao tipo " + stk.peek().getName());  
+		      r = new TypeError(); 
+		  }
+		  stk.pop();
+		  stk.push(r);
 		}else{
-			for(NTType n : a){
-				if(stk.peek().match(n.getParamAt(0))){
-					stk.pop();
-					stk.push(n.getReturnAt(0));
-					return ;
-				}
-			}
-			erros.add("(" + expr.getLine() + "," + expr.getColunm() + " ): Nenhuma definicao do operador MINUS se aplica ao tipo " + stk.peek().getName());
+			erros.add("(" + expr.getLine() + "," + expr.getColunm() + " ): Operador MINUS não está aplicado a nenhum argumento. ");  		
 		}
-		
 	}
-
-
 
 	@Override
 	public void visit(StringExprNode expr) { 
 		stk.push(new StringTypeNode());
-		
-		
 	}
 
 	@Override

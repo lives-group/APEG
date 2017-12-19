@@ -16,6 +16,8 @@ public class OperatorTables {
 		 ArrayList<NTType> t = new ArrayList<NTType>();
 		 t.add(new NTType(new TypeNode[]{new IntTypeNode(),new IntTypeNode()},new TypeNode[]{new IntTypeNode()}));
 		 t.add(new NTType(new TypeNode[]{new FloatTypeNode(),new FloatTypeNode()},new TypeNode[]{new FloatTypeNode()}));
+		 t.add(new NTType(new TypeNode[]{new FloatTypeNode(),new IntTypeNode()},new TypeNode[]{new FloatTypeNode()}));
+		 t.add(new NTType(new TypeNode[]{new IntTypeNode(),new FloatTypeNode()},new TypeNode[]{new FloatTypeNode()}));
 		 return t;
 	}
 	
@@ -33,11 +35,28 @@ public class OperatorTables {
 		 return t;
 	}
 	
+	private static ArrayList<NTType> mkMinus(){
+		 ArrayList<NTType> t = new ArrayList<NTType>();
+		 t.add(new NTType(new TypeNode[]{new IntTypeNode()},new TypeNode[]{new IntTypeNode()}));
+		 t.add(new NTType(new TypeNode[]{new FloatTypeNode()},new TypeNode[]{new FloatTypeNode()}));
+		 return t;
+	}
+	
+	private static ArrayList<NTType> mkNot(){
+		 ArrayList<NTType> t = new ArrayList<NTType>();
+		 t.add(new NTType(new TypeNode[]{new BooleanTypeNode()},new TypeNode[]{new BooleanTypeNode()}));
+		 return t;
+	}
+	
 	public static Environment<String,ArrayList<NTType>> mkArithmeticEnv(){
 		 Environment<String,ArrayList<NTType>> env = new Environment<String,ArrayList<NTType>>();
 		 ArrayList<NTType> t = mkArithmeticTable();
 		 ArrayList<NTType> tl = mkLogicTable();
 		 ArrayList<NTType> tr = mkRelationalTable();
+		 ArrayList<NTType> tm = mkMinus();
+		 ArrayList<NTType> tn = mkNot();
+		 
+		 
 		 env.add(apeg.parse.ast.BinaryExprNode.Operator.ADD.name(), t);
 		 env.add(apeg.parse.ast.BinaryExprNode.Operator.SUB.name(), t);
 		 
@@ -52,6 +71,9 @@ public class OperatorTables {
 		 
 		 env.add(apeg.parse.ast.EqualityExprNode.EqualityOperator.EQ.name(), tr);
 		 
+		 env.add("MINUS",tm);
+		 
+		 env.add("NOT",tn);
 		 
 		 return env;
 	}

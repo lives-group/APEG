@@ -1,0 +1,1 @@
+@[ 'strN: ' + concatN('CHAR<$g> ', n) + ';'; ]

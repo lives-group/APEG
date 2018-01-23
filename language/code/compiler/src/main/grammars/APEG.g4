@@ -354,7 +354,7 @@ factor returns[ExprNode exp]:
   |
    '(' expr ')' {$exp = $expr.exp;}
   |
-   '!' factor {$exp = factory.newNotExpr($factor.exp);}
+   '!' f=factor {$exp = factory.newNotExpr($f.exp);}
   |
    TRUE {$exp = factory.newBooleanExpr(true);}
   |

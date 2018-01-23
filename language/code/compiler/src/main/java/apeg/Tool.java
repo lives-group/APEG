@@ -20,7 +20,7 @@ import apeg.parse.ast.visitor.ASTNodeVisitor;
 import apeg.parse.ast.visitor.BuildRuleEnvironmetVisitor;
 import apeg.parse.ast.visitor.DOTVisitor;
 import apeg.parse.ast.visitor.PrettyPrintVisitor;
-import apeg.parse.ast.visitor.VerificaVisitor;
+import apeg.parse.ast.visitor.VerifyVisitor;
 import apeg.parse.ast.visitor.Environments.OperatorTables;
 import apeg.util.lang.LangInfo;
 import apeg.util.lang.java.JavaInfo;
@@ -117,7 +117,7 @@ public class Tool {
 				build.printTable();
 				
 				
-     			VerificaVisitor verifica = new VerificaVisitor(build.getTable(),OperatorTables.mkArithmeticEnv());
+     			VerifyVisitor verifica = new VerifyVisitor(build.getTable(),OperatorTables.mkArithmeticEnv());
 				g.accept(verifica);
 			    if (verifica.hasErrors()){ 
 			        System.err.println("---------- Errors --------- ");

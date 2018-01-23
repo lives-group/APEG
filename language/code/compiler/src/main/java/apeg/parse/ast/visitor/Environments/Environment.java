@@ -41,7 +41,7 @@ public class Environment <N,V> {
 	    }
 	    	
 	    
-		public void add(N n, V v){ st.peek().put(n, v); }
+		public void add(N n, V v){ st.peek().put(n,v); }
 		
 		/**
 		 * Returns then value associated with the given name, or null if the name is not present in the top table.

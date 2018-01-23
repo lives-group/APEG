@@ -1,0 +1,29 @@
+
+
+apeg notDiscardChanges;
+
+header {
+  // Some unchecked code here
+}
+
+g returns[bool b, int na, int nb, int nc] : 
+   a<na> b<nb> c<nc> 
+   {b = (a==b) && (b==c)};
+ 
+a returns[int na] :
+   'a' a<na> {na=na+1;}
+    / 
+   'a' {na = 1;}
+  ;
+ 
+b returns[int nb] :
+   'b' b<nb> {nb=nb+1;}
+    / 
+   'b' {nb = 1;}
+  ;
+
+c returns[int nc] :
+   'c' c<nc> {nc=nc+1;}
+    / 
+   'c' {nc = 1;}
+  ;

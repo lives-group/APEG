@@ -1,0 +1,7 @@
+/*
+ /**
+  Error: missing : symbol after the nonterminal name
+ **/
+*/
+
+nonTerm 'a' nonTerm 'b' / ;

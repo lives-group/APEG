@@ -7,8 +7,8 @@ import apeg.parse.ast.visitor.Environments.Environment;
 import apeg.parse.ast.visitor.Environments.NTType;
 
 /**
- * @class BuildingVisitor : E resposavel pela construcao das tabelas de tipos e por coletar e verificar informacoes sobre
- *                          sobre nao terminais e atributos.
+ * @class BuildRuleEnvironmetVisitor : E resposavel pela construcao das tabelas de tipos e por coletar e verificar informacoes sobre
+ *                                     nao terminais e atributos.
  * @author deise
  *
  */
@@ -18,7 +18,7 @@ public class BuildRuleEnvironmetVisitor extends FormalVisitor {
 	private Environment<String,NTType> r;
     
     /**
-     * BuildingVisitor(): Construtor padrao. Inicializa as tabelas de simbolos. 
+     * BuildRuleEnvironmetVisitor(): Construtor padrao. Inicializa as tabelas de simbolos. 
      */
     public BuildRuleEnvironmetVisitor(){
     	r = new Environment<String, NTType>();

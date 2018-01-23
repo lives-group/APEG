@@ -11,7 +11,7 @@ import apeg.parse.ast.visitor.Environments.TypeError;
 import apeg.parse.ast.visitor.Environments.VarType;
 
 
-public class VerificaVisitor implements ASTNodeVisitor {
+public class VerifyVisitor extends FormalVisitor implements ASTNodeVisitor {
 	
 	
 	private String currentRule;
@@ -24,12 +24,11 @@ public class VerificaVisitor implements ASTNodeVisitor {
 	private Stack<TypeNode> stk; 
 	private Environment<String,VarType> varTable;
 	private Environment<String,ArrayList<NTType>> func; // Ambiente de typos de operadores e funcoes
-	
-	//private NTType ntt;
+
 	TypeNode tipos;
 	
 	
-	 public VerificaVisitor(Environment<String,NTType> r, Environment<String,ArrayList<NTType>> f){
+	 public VerifyVisitor(Environment<String,NTType> r, Environment<String,ArrayList<NTType>> f){
 		 
 		 erros = new ArrayList<String>();
 		 warnings = new ArrayList<String>();
@@ -192,22 +191,19 @@ public class VerificaVisitor implements ASTNodeVisitor {
 	@Override
 	public void visit(OrExprNode expr){
 		expr.getLeftExpr().accept(this);
-		expr.getRightExpr().accept(this);
-		
+		expr.getRightExpr().accept(this);	
 		logicalBinOp(expr);	
 	}
 	
 
 	@Override
-	public void visit(AttributeExprNode expr) {
-		
+	public void visit(AttributeExprNode expr) {	
 		VarType t = varTable.get(expr.getName());
 		if(t != null){
 		  stk.push(t.getType());	
 		}else{
 			 erros.add("("+ expr.getLine() + "," +expr.getColunm() +"): Variavel " + expr.getName()+" nao foi declarada. ");  
-		}
-		
+		}	
 	}
 
 	@Override
@@ -215,7 +211,6 @@ public class VerificaVisitor implements ASTNodeVisitor {
 		expr.getLeftExpr().accept(this);
 		expr.getRightExpr().accept(this);
 		arithBinOp(expr);
-		
 	}
 
 	@Override
@@ -224,21 +219,9 @@ public class VerificaVisitor implements ASTNodeVisitor {
 	}
 
 	@Override
-	public void visit(CallExprNode expr) {
-		// TODO Auto-generated method stub
-		expr.getName();
-
-		for(ExprNode p : expr.getParameters()){
-			p.accept(this);
-		}
-	
-	}
-
-	@Override
 	public void visit(EqualityExprNode expr) { 
 		expr.getLeftExpr().accept(this);
 		expr.getRightExpr().accept(this);
-		
 		equalityBinOp(expr);
 		
 	}
@@ -252,12 +235,6 @@ public class VerificaVisitor implements ASTNodeVisitor {
 	public void visit(IntExprNode expr) { ////////////////////////////////
 		stk.push(new IntTypeNode());
 	}
-
-	@Override
-	public void visit(MetaPegExprNode expr) {
-		expr.getExpr().accept(this);
-	}
-
 	@Override
 	public void visit(MinusExprNode expr) {
 		expr.getExpr().accept(this);
@@ -281,55 +258,12 @@ public class VerificaVisitor implements ASTNodeVisitor {
 	}
 
 	@Override
-	public void visit(AndPegNode peg) {
-		peg.getPeg().accept(this);
-		
-	}
-
-	@Override
-	public void visit(AnyPegNode peg) {
-		
-	}
-
-	@Override
-	public void visit(BindPegNode peg) {
-		peg.getPeg().accept(this);
-		peg.getVariable();	//se o tipo e string
-	}
-
-	@Override
-	public void visit(ChoicePegNode peg) {
-		peg.getLeftPeg().accept(this);
-		peg.getRightPeg().accept(this);
-	}
-
-	@Override
-	public void visit(ConstraintPegNode peg) {
-		peg.getExpr().accept(this);
-	}
-
-	@Override
-	public void visit(GroupPegNode peg) {
-		peg.getRanges();
-	}
-
-	@Override
-	public void visit(LambdaPegNode peg) {
-	}
-
-	@Override
-	public void visit(LiteralPegNode peg) {
-		peg.getValue();
-	}
-
-	@Override
 	public void visit(NonterminalPegNode peg) { ////////////////////////////////
 	
 		for(ExprNode p:peg.getExprs()) { p.accept(this); }
 	    
 	     // **O Não terminal utilizado nao foi definido**
 	     if(!ruleTable.contains(peg.getName()) ){ 
-	    	 //System.out.println("(" + peg.getLine() + ", " + peg.getColunm()+ ") : O nao terminal " +peg.getName()+ " chamado na regra "+ currentRule +" nao existe");
 	     erros.add("(" +peg.getLine() + ", " + peg.getColunm()+ ") : O nao terminal " +peg.getName()+ " chamado na regra "+ currentRule +" nao existe");
 	     }
 	     
@@ -353,69 +287,11 @@ public class VerificaVisitor implements ASTNodeVisitor {
 	    	    		erros.add("(" + peg.getLine() +", " + peg.getColunm() + ") Atributo variável esperado aqui, mas expressão " +l.get(i).toString() + " encontrada.");
 	    	    	}
 	    	    } 
-	    	    
-	    	    // se getnumparams == getexprs.size
-	    	    
-	    	    System.out.println(peg.getName() +" : num param sintetizado " + temp.getNumSintetized()); //quantidade sintetizado
-	    	    
-	    	    for(int i=0; i< temp.getNumSintetized(); i++){  
-	    	    	System.out.println(peg.getName() +" primeiro param sintetizado " + temp.getType(i).getName());
-	    	    }
-	    	    
-	    	    
-	    	    System.out.println(peg.getName() +" : num param herdado " + temp.getNumInherited()); //quantidade herdado 
-	    	    
-	    	    for(int i= temp.getNumSintetized(); i< temp.getNumParams(); i++){  
-	    	    	System.out.println(peg.getName() +" primeiro param sintetizado " + temp.getType(i).getName());
-	    	    }
-	    	    
-	    	 
 	    	    }
 	    	 }  
 	     
 	     
 	} 
-
-	@Override
-	public void visit(NotPegNode peg) {
-		peg.getPeg().accept(this);
-		
-	}
-
-	@Override
-	public void visit(OptionalPegNode peg) {
-		peg.getPeg().accept(this);
-		
-	}
-
-	@Override
-	public void visit(PlusPegNode peg) {
-		peg.getPeg().accept(this);
-		
-	}
-
-	@Override
-	public void visit(SequencePegNode peg) {
-		
-		for(PegNode p:peg.getPegs()) {
-			p.accept(this);
-		}
-		
-	}
-
-	@Override
-	public void visit(StarPegNode peg) {
-		peg.getPeg().accept(this);
-		
-	}
-
-	@Override
-	public void visit(UpdatePegNode peg) {
-		for(AssignmentNode p:peg.getAssignments()) {
-			p.accept(this);
-		}
-		
-	}
 
 	@Override
 	public void visit(AssignmentNode assign) {
@@ -433,11 +309,6 @@ public class VerificaVisitor implements ASTNodeVisitor {
 	   stk.pop(); 
 		
 	}
-
-	//public void visit(FunctionNode func) {
-	//	func.getName();
-		
-	//}
 	
 	
 	public void visit(GrammarNode grammar) {
@@ -458,8 +329,6 @@ public class VerificaVisitor implements ASTNodeVisitor {
 	@Override
 	public void visit(RuleNode rule) {
 		
-		
-	    	
 		varTable.clear();
 		
 		if(ruleCount == 0){
@@ -477,58 +346,6 @@ public class VerificaVisitor implements ASTNodeVisitor {
 		rule.getExpr().accept(this);
 		ruleCount++;
 	}
-
-	public void visit(TypeNode type) {
-		type.getName();
-	}
-
-	@Override
-	public void visit(VarDeclarationNode var) {
-		var.getName();
-		var.getType().accept(this);
-	}
-
-	@Override
-	public void visit(BooleanTypeNode type) {
-		// TODO Auto-generated method stub
-	}
-
-
-	@Override
-	public void visit(FloatTypeNode type) {
-		// TODO Auto-generated method stub	
-	}
-
-
-	@Override
-	public void visit(GrammarTypeNode type) {
-		// TODO Auto-generated method stub
-	}
-
-
-	@Override
-	public void visit(IntTypeNode type) {
-		// TODO Auto-generated method stub
-	}
-	
-	@Override
-	public void visit(RuleTypeNode type) {
-		// TODO Auto-generated method stub
-	}
-
-
-	@Override
-	public void visit(StringTypeNode type) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-	@Override
-	public void visit(UserTypeNode type) {
-		// TODO Auto-generated method stub
-		
-	}	
 	
 	//Retorna um set com todas as regras nao utilizadas
 	public String[] getUnusedNames(){

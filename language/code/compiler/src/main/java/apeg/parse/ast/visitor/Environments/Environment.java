@@ -32,10 +32,13 @@ public class Environment <N,V> {
 	     * convert this environment into a String. For debug purposes only. 
 	     */
 	    public String toString(){
-	    	String s = "------ Rule Environment ----- \n";
-	    	System.out.println("\n");
+	    	return toStringf("");
+	    }
+	    
+	    public String toStringf(String id){
+	    	String s = id + "------ Environment ----- \n";
 	    	for(Entry<N,V> e : st.peek().entrySet()){
-	    		s += " " + e.getKey().toString() + " |-> " + e.getValue().toString() + "\n";
+	    		s += id + " " + e.getKey().toString() + " |-> " + e.getValue().toString() + "\n";
 	    	}
 	    	return s;
 	    }

@@ -130,10 +130,8 @@ public class Tool {
 			        for (String i : verifica.getWarnings()){
 			        	System.err.println(i);
 			        }
-			    }
-			    
+			    }			    
 		
-				
 				// Generating a graphical view from AST 			
 				DOTVisitor dot = new DOTVisitor(
 						new RelativePath(tool.outputPath, fName + ".dot"),

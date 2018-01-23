@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.Stack;
 import apeg.parse.ast.*;
 import apeg.parse.ast.visitor.Environments.Environment;
+import apeg.parse.ast.visitor.Environments.NTInfo;
 import apeg.parse.ast.visitor.Environments.NTType;
 import apeg.parse.ast.visitor.Environments.TypeError;
 import apeg.parse.ast.visitor.Environments.VarType;
@@ -17,18 +18,17 @@ public class VerifyVisitor extends FormalVisitor implements ASTNodeVisitor {
 	private String currentRule;
 	private int ruleCount;
 	private String startRule;
-	private Environment<String,NTType> ruleTable;
+	private Environment<String,NTInfo> ruleTable;
 	private Set<String> ruleNames;
 	private ArrayList<String> erros;
 	private ArrayList<String> warnings;	
 	private Stack<TypeNode> stk; 
-	private Environment<String,VarType> varTable;
 	private Environment<String,ArrayList<NTType>> func; // Ambiente de typos de operadores e funcoes
 
 	TypeNode tipos;
 	
 	
-	 public VerifyVisitor(Environment<String,NTType> r, Environment<String,ArrayList<NTType>> f){
+	 public VerifyVisitor(Environment<String,NTInfo> r, Environment<String,ArrayList<NTType>> f){
 		 
 		 erros = new ArrayList<String>();
 		 warnings = new ArrayList<String>();
@@ -37,7 +37,6 @@ public class VerifyVisitor extends FormalVisitor implements ASTNodeVisitor {
 		 startRule = "";
 		 ruleTable = r;
 		 ruleNames = ruleTable.getNames();
-		 varTable = new Environment<String,VarType>();
 		 stk = new Stack<TypeNode>();
 		 func = f;
 	 }
@@ -198,7 +197,7 @@ public class VerifyVisitor extends FormalVisitor implements ASTNodeVisitor {
 
 	@Override
 	public void visit(AttributeExprNode expr) {	
-		VarType t = varTable.get(expr.getName());
+		VarType t = ruleTable.get(currentRule).getLocals().get(expr.getName());
 		if(t != null){
 		  stk.push(t.getType());	
 		}else{
@@ -275,7 +274,7 @@ public class VerifyVisitor extends FormalVisitor implements ASTNodeVisitor {
 	     // **Inteiros no lugar do parametro que recebe o retorno**
 	     // Quantidade de parametros passados é diferente do definido na regra em questão
 	     List<ExprNode> l = peg.getExprs();
-	     NTType temp = ruleTable.get(peg.getName());
+	     NTType temp = ruleTable.get(peg.getName()).getSig();
 	     if(temp != null){
 	    	 if(temp.getNumParams() != peg.getExprs().size()){
 	        	  erros.add("(" + peg.getLine() +", " + peg.getColunm() + ") Aridade de não terminal incosistente: " + 
@@ -296,7 +295,7 @@ public class VerifyVisitor extends FormalVisitor implements ASTNodeVisitor {
 	@Override
 	public void visit(AssignmentNode assign) {
 	   assign.getExpr().accept(this);
-	   VarType v = varTable.get(assign.getVariable());
+	   VarType v = ruleTable.get(currentRule).getLocals().get(assign.getVariable());
          
 	   if(v != null){
 	      if(!(v.getType().match(stk.peek()))){  
@@ -329,19 +328,8 @@ public class VerifyVisitor extends FormalVisitor implements ASTNodeVisitor {
 	@Override
 	public void visit(RuleNode rule) {
 		
-		varTable.clear();
-		
 		if(ruleCount == 0){
 			startRule = rule.getName();
-		}
-		for(VarDeclarationNode param : rule.getParameters()){
-			 VarType v = new VarType(param.getType(), VarType.AttrDirection.HERDADO);
-			 varTable.add(param.getName(), v);
-		}
-		
-		for(VarDeclarationNode param : rule.getReturns()){ 
-			 VarType v = new VarType(param.getType(), VarType.AttrDirection.SINTETIZADO);
-			 varTable.add(param.getName(), v);	
 		}
 		rule.getExpr().accept(this);
 		ruleCount++;

@@ -16,8 +16,6 @@ public class OperatorTables {
 		 ArrayList<NTType> t = new ArrayList<NTType>();
 		 t.add(new NTType(new TypeNode[]{new IntTypeNode(),new IntTypeNode()},new TypeNode[]{new IntTypeNode()}));
 		 t.add(new NTType(new TypeNode[]{new FloatTypeNode(),new FloatTypeNode()},new TypeNode[]{new FloatTypeNode()}));
-		 t.add(new NTType(new TypeNode[]{new FloatTypeNode(),new IntTypeNode()},new TypeNode[]{new FloatTypeNode()}));
-		 t.add(new NTType(new TypeNode[]{new IntTypeNode(),new FloatTypeNode()},new TypeNode[]{new FloatTypeNode()}));
 		 return t;
 	}
 	
@@ -59,6 +57,11 @@ public class OperatorTables {
 		 
 		 env.add(apeg.parse.ast.BinaryExprNode.Operator.ADD.name(), t);
 		 env.add(apeg.parse.ast.BinaryExprNode.Operator.SUB.name(), t);
+		 env.add(apeg.parse.ast.BinaryExprNode.Operator.MUL.name(), t);
+		 env.add(apeg.parse.ast.BinaryExprNode.Operator.DIV.name(), t);
+		 env.add(apeg.parse.ast.BinaryExprNode.Operator.MOD.name(), t);
+		 
+		 
 		 
 		 env.add("AND", tl);
 		 env.add("OR", tl);

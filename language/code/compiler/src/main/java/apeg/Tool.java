@@ -18,6 +18,7 @@ import apeg.parse.ast.ASTFactoryImpl;
 import apeg.parse.ast.GrammarNode;
 import apeg.parse.ast.visitor.ASTNodeVisitor;
 import apeg.parse.ast.visitor.BuildRuleEnvironmetVisitor;
+import apeg.parse.ast.visitor.CodeGenVisitor;
 import apeg.parse.ast.visitor.DOTVisitor;
 import apeg.parse.ast.visitor.PrettyPrintVisitor;
 import apeg.parse.ast.visitor.VerifyVisitor;
@@ -138,6 +139,12 @@ public class Tool {
 						new RelativePath(new AbsolutePath("."),
 								"src/main/templates/dot.stg"));
 				g.accept(dot);
+				
+				
+				ASTNodeVisitor codegen = new CodeGenVisitor(
+						new RelativePath(new AbsolutePath("."),
+								"src/main/templates/classtamplate.stg"));
+				g.accept(codegen);
 				
 				
 			} catch (FileNotFoundException e) {

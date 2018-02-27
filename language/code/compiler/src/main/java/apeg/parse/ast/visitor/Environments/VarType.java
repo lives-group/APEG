@@ -8,7 +8,7 @@ public class VarType {
 	private AttrDirection atributo;
 	
 	public static enum AttrDirection{
-		HERDADO, SINTETIZADO	
+		HERDADO, SINTETIZADO, LOCAL	
 	}
 
 	

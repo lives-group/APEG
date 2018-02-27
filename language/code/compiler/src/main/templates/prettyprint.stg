@@ -89,7 +89,7 @@ bind_peg(name, peg_expr) ::="<name>=<peg_expr>)"
 choice_peg(left_peg, right_peg) ::= <<
  <left_peg>
 /
- <right_peg>
+<right_peg>
 >>
 constraint_peg(expr) ::= "{? <expr> }"
 group_peg(ranges) ::= "[<ranges>]"

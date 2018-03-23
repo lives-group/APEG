@@ -44,33 +44,39 @@ import apeg.parse.ast.VarDeclarationNode;
 
 public abstract class FormalVisitor implements ASTNodeVisitor{
 	
+	
+	@Override
+	public void visit(NotExprNode expr) {
+		expr.getExpr().accept(this);
+		
+	}
+
+	@Override
+	public void visit(OrExprNode expr) {
+		
+		expr.getLeftExpr().accept(this);
+		expr.getRightExpr().accept(this);
+		
+	}
+	
 	@Override
 	public void visit(AndExprNode expr) {
 		expr.getLeftExpr().accept(this);
 		expr.getRightExpr().accept(this);
 
 	}
-
 	@Override
 	public void visit(AttributeExprNode expr) {
 		expr.getName();
 		
 	}
-
 	@Override
 	public void visit(BinaryExprNode expr) {
 		expr.getLeftExpr().accept(this);
 		expr.getRightExpr().accept(this);
 		expr.getOperation();
-		
 	}
 
-	@Override
-	public void visit(BooleanExprNode expr) {
-		// TODO Auto-generated method stub
-
-		expr.getValue();
-	}
 
 	@Override
 	public void visit(CallExprNode expr) {
@@ -87,22 +93,11 @@ public abstract class FormalVisitor implements ASTNodeVisitor{
 	public void visit(EqualityExprNode expr) {
 		expr.getLeftExpr().accept(this);
 		expr.getRightExpr().accept(this);
-		expr.getEqualityType(); //switch
+		expr.getEqualityType(); 
 		
 	}
 
-	@Override
-	public void visit(FloatExprNode expr) {
-		expr.getValue();
-		
-	}
-
-	@Override
-	public void visit(IntExprNode expr) {
-		expr.getValue();
-		
-	}
-
+	
 	@Override
 	public void visit(MetaPegExprNode expr) {
 		expr.getExpr().accept(this);
@@ -112,26 +107,6 @@ public abstract class FormalVisitor implements ASTNodeVisitor{
 	@Override
 	public void visit(MinusExprNode expr) {
 		expr.getExpr().accept(this);
-		
-	}
-
-	@Override
-	public void visit(NotExprNode expr) {
-		expr.getExpr().accept(this);
-		
-	}
-
-	@Override
-	public void visit(OrExprNode expr) {
-		
-		expr.getLeftExpr().accept(this);
-		expr.getRightExpr().accept(this);
-		
-	}
-
-	@Override
-	public void visit(StringExprNode expr) {
-		expr.getValue();
 		
 	}
 
@@ -275,6 +250,34 @@ public abstract class FormalVisitor implements ASTNodeVisitor{
 		var.getName();
 		var.getType().accept(this);		
 	}
+	
+	//------------------------------ Literal Values -------------------------------------
+	
+	@Override
+	public void visit(BooleanExprNode expr) {
+		// TODO Auto-generated method stub
+
+		expr.getValue();
+	}
+	
+	@Override
+	public void visit(FloatExprNode expr) {
+		expr.getValue();
+		
+	}
+
+	@Override
+	public void visit(IntExprNode expr) {
+		expr.getValue();
+		
+	}
+	
+	@Override
+	public void visit(StringExprNode expr) {
+		expr.getValue();
+		
+	}
+
 
 	@Override
 	public void visit(BooleanTypeNode type) {	

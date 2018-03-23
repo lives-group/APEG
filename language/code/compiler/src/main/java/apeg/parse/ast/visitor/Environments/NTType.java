@@ -20,31 +20,69 @@ public class NTType {
 	   }
    }
    
-   public int getNumSintetized(){ return inherited;}
+   public int getNumSintetized(){ 
+	   return types.length - inherited;
+   }
    
-   public int getNumInherited(){ return types.length - inherited;}
+   public int getNumInherited(){ 
+	   return inherited;
+   }
    
-   TypeNode getParamAt(int i){
+   public TypeNode getParamAt(int i){
        if(i >= inherited){ throw new ArrayIndexOutOfBoundsException("Index:  " + i);} 
 	   return types[i];
    }
    
-   TypeNode getReturnAt(int i){
-       if(i >= inherited){ throw new ArrayIndexOutOfBoundsException("Index:  " + i);} 
-	   return types[i];
-   }
-/*   public boolean match(TypeNode[] args){
-	   boolean b = true;
-	   if(types.length == args.length){
-		   System.out.println("Quantidade errada de argumentos");
-		   for(int k = 0; (k < types.length) && b; k++){
-			   b = b && types[k].match(args[k]);
+   public boolean match(NTType n){
+	   boolean r = false;
+	   if(getNumInherited() == n.getNumInherited() && getNumSintetized() == n.getNumSintetized()){
+		   r = true;
+		   for(int i = 0; i < n.getNumParams(); i++){
+			  r = r && getParamAt(i).match(n.getParamAt(i)); 
 		   }
-		   return b;
 	   }
-	   return false;
+	   return r;
+	   
    }
-*/   
+   
+   public boolean matchInherited(TypeNode n[]){
+	   boolean r = false;
+	   if(getNumInherited() == n.length){
+		   r = true;
+		   for(int i=0; i< n.length; i++){
+			   r = r && getParamAt(i).match(n[i]);
+		   }
+	   }
+	   return r;
+   }
+   
+   public boolean matchSintetized(TypeNode n[]){
+	   boolean r = false;
+	   if(getNumSintetized() == n.length){
+		   r = true;
+		   for(int i=0; i< n.length; i++){
+			   r = r && getReturnAt(i).match(n[i]);
+		   }
+	   }
+	   return r;
+   }
+   
+   
+   
+   public TypeNode getReturnAt(int i){
+       if(i > getNumSintetized()){ throw new ArrayIndexOutOfBoundsException("Index:  " + i);} 
+	   return types[inherited+i];
+   }
+   
+   public int getNumParams(){
+	   return types.length;
+   }
+   
+   public TypeNode getType(int i){
+	return types[i];
+	   
+   }
+     
    public String toString(){
 	  String s = "("; 
       if(inherited > 0){

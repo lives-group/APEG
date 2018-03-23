@@ -18,9 +18,11 @@ import apeg.parse.ast.ASTFactoryImpl;
 import apeg.parse.ast.GrammarNode;
 import apeg.parse.ast.visitor.ASTNodeVisitor;
 import apeg.parse.ast.visitor.BuildRuleEnvironmetVisitor;
+import apeg.parse.ast.visitor.CodeGenVisitor;
 import apeg.parse.ast.visitor.DOTVisitor;
 import apeg.parse.ast.visitor.PrettyPrintVisitor;
-import apeg.parse.ast.visitor.VerificaVisitor;
+import apeg.parse.ast.visitor.VerifyVisitor;
+import apeg.parse.ast.visitor.Environments.OperatorTables;
 import apeg.util.lang.LangInfo;
 import apeg.util.lang.java.JavaInfo;
 import apeg.util.path.AbsolutePath;
@@ -104,7 +106,7 @@ public class Tool {
 					// ARTLR has already printed error messages, thus we stop
 					continue;
 				}
-				
+								
 				// Pretty printing the grammar. Just for testing
 				ASTNodeVisitor prettyprint = new PrettyPrintVisitor(
 						new RelativePath(new AbsolutePath("."),
@@ -115,16 +117,34 @@ public class Tool {
 				g.accept(build);
 				build.printTable();
 				
-     			VerificaVisitor verifica = new VerificaVisitor(build.getTable());
-				g.accept(verifica);
-		
 				
+     			VerifyVisitor verifica = new VerifyVisitor(build.getTable(),OperatorTables.mkArithmeticEnv());
+				g.accept(verifica);
+			    if (verifica.hasErrors()){ 
+			        System.err.println("---------- Errors --------- ");
+			        for (String i : verifica.getErros()){
+			        	System.err.println(i);
+			        }
+			    }
+			    if(verifica.hasWarnings()){
+			    	System.err.println("---------- Warnings --------- ");
+			        for (String i : verifica.getWarnings()){
+			        	System.err.println(i);
+			        }
+			    }			    
+		
 				// Generating a graphical view from AST 			
 				DOTVisitor dot = new DOTVisitor(
 						new RelativePath(tool.outputPath, fName + ".dot"),
 						new RelativePath(new AbsolutePath("."),
 								"src/main/templates/dot.stg"));
 				g.accept(dot);
+				
+				
+				ASTNodeVisitor codegen = new CodeGenVisitor(
+						new RelativePath(new AbsolutePath("."),
+								"src/main/templates/classtamplate.stg"));
+				g.accept(codegen);
 				
 				
 			} catch (FileNotFoundException e) {

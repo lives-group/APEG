@@ -1,0 +1,37 @@
+apeg notDiscardChanges;
+
+
+s:
+  a<> e<>
+ /
+  b<> 
+ /
+  c<>
+;
+
+a:
+ d<>
+ /
+ c<>
+;
+
+b:
+ 'abc' 
+ /
+ 'abb'
+ ;
+
+c:
+ 't'
+ / 
+  d<>
+ ;
+
+d:
+  'ab'
+ ;
+
+e: 
+  c<> d<>
+ ; 
+

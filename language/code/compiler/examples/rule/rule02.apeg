@@ -1,0 +1,8 @@
+
+literal locals[int n] : number<n> '[' strN<n> ']' !. ;
+
+strN[int n] : ( {? n > 0 } CHAR { n = n - 1; } )* {? n == 0 } ;
+
+number returns[int x2] locals[String t] : t=[0-9]+ { x2 = strToInt(t); } ;
+
+CHAR : . ;

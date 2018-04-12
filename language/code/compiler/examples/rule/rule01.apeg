@@ -1,0 +1,25 @@
+
+literal locals[int n] :
+  number<n> '[' strN<n> ']' !.
+  ;
+
+strN[int n] : ( {? n > 0 } CHAR { n = n - 1; } )* {? n == 0 } ;
+
+number returns[int x2] locals[int x1] :
+  digit<x2> ( digit<x1> { x2 = x2 * 10 + x1; } )*
+  ;
+
+digit returns [int x1] :
+  '0'  { x1 = 0; }
+  / '1'  { x1 = 1; }
+  / '2'  { x1 = 2; }
+  / '3'  { x1 = 3; }
+  / '4'  { x1 = 4; }
+  / '5'  { x1 = 5; }
+  / '6'  { x1 = 6; }
+  / '7'  { x1 = 7; }
+  / '8'  { x1 = 8; }
+  / '9'  { x1 = 9; }
+  ;
+
+CHAR : . ;

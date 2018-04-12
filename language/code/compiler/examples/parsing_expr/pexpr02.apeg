@@ -1,0 +1,1 @@
+ws {p='';} package_declaration<p>? (import_declaration<g, path, g1> {g=g1;})* (type_declaration<g, p>)* EOT

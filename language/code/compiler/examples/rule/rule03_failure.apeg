@@ -1,0 +1,7 @@
+/*
+ /**
+  Error: missing ; symbol on end of the rule
+ **/
+*/
+
+nonTerm: 'a' nonTerm 'b' / 

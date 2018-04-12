@@ -1,0 +1,41 @@
+// Comments must to be ignored
+
+/*
+This grammar implements a^nb^nc^n of two ways
+First, as usually in PEG and next with attributes
+Finally, I test the range expression
+*/
+
+S1 :
+  &(A!'b') 'a'* B !.
+  ;
+A :
+  'a' A 'b' / ;
+B :
+  'b' B 'c' / ;
+
+
+@memoize
+S2 locals[int n, int m, int o]:
+  C<n> D<m> {? n == m} E<o> {? m == o}
+  ;
+
+@transient    
+C returns[int n] locals[int m]:
+  'a' C<m> {n = m+1;}
+  /
+   {n = 0;};
+   
+D returns[int n] locals[int m]:
+  'b' D<m> {n = m+1;}
+  /
+   {n = 0;};
+   
+E returns[int n] locals[int m]:
+  'c' E<m> {n = m+1;}
+  /
+   {n = 0;};
+
+S3 :
+  [a-zA-Z] [a-zA-Z0-9]*
+;

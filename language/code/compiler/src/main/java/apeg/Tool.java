@@ -20,7 +20,9 @@ import apeg.parse.ast.visitor.ASTNodeVisitor;
 import apeg.parse.ast.visitor.BuildRuleEnvironmetVisitor;
 import apeg.parse.ast.visitor.CodeGenVisitor;
 import apeg.parse.ast.visitor.DOTVisitor;
+import apeg.parse.ast.visitor.ParserVisitor;
 import apeg.parse.ast.visitor.PrettyPrintVisitor;
+import apeg.parse.ast.visitor.SubExprNameVisitor;
 import apeg.parse.ast.visitor.VerifyVisitor;
 import apeg.parse.ast.visitor.Environments.OperatorTables;
 import apeg.util.lang.LangInfo;
@@ -108,7 +110,7 @@ public class Tool {
 				}
 								
 				// Pretty printing the grammar. Just for testing
-				ASTNodeVisitor prettyprint = new PrettyPrintVisitor(
+			/*	ASTNodeVisitor prettyprint = new PrettyPrintVisitor(
 						new RelativePath(new AbsolutePath("."),
 								"src/main/templates/prettyprint.stg"));
 				g.accept(prettyprint);
@@ -145,6 +147,17 @@ public class Tool {
 						new RelativePath(new AbsolutePath("."),
 								"src/main/templates/classtamplate.stg"));
 				g.accept(codegen);
+				
+				*/
+				/*
+				ASTNodeVisitor parservisitor = new ParserVisitor(
+						new RelativePath(new AbsolutePath("."),
+								"src/main/templates/parser.stg"));
+				g.accept(parservisitor);*/
+				
+				SubExprNameVisitor subExprNameVisitor = new SubExprNameVisitor();
+				g.accept(subExprNameVisitor);
+				subExprNameVisitor.printTable();
 				
 				
 			} catch (FileNotFoundException e) {

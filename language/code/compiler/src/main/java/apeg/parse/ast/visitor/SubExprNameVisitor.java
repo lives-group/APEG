@@ -159,17 +159,17 @@ public class SubExprNameVisitor extends FormalVisitor implements ASTNodeVisitor{
 	public void visit(SequencePegNode peg) {
 		// TODO Auto-generated method stub
 		System.out.println("passou");
-		for(PegNode p : peg.getPegs()) {
-            nameSubexpr(p);
+		for(PegNode p : peg.getPegs()) {    
 			p.accept(this);
+			nameSubexpr(p);
 		}
 	}
 
 	@Override
 	public void visit(StarPegNode peg) {
 		PegNode p = peg.getPeg();
-		nameSubexpr(p);
 		p.accept(this); 
+		nameSubexpr(p);
 	}
 
 	/*

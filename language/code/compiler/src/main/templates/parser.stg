@@ -1,0 +1,71 @@
+group prettyprint;
+
+/** Defining the grammar specfication template */
+apeg(name, rules) ::= <<
+
+public class <name> extends BaseParser{
+ 
+      public <name>(String fname) {
+        super(fname);
+        startRule("root");
+      }
+
+<rules; separator="\n\n"> 
+}
+>>
+
+
+/** Template for rules specification */
+rule( name, peg_expr, suc_or_fail) ::= <<
+      public boolean <name>(){
+        startRule("<name>");
+      <peg_expr>
+        <if(suc_or_fail)>
+        return <suc_or_fail>; 
+        <endif>
+      } >>
+
+choice_peg(name,left_peg, right_peg) ::= <<  mark();
+  if(<left_peg>){ 
+    unmark(); 
+    return endSuccess();
+  }
+  restore();
+  alternate();
+  mark();
+  if(<right_peg>) { 
+    unmark();
+    return endSuccess();
+  }
+ >>
+  
+sequence_peg(peg_exprs) ::=  "<peg_exprs:{x | <x>}; separator=\" \"> " 
+
+literal_peg(value, choice, star, lit) ::= << <if(choice)>match("<value>")<endif> <if(star)>match ("<value>")<endif><if(lit)> if(!match("<value>")){ 
+    return endFail();
+  }<endif> >>
+
+nonterminal_peg(name,choice,star,non) ::= <<  <if(choice)><name>()<endif><if(star)><name>()<endif><if(non)>   
+  if(!<name>()){
+    return endFail();
+  }
+<endif> >>
+
+star_peg(name,peg_expr) ::= <<  while(<peg_expr>){}>>
+
+/** Template for parsing expression */
+and_peg(peg_expr) ::= "&<peg_expr>"
+any_peg() ::= "."
+bind_peg(name, peg_expr) ::="<name>=<peg_expr>)"
+constraint_peg(expr) ::= "{? <expr> }"
+group_peg(ranges) ::= "[<ranges>]"
+lambda_peg() ::= " " 
+not_peg(peg_expr) ::= "!(<peg_expr>)"
+plus_peg(peg_expr) ::= "(<peg_expr>)+"
+optional_peg(peg_expr) ::= "(<peg_expr>)?"
+update_peg(assigns) ::= <<{<assigns; separator=" ">}>>
+
+
+
+
+

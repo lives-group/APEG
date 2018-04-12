@@ -1,0 +1,94 @@
+group prettyprint;
+
+/** Defining the grammar specfication template */
+apeg(name, rules) ::= <<
+
+public class <name> extends BaseParser{
+ 
+      public Teste(String fname) {
+        super(fname);
+        startRule("root");
+      }
+
+<rules; separator="\n\n"> 
+}
+>>
+
+
+/** Template for rules specification */
+rule( name, peg_expr, suc_or_fail) ::= <<
+      public boolean <name>(){
+        startRule("<name>");
+        <peg_expr>
+        <suc_or_fail>;
+      }
+      
+>>
+
+
+choice_peg(name,left_peg, right_peg) ::= <<  if(d1()) { return endSuccess();}
+  alternate();
+  if(d2()) { return endSuccess();}
+  return endFail();
+}
+public boolean d1(){
+ mark();
+<left_peg>
+
+}
+
+public boolean d2(){
+mark();
+<right_peg> >>
+
+sequence_peg(peg_exprs) ::=  "<peg_exprs:{x | <x>}; separator=\" \"> " 
+
+literal_peg(value, choice, star, lit) ::= << <if(choice)>
+
+  if(!match("<value>")){
+     restore();
+     return false;
+  } 
+  unmark(); 
+  return true;
+}<endif> <if(star)> "<value>" <endif> <if(lit)> if (!match("<value>")){ 
+return endFail();}  
+<endif>
+>>
+
+nonterminal_peg(name,choice,star,non) ::= << <if(choice)>
+public booleand d1(){
+  mark();
+  if (!<name>()){
+    restore();
+    return false;
+  } 
+  unmark(); 
+  return true;
+}<endif><if(star)><name>()<endif> <if(non)>
+if (!<name>()) {
+  return endFail();
+} 
+<endif>
+>>
+
+star_peg(name,peg_expr) ::= <<while(match(<peg_expr>)){}
+return endSuccess();
+>>
+
+/** Template for parsing expression */
+and_peg(peg_expr) ::= "&<peg_expr>"
+any_peg() ::= "."
+bind_peg(name, peg_expr) ::="<name>=<peg_expr>)"
+constraint_peg(expr) ::= "{? <expr> }"
+group_peg(ranges) ::= "[<ranges>]"
+lambda_peg() ::= " " 
+not_peg(peg_expr) ::= "!(<peg_expr>)"
+plus_peg(peg_expr) ::= "(<peg_expr>)+"
+optional_peg(peg_expr) ::= "(<peg_expr>)?"
+update_peg(assigns) ::= <<{<assigns; separator=" ">}>>
+
+
+
+
+

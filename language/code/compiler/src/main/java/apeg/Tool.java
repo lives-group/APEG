@@ -149,15 +149,14 @@ public class Tool {
 				g.accept(codegen);
 				
 				*/
-				/*
-				ASTNodeVisitor parservisitor = new ParserVisitor(
-						new RelativePath(new AbsolutePath("."),
-								"src/main/templates/parser.stg"));
-				g.accept(parservisitor);*/
 				
-				SubExprNameVisitor subExprNameVisitor = new SubExprNameVisitor();
+			    SubExprNameVisitor subExprNameVisitor = new SubExprNameVisitor();
 				g.accept(subExprNameVisitor);
 				subExprNameVisitor.printTable();
+				ASTNodeVisitor parservisitor = new ParserVisitor(
+						new RelativePath(new AbsolutePath("."),
+								"src/main/templates/parser.stg"),subExprNameVisitor.getNamesTable());;
+				g.accept(parservisitor);
 				
 				
 			} catch (FileNotFoundException e) {

@@ -254,6 +254,9 @@ public class SubExprNameVisitor extends FormalVisitor implements ASTNodeVisitor{
     	}
     }
 	
-	
+    public Hashtable<PegNode,String> getNamesTable() {
+    	//System.out.println(t);
+    	return t;
+    }
 
 }

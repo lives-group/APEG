@@ -25,6 +25,14 @@ rule( name, peg_expr, suc_or_fail) ::= <<
         <endif>
       } >>
 
+temp( name, peg_expr, suc_or_fail) ::= <<
+      private boolean <name>(){
+      <peg_expr>
+        <if(suc_or_fail)>
+        return <suc_or_fail>; 
+        <endif>
+      } >>
+
 choice_peg(name,left_peg, right_peg) ::= <<  mark();
   if(<left_peg>){ 
     unmark(); 
@@ -51,7 +59,7 @@ nonterminal_peg(name,choice,star,non) ::= <<  <if(choice)><name>()<endif><if(sta
   }
 <endif> >>
 
-star_peg(name,peg_expr) ::= <<  while(<peg_expr>){}>>
+star_peg(peg_expr) ::= <<  while(<peg_expr>){}>>
 
 /** Template for parsing expression */
 and_peg(peg_expr) ::= "&<peg_expr>"

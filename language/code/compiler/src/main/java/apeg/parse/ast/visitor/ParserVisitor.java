@@ -1,5 +1,9 @@
 package apeg.parse.ast.visitor;
 
+import java.util.ArrayDeque;
+import java.util.Hashtable;
+import java.util.Map.Entry;
+
 import org.stringtemplate.v4.ST;
 import org.stringtemplate.v4.STGroup;
 import org.stringtemplate.v4.STGroupFile;
@@ -52,17 +56,21 @@ public class ParserVisitor  extends FormalVisitor implements ASTNodeVisitor{
 
 	private STGroup groupTemplate;
 	private ST template;
+	private ArrayDeque<PegNode> q;
 
 	// Template for current parsing expression, current expression and the last assignment visited 
 	private ST peg_expr, expr;
 
 	private String state;
 	private String currentRule;
+	private Hashtable<PegNode,String> hnames;
 
-	public ParserVisitor(Path filePath) {
+	public ParserVisitor(Path filePath, Hashtable<PegNode,String> hnames) {
 		groupTemplate = new STGroupFile(filePath.getAbsolutePath());
 		state = "";
 		currentRule = " ";
+		this.hnames = hnames;
+		q = new ArrayDeque<PegNode>(); 
 	}
 
 
@@ -101,6 +109,20 @@ public class ParserVisitor  extends FormalVisitor implements ASTNodeVisitor{
 	@Override
 	public void visit(ChoicePegNode peg) {
 		state = "choice";
+		
+		String name = hnames.get(peg);
+		if( name != null) {
+			state = " " ;
+			q.add(peg); //Adicionando o nome na fila
+			ST aux_peg1 = groupTemplate.getInstanceOf("nonterminal_peg");
+			aux_peg1.add("name", name);
+			aux_peg1.add("non", "");
+			peg_expr = aux_peg1;
+			return ; 
+		}else { 
+	    	peg.getLeftPeg().accept(this);
+			peg.getRightPeg().accept(this);
+		}
 		// set the current parsing expression template
 		ST aux_peg = groupTemplate.getInstanceOf("choice_peg");
 		// visit the left parsing expression
@@ -207,9 +229,19 @@ public class ParserVisitor  extends FormalVisitor implements ASTNodeVisitor{
 		state = "sequence";
 		// set the current parsing expression template
 		ST aux_peg = groupTemplate.getInstanceOf("sequence_peg");
+		String name;
 		for(PegNode p : peg.getPegs()) {
 			// visit a parsing expression
-			p.accept(this);
+			name = hnames.get(p);
+			if( name != null) {
+				q.add(p); //Adicionando o nome na fila
+				ST aux_peg1 = groupTemplate.getInstanceOf("nonterminal_peg");
+				aux_peg1.add("name", name);
+				aux_peg1.add("non", "");
+				peg_expr = aux_peg1;
+			}else { 
+		    	p.accept(this);
+			}
 			// add the current parsing expression on the sequence template
 			aux_peg.add("peg_exprs", peg_expr);
 		}
@@ -219,19 +251,26 @@ public class ParserVisitor  extends FormalVisitor implements ASTNodeVisitor{
 
 	@Override
 	public void visit(StarPegNode peg) {
-
 		state = "star";
 		// set the current parsing expression template as a update parsing expression
+		String name = hnames.get(peg);
+		if( name != null) {
+			q.add(peg);
+			ST aux_peg = groupTemplate.getInstanceOf("nonterminal_peg");
+			aux_peg.add("name", name);
+			aux_peg.add("non", "");
+			peg_expr = aux_peg;
+			state = " ";
+			return;
+		}
 		ST aux_peg = groupTemplate.getInstanceOf("star_peg");
 		// visit the parsing expression
 		peg.getPeg().accept(this);
 		// adding the parsing expression on star template
 		aux_peg.add("peg_expr", peg_expr);
-		aux_peg.add("name", currentRule);
 		peg_expr = aux_peg;
 		state = " ";
 	}
-
 
 	@Override
 	public void visit(GrammarNode grammar) {
@@ -239,9 +278,40 @@ public class ParserVisitor  extends FormalVisitor implements ASTNodeVisitor{
 
 		template.add("name", grammar.getName());
 
-		for(RuleNode rule : grammar.getRules())
+		for(RuleNode rule : grammar.getRules()) {
 			rule.accept(this);
+		}
+		
+		if(!q.isEmpty()) {
+			String s;
+			PegNode n;
+			ST r = groupTemplate.getInstanceOf("temp");
+		    while(!q.isEmpty()) {
+			   n = q.removeFirst();
+			   s = hnames.remove(n);
+				// setting rule name
+				r.add("name", s);	
+				currentRule = s;
 
+				n.accept(this);
+				r.add("peg_expr", peg_expr); // setting parsing expression propriety
+				
+				if(n instanceof SequencePegNode) {
+					r.add("suc_or_fail", "true");
+				}else if(n instanceof StarPegNode) {
+					r.add("suc_or_fail", "true");
+				}else if(n instanceof LiteralPegNode) {
+					r.add("suc_or_fail", "true");
+				}else if(n instanceof NonterminalPegNode) {
+					r.add("suc_or_fail", "true");
+				}else if(n instanceof ChoicePegNode) {
+					r.add("suc_or_fail", "false");
+				}
+				template.add("rules", r);
+		   }
+		   
+		}
+		
 		System.out.println(template.render());
 	}
 
@@ -268,8 +338,7 @@ public class ParserVisitor  extends FormalVisitor implements ASTNodeVisitor{
 			r.add("suc_or_fail", "endFail()");
 		}
 		
-		template.add("rules", r); // adding the rule template on the list of grammar rules	
-
+		template.add("rules", r); // adding the rule template on the list of grammar rules
 	}
 
 

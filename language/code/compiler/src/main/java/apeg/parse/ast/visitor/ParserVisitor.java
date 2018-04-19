@@ -88,10 +88,18 @@ public class ParserVisitor  extends FormalVisitor implements ASTNodeVisitor{
 		peg_expr = aux_peg;
 	}
 
-// 	@Override
-// 	public void visit(AnyPegNode peg) { 
-// 		peg_expr = groupTemplate.getInstanceOf("any_peg");
-// 	}
+ 	@Override
+ 	public void visit(AnyPegNode peg) {
+ 	    String name = hnames.get(peg);
+		if( name != null) {
+			q.add(peg); //Adicionando o nome na fila
+            mkHelperFunctionCall(name);
+			return ; 
+		}
+ 		peg_expr = groupTemplate.getInstanceOf("any_peg");
+ 		peg_expr.add("suc", isModeTemp() ? lSuc : suc);
+ 		peg_expr.add("fail", isModeTemp() ? lFail : fail);
+ 	}
 // 
 // 	@Override
 // 	public void visit(BindPegNode peg) {
@@ -126,12 +134,15 @@ public class ParserVisitor  extends FormalVisitor implements ASTNodeVisitor{
 		// visit the right parsing expression
 		peg.getRightPeg().accept(this);
 		// set propriety for the right parsing expression
-		if((peg.getRightPeg() instanceof NonterminalPegNode) || (peg.getRightPeg() instanceof LiteralPegNode)){
-		     ST aux_peg1 = groupTemplate.getInstanceOf("choice_peg");
-		     aux_peg1.add("left_peg",peg_expr);
-		     aux_peg1.add("right_peg","");
-		     aux_peg1.add("suc", isModeTemp() ? lSuc : suc);
-		     aux_peg.add("right_peg",aux_peg1);
+		if((peg.getRightPeg() instanceof NonterminalPegNode) 
+		|| (peg.getRightPeg() instanceof LiteralPegNode)
+		|| hnames.containsKey(peg.getRightPeg())){
+		
+		     ST aux_peg1 = groupTemplate.getInstanceOf("choice_right_singleton");
+		     aux_peg1.add("peg_expr",peg_expr);
+		     aux_peg1.add("suc", isModeTemp() ? lSuc  : suc);
+
+		     aux_peg.add("right_peg", aux_peg1);
 		}else{
 		     aux_peg.add("right_peg", peg_expr);
 		}
@@ -211,19 +222,27 @@ public class ParserVisitor  extends FormalVisitor implements ASTNodeVisitor{
 		// adding the parsing expression on star template
 		aux_peg.add("peg_expr", peg_expr);
 		aux_peg.add("suc",isModeTemp() ? lSuc : suc);
-		peg_expr = aux_peg;		
+		peg_expr = aux_peg;
 	}
 
-// 	@Override
-// 	public void visit(PlusPegNode peg) {
-// 		// set the current parsing expression template
-// 		ST aux_peg = groupTemplate.getInstanceOf("plus_peg");
-// 		// visit the parsing expression
-// 		peg.getPeg().accept(this);
-// 		// adding the parsing expression on star template
-// 		aux_peg.add("peg_expr", peg_expr);
-// 		peg_expr = aux_peg;
-// 	}
+   @Override
+	public void visit(PlusPegNode peg) {
+		// set the current parsing expression template
+		String name = hnames.get(peg);
+		if( name != null) {
+			q.add(peg);
+            mkHelperFunctionCall(name);
+			return;
+		}
+		ST aux_peg = groupTemplate.getInstanceOf("plus_peg");
+		// visit the parsing expression
+		peg.getPeg().accept(this);
+		// adding the parsing expression on star template
+		aux_peg.add("peg_expr", peg_expr);
+		aux_peg.add("suc", isModeTemp() ? lSuc : suc);
+		aux_peg.add("fail", isModeTemp() ? lFail : fail);
+		peg_expr = aux_peg;
+	}
 
 	@Override
 	public void visit(SequencePegNode peg) {
@@ -243,6 +262,7 @@ public class ParserVisitor  extends FormalVisitor implements ASTNodeVisitor{
 			// add the current parsing expression on the sequence template
 			aux_peg.add("peg_exprs", peg_expr);
 		}
+		aux_peg.add("fail", isModeTemp() ? lFail : fail);
 		peg_expr = aux_peg;
 		modeSet(mode_bkup);
 	}

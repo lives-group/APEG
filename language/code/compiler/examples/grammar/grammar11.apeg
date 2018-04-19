@@ -1,11 +1,16 @@
 apeg notDiscardChanges;
 
 
-s: a1<> (a2<> / a4<>)* &a3<> t3<> ;
+s: a1<> (a2<> / a4<>)* &a3<> b3<> 'e'+ b1<>;
 
-a2 : 'x' / 'y'?'www' / 'nada' 'aver' a1<>  / 'z';
+a2 : 'x' / 'y'?'www' / 'nada' 'aver' a1<> / b0<> ;
 
-t3: &'xyz' ;
+b0 : '(' . ')' ;
+b2 : .;
+
+b1 : 'm'+ ;
+
+b3: &'xyz' ;
 
 a1: 'a' / 'b'* / !'c' ;
 

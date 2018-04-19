@@ -81,10 +81,22 @@ public class BaseParser {
 			e.printStackTrace();
 		}
 		return false;
-		
 	}
 	
 	public boolean match(char c){ return match(""+c);}
+	
+	public boolean matchNext(){
+	     try {
+			char c = s.next();
+			stk.push(new Terminal(0,0,c+""));
+            ruleStk.peek().n++;
+            return true;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
 	
 	public Symbol getDerivationTreeRoot() {
 		return stk.peek();

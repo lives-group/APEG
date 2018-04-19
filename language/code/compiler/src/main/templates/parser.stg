@@ -2,7 +2,10 @@ group prettyprint;
 
 /** Defining the grammar specfication template */
 apeg(name, rules) ::= <<
-
+/**
+ *  APEG Tool Parser 
+ *  This code was automatically generated. 
+ */
 public class <name> extends BaseParser{
 
       public <name>(String fname) {
@@ -32,6 +35,11 @@ private boolean <name>(){
    <endif>
 }>>
 
+/** Template for parsing expression 
+  *
+  */
+
+
 choice_peg(left_peg, right_peg, suc) ::= 
 <<mark();
 if(<left_peg>){ 
@@ -42,30 +50,26 @@ restore();
 alternate();
 <right_peg> 
 >>
-  
-sequence_peg(peg_exprs) ::=  "<peg_exprs:{x | if(!<x>){return endFail();\}  }; separator=\"\n\" >" 
 
-peg_literal_test(value)::= 
-<<if(!match("<value>")){ 
-     return endFail();
+choice_right_singleton(peg_expr,suc) ::= 
+<<
+mark();
+if(<peg_expr>){
+   unmark();
+   return <suc>;
 }
->> 
+restore();
+>>
+
+sequence_peg(peg_exprs,fail) ::=  "<peg_exprs:{x | if(!<x>){return <fail>;\}  }; separator=\"\n\" >" 
 
 peg_literal_match(value)::= <<match("<value>")>> 
 
 peg_nonterminal_call(value) ::= << <value>() >>
 
-literal_peg(value, choice, star, lit) ::= << 
-<if(choice)>match("<value>")<endif>
-<if(star)>match("<value>")<endif>
-<if(lit)>
-if(!match("<value>")){ 
-    return endFail();
-}<endif> >>
-
 star_peg(peg_expr) ::= <<while(<peg_expr>){}>>
 
-/** Template for parsing expression */
+
 and_peg(peg_expr, suc,fail) ::= 
 <<
 mark();
@@ -76,11 +80,17 @@ if(!<peg_expr>){
      <endif>}
 restore();
 <if(suc)>return <suc>;<endif> >>
-any_peg() ::= "."
+
+any_peg(suc,fail) ::=
+<<
+if(matchNext()){ return <suc>;}
+return <fail>;
+>>
 
 bind_peg(name, peg_expr) ::="<name>=<peg_expr>"
 
 constraint_peg(expr) ::= "{? <expr> }"
+
 group_peg(ranges) ::= "[<ranges>]"
 lambda_peg() ::= " " 
 
@@ -95,7 +105,13 @@ restore();
 return <fail>
 >>
 
-plus_peg(peg_expr) ::= "(<peg_expr>)+"
+plus_peg(peg_expr,suc,fail) ::= 
+<<
+if(!<peg_expr>){ return <fail>;}
+while(<peg_expr>){}
+return <suc>;
+>>
+
 optional_peg(peg_expr, suc) ::= 
 <<
 mark();

@@ -64,17 +64,17 @@ public class PageStream {
 	 
 	 public void mark() {
 	   marks.push(pr);
-	   System.out.println("marcou: " + pr);
+	   //System.out.println("marcou: " + pr);
 	 }
 	 
 	 public void unmark(){
 	   int pos = marks.pop();
-	   System.out.println("desmarcou " + pos);
+	   //System.out.println("desmarcou " + pos);
 	 }
 	 
 	 public void restore(){
 	   int ant = pr;
 	   pr = marks.pop();
-	   System.out.println("de " + ant + " restaurou para " + pr);
+	   //System.out.println("de " + ant + " restaurou para " + pr);
 	 }
 }

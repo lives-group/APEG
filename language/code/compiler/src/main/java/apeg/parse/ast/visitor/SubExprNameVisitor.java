@@ -82,31 +82,32 @@ public class SubExprNameVisitor extends FormalVisitor implements ASTNodeVisitor{
         }
 	}
 
-
-/*	@Override
+	@Override
 	public void visit(AndPegNode peg) {
-		// TODO Auto-generated method stub
-		
+	    peg.getPeg().accept(this);
+	    nameSubexpr(peg.getPeg());
 	}
 
 	@Override
-	public void visit(AnyPegNode peg) {
-		// TODO Auto-generated method stub
-		
-	}
-
+	public void visit(AnyPegNode peg) {	}
+/*
 	@Override
 	public void visit(BindPegNode peg) {
 		// TODO Auto-generated method stub
 		
 	}
-
+*/
 	@Override
 	public void visit(ChoicePegNode peg) {
-		// TODO Auto-generated method stub
-		
+		 peg.getLeftPeg().accept(this);
+		 nameSubexpr(peg.getLeftPeg());
+		 
+		 peg.getRightPeg().accept(this);
+		 if(!(peg.getRightPeg() instanceof ChoicePegNode)) {              
+              nameSubexpr(peg.getRightPeg());
+		 }
 	}
-
+/*
 	@Override
 	public void visit(ConstraintPegNode peg) {
 		// TODO Auto-generated method stub
@@ -136,29 +137,30 @@ public class SubExprNameVisitor extends FormalVisitor implements ASTNodeVisitor{
 		// TODO Auto-generated method stub
 		
 	}
-
+*/
 	@Override
 	public void visit(NotPegNode peg) {
-		// TODO Auto-generated method stub
+		peg.getPeg().accept(this);
+		nameSubexpr(peg.getPeg());
 		
 	}
 
 	@Override
 	public void visit(OptionalPegNode peg) {
-		// TODO Auto-generated method stub
-		
+		peg.getPeg().accept(this);
+		nameSubexpr(peg.getPeg());
 	}
 
 	@Override
 	public void visit(PlusPegNode peg) {
-		// TODO Auto-generated method stub
-		
-	}*/
+		peg.getPeg().accept(this);
+		nameSubexpr(peg.getPeg());
+	}
 
 	@Override
 	public void visit(SequencePegNode peg) {
 		// TODO Auto-generated method stub
-		System.out.println("passou");
+		//System.out.println("passou");
 		for(PegNode p : peg.getPegs()) {    
 			p.accept(this);
 			nameSubexpr(p);

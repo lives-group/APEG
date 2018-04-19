@@ -155,7 +155,7 @@ public class Tool {
 				subExprNameVisitor.printTable();
 				ASTNodeVisitor parservisitor = new ParserVisitor(
 						new RelativePath(new AbsolutePath("."),
-								"src/main/templates/parser.stg"),subExprNameVisitor.getNamesTable());;
+								"src/main/templates/parser.stg"),subExprNameVisitor.getNamesTable(),"");;
 				g.accept(parservisitor);
 				
 				

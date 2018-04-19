@@ -14,6 +14,9 @@ import apeg.parse.ast.*;
 import apeg.parse.ast.GrammarNode.GrammarOption;
 import apeg.util.path.Path;
 
+import java.io.FileWriter;
+import java.io.File;
+
 public class ParserVisitor  extends FormalVisitor implements ASTNodeVisitor{
 
     enum Mode {STOPED,      // I'm nowhere ! 
@@ -27,6 +30,7 @@ public class ParserVisitor  extends FormalVisitor implements ASTNodeVisitor{
 	private ArrayDeque<PegNode> q;
 	private Mode mode, mode_bkup;
 	private final String lSuc, lFail, suc, fail ;
+	private String path;
 
 	
 
@@ -46,6 +50,11 @@ public class ParserVisitor  extends FormalVisitor implements ASTNodeVisitor{
 		mode = Mode.STOPED;
 		this.hnames = hnames;
 		q = new ArrayDeque<PegNode>(); 
+	}
+	
+	public ParserVisitor(Path filePath, Hashtable<PegNode,String> hnames, String path) {
+		this(filePath,hnames);
+		this.path = path;
 	}
 
 	private Mode modeSet(Mode m){
@@ -286,14 +295,33 @@ public class ParserVisitor  extends FormalVisitor implements ASTNodeVisitor{
 
 	@Override
 	public void visit(GrammarNode grammar) {
+	    String grmName;
 		template = groupTemplate.getInstanceOf("apeg");
+		grmName = grammar.getName();
+		if(!Character.isUpperCase(grmName.charAt(0))){
+		    char c = Character.toUpperCase(grmName.charAt(0));
+		    grmName = ""+c + grmName.substring(1,grmName.length()-1);
+		}
 
-		template.add("name", grammar.getName());
+		template.add("name", grmName);
+		
 
 		for(RuleNode rule : grammar.getRules()) {
 			rule.accept(this);
 		}
-		System.out.println(template.render());
+		if(path != null){
+		     try{
+		         path = path +(path != "" ? File.pathSeparatorChar : "")+ grmName+".java";
+		         FileWriter w = new FileWriter(path);
+		         System.out.println("Result saved to " + path);
+		         w.write(template.render());
+		         w.close();
+		     }catch(Exception e){
+		         e.printStackTrace();
+		     }
+        }else{
+            System.out.println(template.render());
+        }
 	}
 
 	@Override

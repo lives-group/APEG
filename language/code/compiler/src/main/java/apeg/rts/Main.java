@@ -7,8 +7,8 @@ public class Main {
 	public static void main(String[] args) {
 		
 		try {
-			Teste t = new Teste("/home/deise/Desktop/ProjetoApeg/APEG/language/code/compiler/src/main/java/apeg/rts/input");
-			if(t.s()){
+			TesteStateFull t = new TesteStateFull("apeg/rts/input");
+			if(t.s().isSuccess()){
 				System.out.println("OK");
 				Symbol s = t.getDerivationTreeRoot();
 				s.pprint();

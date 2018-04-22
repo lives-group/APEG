@@ -2,20 +2,22 @@ package apeg.rts;
 import java.io.IOException;
 import java.util.Stack;
 
-public class BaseParser {
+
+public class StatefullBaseParser {
 	
 	private Stack<Symbol> stk;
 	private Stack<RuleInfo> ruleStk;
+	private PResult result;
 	
 	private boolean lrsc; // last rule succesfull
 	//private Symbol root;
 	private PageStream s;
 	
 	
-	public BaseParser(String fname){
+	public StatefullBaseParser(String fname){
 		stk = new Stack<Symbol>();
 		ruleStk = new Stack<RuleInfo>();
-		
+		result = new PResult(true);
 		try {
 			s = new PageStream(fname);
 		} catch (IOException e) {
@@ -28,7 +30,7 @@ public class BaseParser {
 		ruleStk.push(new RuleInfo(ruleName));
 	}
 	
-	public boolean endSuccess(){
+	public void success(){
 		NonTerminal raiz = new NonTerminal(ruleStk.peek().rname);
 	    for(int i=0; i < ruleStk.peek().n;i++){
 	    	raiz.addFrontChilds(stk.pop());
@@ -36,24 +38,33 @@ public class BaseParser {
 	    stk.push(raiz);
 	    ruleStk.pop();
 	    ruleStk.peek().n++;
-		return true;
+		result.turnSuccess();
 	}
 	
-	public boolean endFail(){
+	public void fail(){
 		for(int i=0; i< ruleStk.peek().n;i++){
 	    	stk.pop();
 	    }
 		ruleStk.pop();
-		return false;
+		result.turnFail();
 	}
 	
-	public boolean alternate(){
+	public void undoChoice(){
+	    restore();
 		for(int i=0; i< ruleStk.peek().n;i++){
 	    	stk.pop();
 	    }
 		ruleStk.peek().n = 0;
-		return false;
+		mark();
 	}
+	
+	public void beginChoices(){
+	    mark();
+	}
+	public void endChoices(){
+	    unmark();
+	}
+	
 	
 	public boolean match(String p){
 		try {

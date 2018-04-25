@@ -8,39 +8,55 @@ public class TesteStateFull extends StateFullBaseParser{
     }
     //
     // S -> 'a' 'b' / 'c' Q;
-    // Q -> '01'* 
+    // Q -> '010'* '01' '10' 
     //
     public PegResult s(){
         startRule("s");
-        beginChoices();
-        
+        System.out.print("Starting rule s");
+        mkBacktracPoint();
         match('a'); 
         if (isOk()){ 
            match('b');
            if (isOk()){ 
               return success();      
            }     
-        }
-        
-        undoChoice();   
-        
+        }      
+        System.out.println("\'ab\' failed.");
+        restore();    
+        mkBacktracPoint();
+        System.out.println("Restored input/stack. Trying \'c\' Q");
         match('c');
         if (isOk()){ 
             q();
             if(isOk()){
+               System.out.println("q call succeded");
                return success();  
             }
+            System.out.println("q call failed");
         }
-        endChoices();
+        dismissBacktracPoint();
         
         return fail(); 
     }
     
     public PegResult q(){
         startRule("q");
+        System.out.println("Starting rule q");
         do{
-           match("01");
+           mark();
+           match("010");
+           if(!isOk()){restore();}else{unmark();}
         }while(isOk());
-        return success();
+        done();
+        match("01");
+        if(isOk()){
+           match("10");
+           if(isOk()){
+              System.out.println("Succed rule q");
+              return success();
+           }
+        }
+        System.out.println("Failed rule q");
+        return fail();
     }
 }

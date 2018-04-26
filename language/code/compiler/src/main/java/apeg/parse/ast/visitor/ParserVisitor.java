@@ -166,6 +166,7 @@ public class ParserVisitor  extends FormalVisitor implements ASTNodeVisitor{
 
 	@Override
 	public void visit(NotPegNode peg) {
+		mode_bkup = modeSet(Mode.INFLOW);
 		String name = hnames.get(peg);
 		if( name != null) {
 			q.add(peg);
@@ -182,10 +183,12 @@ public class ParserVisitor  extends FormalVisitor implements ASTNodeVisitor{
 		aux_peg.add("suc",isModeTemp() ? lSuc : suc);
 		aux_peg.add("fail",isModeTemp() ? lFail : fail);
 		peg_expr = aux_peg;
+		modeSet(mode_bkup);
 	}
 
 	@Override
 	public void visit(OptionalPegNode peg) {
+		mode_bkup = modeSet(Mode.INFLOW);
 		String name = hnames.get(peg);
 		if( name != null) {
 			q.add(peg);
@@ -200,11 +203,13 @@ public class ParserVisitor  extends FormalVisitor implements ASTNodeVisitor{
 		aux_peg.add("peg_expr", peg_expr);
 		aux_peg.add("suc",isModeTemp() ? lSuc : suc);
 		peg_expr = aux_peg;
+		modeSet(mode_bkup);
 	}
 
    @Override
 	public void visit(PlusPegNode peg) {
 		// set the current parsing expression template
+		mode_bkup = modeSet(Mode.INFLOW);
 		String name = hnames.get(peg);
 		if( name != null) {
 			q.add(peg);
@@ -219,6 +224,7 @@ public class ParserVisitor  extends FormalVisitor implements ASTNodeVisitor{
 		aux_peg.add("suc", isModeTemp() ? lSuc : suc);
 		aux_peg.add("fail", isModeTemp() ? lFail : fail);
 		peg_expr = aux_peg;
+		modeSet(mode_bkup);
 	}
 
 	@Override
@@ -247,18 +253,21 @@ public class ParserVisitor  extends FormalVisitor implements ASTNodeVisitor{
 	@Override
 	public void visit(StarPegNode peg) {
 		// set the current parsing expression template as a update parsing expression
+		mode_bkup = modeSet(Mode.INFLOW);
 		String name = hnames.get(peg);
 		if( name != null) {
 			q.add(peg);
 		    mkHelperFunctionCall(name);
 			return;
 		}
+		System.out.println(mode.toString());
 		ST aux_peg = groupTemplate.getInstanceOf("star_peg");
 		// visit the parsing expression
 		peg.getPeg().accept(this);
 		// adding the parsing expression on star template
 		aux_peg.add("peg_expr", peg_expr);
 		peg_expr = aux_peg;
+		modeSet(mode_bkup);
 	}
 
 	@Override

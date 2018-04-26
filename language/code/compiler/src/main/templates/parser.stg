@@ -77,7 +77,6 @@ peg_nonterminal(value) ::= <<if(!<value>()){
 
 star_peg(peg_expr) ::= <<while(<peg_expr>){}>>
 
-
 and_peg(peg_expr, suc,fail) ::= 
 <<
 mark();

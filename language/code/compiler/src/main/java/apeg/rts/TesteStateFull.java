@@ -8,7 +8,8 @@ public class TesteStateFull extends StateFullBaseParser{
     }
     //
     // S -> 'a' 'b' / 'c' Q;
-    // Q -> '010'* '01' '10' 
+    // Q -> '010'* '01' '10';
+    // R -> &''
     //
     public PegResult s(){
         startRule("s");
@@ -35,7 +36,6 @@ public class TesteStateFull extends StateFullBaseParser{
             System.out.println("q call failed");
         }
         dismissBacktracPoint();
-        
         return fail(); 
     }
     

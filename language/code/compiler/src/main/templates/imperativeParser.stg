@@ -24,7 +24,7 @@ rule( name, peg_expr) ::= <<
 public PegResult <name>(){
    startRule("<name>");
    <peg_expr>
-   return fail(); 
+   if(isOk()){return success();} else{return fail();}      
 }>>
 
 /** Template for parsing expression 
@@ -37,42 +37,76 @@ if(isOk()){ return success();}
 restore();    
 mkBacktracPoint();
 <right_peg>
+if(isOk()){ return success();}
 >>
 
-sequence_peg(peg_exprs,fail) ::=  "<peg_exprs:{x | if(isOk()){<x>\}  }; separator=\"\n\" >" 
 
 cont(expr1,expr2) ::=
 <<
-<expr1>
-<if(expr2)>if(isOK()){
+<expr1><if(expr2)>
+if(isOk()){
     <expr2>
-}<endif>>>
+}<endif> >>
 
 match(value)::= <<match("<value>");>> 
-call(name) ::= << <value>();>>
+call(name) ::= <<<name>();>>
+
+and_peg(peg_expr) ::= 
+<<
+mkBacktracPoint();
+<peg_expr>
+restore();>>
 
 star_peg(peg_expr) ::= 
 <<
 do{
    mkBacktracPoint();
    <peg_expr>
-   if(!isOK()){restore();}esle{dismissBacktracPoint();}
+   if(!isOk()){restore();} else{dismissBacktracPoint();}
 }while(isOk());
 done();
 >>
 
-
-and_peg(peg_expr) ::= 
+plus_peg(peg_expr) ::= 
 <<
-mkBacktracPoint
 <peg_expr>
-restore();>>
-
-any_peg(suc,fail) ::=
-<<
-if(matchNext()){ return <suc>;}
-return <fail>;
+if(!isOk()){
+ return fail();
+}
+do{
+   mkBacktracPoint();
+   <peg_expr>
+   if(!isOk()){restore();} else{dismissBacktracPoint();}
+}while(isOk());
+done();
 >>
+
+not_peg(peg_expr) ::= 
+<<
+mkBacktracPoint();
+<peg_expr>
+if(isOk()){ restore(); fail();} 
+else{
+    dismissBacktracPoint();  
+    done(); 
+}
+>>
+
+
+optional_peg(peg_expr) ::= 
+<<
+mkBacktracPoint();
+<peg_expr>
+if(isOk()){ dismissBacktracPoint();}
+else{ restore(); done(); } 
+>>
+
+any_peg() ::=
+<<
+matchNext();
+if(isOk()){ return endSuccess();}
+>>
+
 
 bind_peg(name, peg_expr) ::="<name>=<peg_expr>"
 
@@ -81,30 +115,5 @@ constraint_peg(expr) ::= "{? <expr> }"
 group_peg(ranges) ::= "[<ranges>]"
 lambda_peg() ::= " " 
 
-not_peg(peg_expr, suc, fail) ::= 
-<<
-mark();
-if(!<peg_expr>){
-   restore();
-   return <suc>;
-}
-restore();
-return <fail>
->>
 
-plus_peg(peg_expr,suc,fail) ::= 
-<<
-if(!<peg_expr>){ return <fail>;}
-while(<peg_expr>){}
-return <suc>;
->>
-
-optional_peg(peg_expr, suc) ::= 
-<<
-mark();
-if(!<peg_expr>){
-   restore();
-}
-return <suc>; 
->>
 update_peg(assigns) ::= <<{<assigns; separator=" ">}>>

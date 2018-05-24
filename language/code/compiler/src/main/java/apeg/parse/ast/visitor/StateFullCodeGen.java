@@ -1,9 +1,5 @@
 package apeg.parse.ast.visitor;
 
-import java.util.LinkedList;
-
-import java.util.Hashtable;
-import java.util.Map.Entry;
 import java.util.ListIterator;
 import java.util.List;
 
@@ -12,7 +8,6 @@ import org.stringtemplate.v4.STGroup;
 import org.stringtemplate.v4.STGroupFile;
 
 import apeg.parse.ast.*;
-import apeg.parse.ast.GrammarNode.GrammarOption;
 import apeg.util.path.Path;
 
 import java.io.FileWriter;
@@ -24,7 +19,7 @@ public class StateFullCodeGen  extends FormalVisitor{
     private ST template;
     private String path;
     
-    private ST peg_expr, expr;
+    private ST peg_expr;
 
     public StateFullCodeGen(Path filePath) {
         groupTemplate = new STGroupFile(filePath.getAbsolutePath());
@@ -35,39 +30,23 @@ public class StateFullCodeGen  extends FormalVisitor{
         this.path = path;
     }
     
-//     @Override
-//     public void visit(AndPegNode peg) {
-//         // set the current parsing expression template
-//         ST aux_peg = groupTemplate.getInstanceOf("and_peg");
-//         String name = hnames.get(peg);
-//         if( name != null) {
-//             q.add(peg); //Adicionando o nome na fila
-//         mkHelperFunctionCall(name);
-//             return ; 
-//         }
-//         // visit the parsing expression
-//         peg.getPeg().accept(this);
-//         // set propriety for the bind parsing expression
-//         aux_peg.add("peg_expr", peg_expr);
-//         aux_peg.add("suc", isModeTemp() ? lSuc : suc);
-//     aux_peg.add("fail",isModeTemp() ? lFail : fail);
-//         // set the current parsing expression
-//         peg_expr = aux_peg;
-//     }
-// 
-//      @Override
-//      public void visit(AnyPegNode peg) {
-//          String name = hnames.get(peg);
-//         if( name != null) {
-//             q.add(peg); //Adicionando o nome na fila
-//         mkHelperFunctionCall(name);
-//             return ; 
-//         }
-//          peg_expr = groupTemplate.getInstanceOf("any_peg");
-//          peg_expr.add("suc", isModeTemp() ? lSuc : suc);
-//          peg_expr.add("fail", isModeTemp() ? lFail : fail);
-//      }
-// 
+     @Override
+     public void visit(AndPegNode peg) {
+         // set the current parsing expression template
+         ST aux_peg = groupTemplate.getInstanceOf("and_peg");
+         // visit the parsing expression
+         peg.getPeg().accept(this);
+         // set propriety for the bind parsing expression
+         aux_peg.add("peg_expr", peg_expr);
+         // set the current parsing expression
+         peg_expr = aux_peg;
+     }
+ 
+     @Override
+      public void visit(AnyPegNode peg) {
+          peg_expr = groupTemplate.getInstanceOf("any_peg");
+      }
+ 
 //     @Override
 //     public void visit(BindPegNode peg) {
 //         // set the current parsing expression template
@@ -131,62 +110,38 @@ public class StateFullCodeGen  extends FormalVisitor{
         peg_expr.add("name", peg.getName());
     }
 
-//     @Override
-//     public void visit(NotPegNode peg) {
-//         String name = hnames.get(peg);
-//         if( name != null) {
-//             q.add(peg);
-//         mkHelperFunctionCall(name);
-//             return;
-//         }
-//         // set the current parsing expression template
-//         ST aux_peg = groupTemplate.getInstanceOf("not_peg");
-//         // visit the parsing expression
-//         peg.getPeg().accept(this);
-//         
-//         // adding the parsing expression on star template
-//         aux_peg.add("peg_expr", peg_expr);
-//         aux_peg.add("suc",isModeTemp() ? lSuc : suc);
-//         aux_peg.add("fail",isModeTemp() ? lFail : fail);
-//         peg_expr = aux_peg;
-//     }
-// 
-//     @Override
-//     public void visit(OptionalPegNode peg) {
-//         String name = hnames.get(peg);
-//         if( name != null) {
-//             q.add(peg);
-//         mkHelperFunctionCall(name);
-//             return;
-//         }
-//         // set the current parsing expression template
-//         ST aux_peg = groupTemplate.getInstanceOf("optional_peg");
-//         // visit the parsing expression
-//         peg.getPeg().accept(this);
-//         // adding the parsing expression on star template
-//         aux_peg.add("peg_expr", peg_expr);
-//         aux_peg.add("suc",isModeTemp() ? lSuc : suc);
-//         peg_expr = aux_peg;
-//     }
-// 
-//    @Override
-//     public void visit(PlusPegNode peg) {
-//         // set the current parsing expression template
-//         String name = hnames.get(peg);
-//         if( name != null) {
-//             q.add(peg);
-//         mkHelperFunctionCall(name);
-//             return;
-//         }
-//         ST aux_peg = groupTemplate.getInstanceOf("plus_peg");
-//         // visit the parsing expression
-//         peg.getPeg().accept(this);
-//         // adding the parsing expression on star template
-//         aux_peg.add("peg_expr", peg_expr);
-//         aux_peg.add("suc", isModeTemp() ? lSuc : suc);
-//         aux_peg.add("fail", isModeTemp() ? lFail : fail);
-//         peg_expr = aux_peg;
-//     }
+     @Override
+     public void visit(NotPegNode peg) {
+         // set the current parsing expression template
+         ST aux_peg = groupTemplate.getInstanceOf("not_peg");
+         // visit the parsing expression
+         peg.getPeg().accept(this);   
+         // adding the parsing expression on star template
+         aux_peg.add("peg_expr", peg_expr);
+         peg_expr = aux_peg;
+    }
+ 
+     @Override
+     public void visit(OptionalPegNode peg) {
+         // set the current parsing expression template
+         ST aux_peg = groupTemplate.getInstanceOf("optional_peg");
+         // visit the parsing expression
+         peg.getPeg().accept(this);
+         // adding the parsing expression on star template
+         aux_peg.add("peg_expr", peg_expr);
+         peg_expr = aux_peg;
+     }
+ 
+    @Override
+     public void visit(PlusPegNode peg) {
+         // set the current parsing expression template
+         ST aux_peg = groupTemplate.getInstanceOf("plus_peg");
+         // visit the parsing expression
+         peg.getPeg().accept(this);
+         // adding the parsing expression on star template
+         aux_peg.add("peg_expr", peg_expr);
+         peg_expr = aux_peg;
+     }
 
     @Override
     public void visit(SequencePegNode peg) {
@@ -228,14 +183,14 @@ public class StateFullCodeGen  extends FormalVisitor{
             grmName = ""+c + grmName.substring(1,grmName.length());
         }
         template.add("name", grmName);
-        
+        System.out.println("teste");
 
         for(RuleNode rule : grammar.getRules()) {
             rule.accept(this);
         }
-        if(path != null){
+        if(path == null){
             try{
-                path = path +(path != "" ? File.pathSeparatorChar : "")+ grmName+".java";
+                path = grmName +".java";
                 FileWriter w = new FileWriter(path);
                 System.out.println("Result saved to " + path);
                 w.write(template.render());

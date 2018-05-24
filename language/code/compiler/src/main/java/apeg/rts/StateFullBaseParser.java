@@ -27,9 +27,9 @@ public abstract class StateFullBaseParser {
         public Symbol sym;
         public boolean marked; 
         SContainer(Symbol s){ this.sym = s; marked = false;}
-        public boolean isMarked(){ return marked;}
-        public void mark(){ marked = true;}
-        public void unmark(){ marked = false;}
+        public String toString() {
+        	return sym.toString();
+        }
     }
     
     private Stack<Symbol> stk;
@@ -134,8 +134,8 @@ public abstract class StateFullBaseParser {
      * remove the lsat rule inf from the rule context 
      */
     private void makeFailState(){
-    clearStack();
-    ruleStk.pop();
+        clearStack();
+        ruleStk.pop();
         result = false;
     }
     

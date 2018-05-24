@@ -8,4 +8,8 @@ class RuleInfo{
 		 rname = name;
 		 n = 0;
 	}
+	
+	public String toString() {
+		return " (" + rname +"," + n +")";
+	}
 }

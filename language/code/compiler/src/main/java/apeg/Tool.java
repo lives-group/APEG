@@ -18,7 +18,6 @@ import apeg.parse.ast.ASTFactoryImpl;
 import apeg.parse.ast.GrammarNode;
 import apeg.parse.ast.visitor.ASTNodeVisitor;
 import apeg.parse.ast.visitor.BuildRuleEnvironmetVisitor;
-import apeg.parse.ast.visitor.CodeGenVisitor;
 import apeg.parse.ast.visitor.DOTVisitor;
 import apeg.parse.ast.visitor.ParserVisitor;
 import apeg.parse.ast.visitor.PrettyPrintVisitor;

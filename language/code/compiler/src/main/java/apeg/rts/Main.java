@@ -1,13 +1,12 @@
 package apeg.rts;
 
 
-
 public class Main {
 
     public static void main(String[] args) {
         
         try {
-            SimpleTest t = new SimpleTest("apeg/rts/input");
+            Peg t = new Peg("/home/deise/Desktop/ProjetoApeg/APEG/language/code/compiler/bin/apeg/rts/input");
             if(t.s().isSuccess()){
                 System.out.println("OK");
                 Symbol s = t.getDerivationTreeRoot();

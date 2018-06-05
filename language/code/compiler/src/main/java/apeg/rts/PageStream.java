@@ -31,7 +31,9 @@ public class PageStream {
 		      blocks[page] = new char[blocksize];
 		  }
 	      int n = f.read(blocks[page]);
-	      pw = pw + n;
+	      if(n != -1 ){
+	          pw = pw + n;
+	      }
 	 }
 	 
 	 public boolean match(String s) throws IOException{

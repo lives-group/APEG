@@ -107,13 +107,14 @@ matchNext();
 if(isOk()){ return endSuccess();}
 >>
 
+lambda_peg() ::= " " 
 
 bind_peg(name, peg_expr) ::="<name>=<peg_expr>"
 
 constraint_peg(expr) ::= "{? <expr> }"
 
 group_peg(ranges) ::= "[<ranges>]"
-lambda_peg() ::= " " 
+
 
 
 update_peg(assigns) ::= <<{<assigns; separator=" ">}>>

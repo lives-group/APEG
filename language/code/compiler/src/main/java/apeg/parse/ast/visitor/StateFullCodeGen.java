@@ -44,7 +44,9 @@ public class StateFullCodeGen  extends FormalVisitor{
  
      @Override
       public void visit(AnyPegNode peg) {
+    	  System.out.println("any");
           peg_expr = groupTemplate.getInstanceOf("any_peg");
+          System.out.println("teste");
       }
  
 //     @Override
@@ -86,16 +88,16 @@ public class StateFullCodeGen  extends FormalVisitor{
 //         peg_expr.add("expr", expr);
 //     }
 // 
-//     @Override
-//     public void visit(GroupPegNode peg) {
-//         peg_expr = groupTemplate.getInstanceOf("group_peg");
-//         peg_expr.add("ranges", peg.getRanges());
-//     }
-/*
+     @Override
+     public void visit(GroupPegNode peg) {
+         peg_expr = groupTemplate.getInstanceOf("group_peg");
+         peg_expr.add("ranges", peg.getRanges());
+     }
+
     @Override
-    public void visit(LambdaPegNode peg) { // ?? 
+    public void visit(LambdaPegNode peg) { 
         peg_expr = groupTemplate.getInstanceOf("lambda_peg");
-    }*/
+    }
 
     @Override
     public void visit(LiteralPegNode peg) {

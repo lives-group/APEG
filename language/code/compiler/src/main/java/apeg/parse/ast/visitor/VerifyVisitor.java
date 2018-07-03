@@ -302,7 +302,9 @@ public class VerifyVisitor extends FormalVisitor implements ASTNodeVisitor {
     	      erros.add("("+ assign.getLine() + "," +assign.getColunm() +"): Atribuicao de tipos incompativeis: " +stk.peek().getName() + " e " + v.getType().getName());  
           }
 	   }else{
-		   ruleTable.get(currentRule).getLocals().add(assign.getVariable(), new VarType (stk.peek(),VarType.AttrDirection.LOCAL)); //adiciona uma nova variavel na tabela
+		   Environment<String,VarType> envy = ruleTable.get(currentRule).getLocals(); 
+		   int ac = envy.size();
+		   envy.add(assign.getVariable(), new VarType (stk.peek(),VarType.AttrDirection.LOCAL,ac)); //adiciona uma nova variavel na tabela
 		   //erros.add("("+ assign.getLine() + "," +assign.getColunm() +"): Variavel " + assign.getVariable()+" nao foi declarada. ");  
 	   }
        

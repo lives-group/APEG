@@ -8,6 +8,8 @@ import org.stringtemplate.v4.STGroup;
 import org.stringtemplate.v4.STGroupFile;
 
 import apeg.parse.ast.*;
+import apeg.parse.ast.visitor.Environments.Environment;
+import apeg.parse.ast.visitor.Environments.NTInfo;
 import apeg.util.path.Path;
 
 import java.io.FileWriter;
@@ -18,15 +20,17 @@ public class StateFullCodeGen  extends FormalVisitor{
     private STGroup groupTemplate;
     private ST template;
     private String path;
+    Environment<String, NTInfo> ntTable;
     
     private ST peg_expr;
 
-    public StateFullCodeGen(Path filePath) {
+    public StateFullCodeGen(Path filePath, Environment<String, NTInfo> ntTable) {
         groupTemplate = new STGroupFile(filePath.getAbsolutePath());
+        this.ntTable = ntTable;
     }
     
-    public StateFullCodeGen(Path filePath, String path) {
-        this(filePath);
+    public StateFullCodeGen(Path filePath, String path,Environment<String, NTInfo> ntTable) {
+        this(filePath, ntTable);
         this.path = path;
     }
     

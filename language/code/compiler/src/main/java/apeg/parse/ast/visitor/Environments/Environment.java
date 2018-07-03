@@ -71,9 +71,9 @@ public class Environment <N,V> {
 		
 		public boolean contains(N s){ return st.peek().containsKey(s);}
 		
-		public void extend(){ 
-		    st.push(new Hashtable<N,V>());
-		}
+//		public void extend(){ 
+//		    st.push(new Hashtable<N,V>());
+//		}
 		
 		public Set<N> getNames(){
 			//System.out.println("chave: "+ t.keySet());
@@ -90,4 +90,6 @@ public class Environment <N,V> {
 		public void clear(){
 			st.peek().clear();
 		}
+		
+		public int size() { return st.peek().size();}
 }

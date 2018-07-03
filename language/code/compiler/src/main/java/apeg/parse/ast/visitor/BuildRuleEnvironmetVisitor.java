@@ -35,14 +35,15 @@ public class BuildRuleEnvironmetVisitor extends FormalVisitor {
 		int i = 0;
 		for(VarDeclarationNode param : rule.getParameters()){
 			parameters[i] = param.getType();
-			v = new VarType(param.getType(), VarType.AttrDirection.HERDADO);
+			v = new VarType(param.getType(), VarType.AttrDirection.HERDADO, i);
 			temp.add(param.getName(), v);
 			i++;
 		}
+		int b = i;
 		i = 0;
 		for(VarDeclarationNode param : rule.getReturns()){
 			returns[i] = param.getType();
-			v = new VarType(param.getType(), VarType.AttrDirection.SINTETIZADO);
+			v = new VarType(param.getType(), VarType.AttrDirection.SINTETIZADO,b+i);
 			temp.add(param.getName(), v);
 			i++;
 		}

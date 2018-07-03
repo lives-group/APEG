@@ -6,6 +6,7 @@ public class NTInfo {
 	private Environment<String, VarType> locals;
 	
 	
+	
 	public NTInfo(NTType sig, Environment<String, VarType> locals){
 		this.sig = sig;
 		this.locals = locals;

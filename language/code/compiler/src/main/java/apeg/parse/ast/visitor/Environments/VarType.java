@@ -6,19 +6,21 @@ public class VarType {
 
 	private TypeNode type;
 	private AttrDirection atributo;
+	private int accessCode;
 	
 	public static enum AttrDirection{
 		HERDADO, SINTETIZADO, LOCAL	
 	}
 
 	
-    public VarType(TypeNode tipo, AttrDirection atributo){	
+    public VarType(TypeNode tipo, AttrDirection atributo, int ac){	
 	   this.type = tipo;
 	   this.atributo = atributo;	
+	   accessCode = ac;
     }
 
     public String toString(){
-    	String s = " :: " + type.getName() +  (atributo == AttrDirection.HERDADO ? " H " : " S "); 
+    	String s = " :: " + type.getName() +  (atributo == AttrDirection.HERDADO ? " H " : " S ") + " a.code = " + accessCode; 
     	return s;
     }
     
@@ -28,6 +30,10 @@ public class VarType {
 
 	public AttrDirection getAtributo() {
 		return atributo;
+	}
+	
+	public int getAccessCode() {
+		return accessCode;
 	}
  
 }

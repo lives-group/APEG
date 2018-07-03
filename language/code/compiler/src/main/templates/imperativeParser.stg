@@ -20,7 +20,7 @@ public class <name> extends StateFullBaseParser{
 
 
 /** Template for rules specification */
-rule( name, peg_expr) ::= <<
+rule( name, peg_expr, aridade) ::= <<
 public PegResult <name>(){
    startRule("<name>");
    <peg_expr>

@@ -10,6 +10,7 @@ import org.stringtemplate.v4.STGroupFile;
 import apeg.parse.ast.*;
 import apeg.parse.ast.visitor.Environments.Environment;
 import apeg.parse.ast.visitor.Environments.NTInfo;
+import apeg.parse.ast.visitor.Environments.VarType;
 import apeg.util.path.Path;
 
 import java.io.FileWriter;
@@ -55,9 +56,11 @@ public class StateFullCodeGen  extends FormalVisitor{
 	public void visit(AttributeExprNode expr) { 
 		// set the current expression template
 		this.expr = groupTemplate.getInstanceOf("atribute_expr");		
-		int value =  ntTable.get(currentRule).getLocals().get(expr.getName()).getAccessCode();
+		VarType vty = ntTable.get(currentRule).getLocals().get(expr.getName());
+		int value =  vty.getAccessCode();
 		// set the name attribute
-		this.expr.add("name", "(int)env.getAt(" + value + ")");
+		this.expr.add("accessCode",  value);
+		this.expr.add("type",vty.getType().getName());
 	}
 
 	@Override

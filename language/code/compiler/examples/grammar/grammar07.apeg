@@ -11,10 +11,8 @@ options {
 
 a returns[int k] : b<0,k> ;
  
-b[int x] returns[int x1] :
-  { x = x + 1; } '0' { x2 = x; }
-  /
-  { x = x + 1; } '1' { x1 = x; }
-  /
-  { x = x + 1; } '2' { x1 = x; }
+b[float x] returns[float x1] :
+   '0' { x = x1 * 3.0 * x / 2.0; }
   ;
+
+

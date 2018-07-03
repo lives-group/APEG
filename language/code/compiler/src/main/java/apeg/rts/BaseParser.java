@@ -7,7 +7,7 @@ public class BaseParser {
 	private Stack<Symbol> stk;
 	private Stack<RuleInfo> ruleStk;
 	
-	private boolean lrsc; // last rule succesfull
+	
 	//private Symbol root;
 	private PageStream s;
 	

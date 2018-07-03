@@ -92,7 +92,7 @@ public class VerifyVisitor extends FormalVisitor implements ASTNodeVisitor {
 				erros.add("("+ expr.getLine()+","+ expr.getColunm()+"): Numero de operandos insuficientes para o operador and");
 			}else{
 				System.out.print("EQUALITY: "); 
-				pprintStak();
+				//pprintStak();
 				TypeNode te = stk.pop();
 				TypeNode td = stk.pop();
 				result = resolveOp(expr.getEqualityType().name(),te,td);
@@ -118,8 +118,8 @@ public class VerifyVisitor extends FormalVisitor implements ASTNodeVisitor {
 			if(stk.size()<2){
 				erros.add("("+ expr.getLine()+","+ expr.getColunm()+"): Numero de operandos insuficientes para o operador and");
 			}else{
-				System.out.print("Logical OP IN: ");
-				pprintStak();
+				//System.out.print("Logical OP IN: ");
+				//pprintStak();
 				TypeNode te = stk.pop();
 				TypeNode td = stk.pop();
 				result = resolveOp(expr.getOpName(),te,td);
@@ -128,8 +128,8 @@ public class VerifyVisitor extends FormalVisitor implements ASTNodeVisitor {
 				    result = new TypeError();
 				}
 				stk.push(result);
-				System.out.print("Logical OP EXIT: ");
-				pprintStak();
+				//System.out.print("Logical OP EXIT: ");
+				//pprintStak();
 				
 			}
 		}
@@ -147,8 +147,8 @@ public class VerifyVisitor extends FormalVisitor implements ASTNodeVisitor {
 		if(stk.size()<2){
 			erros.add("("+ expr.getLine()+","+ expr.getColunm()+"): Numero de operandos insuficientes para o operador and");
 		}else{
-			System.out.print("Arith OP IN: ");
-			pprintStak();
+			//System.out.print("Arith OP IN: ");
+			//pprintStak();
 			TypeNode te = stk.pop();
 			TypeNode td = stk.pop();
 			result = resolveOp(expr.getOperation().name(),te,td);
@@ -157,8 +157,8 @@ public class VerifyVisitor extends FormalVisitor implements ASTNodeVisitor {
 			    result = new TypeError();
 			}
 			stk.push(result);
-			System.out.print("Arith OP EXIT: ");
-			pprintStak();
+			//System.out.print("Arith OP EXIT: ");
+			//pprintStak();
 		}
 	}
 	 
@@ -321,7 +321,7 @@ public class VerifyVisitor extends FormalVisitor implements ASTNodeVisitor {
 		grammar.getPreamble();
 		
 		for(RuleNode r : grammar.getRules()){
-			System.out.println("\n*******************REGRA: "+ r.getName()+"*********************");
+			//System.out.println("\n*******************REGRA: "+ r.getName()+"*********************");
 			currentRule = r.getName();
 			r.accept(this);
 		}

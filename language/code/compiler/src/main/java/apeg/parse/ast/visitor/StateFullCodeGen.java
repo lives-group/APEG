@@ -13,26 +13,227 @@ import apeg.parse.ast.visitor.Environments.NTInfo;
 import apeg.util.path.Path;
 
 import java.io.FileWriter;
-import java.io.File;
+
 
 public class StateFullCodeGen  extends FormalVisitor{
     
     private STGroup groupTemplate;
     private ST template;
-    private String path;
+    private String path, currentRule;
     Environment<String, NTInfo> ntTable;
     
-    private ST peg_expr;
+    private ST peg_expr, expr, assign;
 
     public StateFullCodeGen(Path filePath, Environment<String, NTInfo> ntTable) {
         groupTemplate = new STGroupFile(filePath.getAbsolutePath());
         this.ntTable = ntTable;
     }
     
-    public StateFullCodeGen(Path filePath, String path,Environment<String, NTInfo> ntTable) {
+    public StateFullCodeGen(Path filePath, String path, Environment<String, NTInfo> ntTable) {
         this(filePath, ntTable);
         this.path = path;
     }
+    
+
+	@Override
+	public void visit(AndExprNode expr) {
+		// set the current expression template
+		ST aux_expr = groupTemplate.getInstanceOf("and_expr");
+		// visit left expression
+		expr.getLeftExpr().accept(this);
+		// set the left expression attribute
+		aux_expr.add("left_expr", this.expr);
+		// visit right expression
+		expr.getRightExpr().accept(this);
+		// set the right expression attribute
+		aux_expr.add("right_expr", this.expr);
+		// set the current expression
+		this.expr = aux_expr;
+	}
+
+	@Override
+	public void visit(AttributeExprNode expr) { 
+		// set the current expression template
+		this.expr = groupTemplate.getInstanceOf("atribute_expr");		
+		int value =  ntTable.get(currentRule).getLocals().get(expr.getName()).getAccessCode();
+		// set the name attribute
+		this.expr.add("name", "(int)env.getAt(" + value + ")");
+	}
+
+	@Override
+	public void visit(BinaryExprNode expr) { 		
+		ST aux_expr;
+		switch(expr.getOperation()) {
+			case GT: // >
+				aux_expr = groupTemplate.getInstanceOf("gt_expr");
+				break;
+			case GE: // >=
+				aux_expr = groupTemplate.getInstanceOf("ge_expr");
+				break;
+			case LT: // <
+				aux_expr = groupTemplate.getInstanceOf("lt_expr");
+				break;
+			case LE: // <=
+				aux_expr = groupTemplate.getInstanceOf("le_expr");
+				break;
+			case ADD: // +
+				aux_expr = groupTemplate.getInstanceOf("add_expr");
+				break;
+			case SUB: // -
+				aux_expr = groupTemplate.getInstanceOf("sub_expr");
+				break;
+			case MUL: // *
+				aux_expr = groupTemplate.getInstanceOf("mul_expr");
+				break;
+			case DIV: // /
+				aux_expr = groupTemplate.getInstanceOf("div_expr");
+				break;
+			case MOD: // %
+				aux_expr = groupTemplate.getInstanceOf("mod_expr");
+				break;
+			default: // Should never reach the default case
+				aux_expr = null;
+				break;
+		}
+		// visit left expression
+        expr.getLeftExpr().accept(this);
+        // set the left expression attribute
+     	aux_expr.add("left_expr", this.expr);
+		// visit the right expression
+		expr.getRightExpr().accept(this);
+		// set the right expression attribute
+		aux_expr.add("right_expr", this.expr);
+		// set the current expression
+		this.expr = aux_expr;
+	}
+
+	@Override
+	public void visit(BooleanExprNode expr) {
+		// set the current expression template
+		this.expr = groupTemplate.getInstanceOf("boolean_expr");
+		// set value propriety
+		this.expr.add("value", expr.getValue());
+	}
+
+	@Override
+	public void visit(CallExprNode expr) { 
+		// set the current expression template
+		ST aux_expr = groupTemplate.getInstanceOf("call_expr");
+		// visit each function parameter expression
+		for(ExprNode e : expr.getParameters()){
+			e.accept(this);
+			// set the attribute params
+			aux_expr.add("params", this.expr);
+		}
+		// set the function name attribute
+		aux_expr.add("name", expr.getName());
+		
+		// set the current expression
+		this.expr = aux_expr;
+	}
+
+	@Override
+	public void visit(EqualityExprNode expr) {
+		// set the current expression template
+		ST aux_expr;
+		switch(expr.getEqualityType()) {
+			case EQ:
+				aux_expr = groupTemplate.getInstanceOf("equals_expr");
+				break;
+			case NE:
+				aux_expr = groupTemplate.getInstanceOf("no_equals_expr");
+				break;
+			default: // Should never reach the default case
+				aux_expr = null;
+				break;
+		}
+		// visit left expression
+        expr.getLeftExpr().accept(this);
+        // set the left expression attribute
+     	aux_expr.add("left_expr", this.expr);
+		// visit the right expression
+		expr.getRightExpr().accept(this);
+		// set the right expression attribute
+		aux_expr.add("right_expr", this.expr);
+		// set the current expression
+		this.expr = aux_expr;
+	}
+
+	@Override
+	public void visit(FloatExprNode expr) { 
+		// set the current expression template
+		this.expr = groupTemplate.getInstanceOf("float_expr");
+		// set value propriety
+		this.expr.add("value", expr.getValue());
+	}
+
+	@Override
+	public void visit(IntExprNode expr) { 
+		// set the current expression template
+		this.expr = groupTemplate.getInstanceOf("int_expr");
+		// set value propriety
+		this.expr.add("value", expr.getValue());
+	}
+
+	@Override
+	public void visit(MetaPegExprNode expr) { 
+		// set the current expression template
+		ST aux_expr = groupTemplate.getInstanceOf("meta_expr");
+		// visit expression
+		expr.getExpr().accept(this);
+		// set the expression attribute
+		aux_expr.add("expr", this.expr);
+		// set the current expression
+		this.expr = aux_expr;
+	}
+
+	@Override
+	public void visit(MinusExprNode expr) { 
+		// set the current expression template
+		ST aux_expr = groupTemplate.getInstanceOf("minus_expr");
+		// visit expression
+		expr.getExpr().accept(this);
+		// set the expression attribute
+		aux_expr.add("expr", this.expr);
+		// set the current expression
+		this.expr = aux_expr;
+	}
+
+	@Override
+	public void visit(NotExprNode expr) {
+		// set the current expression template
+		ST aux_expr = groupTemplate.getInstanceOf("not_expr");
+		// visit expression
+		expr.getExpr().accept(this);
+		// set the expression attribute
+		aux_expr.add("expr", this.expr);
+		// set the current expression
+		this.expr = aux_expr;
+	}
+
+	@Override
+	public void visit(OrExprNode expr) {
+		// set the current expression template
+		ST aux_expr = groupTemplate.getInstanceOf("or_expr");
+		// visit left expression
+		expr.getLeftExpr().accept(this);
+		// set the left expression attribute
+		aux_expr.add("left_expr", this.expr);
+		// visit right expression
+		expr.getRightExpr().accept(this);
+		// set the right expression attribute
+		aux_expr.add("right_expr", this.expr);
+		// set the current expression
+		this.expr = aux_expr;
+	}
+
+	@Override
+	public void visit(StringExprNode expr) {
+		// set the current expression template
+		this.expr = groupTemplate.getInstanceOf("string_expr");
+		// set value propriety
+		this.expr.add("value", expr.getValue()); 
+	}
     
      @Override
      public void visit(AndPegNode peg) {
@@ -45,12 +246,13 @@ public class StateFullCodeGen  extends FormalVisitor{
          // set the current parsing expression
          peg_expr = aux_peg;
      }
+     
+   
  
      @Override
       public void visit(AnyPegNode peg) {
     	  System.out.println("any");
           peg_expr = groupTemplate.getInstanceOf("any_peg");
-          System.out.println("teste");
       }
  
 //     @Override
@@ -178,6 +380,31 @@ public class StateFullCodeGen  extends FormalVisitor{
         aux_peg.add("peg_expr", peg_expr);
         peg_expr = aux_peg;
     }
+    
+    @Override
+	public void visit(UpdatePegNode peg) {
+    	// set the current parsing expression template as a update parsing expression
+    	peg_expr = groupTemplate.getInstanceOf("update_peg");		
+    	for(AssignmentNode p : peg.getAssignments()) {
+    	// visit each assignment node
+    		p.accept(this);
+    		// add the current assignment visited
+    		peg_expr.add("assigns", assign);
+    	}
+	}
+
+	@Override
+	public void visit(AssignmentNode assign) {
+		// built the assignment template
+		this.assign = groupTemplate.getInstanceOf("assign");
+		// visit the assignment expression
+		assign.getExpr().accept(this);
+		int value =  ntTable.get(currentRule).getLocals().get(assign.getVariable()).getAccessCode();
+		// set the name template attribute
+		this.assign.add("name", value);
+		// set the expr template attribute
+		this.assign.add("expr", expr);
+	}
 
     @Override
     public void visit(GrammarNode grammar) {
@@ -189,7 +416,7 @@ public class StateFullCodeGen  extends FormalVisitor{
             grmName = ""+c + grmName.substring(1,grmName.length());
         }
         template.add("name", grmName);
-        System.out.println("teste");
+      
 
         for(RuleNode rule : grammar.getRules()) {
             rule.accept(this);
@@ -198,7 +425,7 @@ public class StateFullCodeGen  extends FormalVisitor{
             try{
                 path = grmName +".java";
                 FileWriter w = new FileWriter(path);
-                System.out.println("Result saved to " + path);
+                System.out.println("\nResult saved to " + path);
                 w.write(template.render());
                 w.close();
              }catch(Exception e){
@@ -211,8 +438,10 @@ public class StateFullCodeGen  extends FormalVisitor{
 
     @Override
     public void visit(RuleNode rule) {
-    ST r = groupTemplate.getInstanceOf("rule");
+        ST r = groupTemplate.getInstanceOf("rule");
         // setting rule name
+        currentRule = rule.getName();
+        
         r.add("name", rule.getName());
         
         rule.getExpr().accept(this);
@@ -222,6 +451,10 @@ public class StateFullCodeGen  extends FormalVisitor{
         
         
     }
+    
+ 
+    
+    
 
 
 }

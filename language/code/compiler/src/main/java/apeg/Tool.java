@@ -123,20 +123,21 @@ public class Tool {
      			VerifyVisitor verifica = new VerifyVisitor(rtable,OperatorTables.mkArithmeticEnv());
 				g.accept(verifica);
 			    if (verifica.hasErrors()){ 
-			        System.err.println("---------- Errors --------- ");
+			        System.err.println("\n\n---------- Errors --------- ");
 			        for (String i : verifica.getErros()){
 			        	System.err.println(i);
 			        }
 			    }
 			    if(verifica.hasWarnings()){
-			    	System.err.println("---------- Warnings --------- ");
+			    	System.err.println("\n---------- Warnings --------- ");
 			        for (String i : verifica.getWarnings()){
 			        	System.err.println(i);
 			        }
 			    }			    
 			    System.out.println(rtable.toString());
 		
-				/*// Generating a graphical view from AST 			
+			    /*
+				// Generating a graphical view from AST 			
 				DOTVisitor dot = new DOTVisitor(
 						new RelativePath(tool.outputPath, fName + ".dot"),
 						new RelativePath(new AbsolutePath("."),
@@ -149,12 +150,12 @@ public class Tool {
 								"src/main/templates/classtamplate.stg"));
 				g.accept(codegen);
 				*/
-				
-				ASTNodeVisitor parservisitor = new StateFullCodeGen(
+			    if (!verifica.hasErrors()){ 
+				  ASTNodeVisitor parservisitor = new StateFullCodeGen(
 						new RelativePath(new AbsolutePath("."),
 								"src/main/templates/imperativeParser2.stg"), rtable);
-				g.accept(parservisitor);
-			
+				  g.accept(parservisitor);
+			    }
 				
 			} catch (FileNotFoundException e) {
 				System.err.println("File " + s + " do not exist");

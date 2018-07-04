@@ -17,5 +17,12 @@ public class AttrEnvironment {
 	}
 	
 	public int size(){return v.length;} 
+	
+	public void printTable(String r) {
+	   System.out.println(" -=======VALUE ENV FOR "+ r +"======-");
+	   for(int i = 0 ; i < v.length; i++) {
+		   System.out.println("["+i+"] -> "+v[i].toString());   
+	   }
+	}
 
 }

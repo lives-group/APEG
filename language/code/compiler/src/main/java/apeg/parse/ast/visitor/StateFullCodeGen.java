@@ -128,8 +128,9 @@ public class StateFullCodeGen  extends FormalVisitor{
 			// set the attribute params
 			aux_expr.add("params", this.expr);
 		}
-		// set the function name attribute
+		// set the function name attributec
 		aux_expr.add("name", expr.getName());
+		System.out.println(expr.getName());
 		
 		// set the current expression
 		this.expr = aux_expr;
@@ -317,8 +318,36 @@ public class StateFullCodeGen  extends FormalVisitor{
     @Override
     public void visit(NonterminalPegNode peg) {
         // set the current parsing expression template
-        peg_expr = groupTemplate.getInstanceOf("call");
-        peg_expr.add("name", peg.getName());
+    	ST aux = groupTemplate.getInstanceOf("call");
+        aux.add("name", peg.getName());
+        String envname = peg.getName() + "_env";
+        aux.add("env", envname);
+        
+        int tam = ntTable.get(peg.getName()).getLocals().size();
+        aux.add("tam", tam);
+        ST root = groupTemplate.getInstanceOf("iniParamList");
+        ST last = root;
+        ST temp;
+        List<ExprNode> l = peg.getExprs();
+        if(l.size() > 0) {
+        	l.get(0).accept(this);
+        	last.add("env", envname);
+        	last.add("key", 0);
+        	last.add("value", expr);
+        	int i = 0;
+        	for(i = 1; i < l.size(); i++) {
+        		l.get(i).accept(this);
+            	temp  = groupTemplate.getInstanceOf("iniParamList");
+            	temp.add("env", envname);
+            	temp.add("key", i);
+            	temp.add("value", expr);
+            	last.add("init2", temp);
+            	last = temp;
+        	}
+        	aux.add("iniList", root);
+        }
+        peg_expr = aux;
+       
     }
 
      @Override

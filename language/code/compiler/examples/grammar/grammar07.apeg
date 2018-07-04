@@ -12,7 +12,12 @@ options {
 a returns[int k] : b<0,k> ;
  
 b[float x] returns[float x1] :
-   '0' { x = x1 * 3.0 * x / 2.0; }
+   '0' { x = x1 * 3.0 * x / 2.0; 
+         c = 4;}
   ;
 
-
+c[float w] returns [float x] :  
+    {x = w;}         '0' 
+  / {x = x + 1.0 ; } '1'
+  / a<x>
+;

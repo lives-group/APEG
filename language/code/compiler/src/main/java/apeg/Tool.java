@@ -136,7 +136,7 @@ public class Tool {
 			    }			    
 			    System.out.println(rtable.toString());
 		
-			   
+				 /*	   
 				// Generating a graphical view from AST 			
 				DOTVisitor dot = new DOTVisitor(
 						new RelativePath(tool.outputPath, fName + ".dot"),
@@ -144,7 +144,7 @@ public class Tool {
 								"src/main/templates/dot.stg"));
 				g.accept(dot);
 				
-				 /*
+			
 				ASTNodeVisitor codegen = new CodeGenVisitor(
 						new RelativePath(new AbsolutePath("."),
 								"src/main/templates/classtamplate.stg"));

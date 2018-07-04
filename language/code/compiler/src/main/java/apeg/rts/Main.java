@@ -7,7 +7,8 @@ public class Main {
         
         try {
             Peg t = new Peg("/home/deise/Desktop/ProjetoApeg/APEG/language/code/compiler/bin/apeg/rts/input");
-            if(t.s().isSuccess()){
+            AttrEnvironment env = new AttrEnvironment(1);
+            if(t.s(env).isSuccess()){
                 System.out.println("OK");
                 Symbol s = t.getDerivationTreeRoot();
                 s.pprint();

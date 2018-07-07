@@ -20,7 +20,6 @@ public class VarType {
     }
 
     
-
 	public String toString(){
     	String s = " :: " + type.getName() +  (atributo == AttrDirection.HERDADO ? " H " : " S ") + " a.code = " + accessCode; 
     	return s;

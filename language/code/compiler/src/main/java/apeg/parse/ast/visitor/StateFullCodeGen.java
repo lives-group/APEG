@@ -24,7 +24,7 @@ public class StateFullCodeGen  extends FormalVisitor{
     Environment<String, NTInfo> ntTable;
     
     private ST peg_expr, expr, assign;
-
+    
     public StateFullCodeGen(Path filePath, Environment<String, NTInfo> ntTable) {
         groupTemplate = new STGroupFile(filePath.getAbsolutePath());
         this.ntTable = ntTable;
@@ -130,7 +130,6 @@ public class StateFullCodeGen  extends FormalVisitor{
 		}
 		// set the function name attributec
 		aux_expr.add("name", expr.getName());
-		System.out.println(expr.getName());
 		
 		// set the current expression
 		this.expr = aux_expr;
@@ -323,19 +322,23 @@ public class StateFullCodeGen  extends FormalVisitor{
         String envname = peg.getName() + "_env";
         aux.add("env", envname);
         
+        
         int tam = ntTable.get(peg.getName()).getLocals().size();
+        int ninh = ntTable.get(peg.getName()).getSig().getNumInherited();
+        int ntp = ntTable.get(peg.getName()).getSig().getNumParams();
+        int nsyn = ntTable.get(peg.getName()).getSig().getNumSintetized();
         aux.add("tam", tam);
         ST root = groupTemplate.getInstanceOf("iniParamList");
         ST last = root;
         ST temp;
         List<ExprNode> l = peg.getExprs();
-        if(l.size() > 0) {
+        if(ninh > 0) {
         	l.get(0).accept(this);
         	last.add("env", envname);
         	last.add("key", 0);
         	last.add("value", expr);
         	int i = 0;
-        	for(i = 1; i < l.size(); i++) {
+        	for(i = 1; i < ninh; i++) {
         		l.get(i).accept(this);
             	temp  = groupTemplate.getInstanceOf("iniParamList");
             	temp.add("env", envname);
@@ -345,6 +348,25 @@ public class StateFullCodeGen  extends FormalVisitor{
             	last = temp;
         	}
         	aux.add("iniList", root);
+        }
+        if(nsyn > 0) {
+        	root = groupTemplate.getInstanceOf("iniParamList");
+        	last = root;
+        	String vname = ((AttributeExprNode)l.get(ninh)).getName();
+        	last.add("env", "env");
+        	last.add("key", ntTable.get(currentRule).getLocals().get(vname).getAccessCode());
+        	last.add("value", envname+".get("+ninh+")");
+        	int i;
+        	for(i = ninh+1; i < ntp; i++) {
+        		vname = ((AttributeExprNode)l.get(i)).getName();
+            	temp  = groupTemplate.getInstanceOf("iniParamList");
+            	temp.add("env", "env");
+            	temp.add("key", ntTable.get(currentRule).getLocals().get(vname).getAccessCode());
+            	temp.add("value", expr);
+            	last.add("init2", envname+".get("+ninh+")");
+            	last = temp;
+        	}
+        	aux.add("posList", root);
         }
         peg_expr = aux;
        

@@ -9,15 +9,13 @@ options {
     envSemantics = discardChangesWhenFail;
 }
 
-a returns[int k] : b<0,k> ;
+a returns[int k] : b<2,k> c<k,x> ;
  
-b[float x] returns[float x1] :
-   '0' { x = x1 * 3.0 * x / 2.0; 
-         c = 4;}
+b[float x1] returns[float x] :
+   '0' {x = x1 * 3.0 * x1 / 2.0;}
   ;
 
 c[float w] returns [float x] :  
-    {x = w;}         '0' 
-  / {x = x + 1.0 ; } '1'
-  / a<x>
+    '0' {x = w;} 
+  / '1' {x = x + 1.0 ; } 
 ;

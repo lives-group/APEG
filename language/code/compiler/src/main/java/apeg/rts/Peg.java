@@ -12,31 +12,70 @@ public class Peg extends StateFullBaseParser{
       }
       public PegResult s(AttrEnvironment env){
          startRule("s");
-         env.setAt(0,3); 
+         env.setAt(0,0);env.setAt(1,0); 
          if(isOk()){
-             AttrEnvironment a_env = new AttrEnvironment(1);
-             a_env.setAt(0,((int)env.getAt(0))); 
-             a(a_env); 
+             AttrEnvironment ca_env = new AttrEnvironment(1);
+             ca(ca_env);
+             env.setAt(0,ca_env.getAt(0));  
+             if(isOk()){
+                 AttrEnvironment cb_env = new AttrEnvironment(1);
+                 cb(cb_env);
+                 env.setAt(1,cb_env.getAt(0));   
+             } 
          } 
-         env.printTable("s");
+         env.printTable("s"); 
          if(isOk()){return success();} else{return fail();}      
       }
 
-      public PegResult a(AttrEnvironment env){
-         startRule("a");
-         match("a");
+      public PegResult ca(AttrEnvironment env){
+         startRule("ca");
+         env.setAt(0,0); 
          if(isOk()){
              do{
                 mkBacktracPoint();
-                match("a");
-                if(!isOk()){restore();} else{dismissBacktracPoint();}
+                env.tempMode();
+                env.setAt(0,((int)env.getAt(0)) + 1); 
+                if(isOk()){
+                    match("a"); 
+                } 
+                if(!isOk()){
+                     restore();
+                     env.revokeChanges();
+                }else{
+                    dismissBacktracPoint();
+                    env.consolidateTemp();
+                }
              }while(isOk());
-             done();
-             if(isOk()){
-                 env.setAt(0,((int)env.getAt(0)) - 1);  
-             } 
-         }
-         env.printTable("a");
+             env.endTempMode();
+             done(); 
+         } 
+         env.printTable("ca"); 
+         if(isOk()){return success();} else{return fail();}      
+      }
+
+      public PegResult cb(AttrEnvironment env){
+         startRule("cb");
+         env.setAt(0,0); 
+         if(isOk()){
+             do{
+                mkBacktracPoint();
+                env.tempMode();
+                env.setAt(0,((int)env.getAt(0)) + 1); 
+                if(isOk()){
+                    match("b"); 
+                } 
+                if(!isOk()){
+                     restore();
+                     env.revokeChanges();
+                }else{
+                    dismissBacktracPoint();
+                    env.consolidateTemp();
+                }
+             }while(isOk());
+             env.endTempMode();
+             done(); 
+         } 
+         env.printTable("cb"); 
          if(isOk()){return success();} else{return fail();}      
       } 
 }

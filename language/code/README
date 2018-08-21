@@ -1,1 +1,13 @@
-This directory is the root of all source code of the project
+This directory is the root of all source code of the project.
+We are using the Maven tool to manage the project.
+
+# Instruction for begginer developers
+
+- How to compile: Use the maven command mvn compile
+
+
+
+
+
+
+

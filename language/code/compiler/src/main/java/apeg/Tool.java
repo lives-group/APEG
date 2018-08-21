@@ -148,6 +148,7 @@ public class Tool {
 								"src/main/templates/classtamplate.stg"));
 				g.accept(codegen);
 				
+
 				*/
 				
 			    SubExprNameVisitor subExprNameVisitor = new SubExprNameVisitor();
@@ -156,8 +157,8 @@ public class Tool {
 				ASTNodeVisitor parservisitor = new ParserVisitor(
 						new RelativePath(new AbsolutePath("."),
 								"src/main/templates/parser.stg"),subExprNameVisitor.getNamesTable(),"");;
-				g.accept(parservisitor);
-				
+				g.accept(parservisitor); */
+			
 				
 			} catch (FileNotFoundException e) {
 				System.err.println("File " + s + " do not exist");

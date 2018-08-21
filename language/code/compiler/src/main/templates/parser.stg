@@ -1,0 +1,130 @@
+group prettyprint;
+
+/** Defining the grammar specfication template */
+apeg(name, rules) ::= <<
+/**
+ *  APEG Tool Parser 
+ *  This code was automatically generated. 
+ */
+public class <name> extends BaseParser{
+
+      public <name>(String fname) {
+          super(fname);
+          startRule("root");
+      }
+
+      <rules; separator="\n\n"> 
+}
+>>
+
+
+/** Template for rules specification */
+rule( name, peg_expr, suc_or_fail) ::= <<
+public boolean <name>(){
+   startRule("<name>");
+   <peg_expr>
+   <if(suc_or_fail)>
+   return <suc_or_fail>; 
+   <endif>}>>
+
+temp( name, peg_expr, suc_or_fail) ::= <<
+private boolean <name>(){
+   <peg_expr>
+   <if(suc_or_fail)>
+   return <suc_or_fail>;
+   <endif>
+}>>
+
+/** Template for parsing expression 
+  *
+  */
+
+
+choice_peg(left_peg, right_peg, suc) ::= 
+<<mark();
+if(<left_peg>){ 
+   unmark(); 
+   return <suc>;
+}
+restore();
+alternate();
+<right_peg> 
+>>
+
+choice_right_singleton(peg_expr,suc) ::= 
+<<
+mark();
+if(<peg_expr>){
+   unmark();
+   return <suc>;
+}
+restore();
+>>
+
+sequence_peg(peg_exprs,fail) ::=  "<peg_exprs:{x | if(!<x>){return <fail>;\}  }; separator=\"\n\" >" 
+
+peg_literal_match(value)::= <<match("<value>")>> 
+
+peg_literal(value)::= <<if(!match("<value>")){
+  return endFail();
+}>> 
+
+peg_nonterminal_call(value) ::= << <value>() >>
+
+peg_nonterminal(value) ::= <<if(!<value>()){
+  return endFail();
+} >>
+
+star_peg(peg_expr) ::= <<while(<peg_expr>){}>>
+
+and_peg(peg_expr, suc,fail) ::= 
+<<
+mark();
+if(!<peg_expr>){ 
+     restore();
+     <if(fail)>
+     return <fail>;
+     <endif>}
+restore();
+<if(suc)>return <suc>;<endif> >>
+
+any_peg(suc,fail) ::=
+<<
+if(matchNext()){ return <suc>;}
+return <fail>;
+>>
+
+bind_peg(name, peg_expr) ::="<name>=<peg_expr>"
+
+constraint_peg(expr) ::= "{? <expr> }"
+
+group_peg(ranges) ::= "[<ranges>]"
+lambda_peg() ::= " " 
+
+not_peg(peg_expr, suc, fail) ::= 
+<<
+mark();
+if(!<peg_expr>){
+   restore();
+   return <suc>;
+}
+restore();
+return <fail>
+>>
+
+plus_peg(peg_expr,suc,fail) ::= 
+<<
+if(!<peg_expr>){ return <fail>;}
+while(<peg_expr>){}
+return <suc>;
+>>
+
+optional_peg(peg_expr, suc) ::= 
+<<
+mark();
+if(!<peg_expr>){
+   restore();
+}
+return <suc>; 
+>>
+update_peg(assigns) ::= <<{<assigns; separator=" ">}>>

@@ -477,8 +477,8 @@ public class PrettyPrintVisitor implements ASTNodeVisitor {
 		for(RuleNode rule : grammar.getRules())
 			rule.accept(this);
 		
-		// rendering the template	
-		System.out.println(template.render());
+		render();
+		
 	}
 
 	@Override
@@ -564,5 +564,14 @@ public class PrettyPrintVisitor implements ASTNodeVisitor {
 	public void visit(UserTypeNode type) {
 		this.type = groupTemplate.getInstanceOf("user_type");
 		this.type.add("name", type.getName());
+	}
+	
+	public void render() {
+		// rendering the template	
+				System.out.println(template.render());
+	}
+	public void renderLastExpr() {
+		// rendering the template	
+				System.out.println(peg_expr.render());
 	}
 }

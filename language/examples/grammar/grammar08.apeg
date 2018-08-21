@@ -1,0 +1,3 @@
+apeg expression;
+
+s[int x, int y, int z, int w, boolean i]: {i = !x ;};

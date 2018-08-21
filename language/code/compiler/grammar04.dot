@@ -16,7 +16,7 @@ Digraph notDiscardChanges {
   grammar -> bRule;
   bRule_x [label = "↓x:int "];
   bRule -> bRule_x;
-  bRule_x1 [label = "↑x1:int "];
+  bRule_x1 [label = "↑x1:float "];
   bRule -> bRule_x1;
   p_expr_choice1 [label = "ChoicePegExpr(/)"];
   bRule -> p_expr_choice1;
@@ -75,7 +75,6 @@ Digraph notDiscardChanges {
   cRule [label = "Rule[c]"];
   grammar -> cRule;
   cRule_x [label = "↑x:int "];
-  cRule -> cRule_x;
   p_expr_sequence10 [label = "SequencePegExpr(.)"];
   cRule -> p_expr_sequence10;
   p_expr_update11 [label = "UpdatePegExpr([<-])"];

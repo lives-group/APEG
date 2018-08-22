@@ -148,8 +148,6 @@ public class Tool {
 								"src/main/templates/classtamplate.stg"));
 				g.accept(codegen);
 				
-
-				*/
 				
 			    SubExprNameVisitor subExprNameVisitor = new SubExprNameVisitor();
 				g.accept(subExprNameVisitor);

@@ -112,6 +112,7 @@ public class Tool {
 						new RelativePath(new AbsolutePath("."),
 								"src/main/templates/prettyprint.stg"));
 				g.accept(prettyprint);
+			*/
 				
 				BuildRuleEnvironmetVisitor build = new BuildRuleEnvironmetVisitor();
 				g.accept(build);
@@ -131,8 +132,9 @@ public class Tool {
 			        for (String i : verifica.getWarnings()){
 			        	System.err.println(i);
 			        }
-			    }			    
-		
+			    }
+			    
+			   /*
 				// Generating a graphical view from AST 			
 				DOTVisitor dot = new DOTVisitor(
 						new RelativePath(tool.outputPath, fName + ".dot"),
@@ -152,6 +154,7 @@ public class Tool {
 								"src/main/templates/imperativeParser.stg"));;
 				g.accept(parservisitor);
 				
+
 				
 			} catch (FileNotFoundException e) {
 				System.err.println("File " + s + " do not exist");

@@ -65,10 +65,17 @@ sequence_peg(peg_exprs,fail) ::=  "<peg_exprs:{x | if(!<x>){return <fail>;\}  };
 
 peg_literal_match(value)::= <<match("<value>")>> 
 
+peg_literal(value)::= <<if(!match("<value>")){
+  return endFail();
+}>> 
+
 peg_nonterminal_call(value) ::= << <value>() >>
 
-star_peg(peg_expr) ::= <<while(<peg_expr>){}>>
+peg_nonterminal(value) ::= <<if(!<value>()){
+  return endFail();
+} >>
 
+star_peg(peg_expr) ::= <<while(<peg_expr>){}>>
 
 and_peg(peg_expr, suc,fail) ::= 
 <<

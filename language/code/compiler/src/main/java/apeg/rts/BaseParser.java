@@ -2,21 +2,10 @@ package apeg.rts;
 import java.io.IOException;
 import java.util.Stack;
 
-
-class RuleCounter{
-	public String rname;
-	public int n;
-	
-	public RuleCounter(String name){ 
-		 rname = name;
-		 n = 0;
-	}
-}
-
 public class BaseParser {
 	
 	private Stack<Symbol> stk;
-	private Stack<RuleCounter> ruleStk;
+	private Stack<RuleInfo> ruleStk;
 	
 	private boolean lrsc; // last rule succesfull
 	//private Symbol root;
@@ -25,7 +14,7 @@ public class BaseParser {
 	
 	public BaseParser(String fname){
 		stk = new Stack<Symbol>();
-		ruleStk = new Stack<RuleCounter>();
+		ruleStk = new Stack<RuleInfo>();
 		
 		try {
 			s = new PageStream(fname);
@@ -36,7 +25,7 @@ public class BaseParser {
 	}
 	
 	public void startRule(String ruleName){
-		ruleStk.push(new RuleCounter(ruleName));
+		ruleStk.push(new RuleInfo(ruleName));
 	}
 	
 	public boolean endSuccess(){

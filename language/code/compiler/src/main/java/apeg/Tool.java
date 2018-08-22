@@ -18,12 +18,10 @@ import apeg.parse.ast.ASTFactoryImpl;
 import apeg.parse.ast.GrammarNode;
 import apeg.parse.ast.visitor.ASTNodeVisitor;
 import apeg.parse.ast.visitor.BuildRuleEnvironmetVisitor;
-import apeg.parse.ast.visitor.CodeGenVisitor;
 import apeg.parse.ast.visitor.DOTVisitor;
-import apeg.parse.ast.visitor.ParserVisitor;
 import apeg.parse.ast.visitor.PrettyPrintVisitor;
-import apeg.parse.ast.visitor.SubExprNameVisitor;
 import apeg.parse.ast.visitor.VerifyVisitor;
+import apeg.parse.ast.visitor.StateFullCodeGen;
 import apeg.parse.ast.visitor.Environments.OperatorTables;
 import apeg.util.lang.LangInfo;
 import apeg.util.lang.java.JavaInfo;
@@ -150,15 +148,13 @@ public class Tool {
 								"src/main/templates/classtamplate.stg"));
 				g.accept(codegen);
 				
-				
-			    SubExprNameVisitor subExprNameVisitor = new SubExprNameVisitor();
-				g.accept(subExprNameVisitor);
-				subExprNameVisitor.printTable();
-				ASTNodeVisitor parservisitor = new ParserVisitor(
+				*/
+				ASTNodeVisitor parservisitor = new StateFullCodeGen(
 						new RelativePath(new AbsolutePath("."),
-								"src/main/templates/parser.stg"),subExprNameVisitor.getNamesTable(),"");;
-				g.accept(parservisitor); */
-			
+								"src/main/templates/imperativeParser.stg"));;
+				g.accept(parservisitor);
+				
+
 				
 			} catch (FileNotFoundException e) {
 				System.err.println("File " + s + " do not exist");

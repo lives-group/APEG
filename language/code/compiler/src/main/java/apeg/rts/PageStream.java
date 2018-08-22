@@ -31,14 +31,16 @@ public class PageStream {
 		      blocks[page] = new char[blocksize];
 		  }
 	      int n = f.read(blocks[page]);
-	      pw = pw + n;
+	      if(n != -1 ){
+	          pw = pw + n;
+	      }
 	 }
 	 
 	 public boolean match(String s) throws IOException{
 		 
 		 int i = 0 ; 
 		 int pi = decode_page(pr);
-		 int pf = decode_page(pr+s.length());
+		 int pf = decode_page(pr+s.length()-1);
 		 for(int j = pi; j <= pf; j++){
 			 if(blocks[j] == null){ load(j);}
 		 }
@@ -76,5 +78,17 @@ public class PageStream {
 	   int ant = pr;
 	   pr = marks.pop();
 	   //System.out.println("de " + ant + " restaurou para " + pr);
+	 }
+	 
+	 public String toString() {
+	   String s = "";
+	   String mk = "";
+	   for(int i = 0; i < pw; i++) { 
+		    s = s + blocks[decode_page(i)][decode_pos(i)];
+		    if(i != pr){
+		    	mk = mk + (marks.contains(i) ? "*" : " "); 
+		    }else{ mk = mk + "^";}
+	   }
+	   return s + "\n" + mk;
 	 }
 }

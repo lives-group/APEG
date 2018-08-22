@@ -1,17 +1,17 @@
 package apeg.parse.ast.visitor;
 
 import java.util.ArrayDeque;
-import java.util.LinkedList;
+
 
 import java.util.Hashtable;
-import java.util.Map.Entry;
+
 
 import org.stringtemplate.v4.ST;
 import org.stringtemplate.v4.STGroup;
 import org.stringtemplate.v4.STGroupFile;
 
 import apeg.parse.ast.*;
-import apeg.parse.ast.GrammarNode.GrammarOption;
+
 import apeg.util.path.Path;
 
 import java.io.FileWriter;
@@ -30,7 +30,11 @@ public class ParserVisitor  extends FormalVisitor implements ASTNodeVisitor{
 	private ArrayDeque<PegNode> q;
 	private Mode mode, mode_bkup;
 	private final String lSuc, lFail, suc, fail ;
-	private String path;
+	private String path;	
+
+	// Template for current parsing expression, current expression and the last assignment visited 
+	private ST peg_expr;
+  
 	private String currentRule;
 	private ST peg_expr;
 	private Hashtable<PegNode,String> hnames;

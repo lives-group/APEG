@@ -43,6 +43,9 @@ public class NonTerminal extends Symbol{
 			s.pprint(i+4);
 		}
 	}
-
+    
+	public String toString() {
+		return "NT"+rule + ":" + childs.size();
+	}
 
 }

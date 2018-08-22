@@ -1,4 +1,0 @@
-
-name returns [String s] : s=letter* ;
-
-letter : [a-z] ;

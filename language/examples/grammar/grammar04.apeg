@@ -11,12 +11,11 @@ header {
   void f() {
    return;
   }
-}
 
-a returns[float k] : b<0,k> ;
+a returns[int k] : b<0,k>;
  
-b[int x] returns[int x1] :
-  { x = x + 1; } '0' { x1 = x; }
+b[int x] returns[float x1] :
+  { x = x + 1; } '0' { x1 = x; } 
   /
   { x = x + 1; } '1' { x1 = x; }
   /

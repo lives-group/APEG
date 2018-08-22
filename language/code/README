@@ -4,7 +4,8 @@ We are using the Maven tool to manage the project.
 # Instruction for begginer developers
 
 - How to compile: Use the maven command mvn compile
-
+- How to execute: Use the maven command mvn exec:java -Dgrammar="grammar01.apeg"
+  You can choose other grammar example instead of grammar01.apeg
 
 
 

@@ -1,5 +1,13 @@
 apeg expression;
 
-s:
-  {? (x < y || z == 2) && w > 10 }
+s[int x, int y, int z, int w, boolean i]:
+   
+  {i = true ;}
 ;
+
+/*
+ /*
+(x < y || z == 2) && (w > 10)
+{? (x < y) || (z == 2) && (w > 10) }
+*/
+ */

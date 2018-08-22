@@ -36,7 +36,6 @@ public class ParserVisitor  extends FormalVisitor implements ASTNodeVisitor{
 	private ST peg_expr;
   
 	private String currentRule;
-	private ST peg_expr;
 	private Hashtable<PegNode,String> hnames;
 
 	public ParserVisitor(Path filePath, Hashtable<PegNode,String> hnames) {

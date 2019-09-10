@@ -4,7 +4,7 @@
 
 The first step is to get the project from the web repository.
 In the directory you want to download, tap the command:
-_git clone https://github.com/lives-group/APEG.git_
+> _git clone https://github.com/lives-group/APEG.git_
 
 Great! After a few seconds, the root of the project, a folder named APEG,
 will be in your local computer.

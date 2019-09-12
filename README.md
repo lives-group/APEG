@@ -35,4 +35,4 @@ If you do not have [Maven][Maven] installed on your computer, install it before 
 
 
 
-[Maven]: maven.apache.org
+[Maven]: http://maven.apache.org

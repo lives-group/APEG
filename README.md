@@ -39,6 +39,7 @@ For executing the tool, you need to pass a grammar as a parameter.
 You can find a lot of examples to use in the _examples_ folder.
 Tap the following command to execute it, passing the _grammar01.apeg_ as a parameter:
 >mvn exec:java -Dgrammar="grammar01.apeg"
+
 Changing the parameter file, you can test other examples.
 
 [Maven]: http://maven.apache.org

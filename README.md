@@ -33,6 +33,7 @@ We are using [Maven][Maven] to manage the project.
 If you do not have [Maven][Maven] installed on your computer, install it before proceeding.
 To compile the code is easy. You just need to tap _mvn compile_ when in subfolder _compiler_:
 >cd language/code/compiler
+>
 >mvn compile
 
 For executing the tool, you need to pass a grammar as a parameter.
@@ -41,5 +42,11 @@ Tap the following command to execute it, passing the _grammar01.apeg_ as a param
 >mvn exec:java -Dgrammar="grammar01.apeg"
 
 Changing the parameter file, you can test other examples.
+
+
+# Syntax
+
+# AST
+
 
 [Maven]: http://maven.apache.org

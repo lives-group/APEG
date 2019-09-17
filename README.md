@@ -2,6 +2,14 @@
 
 This project aims to create a parser generator based on Adaptable Parsing Expression Grammars
 
+## How to use 
+
+APEG compiler tollchain is disbtributen as a single jar file. To use it just invoque the java interpreter at a command line, passing the target file as a parameter. 
+
+>java apeg.jar source file
+
+Refer to the sections below to more information on how to use or contribute to APEG.
+
 
 ## How to Compile and Execute
 

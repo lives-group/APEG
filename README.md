@@ -12,7 +12,7 @@ To use it just invoke the java interpreter at a command line, passing the target
 Refer to the sections below to more information on how to use or contribute to APEG.
 
 
-![texto](docs/img/bt1.jpeg)
+[![texto](docs/img/bt1.jpeg)](docs/users.md)
 
 ## How to Compile and Execute
 

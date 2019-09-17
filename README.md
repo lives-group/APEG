@@ -4,7 +4,8 @@ This project aims to create a parser generator based on Adaptable Parsing Expres
 
 ## How to use 
 
-APEG compiler tollchain is disbtributen as a single jar file. To use it just invoque the java interpreter at a command line, passing the target file as a parameter. 
+APEG compiler toolchain is distributed as a single jar file.
+To use it just invoke the java interpreter at a command line, passing the target file as a parameter. 
 
 >java apeg.jar source file
 

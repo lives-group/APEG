@@ -12,6 +12,8 @@ To use it just invoke the java interpreter at a command line, passing the target
 Refer to the sections below to more information on how to use or contribute to APEG.
 
 
+![texto](docs/img/bt1.jpeg)
+
 ## How to Compile and Execute
 
 We are using [Maven][Maven] to manage the project.

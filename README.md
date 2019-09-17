@@ -43,6 +43,7 @@ Tap the following command to execute it, passing the _grammar01.apeg_ as a param
 
 Changing the parameter file, you can test other examples.
 
+More information about how to develop is found [here][docs/contributors.md].
 
 # Syntax
 

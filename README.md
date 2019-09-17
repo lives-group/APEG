@@ -3,6 +3,23 @@
 This project aims to create a parser generator based on Adaptable Parsing Expression Grammars
 
 
+## How to Compile and Execute
+
+We are using [Maven][Maven] to manage the project.
+If you do not have [Maven][Maven] installed on your computer, install it before proceeding.
+To compile the code is easy. You just need to tap _mvn compile_ when in subfolder _compiler_:
+>cd language/code/compiler
+>
+>mvn compile
+
+For executing the tool, you need to pass a grammar as a parameter.
+You can find a lot of examples to use in the _examples_ folder.
+Tap the following command to execute it, passing the _grammar01.apeg_ as a parameter:
+>mvn exec:java -Dgrammar="grammar01.apeg"
+
+Changing the parameter file, you can test other examples.  
+More information about how to develop is found [here](docs/contributors.md).
+
 # Instructions For Contributors
 
 ## How to Download the Project
@@ -27,22 +44,7 @@ This folder has tow others: _examples_ and _code_.
 All examples of APEG grammars resides inside _examples_ folder, and the source code
 is inside the _code_ folder and its sub-directories.
 
-## How to Compile and Execute
 
-We are using [Maven][Maven] to manage the project.
-If you do not have [Maven][Maven] installed on your computer, install it before proceeding.
-To compile the code is easy. You just need to tap _mvn compile_ when in subfolder _compiler_:
->cd language/code/compiler
->
->mvn compile
-
-For executing the tool, you need to pass a grammar as a parameter.
-You can find a lot of examples to use in the _examples_ folder.
-Tap the following command to execute it, passing the _grammar01.apeg_ as a parameter:
->mvn exec:java -Dgrammar="grammar01.apeg"
-
-Changing the parameter file, you can test other examples.  
-More information about how to develop is found [here](docs/contributors.md).
 
 # Syntax
 

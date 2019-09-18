@@ -62,4 +62,12 @@ is inside the _code_ folder and its sub-directories.
 # AST
 
 
+## Translating rules
+
+To build an AST, first we need translation rules for CFG expression.
+As an example, if the CFG defines:
+>X -> dABc
+
+
+
 [Maven]: http://maven.apache.org

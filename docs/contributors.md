@@ -37,7 +37,18 @@ Tap the following command to execute it, passing the _grammar01.apeg_ as a param
 >mvn exec:java -Dgrammar="grammar01.apeg"
 
 Changing the parameter file, you can test other examples.  
-More information about how to develop is found [here](docs/contributors.md).
-
 
 [Maven]: http://maven.apache.org
+
+# Structure of the Abstract Syntax Tree
+
+Every node of the AST is a child of the class [ASTNode](language/code/compiler/src/main/java/apeg/parse/ast/ASTNode.java).
+That class provides basic information shared by every node of the tree, such as its respectively line and column on source code. 
+
+
+
+## Rules
+
+Every grammar must have it's own set of rules, defined in cfg.
+Each rule is inherited from the main class starting with the tag "apeg".
+After that, given an input, the program will follow the tree until it hits an end point, by giving an output or changing something.

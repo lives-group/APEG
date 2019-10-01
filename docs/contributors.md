@@ -42,7 +42,7 @@ Changing the parameter file, you can test other examples.
 
 # Structure of the Abstract Syntax Tree
 
-Every node of the AST is a child of the class [ASTNode](language/code/compiler/src/main/java/apeg/parse/ast/ASTNode.java).
+Every node of the AST is a child of the class [ASTNode](./../language/code/compiler/src/main/java/apeg/parse/ast/ASTNode.java).
 That class provides basic information shared by every node of the tree, such as its respectively line and column on source code. 
 
 

@@ -40,23 +40,23 @@ Changing the parameter file, you can test other examples.
 
 [Maven]: http://maven.apache.org
 
-# Structure of the Abstract Syntax Tree
+## Structure of the Abstract Syntax Tree
 
-## The Base AST Class
+### The Base AST Class
 
 Every node of the AST is a child of the class [ASTNode](./../language/code/compiler/src/main/java/apeg/parse/ast/ASTNode.java).
 That class provides basic information shared by every node of the tree, such as its respectively line and column on source code. 
 
-## Grammar Node
+### Grammar Node
 
 
-## Rules Nodes
+### Rules Nodes
 
 Every grammar must have it's own set of rules, defined in cfg.
 Each rule is inherited from the main class starting with the tag "apeg".
 After that, given an input, the program will follow the tree until it hits an end point, by giving an output or changing something.
 
-## APEG Parsing Expressions Nodes
+### APEG Parsing Expressions Nodes
 
 
-## Node for the Attribute Language
+### Node for the Attribute Language

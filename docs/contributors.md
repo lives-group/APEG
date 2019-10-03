@@ -63,13 +63,14 @@ After that, given an input, the program will follow the tree until it hits an en
 
 ## AST Study
 
-The ANTLR parser recognizes the elements present in the source code and builds a parse tree, from that we will obtain the AST.
-An Abstract Syntax Tree (AST) is a form of representation of the abstract syntactic structure of source code, where the nodes of the tree denotes a construct occurring on it.
-The AST does not represent all of the details that are on the real syntax, only the structural and content-related ones, but ASTs allow us to edit and refine its with information like properties and annotations of each element it contains, which would not be possible in the source code because that would imply in alterations on it.
+The ANTLR parser recognizes the elements present in the source code and builds a parse tree, from that we will obtain the AST. It allows the use of inherited and synthesized attributes and semantic actions as embedded code, generating efficient code, representing each nonterminal symbol as a function, in a recursive descent style. 
+An Abstract Syntax Tree (AST) is a form of representation of the abstract syntactic structure of source code, where the nodes of the tree denotes a construct occurring on it. Inherited attributes are implemented as function parameters, and synthesized attributes are implemented as function return values.
+The AST does not represent all of the details that are on the real syntax, only the structural and content-related ones, but ASTs allow us to edit and refine it with information like properties and annotations of each element it contains, which would not be possible in the source code because that would imply in alterations on it.
+
 
 The codes we are analyzing describes the right-hand side of a PEG expression, they give attributes to the types like a Rule type or a Not-PEG, etc. 
-For example, the _RuleNode_ defined on the _RuleNode_ class has a name, an annotation, a list named _VarDeclartionNode_ its contain parameters and returns and, finally a _PegNode_.
-In the grammar 01 we got rules _a_ and _b_:
+For example, the _RuleNode_ defined on the _RuleNode_ class has a name, an annotation, a list named _VarDeclartionNode_ it contains parameters and returns and, finally a _PegNode_.
+In _grammar 01_ we got rules _a_ and _b_:
 
 > a: b '1' / b '2';
 
@@ -80,7 +81,13 @@ List: 'a' rule does not have any parameters or returns.
 PegNode: '/' defined on _ChoicePegNode_;
 Besides that _a_ "calls" _b_ and _b_ is defined by the character 'b' and has the annotation Transient which means it will conserve his value for each test;
 
-In our code we got the _PegNode_ class that is the base interface of all the parsing expressions this parsing expressions are defined in different classes whose extends from _PegNode_, which one has his own attribute including a positions on the AST.
+When a nonterminal is referenced inside a PEG expression, the values of the inherited and synthesized attributes are listed between <...>, as can be seen in line 15 of grammar 04:
+
+> a returns[int k] : b<0,k>;
+
+In this example _0_ is the inherited value and _k_ is the synthesized attribute. Synthesized attributes must always be in the variable form.
+
+In our code we've got the _PegNode_ class that is the base interface of all the parsing expressions this parsing expressions are defined in different classes whose extends from _PegNode_, which one has his own attribute including a positions on the AST.
 * AndPegNode
 * AnyPegNode
 * BindPegNode

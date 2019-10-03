@@ -61,24 +61,26 @@ After that, given an input, the program will follow the tree until it hits an en
 
 ### Node for the Attribute Language
 
-##AST Study
+## AST Study
 
 The ANTLR parser recognizes the elements present in the source code and builds a parse tree, from that we will obtain the AST.
 An Abstract Syntax Tree (AST) is a form of representation of the abstract syntactic structure of source code, where the nodes of the tree denotes a construct occurring on it.
 The AST does not represent all of the details that are on the real syntax, only the structural and content-related ones, but ASTs allow us to edit and refine its with information like properties and annotations of each element it contains, which would not be possible in the source code because that would imply in alterations on it.
 
 The codes we are analyzing describes the right-hand side of a PEG expression, they give attributes to the types like a Rule type or a Not-PEG, etc. 
-For example, the **RuleNode** defined on the **RuleNode** class has a name, an annotation, a list named **VarDeclartionNode** its contain parameters and returns and, finally a **PegNode**.
-In the grammar 01 we got rules **a** and **b**:
+For example, the _RuleNode_ defined on the _RuleNode_ class has a name, an annotation, a list named _VarDeclartionNode_ its contain parameters and returns and, finally a _PegNode_.
+In the grammar 01 we got rules _a_ and _b_:
+
 > a: b '1' / b '2';
-In the rule **a** the attributes are:
+
+In the rule _a_ the attributes are:
 Name: 'a';
 Annotation: none;
 List: 'a' rule does not have any parameters or returns.
-PegNode: '/' defined on **ChoicePegNode**;
-Besides that **a** "calls" **b** and **b** is defined by the character 'b' and has the annotation Transient which means it will conserve his value for each test;
+PegNode: '/' defined on _ChoicePegNode_;
+Besides that _a_ "calls" _b_ and _b_ is defined by the character 'b' and has the annotation Transient which means it will conserve his value for each test;
 
-In our code we got the **PegNode** class that is the base interface of all the parsing expressions this parsing expressions are defined in different classes whose extends from **PegNode**, which one has his own attribute including a positions on the AST.
+In our code we got the _PegNode_ class that is the base interface of all the parsing expressions this parsing expressions are defined in different classes whose extends from _PegNode_, which one has his own attribute including a positions on the AST.
 * AndPegNode
 * AnyPegNode
 * BindPegNode
@@ -95,7 +97,7 @@ In our code we got the **PegNode** class that is the base interface of all the p
 * StarPegNode
 * UpdatePegNode
 
-Besides the **PegNode** class we got also **TypeNode** and **ExprNode** all extendiing from **ASTNode**. Those three classes defines all that a peg needs.
-**PegNodes** define the peg operators.
-**ExprNode** identify the operator given in language and defines which kind of Peg it is.
-**TypeNode** defines de type of the expression.
+Besides the _PegNode_ class we got also _TypeNode_ and _ExprNode_ all extendiing from _ASTNode_. Those three classes defines all that a peg needs.
+_PegNodes_ define the peg operators.
+_ExprNode_ identify the operator given in language and defines which kind of Peg it is.
+_TypeNode_ defines de type of the expression.

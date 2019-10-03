@@ -44,9 +44,12 @@ comentários ou instruções.
 O arquivo grammar04.apeg no examples:
 
 Neste arquivo temos a sub-classe notDiscardChanges, e também temos três regras: 'a','b' e 'c'.
+
 regra 'a': retorna uma variável herdada, inteira "k" valendo regra 'b', com o valor de 0 ou k.
+
 regra 'b': herda um inteiro "x" e retorna "x1", sendo "x1" recebendo "x" e "x" assumindo "0" 
-se x=x+1 for 0, "1" se x=x+1 for 1 e "2" se x=x+1 for 2.]
+se x=x+1 for 0, "1" se x=x+1 for 1 e "2" se x=x+1 for 2.
+
 regra 'c': herda um interio "x", o autualiza com 0 e depois realiza um loop com a expressão
 x = x + 1 até "x" valer 2.
 

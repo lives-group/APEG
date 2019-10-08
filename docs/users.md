@@ -3,11 +3,11 @@
 ## A First APEG Example
 
 An Adaptable Parsing Expression Grammar (APEG) is an extension of
-Parsing Expression Grammars (PEG) which includes operators and the
+Parsing Expression Grammars (PEG), which includes operators and the
 notion of *syntactic attributes*.
-Syntactic attributes are values passed during through nonterminals
+Syntactic attributes are values passed through nonterminals
 and used during the parsing process.
-The grammar above ilustrates the use of values to dictate the
+The grammar above illustrates the use of values to dictate the
 parsing process.
 
 ```
@@ -34,6 +34,14 @@ digit returns[int x]:
  
 CHAR: .;
 ```
+
+This grammar starts, in the first line, telling that it is a APEG grammar named _datadependent_.
+Every APEG grammar begins with this peace of code, in which _<name>_ is the grammar name given
+by the user:
+```
+apeg <name>;
+```
+
 
 
 ### Grammar 01

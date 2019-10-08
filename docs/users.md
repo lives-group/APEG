@@ -35,8 +35,8 @@ digit returns[int x]:
 CHAR: .;
 ```
 
-This grammar starts, in the first line, telling that it is a APEG grammar named _datadependent_.
-Every APEG grammar begins with this peace of code, in which _<name>_ is the grammar name given
+This grammar starts, in the first line, telling that it is an APEG grammar named _datadependent_.
+Every APEG grammar begins with this piece of code, in which _\<name\>_ is the grammar name given
 by the user:
 ```
 apeg <name>;

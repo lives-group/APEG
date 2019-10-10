@@ -106,3 +106,20 @@ Temos também a regra strN, que herda uma variável inteira "n". Sua implementa�
 obs: regra CHAR e o comando "!." não foi entendido.
 
 ### Grammar06
+
+Neste arquivo temos o APEG *adapdatadependent*. Começa com a regra 'options' que torna o "isAdaptable" como verdadeiro. Em seguida temos temos regras provenientes do "APEG AdaptableFunctions":
+
+literal3: herda uma variável 'g' do tipo Grammar e concatena três regras "literals" usando o 'g' herdado.
+
+literal: herda também uma variável 'g' do tipo 'Grammar', porém temos o uso da função "locals", que herda uma variável 'n' do tipo inteiro e uma variável 'g1' do  tipo Grammar". Na implementação, temos a regra "numbers" herdando 'n', variável herdada 'g1', sendo atualizada recebendo uma regra que copia a gramática de 'g', e em seguida concatena as expressões 'strN: ', 'CHAR ', seguido de 'n' e ';'. No final, utiliza a regra "strN" com o 'g1' herdado.
+
+strN: herda a variável 'g' do tipo Grammar, e sua implementação restringe "falso".
+
+number: Retorna um inteiro 'r', e também se utiliza da regra locals, que herda somente uma variável inteira 'aux'. Sua implementação: utiliza a regra "digit", com o 'r' herdado, realiza um loop, utilizando a regra "digit" com 'aux', e também realizando a atualização de variável "r = r * 10 + aux".
+
+digit: retorna um inteiro 'x1' com o valor entre '0' a '9', se 'x1' valer algo de '0' a '9' respectivamente (se 'x1' for '2', retorna 2).
+
+obs: regra CHAR e o comando "!." não foi entendido.
+
+
+### Grammar07

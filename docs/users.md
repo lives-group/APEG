@@ -123,3 +123,11 @@ obs: regra CHAR e o comando "!." não foi entendido.
 
 
 ### Grammar07
+
+Neste arquivo temos o APEG *choiceback*. Começa especificando a regra "options", fazendo 'envSemantics' assumir 'discardChangesWhenFail' e em seguida temos duas regras, 'a' e 'b', sendo elas parecidas com as vistas no "Grammar04".
+
+regra 'a': retorna uma variável herdada, inteira 'k' valendo regra 'b', com o valor de 0 ou k.
+
+regra 'b': herda um inteiro 'x' e retorna um booleano 'x1', retornando '0' ,'1' ou '2'. Caso "x = x + 1" for 0, faz 'x1' receber 'x' que será 0, e assim com '1' e '2'.
+ 
+### Grammar08

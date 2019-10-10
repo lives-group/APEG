@@ -90,8 +90,19 @@ regra 'a': retorna uma variável herdada, inteira "k" valendo regra 'b', com o v
 regra 'b': herda um inteiro "x" e retorna "x1", sendo "x1" recebendo "x" e "x" assumindo "0" 
 se x=x+1 for 0, "1" se x=x+1 for 1 e "2" se x=x+1 for 2.
 
-regra 'c': herda um interio "x", o autualiza com 0 e depois realiza um loop com a expressão
+regra 'c': herda um inteiro "x", o atualiza com 0 e depois realiza um loop com a expressão
 x = x + 1 até "x" valer 2.
 
-
 ### Grammar05
+
+O arquivo grammar05.apeg no examples:
+
+Neste arquivo temos o APEG *testfunction*, em seguida um texto explicativo e logo após o início do código:
+
+É declarado uma regra "teste", que herda duas variáveis inteiras, "x" e "y", retornando um inteiro "z". Sua implementação faz "z" ser atualizado pela a soma de "x" e "y".
+
+Temos também a regra strN, que herda uma variável inteira "n". Sua implementação realiza um loop que restringe "n" para '> 0', e atualizando "n" com a expressão *n=n-1*.Em seguida, restringindo "n" para zero.
+
+obs: regra CHAR e o comando "!." não foi entendido.
+
+### Grammar06

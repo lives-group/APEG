@@ -9,22 +9,42 @@ All team members needs to folow this proctol:
 
 ### Clonning the project
 
-The first step is to get the project from the web repository.
+The first step is to get the project from the web repository. This only needs to be done once. 
 In the directory you want to download, tap the command:
 > _git clone https://github.com/lives-group/APEG.git_
 
 Great! After a few seconds, the root of the project, a folder named APEG,
 will be in your local computer.
 
-### Creating a new branch
+### Creating new fetarures:
+Once you  have downlaoded the project, if you are to create  a new feature or modify an existing one,
+you should do so in a branch. You can think of a branch as an copy of the source code of project, so if
+anything catastrophic happens to the code you are writting it won't affect the "original" code and you can
+always start over again ! 
 
-Once you have dowonloaded de repository, create a new branch to start you coding: 
+To create a new branch type the following commands in the directory of the project:
+
 > _git branch MyBrabch_
 
 > _git checkout MyBranch_
-
 After executing these commands you are now working on yur copy (branch) of the projetc. 
 
+You can see the branch your working on by typing the command: 
+> _git branch_
+
+### Uploading modifications to the branch
+Once you have done all modifications needed to the code you should uplaoad the to the gitHub. To fo this 
+first tell git to include all modified files to the list of files pendind to be uploaded:
+
+> _git add ._
+
+Now commit your changes :
+
+> _git commint -m "Some stuff modified" 
+
+Finnaly upload them to repoistory: 
+
+> _git push origin MyBranch_
 
 ## Project's Structure
 

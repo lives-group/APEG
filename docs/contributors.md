@@ -27,6 +27,7 @@ To create a new branch type the following commands in the directory of the proje
 > _git branch MyBrabch_
 
 > _git checkout MyBranch_
+
 After executing these commands you are now working on yur copy (branch) of the projetc. 
 
 You can see the branch your working on by typing the command: 

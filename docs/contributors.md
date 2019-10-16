@@ -34,7 +34,7 @@ After executing these commands, you are now working on a copy (branch) of the pr
 You can see the branch your working on by typing the command: 
 > _git branch_
 
-### A Work Routine
+### The Daily Work Routine
 
 Every time, when you sit in front of your computer to start developing and programming, always remember to check for updates from the repository.
 So, before starting code, tap the following git command:
@@ -48,8 +48,7 @@ For this, tap:
 
 At summary, always execute the followings git commands before starting to coding:
 
-> _git pull_
->
+> _git pull_  
 > _git branch_
 
 ### Uploading Modifications to the Branch

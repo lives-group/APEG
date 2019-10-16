@@ -25,8 +25,7 @@ always start over again!
 
 To create a new branch type the following commands in the directory of the project:
 
-> _git branch MyBrabch_
-
+> _git branch MyBrabch_  
 > _git checkout MyBranch_
 
 After executing these commands, you are now working on a copy (branch) of the project. 
@@ -37,14 +36,18 @@ You can see the branch your working on by typing the command:
 ### The Daily Work Routine
 
 Every time, when you sit in front of your computer to start developing and programming, always remember to check for updates from the repository.
-So, before starting code, tap the following git command:
+So, before starting code, type the following git command:
 
 > _git pull_
 
 Also, it is a good practice to check the branch you are working on.
-For this, tap:
+For this, type:
 
 > _git branch_
+
+If you aren't in the correct branch, change it using the following command:
+
+> _git checkout BranchName_
 
 At summary, always execute the followings git commands before starting to coding:
 

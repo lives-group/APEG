@@ -55,38 +55,23 @@ At summary, always execute the followings git commands before starting to coding
 > _git branch_
 
 ### Uploading Modifications to the Branch
-Once you have done all modifications needed to the code you should upload the modifications to the gitHub by typing the following the commands:
+Once you have done all modifications needed to the code you should upload it to the GitHub by typing the following the commands:
 
 > _git add --all_
 
 Now commit your changes :
 
-> _git commint -m "Some stuff modified"_ 
+> _git commit -m "Some stuff modified"_ 
 
-Finnaly upload them to repoistory: 
+Finally upload them to repository: 
 
 > _git push origin MyBranch_
 
-
-### Submiting a Pull Request
+### Submitting a Pull Request
 
 After you finished **all your work on the branch and the code is working flawlessly**, you have to submit
 a pull request, so your work can be merged with the master repository. In the GitHub project's page, at the top 
-abs select Pull Request, then click the button new pull request. Select yout branch and click submit.
-
-
-## Project's Structure
-
-In the root of the project, there are other three folders: _docs_, _experiments_,
-and _language_.
-Documentations instructions on how to use, tutorial, and any stuff produced by our team
-and students about the project are placed in _docs_ folders.
-_experiments_ folder is dedicated to putting the sources of the experiments conducted
-using our tool.
-All the tool source code resides in the _language_ folder.
-This folder has tow others: _examples_ and _code_.
-All examples of APEG grammars resides inside _examples_ folder, and the source code
-is inside the _code_ folder and its sub-directories.
+abs select Pull Request, then click the button new pull request. Select your branch and click submit.
 
 ## How to Compile and Execute
 
@@ -105,6 +90,19 @@ Tap the following command to execute it, passing the _grammar01.apeg_ as a param
 Changing the parameter file, you can test other examples.  
 
 [Maven]: http://maven.apache.org
+
+## Project's Structure
+
+In the root of the project, there are other three folders: _docs_, _experiments_,
+and _language_.
+Documentations instructions on how to use, tutorial, and any stuff produced by our team
+and students about the project are placed in _docs_ folders.
+_experiments_ folder is dedicated to putting the sources of the experiments conducted
+using our tool.
+All the tool source code resides in the _language_ folder.
+This folder has tow others: _examples_ and _code_.
+All examples of APEG grammars resides inside _examples_ folder, and the source code
+is inside the _code_ folder and its sub-directories.
 
 ## Structure of the Abstract Syntax Tree
 

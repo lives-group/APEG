@@ -19,8 +19,8 @@ will be in your local computer.
 ### Creating a new branch
 
 Once you have dowonloaded de repository, create a new branch to start you coding: 
->_git branch MyBrabch
->_git checkout MyBranch
+> _git branch MyBrabch
+> _git checkout MyBranch
 
 After executing these commands you are now working on yur copy (branch) of the projetc. 
 

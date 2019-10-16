@@ -1,26 +1,27 @@
 # Instructions For Contributors
 
-All development needs to be done in branchs as to avoid inconsistences in the projetc and also to avoid
-conflicts among the development teams. 
+All development needs to be done in branches to avoid inconsistencies in the project and conflicts among the development teams.
 
-## Protocol to start a development branch
+## Protocol to Start a Development Branch
 
 All team members needs to folow this proctol: 
 
-### Clonning the project
+### Cloning the Project
 
-The first step is to get the project from the web repository. This only needs to be done once. 
+The first step is to get the project from the web repository.
+It only needs to be done once.
 In the directory you want to download, tap the command:
 > _git clone https://github.com/lives-group/APEG.git_
 
 Great! After a few seconds, the root of the project, a folder named APEG,
-will be in your local computer.
+will be on your local computer.
 
-### Creating new fetarures:
-Once you  have downlaoded the project, if you are to create  a new feature or modify an existing one,
-you should do so in a branch. You can think of a branch as an copy of the source code of project, so if
-anything catastrophic happens to the code you are writting it won't affect the "original" code and you can
-always start over again ! 
+### Creating New Features:
+Once you  have downloaded the project, if you are to create a new feature or modify an existing one,
+you should do so in a branch.
+You can think of a branch as a copy of the source code of the project, so if
+anything catastrophic happens to the code you are writing, it won't affect the "original" code, and you can
+always start over again! 
 
 To create a new branch type the following commands in the directory of the project:
 
@@ -28,16 +29,34 @@ To create a new branch type the following commands in the directory of the proje
 
 > _git checkout MyBranch_
 
-After executing these commands you are now working on yur copy (branch) of the projetc. 
+After executing these commands, you are now working on a copy (branch) of the project. 
 
 You can see the branch your working on by typing the command: 
 > _git branch_
 
-### Uploading modifications to the branch
+### A Work Routine
+
+Every time, when you sit in front of your computer to start developing and programming, always remember to check for updates from the repository.
+So, before starting code, tap the following git command:
+
+> _git pull_
+
+Also, it is a good practice to check the branch you are working on.
+For this, tap:
+
+> _git branch_
+
+At summary, always execute the followings git commands before starting to coding:
+
+> _git pull_
+>
+> _git branch_
+
+### Uploading Modifications to the Branch
 Once you have done all modifications needed to the code you should uplaoad the to the gitHub. To fo this 
 first tell git to include all modified files to the list of files pendind to be uploaded:
 
-> _git add ._
+> _git add --all_
 
 Now commit your changes :
 

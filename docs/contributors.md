@@ -2,7 +2,7 @@
 
 All development needs to be done in branches to avoid inconsistencies in the project and conflicts among the development teams.
 
-## Protocol to Start a Development Branch
+## Development Protocol
 
 All team members needs to folow this proctol: 
 
@@ -28,7 +28,7 @@ To create a new branch type the following commands in the directory of the proje
 > _git branch MyBrabch_  
 > _git checkout MyBranch_
 
-After executing these commands, you are now working on a copy (branch) of the project. 
+After executing these commands, you will be working on a copy (branch) of the project. 
 
 You can see the branch your working on by typing the command: 
 > _git branch_
@@ -55,18 +55,25 @@ At summary, always execute the followings git commands before starting to coding
 > _git branch_
 
 ### Uploading Modifications to the Branch
-Once you have done all modifications needed to the code you should uplaoad the to the gitHub. To fo this 
-first tell git to include all modified files to the list of files pendind to be uploaded:
+Once you have done all modifications needed to the code you should upload the modifications to the gitHub by typing the following the commands:
 
 > _git add --all_
 
 Now commit your changes :
 
-> _git commint -m "Some stuff modified" 
+> _git commint -m "Some stuff modified"_ 
 
 Finnaly upload them to repoistory: 
 
 > _git push origin MyBranch_
+
+
+### Submiting a Pull Request
+
+After you finished **all your work on the branch and the code is working flawlessly**, you have to submit
+a pull request, so your work can be merged with the master repository. In the GitHub project's page, at the top 
+abs select Pull Request, then click the button new pull request. Select yout branch and click submit.
+
 
 ## Project's Structure
 

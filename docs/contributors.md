@@ -1,6 +1,13 @@
 # Instructions For Contributors
 
-## How to Download the Project
+All development needs to be done in branchs as to avoid inconsistences in the projetc and also to avoid
+conflicts among the development teams. 
+
+## Protocol to start a development branch
+
+All team members needs to folow this proctol: 
+
+### Clonning the project
 
 The first step is to get the project from the web repository.
 In the directory you want to download, tap the command:
@@ -8,6 +15,15 @@ In the directory you want to download, tap the command:
 
 Great! After a few seconds, the root of the project, a folder named APEG,
 will be in your local computer.
+
+### Creating a new branch
+
+Once you have dowonloaded de repository, create a new branch to start you coding: 
+>_git branch MyBrabch
+>_git checkout MyBranch
+
+After executing these commands you are now working on yur copy (branch) of the projetc. 
+
 
 ## Project's Structure
 

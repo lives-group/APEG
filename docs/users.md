@@ -350,3 +350,103 @@ c returns[int nc] :
   Regras "b" e "c" fazem o memso da regra "a", só com o 'nb e 'nc' respectivamente.
   
   obs: Na regra 'a' nao foi entendido se ele escolhe uma opção baseada em 'na' ou se a primeira opção é prioritária. 
+
+### Grammar09
+
+O arquivo grammar09.apeg no examples:
+
+```
+apeg notDiscardChanges;
+
+
+s:
+  a<> e<>
+ /
+  b<> 
+ /
+  c<>
+;
+
+a:
+ d<>
+ /
+ c<>
+;
+
+b:
+ 'abc' 
+ /
+ 'abb'
+ ;
+
+c:
+ 't'
+ / 
+  d<>
+ ;
+
+d:
+  'ab'
+ ;
+
+e: 
+  c<> d<>
+ ; 
+```
+Neste arquivo temos o APEG *notDiscardChanges*. Nele temos as regas "s","a","b","c","d" e "e"
+
+Regra "s":Chama a regra "a" com parâmetro vazio seguido da regra "e" também seguido de parâmetro vazio, ou chama a regra "b" com parâmetro vazio, ou da regra "c" com parâmetro vazio.
+
+Regra "a": Chama a regra "d" com parâmetro vazio ou chama a regra "c" com parâmetro vazio.
+
+Regra "b": Chama a regra "a" seguido da regra "b" e "c", chama a regra "a" seguido da regra "b" e "b" de novo.
+
+Regra "c": Tem como saída o carácter 't' ou a regra "d" com parâmetro vazio.
+
+Regra "e": Chama a regra "c" com parâmetro vazio em seguida chama a regra "d" com parâmetro vazio.
+
+obs: não está claro o significado de ter parâmetros vazios.
+
+### Grammar10
+
+O arquivo grammar10.apeg no examples:
+
+```
+apeg notDiscardChanges;
+
+
+s: a1<>  t3<> a6<> a7<>
+;
+
+t1: (a4<>)*
+;
+
+t2: a3<> t1<> a5<>
+;
+
+t3: a2<> 
+   /
+   t2<>
+;
+
+a1: 'a'
+;
+
+a2: 'b'
+;
+
+a3: 'c'
+;
+
+a4: 'd'
+;
+
+a5: 'e'
+;
+
+a6: 'f'
+;
+
+a7: 'g'
+;
+```

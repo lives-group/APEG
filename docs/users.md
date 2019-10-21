@@ -405,8 +405,6 @@ Regra "c": Tem como saída o carácter 't' ou a regra "d" com parâmetro vazio.
 
 Regra "e": Chama a regra "c" com parâmetro vazio em seguida chama a regra "d" com parâmetro vazio.
 
-obs: não está claro o significado de ter parâmetros vazios.
-
 ### Grammar10
 
 O arquivo grammar10.apeg no examples:
@@ -449,4 +447,43 @@ a6: 'f'
 
 a7: 'g'
 ;
+```
+Neste arquivo temos o APEG *notDiscardChanges*. Nele temos as regas "s","t1","t2","t3","a1","a2","a3","a4","a5","a6","a7".
+
+Regra "s": Chama a regra "a1" com parâmtetros vazio, seguido das regras "t3", "a6" e "a7", também com parâmetros vaizos.
+
+Regra "t1": Realiza um loop com a regra "t4" com parâmetros vazio.
+
+Regra "t2": Chama a regra "a3" com parâmtetros vazio, seguido das regras "t1" e "a5", também com parâmetros vaizos.
+
+Regra "t3": Chama a regra "a2" ou a regra "t4" com parâmetros vazios.
+
+Regra "a1": Tem como saída o carácter 'a'. As regras "a2" até "a7" têm como saída o intervalo das letras 'b' até 'g'("a2"->b,"a3"->c,...). 
+
+obs: não se sabe quando que loop da regra "t1" se encerra.
+
+### Grammar11
+
+O arquivo grammar11.apeg no examples:
+
+```
+apeg notDiscardChanges;
+
+
+s: a1<> (a2<> / a4<>)* &a3<> b3<> 'e'+ b1<>;
+
+a2 : 'x' / 'y'?'www' / 'nada' 'aver' a1<> / b0<> ;
+
+b0 : '(' . ')' ;
+b2 : .;
+
+b1 : 'm'+ ;
+
+b3: &'xyz' ;
+
+a1: 'a' / 'b'* / !'c' ;
+
+a3: !'zzz';
+
+a4: 'cd'?;
 ```

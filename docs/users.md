@@ -487,3 +487,24 @@ a3: !'zzz';
 
 a4: 'cd'?;
 ```
+
+### Grammar12
+
+O arquivo grammar12.apeg no examples:
+```
+apeg kleneeTest;
+
+
+s: '01' b<>;
+
+b: ('010' 'A' 'B')* '11' d<>;
+
+d: '010' 'A' ':-(' ;
+```
+Neste arquivo temos o APEG *kleneeTest*. Nele temos as regas "s","b","d".
+
+Regra "s": Tem como saída '01' seguido da regra "b".
+
+Regra "b": Realiza um loop com '010', 'A' e 'B'. Em seguida, tem '11' como saída e depois a regra "d".
+
+Regra "d": Tem como saída '010', 'A' e ':-('

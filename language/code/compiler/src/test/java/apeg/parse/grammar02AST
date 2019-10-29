@@ -40,7 +40,7 @@ public class TestAST{
 
 		rules.add(b);
 
-		opts.add(MEMOIZE);
+		opts.add(NO_MEMOIZE);
 		
 		GrammarNode gram = new GrammarNode("annotation", opts, "", rules, null, null);
 	}

@@ -4,7 +4,7 @@ All development needs to be done in branches to avoid inconsistencies in the pro
 
 ## Development Protocol
 
-All team members needs to folow this proctol: 
+All team members needs to follow this protocol: 
 
 ### Cloning the Project
 

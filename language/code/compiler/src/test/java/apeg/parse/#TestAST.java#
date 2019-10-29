@@ -12,6 +12,7 @@ public class TestAST {
 
 	List<RuleNode> rules = new ArrayList<RuleNode>();
 
+
 	PegNode peg, left, right;
 
 	List<PegNode> pegs = new ArrayList<PegNode>();

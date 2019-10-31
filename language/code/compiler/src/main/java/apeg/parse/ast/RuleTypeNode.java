@@ -13,4 +13,5 @@ public class RuleTypeNode extends TypeNode {
 	public void accept(ASTNodeVisitor v) {
 		v.visit(this);
 	}
+
 }

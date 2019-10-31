@@ -43,22 +43,22 @@ import apeg.parse.ast.UserTypeNode;
 import apeg.parse.ast.VarDeclarationNode;
 
 public abstract class FormalVisitor implements ASTNodeVisitor{
-	
-	
+
+
 	@Override
 	public void visit(NotExprNode expr) {
 		expr.getExpr().accept(this);
-		
+
 	}
 
 	@Override
 	public void visit(OrExprNode expr) {
-		
+
 		expr.getLeftExpr().accept(this);
 		expr.getRightExpr().accept(this);
-		
+
 	}
-	
+
 	@Override
 	public void visit(AndExprNode expr) {
 		expr.getLeftExpr().accept(this);
@@ -68,7 +68,7 @@ public abstract class FormalVisitor implements ASTNodeVisitor{
 	@Override
 	public void visit(AttributeExprNode expr) {
 		expr.getName();
-		
+
 	}
 	@Override
 	public void visit(BinaryExprNode expr) {
@@ -86,46 +86,46 @@ public abstract class FormalVisitor implements ASTNodeVisitor{
 		for(ExprNode p : expr.getParameters()){
 			p.accept(this);
 		}
-	
+
 	}
 
 	@Override
 	public void visit(EqualityExprNode expr) {
 		expr.getLeftExpr().accept(this);
 		expr.getRightExpr().accept(this);
-		expr.getEqualityType(); 
-		
+		expr.getEqualityType();
+
 	}
 
-	
+
 	@Override
 	public void visit(MetaPegExprNode expr) {
 		expr.getExpr().accept(this);
-		
+
 	}
 
 	@Override
 	public void visit(MinusExprNode expr) {
 		expr.getExpr().accept(this);
-		
+
 	}
 
 	@Override
 	public void visit(AndPegNode peg) {
 		peg.getPeg().accept(this);
-		
+
 	}
 
 	@Override
 	public void visit(AnyPegNode peg) {
-		
+
 	}
 
 	@Override
 	public void visit(BindPegNode peg) {
 		peg.getPeg().accept(this);
 		peg.getVariable();
-		
+
 	}
 
 	@Override
@@ -137,68 +137,68 @@ public abstract class FormalVisitor implements ASTNodeVisitor{
 	@Override
 	public void visit(ConstraintPegNode peg) {
 		peg.getExpr().accept(this);
-		
+
 	}
 
 	@Override
 	public void visit(GroupPegNode peg) {
 		peg.getRanges();
-		
+
 	}
 
 	@Override
 	public void visit(LambdaPegNode peg) {
 		peg.accept(this);
-		
+
 	}
 
 	@Override
 	public void visit(LiteralPegNode peg) {
 		peg.getValue();
-		
+
 	}
 
 	@Override
 	public void visit(NonterminalPegNode peg) {
-	
+
 		for(ExprNode p:peg.getExprs()) {
 			p.accept(this);
 		}
-	    
-	     peg.getName();	
+
+	     peg.getName();
 	}
 
 	@Override
 	public void visit(NotPegNode peg) {
 		peg.getPeg().accept(this);
-		
+
 	}
 
 	@Override
 	public void visit(OptionalPegNode peg) {
 		peg.getPeg().accept(this);
-		
+
 	}
 
 	@Override
 	public void visit(PlusPegNode peg) {
 		peg.getPeg().accept(this);
-		
+
 	}
 
 	@Override
 	public void visit(SequencePegNode peg) {
-		
+
 		for(PegNode p:peg.getPegs()) {
 			p.accept(this);
 		}
-		
+
 	}
 
 	@Override
 	public void visit(StarPegNode peg) {
 		peg.getPeg().accept(this);
-		
+
 	}
 
 	@Override
@@ -206,14 +206,14 @@ public abstract class FormalVisitor implements ASTNodeVisitor{
 		for(AssignmentNode p:peg.getAssignments()) {
 			p.accept(this);
 		}
-		
+
 	}
 
 	@Override
 	public void visit(AssignmentNode assign) {
 	   assign.getExpr().accept(this);
 	   assign.getVariable();
-		
+
 	}
 
 	@Override
@@ -223,10 +223,10 @@ public abstract class FormalVisitor implements ASTNodeVisitor{
 		grammar.getName();
 		grammar.getOptions(); //lista
 		grammar.getPreamble();
-		
+
 		for(RuleNode rule : grammar.getRules())
 			rule.accept(this);
-		
+
 	}
 
 	@Override
@@ -234,58 +234,58 @@ public abstract class FormalVisitor implements ASTNodeVisitor{
 		rule.getAnnotation();
 		rule.getExpr().accept(this);
 		rule.getName();
-		
+
 		for(VarDeclarationNode param : rule.getParameters()){
-			param.accept(this);		
+			param.accept(this);
 		}
-		
+
 		for(VarDeclarationNode param : rule.getReturns()){
 			param.accept(this);
 		}
-		
+
 	}
 
 	@Override
 	public void visit(VarDeclarationNode var) {
 		var.getName();
-		var.getType().accept(this);		
+		var.getType().accept(this);
 	}
-	
+
 	//------------------------------ Literal Values -------------------------------------
-	
+
 	@Override
 	public void visit(BooleanExprNode expr) {
 		// TODO Auto-generated method stub
 
 		expr.getValue();
 	}
-	
+
 	@Override
 	public void visit(FloatExprNode expr) {
 		expr.getValue();
-		
+
 	}
 
 	@Override
 	public void visit(IntExprNode expr) {
 		expr.getValue();
-		
+
 	}
-	
+
 	@Override
 	public void visit(StringExprNode expr) {
 		expr.getValue();
-		
+
 	}
 
 
 	@Override
-	public void visit(BooleanTypeNode type) {	
+	public void visit(BooleanTypeNode type) {
 	}
 
 
 	@Override
-	public void visit(FloatTypeNode type) {		
+	public void visit(FloatTypeNode type) {
 	}
 
 

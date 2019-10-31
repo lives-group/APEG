@@ -18,6 +18,7 @@ public class <name> extends StateFullBaseParser{
 }
 >>
 
+
 /** Template for rules specification */
 rule( name, peg_expr) ::= <<
 public PegResult <name>(){
@@ -114,18 +115,8 @@ constraint_peg(expr) ::= "{? <expr> }"
 
 group_peg(ranges) ::= "[<ranges>]"
 
-attr(name, expr) ::= "<name> = <expr>;"
+expr(name, expr) ::= <<<name> = <expr>;>>
 
-var(type, name) ::= "((<type>) <name>)"
-
-var_decl(type, name) ::= "<type> <name>;"
-
-uexpr(exprl,op) ::= "<op> <exprl>"
-
-lit(expr) ::= "<expr>"
-
-bexpr(exprl, exprr,op) ::= "<exprl> <op> <exprr>"
-
-seq_expr(exprs) ::=  << <exprs; separator="\n"> >>
+var(type, name) ::= <<<tipe> <name>;>>
 
 update_peg(assigns) ::= <<{<assigns; separator=" ">}>>

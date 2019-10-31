@@ -89,36 +89,36 @@ public class Tool {
 				APEGLexer lexer = new APEGLexer(input);
 				// create a buffer of tokens pulled from the lexer
 				CommonTokenStream tokens = new CommonTokenStream(lexer);
-				
+
 				// create an AST factory
-				ASTFactory factory = new ASTFactoryImpl();				
+				ASTFactory factory = new ASTFactoryImpl();
 				// create a parser that feeds off the tokens buffer
 				APEGParser parser = new APEGParser(factory, tokens);
 				// tell ANTLR to does not automatically build an AST
 				parser.setBuildParseTree(false);
-				
+
 				// Parse phase: extract the AST from the grammar source code
 				GrammarNode g = parser.grammarDef().gram;
-				
+
 				// Check is there is any parse error
 				if(parser.getNumberOfSyntaxErrors() != 0 ||
 				   parser.getCurrentToken().getType() != Recognizer.EOF) {
 					// ARTLR has already printed error messages, thus we stop
 					continue;
 				}
-								
+
 				// Pretty printing the grammar. Just for testing
 			/*	ASTNodeVisitor prettyprint = new PrettyPrintVisitor(
 						new RelativePath(new AbsolutePath("."),
 								"src/main/templates/prettyprint.stg"));
 				g.accept(prettyprint);
 			*/
-				
+
 				BuildRuleEnvironmetVisitor build = new BuildRuleEnvironmetVisitor();
 				g.accept(build);
 				build.printTable();
-				
-				
+
+					//constroi tabela de simbolos
      			VerifyVisitor verifica = new VerifyVisitor(build.getTable(),OperatorTables.mkArithmeticEnv());
 				g.accept(verifica);
 			    if (verifica.hasErrors()){ 
@@ -133,29 +133,29 @@ public class Tool {
 			        	System.err.println(i);
 			        }
 			    }
-			    
+
 			   /*
-				// Generating a graphical view from AST 			
+				// Generating a graphical view from AST
 				DOTVisitor dot = new DOTVisitor(
 						new RelativePath(tool.outputPath, fName + ".dot"),
 						new RelativePath(new AbsolutePath("."),
 								"src/main/templates/dot.stg"));
 				g.accept(dot);
-				
-				
+
+
 				ASTNodeVisitor codegen = new CodeGenVisitor(
 						new RelativePath(new AbsolutePath("."),
 								"src/main/templates/classtamplate.stg"));
 				g.accept(codegen);
-				
+
 				*/
 				ASTNodeVisitor parservisitor = new StateFullCodeGen(
 						new RelativePath(new AbsolutePath("."),
 								"src/main/templates/imperativeParser.stg"));;
 				g.accept(parservisitor);
-				
 
-				
+
+
 			} catch (FileNotFoundException e) {
 				System.err.println("File " + s + " do not exist");
 				continue;

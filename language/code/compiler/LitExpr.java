@@ -15,14 +15,15 @@ public class LitExpr extends StateFullBaseParser{
          mkBacktracPoint();
          match("0");
          if(isOk()){
-              (int) v[0]  - (int) v[0]  
+               v[1] = (int) v[0]  + (int) v[0] ; 
+               v[2] = (int) v[0]  - (int) v[0] ;   
          } 
          if(isOk()){ return success();}
          restore();
          mkBacktracPoint();
          match("1");
          if(isOk()){
-             1 
+               v[1] = 1;   
          } 
          if(isOk()){ return success();}
          if(isOk()){return success();} else{return fail();}

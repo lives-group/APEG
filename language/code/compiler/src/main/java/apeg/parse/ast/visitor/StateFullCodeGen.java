@@ -54,17 +54,13 @@ public class StateFullCodeGen  extends FormalVisitor{
 
 	@Override
 	public void visit(AttributeExprNode expr) {
+
     ST aux_peg =  groupTemplate.getInstanceOf("access_key");
-    // set the current expression template
-		VarType vty = ntTable.get(currentRule).getLocals().get(expr.getName());
-		int value =  vty.getAccessCode();
-		// set the name attribute
-	  aux_peg.add("key",value);
-		aux_peg.add("type",vty.getType().getName());
+    aux_peg.add("key",ntTable.get(currentRule).getLocals().get(expr.getName()).getAccessCode());
+		aux_peg.add("type",ntTable.get(currentRule).getLocals().get(expr.getName()).getType().getName());
     aux_peg.add("name","v");
+
     this.expr = aux_peg;
-
-
   }
 
 
@@ -442,31 +438,18 @@ public class StateFullCodeGen  extends FormalVisitor{
         peg_expr = aux_peg;
     }
 
-    @Override
-	public void visit(UpdatePegNode peg) {
-    	// set the current parsing expression template as a update parsing expression
-    	ST aux_expr = groupTemplate.getInstanceOf("update_peg");
-    	for(AssignmentNode p : peg.getAssignments()) {
-    	// visit each assignment node
-    		p.accept(this);
-    		// add the current assignment visited
-    		aux_expr.add("assigns", expr);
-    	}
-      expr=aux_expr;
-	}
 
 	 @Override
 
    public void visit(AssignmentNode assign) {
-    System.out.println("Assign "+assign.getVariable()+" generated");
     ST aux_peg = groupTemplate.getInstanceOf("record_key");
     assign.getExpr().accept(this);
 
     aux_peg.add("name","v");
     //peg_expr.add("type",ntTable.get(currentRule).getLocals().get(assign.getVariable()).getType().getName());
 	 	aux_peg.add("key",ntTable.get(currentRule).getLocals().get(assign.getVariable()).getAccessCode());
-    aux_peg.add("value",expr);
-    expr = aux_peg;
+    aux_peg.add("value",peg_expr);
+    peg_expr = aux_peg;
 	 }
 
     @Override
@@ -514,28 +497,27 @@ public class StateFullCodeGen  extends FormalVisitor{
 
     }
 
+  @Override
+  public void visit(UpdatePegNode peg) {
+    ST aux_peg = groupTemplate.getInstanceOf("seq_expr");
+    for(AssignmentNode p:peg.getAssignments()) {
+      p.accept(this);
+      aux_peg.add("exprs",peg_expr);
+    }
+    peg_expr=aux_peg;
+  }
   // @Override
-  // public void visit(UpdatePegNode peg) {
-  //   ST aux_peg = groupTemplate.getInstanceOf("seq_expr");
-  //   for(AssignmentNode p:peg.getAssignments()) {
-  //     p.accept(this);
-  //     aux_peg.add("exprs",peg_expr);
-  //   }
-  //   peg_expr=aux_peg;
-  //
-  // }
-  //
-
-  //
-  // @Override
-  // public void visit(AssignmentNode assign) {
-  //   ST aux_peg = groupTemplate.getInstanceOf("attr");
-  //   assign.getExpr().accept(this);
-  //   assign.getVariable();
-  //   aux_peg.add("name", assign.getVariable());
-  //   aux_peg.add("expr",peg_expr);
-  //   peg_expr=aux_peg;
-  // }
+	// public void visit(UpdatePegNode peg) {
+  //   	// set the current parsing expression template as a update parsing expression
+  //   	ST aux_expr = groupTemplate.getInstanceOf("update_peg");
+  //   	for(AssignmentNode p : peg.getAssignments()) {
+  //   	// visit each assignment node
+  //   		p.accept(this);
+  //   		// add the current assignment visited
+  //   		aux_expr.add("assigns", peg_expr);
+  //   	}
+  //     peg_expr=aux_expr;
+	// }
 
 
 

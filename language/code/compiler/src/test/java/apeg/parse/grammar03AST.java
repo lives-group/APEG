@@ -5,6 +5,8 @@ import apeg.parse.*;
 import java.util.List;
 import java.util.ArrayList;
 
+import apeg.parse.ast.visitor.*;
+
 public class TestAST{
 
 	public static void main(String args[]){
@@ -35,5 +37,9 @@ public class TestAST{
 		opts.add(NONE);
 
 		GrammarNode gram = new GrammarNode("expression", opts, "", rules, null, null);
+
+		FooVisitor visitor = new FooVisitor();
+		gram.accept(visitor);
+		
 	}
 }

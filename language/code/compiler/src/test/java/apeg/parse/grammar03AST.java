@@ -6,6 +6,7 @@ import apeg.parse.ast.GrammarNode.GrammarOption;
 import apeg.parse.ast.RuleNode.Annotation;
 import java.util.List;
 import java.util.ArrayList;
+import apeg.parse.ast.visitor.*;
 
 public class Grammar03AST{
 
@@ -35,5 +36,9 @@ public class Grammar03AST{
 		
 		opts.add(null);
 		GrammarNode gram = new GrammarNode("expression", opts, "", rules, null, null);
+
+		FooVisitor visitor = new FooVisitor();
+		gram.accept(visitor);
+		
 	}
 }

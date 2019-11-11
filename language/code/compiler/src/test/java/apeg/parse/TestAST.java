@@ -1,6 +1,9 @@
+//Erro ao add GrammarOption
 package apeg.parse;
 
-import apeg.parse.*;
+import apeg.parse.ast.*;
+import apeg.parse.ast.GrammarNode.GrammarOption;
+import apeg.parse.ast.RuleNode.Annotation;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -11,7 +14,8 @@ public class TestAST{
 
 		List<GrammarOption>opts = new ArrayList<GrammarOption>();
 		List<RuleNode>rules = new ArrayList<RuleNode>();
-
+		List<VarDeclarationNode>param = new ArrayList<VarDeclarationNode>();
+		List<VarDeclarationNode>returns = new ArrayList<VarDeclarationNode>();
 		
 
 		PegNode peg, left, rigth;
@@ -30,18 +34,17 @@ public class TestAST{
 		peg = new ChoicePegNode(left, rigth);
 		
 
-		RuleNode a = new RuleNode("a", Annotation.NONE, new ArrayList<varDeclarationNode>(), new ArrayList<varDeclarationNode>(), peg);
+		RuleNode a = new RuleNode("a", Annotation.NONE, param, returns, peg);
 
 		rules.add(a);
 
 		peg = new LiteralPegNode("b");
 
-		RuleNode b = new RuleNode("b", Annotation.TRANSIENT, new ArrayList<varDeclarationNode>(), new ArrayList<varDeclarationNode>(), peg);
+		RuleNode b = new RuleNode("b", Annotation.TRANSIENT, param, returns, peg);
 
 		rules.add(b);
 
 		opts.add(MEMOIZE);
-		
 		GrammarNode gram = new GrammarNode("annotation", opts, "", rules, null, null);
 	}
 }

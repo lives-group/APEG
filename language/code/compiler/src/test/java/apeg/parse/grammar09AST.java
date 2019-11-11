@@ -1,6 +1,9 @@
 package apeg.parse;
 
-import apeg.parse.*;
+import apeg.parse.ast.*;
+import apeg.parse.ast.GrammarNode.GrammarOption;
+import apeg.parse.ast.RuleNode.Annotation;
+import apeg.parse.ast.BinaryExprNode.Operator;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -43,7 +46,7 @@ public class Grammar09AST{
 		PegNode peg, left, rigth;
 
 		left = new LiteralPegNode("abc");
-		rigth = new LiteralPegNode("abb")
+		rigth = new LiteralPegNode("abb");
 		peg = new ChoicePegNode(left, rigth);
 
 		RuleNode b = new RuleNode("b", Annotation.NONE, new ArrayList<VarDeclarationNode>(), new ArrayList<VarDeclarationNode>(), peg);
@@ -74,7 +77,7 @@ public class Grammar09AST{
 		RuleNode e = new RuleNode("e", Annotation.NONE, new ArrayList<VarDeclarationNode>(), new ArrayList<VarDeclarationNode>(), peg);
 		rules.add(e);
 
-		opts.add(NONE);
+		opts.add(null);
 		GrammarNode gram = new GrammarNode("notDiscardChanges", opts, "", rules, null, null);
 	}
 }

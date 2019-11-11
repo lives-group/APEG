@@ -1,6 +1,8 @@
 package apeg.parse;
 
-import apeg.parse.*;
+import apeg.parse.ast.*;
+import apeg.parse.ast.GrammarNode.GrammarOption;
+import apeg.parse.ast.RuleNode.Annotation;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -79,7 +81,7 @@ public class Grammar10AST{
 		RuleNode a7 = new RuleNode("a7", Annotation.NONE, new ArrayList<VarDeclarationNode>(), new ArrayList<VarDeclarationNode>(), peg);
 		rules.add(a7);
 
-		opts.add(NONE);
+		opts.add(null);
 		GrammarNode gram = new GrammarNode("notDiscardChanges", opts, "", rules, null, null);
 	}
 }

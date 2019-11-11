@@ -1,11 +1,13 @@
+//Erro ao add em assigs
 package apeg.parse;
 
-import apeg.parse.*;
-
+import apeg.parse.ast.*;
+import apeg.parse.ast.GrammarNode.GrammarOption;
+import apeg.parse.ast.RuleNode.Annotation;
 import java.util.List;
 import java.util.ArrayList;
 
-public class TestAST{
+public class Grammar03AST{
 
 	public static void main(String args[]){
 
@@ -13,27 +15,25 @@ public class TestAST{
 		List<GrammarOption>opts = new ArrayList<GrammarOption>();
 		List<RuleNode>rules = new ArrayList<RuleNode>();
 		List<VarDeclarationNode>param = new ArrayList<VarDeclarationNode>();
-		List<VarDlecarationNode>returns = new ArrayList<VarDeclarationNode>();
+		List<VarDeclarationNode>returns = new ArrayList<VarDeclarationNode>();
 		List<AssignmentNode>assigs = new ArrayList<AssignmentNode>();
 
 		
-		PegNode = peg;
+		
+		assigs.add(new AttributeExprNode("i"),new BooleanExprNode(true));
+		PegNode peg = new UpdatePegNode(assigs);
 
-		assigs.add(new AttributeExprNode("i"), new LiteralPegNode("true"));
-		peg = new UpdatePegNode(assigs);
-
-		param.add(VarDeclarationNode("x", int));
-		param.add(VarDeclarationNode("y", int));
-		param.add(VarDeclarationNode("z", int));
-		param.add(VarDeclarationNode("w", int));
-		returns.add(VarDeclarationNode("i", boolean));
+		param.add(new VarDeclarationNode("x", new IntTypeNode()));
+		param.add(new VarDeclarationNode("y", new IntTypeNode()));
+		param.add(new VarDeclarationNode("z", new IntTypeNode()));
+		param.add(new VarDeclarationNode("w", new IntTypeNode()));
+		returns.add(new VarDeclarationNode("i", new BooleanTypeNode()));
 
 
 
 		RuleNode s = new RuleNode("s", Annotation.NONE, param, returns, peg);
-
-		opts.add(NONE);
-
+		
+		opts.add(null);
 		GrammarNode gram = new GrammarNode("expression", opts, "", rules, null, null);
 	}
 }

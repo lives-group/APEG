@@ -6,7 +6,10 @@
 
 package apeg.parse;
 
-import apeg.parse.*;
+import apeg.parse.ast.*;
+import apeg.parse.ast.GrammarNode.GrammarOption;
+import apeg.parse.ast.RuleNode.Annotation;
+import apeg.parse.ast.BinaryExprNode.Operator;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -34,10 +37,10 @@ public class Grammar06AST{
 		pegs.add(new NonterminalPegNode("literal"), attrs);
 		attrs.add(new AttributeExprNode("g")); //g?
 		pegs.add(new NonterminalPegNode("literal"), attrs);
-		pegs.add(new NotPegNode(new AnyPegNode));
+		pegs.add(new NotPegNode(new AnyPegNode()));
 		PegNode peg = new SequencePegNode(pegs);
 
-		param.add(new Grammar g);
+		param.add(); // grammar g ????
 		RuleNode literal3 = new RuleNode("literal3", Annotation.NONE, param, returns, peg);
 		rules.add(literal3);
 
@@ -47,10 +50,10 @@ public class Grammar06AST{
 		pegs.add(new NonterminalPegNode("number", attrs));
 		pegs.add();
 		attrs.add(new AttributeExprNode("g1"));
-		pegs.add(new LiteralPegnode('['));
+		pegs.add(new LiteralPegNode("["));
 		pegs.add(new NonterminalPegNode("strN", attrs));
-		pegs.add(new LiteralPegnode(']'));
-		PegNode peg = new SequencePegNode(pegs);
+		pegs.add(new LiteralPegNode("]"));
+		peg = new SequencePegNode(pegs);
 
 		param.add(new Grammar g);
 		RuleNode literal = new RuleNode("literal", Annotation.NONE, param, returns, peg);
@@ -58,12 +61,14 @@ public class Grammar06AST{
 
 		//pegs regra strN
 
-		param.add(new Grammar g);
+		peg = new ConstraintPegNode(new BooleanExprNode(false));
+
+		param.add(new NonterminalPegNode("g", null));
 		RuleNode strN = new RuleNode("strN", Annotation.NONE, param, returns, peg);
 		rules.add(strN);
 
 		//pegs regra CHAR
-		PegNode peg = new AnyPegNode;
+		peg = new AnyPegNode();
 
 		RuleNode CHAR = new RuleNode("CHAR", Annotation.NONE, param, returns, peg);
 		rules.add(CHAR);
@@ -74,13 +79,13 @@ public class Grammar06AST{
 		pegs.add(new NonterminalPegNode("digit", attrs));
 		attrs.add(new AttributeExprNode("aux")); 
 		pegs.add(new NonterminalPegNode("digit", attrs));
-		assigs.add(new AttributeExprNode("r"), new BinaryExprNode(new BinaryExprNode(new AttributeExprNode("r"), new LiteralPegnode('10'), Operator.MUL), new AttributeExprNode("aux"), Operator.ADD));
+		assigs.add(new AttributeExprNode("r"), new BinaryExprNode(new BinaryExprNode(new AttributeExprNode("r"), new IntExprNode(10), Operator.MUL), new AttributeExprNode("aux"), Operator.ADD));
 		pegs.add(new UpdatePegNode(assigs));
 		peg = new SequencePegNode(pegs);
 		pegs.add(new StarPegNode(peg));
 		peg = new SequencePegNode(pegs);
 
-		returns.add(new VarDeclarationNode("r", int));
+		returns.add(new VarDeclarationNode("r",new IntTypeNode()));
 
 		RuleNode number = new RuleNode("number", Annotation.NONE, param, returns, peg);
 		rules.add(number);
@@ -88,35 +93,35 @@ public class Grammar06AST{
 		//pegs regra digit
 		PegNode peg, left, rigth;
 
-		pegs.add(new LiteralPegnode('0'));
-		assigs.add(new AttributeExprNode("x1"), new LiteralPegnode('0'));
+		pegs.add(new LiteralPegNode("0"));
+		assigs.add(new AttributeExprNode("x1"), new IntExprNode(0));
 		left = new UpdatePegNode(assigs);
-		pegs.add(new LiteralPegnode('1'));
-		assigs.add(new AttributeExprNode("x1"), new LiteralPegnode('1'));
+		pegs.add(new LiteralPegNode("1"));
+		assigs.add(new AttributeExprNode("x1"), new IntExprNode(1));
 		left = new UpdatePegNode(assigs);
-		pegs.add(new LiteralPegnode('2'));
-		assigs.add(new AttributeExprNode("x1"), new LiteralPegnode('2'));
+		pegs.add(new LiteralPegNode("2"));
+		assigs.add(new AttributeExprNode("x1"), new IntExprNode(2));
 		left = new UpdatePegNode(assigs);
-		pegs.add(new LiteralPegnode('3'));
-		assigs.add(new AttributeExprNode("x1"), new LiteralPegnode('3'));
+		pegs.add(new LiteralPegNode("3"));
+		assigs.add(new AttributeExprNode("x1"), new IntExprNode(3));
 		left = new UpdatePegNode(assigs);
-		pegs.add(new LiteralPegnode('4'));
-		assigs.add(new AttributeExprNode("x1"), new LiteralPegnode('4'));
+		pegs.add(new LiteralPegNode("4"));
+		assigs.add(new AttributeExprNode("x1"), new IntExprNode(4));
 		left = new UpdatePegNode(assigs);
-		pegs.add(new LiteralPegnode('5'));
-		assigs.add(new AttributeExprNode("x1"), new LiteralPegnode('5'));
+		pegs.add(new LiteralPegNode("5"));
+		assigs.add(new AttributeExprNode("x1"), new IntExprNode(5));
 		left = UpdatePegNode(assigs);
-		pegs.add(new LiteralPegnode('6'));
-		assigs.add(new AttributeExprNode("x1"), new LiteralPegnode('6'));
+		pegs.add(new LiteralPegNode("6"));
+		assigs.add(new AttributeExprNode("x1"), new IntExprNode(6));
 		left = new UpdatePegNode(assigs);
-		pegs.add(new LiteralPegnode('7'));
-		assigs.add(new AttributeExprNode("x1"), new LiteralPegnode('7'));
+		pegs.add(new LiteralPegNode("7"));
+		assigs.add(new AttributeExprNode("x1"), new IntExprNode(7));
 		left = new UpdatePegNode(assigs);
-		pegs.add(new LiteralPegnode('8'));
-		assigs.add(new AttributeExprNode("x1"), new LiteralPegnode('8'));
+		pegs.add(new LiteralPegNode("8"));
+		assigs.add(new AttributeExprNode("x1"), new IntExprNode(8));
 		left = new UpdatePegNode(assigs);
-		pegs.add(new LiteralPegnode('9'));
-		assigs.add(new AttributeExprNode("x1"), new LiteralPegnode('9'));
+		pegs.add(new LiteralPegNode("9"));
+		assigs.add(new AttributeExprNode("x1"), new IntExprNode(9));
 		pegs.add(new UpdatePegNode(assigs));
 		rigth = new SequencePegNode(pegs);
 		pegs.add(new ChoicePegNode(left, rigth));
@@ -124,22 +129,22 @@ public class Grammar06AST{
 		pegs.add(new ChoicePegNode(left, rigth));
 		rigth = new SequencePegNode(pegs);
 		pegs.add(new ChoicePegNode(left, rigth));
-		rigth = SequencePegNode(pegs);
-		pegs.add(new ChoicePegNode(left, rigth));
-		rigth = SequencePegNode(pegs);
-		pegs.add(new ChoicePegNode(left, rigth));
 		rigth = new SequencePegNode(pegs);
 		pegs.add(new ChoicePegNode(left, rigth));
 		rigth = new SequencePegNode(pegs);
 		pegs.add(new ChoicePegNode(left, rigth));
 		rigth = new SequencePegNode(pegs);
 		pegs.add(new ChoicePegNode(left, rigth));
-		rigth = SequencePegNode(pegs);
+		rigth = new SequencePegNode(pegs);
+		pegs.add(new ChoicePegNode(left, rigth));
+		rigth = new SequencePegNode(pegs);
+		pegs.add(new ChoicePegNode(left, rigth));
+		rigth = new SequencePegNode(pegs);
 		pegs.add(new ChoicePegNode(left, rigth));
 		peg = new SequencePegNode(pegs);
 
 
-		returns.add(new VarDeclarationNode("x1", int));
+		returns.add(new VarDeclarationNode("x1", new IntTypeNode()));
 		RuleNode digit = new RuleNode("digit", Annotation.NONE, param, returns, peg);
 		rules.add(digit);
 

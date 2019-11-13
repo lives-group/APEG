@@ -249,9 +249,9 @@ public class StateFullCodeGen  extends FormalVisitor{
          // visit the parsing expression
          peg.getPeg().accept(this);
          // set propriety for the bind parsing expression
-         aux_peg.add("peg_expr", peg_expr);
+         aux_peg.add("peg_expr", this.expr);
          // set the current parsing expression
-         peg_expr = aux_peg;
+         this.expr = aux_peg;
      }
 
 
@@ -259,7 +259,7 @@ public class StateFullCodeGen  extends FormalVisitor{
      @Override
       public void visit(AnyPegNode peg) {
     	  System.out.println("any");
-          peg_expr = groupTemplate.getInstanceOf("any_peg");
+          this.expr = groupTemplate.getInstanceOf("any_peg");
       }
 
 //     @Override
@@ -283,12 +283,12 @@ public class StateFullCodeGen  extends FormalVisitor{
         // visit the left parsing expression
         peg.getLeftPeg().accept(this);
         // set propriety for the left parsing expression
-        aux_peg.add("left_peg", peg_expr);
+        aux_peg.add("left_peg", this.expr);
         // visit the right parsing expression
         peg.getRightPeg().accept(this);
         // set propriety for the right parsing expression
-        aux_peg.add("right_peg", peg_expr);
-        peg_expr = aux_peg;
+        aux_peg.add("right_peg", this.expr);
+        this.expr = aux_peg;
     }
 
 //     @Override
@@ -303,19 +303,19 @@ public class StateFullCodeGen  extends FormalVisitor{
 //
      @Override
      public void visit(GroupPegNode peg) {
-         peg_expr = groupTemplate.getInstanceOf("group_peg");
-         peg_expr.add("ranges", peg.getRanges());
+         this.expr = groupTemplate.getInstanceOf("group_peg");
+         this.expr.add("ranges", peg.getRanges());
      }
 
     @Override
     public void visit(LambdaPegNode peg) {
-        peg_expr = groupTemplate.getInstanceOf("lambda_peg");
+        this.expr = groupTemplate.getInstanceOf("lambda_peg");
     }
 
     @Override
     public void visit(LiteralPegNode peg) {
-        peg_expr= groupTemplate.getInstanceOf("match");
-        peg_expr.add("value", peg.getValue());
+        this.expr= groupTemplate.getInstanceOf("match");
+        this.expr.add("value", peg.getValue());
     }
 
     @Override
@@ -372,7 +372,7 @@ public class StateFullCodeGen  extends FormalVisitor{
         	}
         	aux.add("posList", root);
         }
-        peg_expr = aux;
+        this.expr = aux;
     }
 
      @Override
@@ -382,8 +382,8 @@ public class StateFullCodeGen  extends FormalVisitor{
          // visit the parsing expression
          peg.getPeg().accept(this);
          // adding the parsing expression on star template
-         aux_peg.add("peg_expr", peg_expr);
-         peg_expr = aux_peg;
+         aux_peg.add("peg_expr", this.expr);
+         this.expr = aux_peg;
     }
 
      @Override
@@ -393,8 +393,8 @@ public class StateFullCodeGen  extends FormalVisitor{
          // visit the parsing expression
          peg.getPeg().accept(this);
          // adding the parsing expression on star template
-         aux_peg.add("peg_expr", peg_expr);
-         peg_expr = aux_peg;
+         aux_peg.add("peg_expr", this.expr);
+         this.expr = aux_peg;
      }
 
     @Override
@@ -404,8 +404,8 @@ public class StateFullCodeGen  extends FormalVisitor{
          // visit the parsing expression
          peg.getPeg().accept(this);
          // adding the parsing expression on star template
-         aux_peg.add("peg_expr", peg_expr);
-         peg_expr = aux_peg;
+         aux_peg.add("peg_expr", this.expr);
+         this.expr = aux_peg;
      }
 
     @Override
@@ -416,16 +416,16 @@ public class StateFullCodeGen  extends FormalVisitor{
         ListIterator<PegNode> li = l.listIterator(l.size());
         PegNode p = li.previous();
         p.accept(this);
-        seq_peg.add("expr1",peg_expr);
+        seq_peg.add("expr1",this.expr);
         while(li.hasPrevious()){
             aux = groupTemplate.getInstanceOf("cont");
             p = li.previous();
             p.accept(this);
-            aux.add("expr1",peg_expr);
+            aux.add("expr1",this.expr);
             aux.add("expr2",seq_peg);
             seq_peg = aux;
         }
-        peg_expr = seq_peg;
+        this.expr = seq_peg;
     }
 
     @Override
@@ -434,8 +434,8 @@ public class StateFullCodeGen  extends FormalVisitor{
         // visit the parsing expression
         peg.getPeg().accept(this);
         // adding the parsing expression on star template
-        aux_peg.add("peg_expr", peg_expr);
-        peg_expr = aux_peg;
+        aux_peg.add("peg_expr", this.expr);
+        this.expr = aux_peg;
     }
 
 
@@ -446,10 +446,9 @@ public class StateFullCodeGen  extends FormalVisitor{
     assign.getExpr().accept(this);
 
     aux_peg.add("name","v");
-    //peg_expr.add("type",ntTable.get(currentRule).getLocals().get(assign.getVariable()).getType().getName());
-	 	aux_peg.add("key",ntTable.get(currentRule).getLocals().get(assign.getVariable()).getAccessCode());
-    aux_peg.add("value",peg_expr);
-    peg_expr = aux_peg;
+   	aux_peg.add("key",ntTable.get(currentRule).getLocals().get(assign.getVariable()).getAccessCode());
+    aux_peg.add("value",this.expr);
+    this.expr = aux_peg;
 	 }
 
     @Override
@@ -491,7 +490,7 @@ public class StateFullCodeGen  extends FormalVisitor{
         r.add("name", rule.getName());
 
         rule.getExpr().accept(this);
-        r.add("peg_expr", peg_expr); // setting parsing expression propriety
+        r.add("peg_expr", this.expr); // setting parsing expression propriety
 
         template.add("rules", r); // adding the rule template on the list of grammar rules
 
@@ -502,9 +501,9 @@ public class StateFullCodeGen  extends FormalVisitor{
     ST aux_peg = groupTemplate.getInstanceOf("seq_expr");
     for(AssignmentNode p:peg.getAssignments()) {
       p.accept(this);
-      aux_peg.add("exprs",peg_expr);
+      aux_peg.add("exprs",this.expr);
     }
-    peg_expr=aux_peg;
+    this.expr=aux_peg;
   }
   // @Override
 	// public void visit(UpdatePegNode peg) {
@@ -525,14 +524,14 @@ public class StateFullCodeGen  extends FormalVisitor{
   public void visit(BooleanExprNode expr) {
     ST aux_peg = groupTemplate.getInstanceOf("lit");
     aux_peg.add("expr",expr.getValue());
-    peg_expr=aux_peg;
+    this.expr=aux_peg;
   }
 
   @Override
   public void visit(FloatExprNode expr) {
     ST aux_peg = groupTemplate.getInstanceOf("lit");
     aux_peg.add("expr",expr.getValue());
-    peg_expr=aux_peg;
+    this.expr=aux_peg;
 
   }
 
@@ -540,7 +539,7 @@ public class StateFullCodeGen  extends FormalVisitor{
   public void visit(IntExprNode expr) {
     ST aux_peg = groupTemplate.getInstanceOf("lit");
     aux_peg.add("expr",expr.getValue());
-    peg_expr=aux_peg;
+    this.expr=aux_peg;
 
   }
 
@@ -548,7 +547,7 @@ public class StateFullCodeGen  extends FormalVisitor{
   public void visit(StringExprNode expr) {
     ST aux_peg = groupTemplate.getInstanceOf("lit");
     aux_peg.add("expr",expr.getValue());
-    peg_expr=aux_peg;
+    this.expr=aux_peg;
   }
 
   @Override
@@ -593,7 +592,7 @@ public class StateFullCodeGen  extends FormalVisitor{
       aux_peg.add("op","<=");
       break;
     }
-    peg_expr=aux_peg;
+    this.expr=aux_peg;
   }
 
 //   @Override

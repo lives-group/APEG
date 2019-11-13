@@ -1,7 +1,6 @@
 apeg litExpr;
 
-s[int c] returns [int x]:
-  '0' {x = c + 4;
-       y = c - 1;}
+s[int c, int b] returns [int x]:
+  '0' {x = c + 4 ;}
  /'1' {x = 1;}
 ;

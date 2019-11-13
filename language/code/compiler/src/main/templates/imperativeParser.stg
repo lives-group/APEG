@@ -21,7 +21,7 @@ public class <name> extends StateFullBaseParser{
 
 /** Template for rules specification */
 rule( name, peg_expr, aridade) ::= <<
-public PegResult <name>(){
+public PegResult <name>(Object[] v){
    startRule("<name>");
    <peg_expr>
    if(isOk()){return success();} else{return fail();}

@@ -10,20 +10,19 @@ public class LitExpr extends StateFullBaseParser{
           startRule("root");
       }
 
-      public PegResult s(){
+      public PegResult s(Object[] v){
          startRule("s");
          mkBacktracPoint();
          match("0");
          if(isOk()){
-               v[1] = (int) v[0]  + (int) v[0] ; 
-               v[2] = (int) v[0]  - (int) v[0] ;   
+               v[2] = (int) v[0]  + 4;   
          } 
          if(isOk()){ return success();}
          restore();
          mkBacktracPoint();
          match("1");
          if(isOk()){
-               v[1] = 1;   
+               v[2] = 1;   
          } 
          if(isOk()){ return success();}
          if(isOk()){return success();} else{return fail();}

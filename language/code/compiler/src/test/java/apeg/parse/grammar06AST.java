@@ -32,11 +32,11 @@ public class Grammar06AST{
 		//pegs regra literal3
 
 		attrs.add(new AttributeExprNode("g")); // g?
-		pegs.add(new NonterminalPegNode("literal"), attrs);
+		pegs.add(new NonterminalPegNode("literal", attrs));
 		attrs.add(new AttributeExprNode("g")); // g?
-		pegs.add(new NonterminalPegNode("literal"), attrs);
+		pegs.add(new NonterminalPegNode("literal", attrs));
 		attrs.add(new AttributeExprNode("g")); //g?
-		pegs.add(new NonterminalPegNode("literal"), attrs);
+		pegs.add(new NonterminalPegNode("literal", attrs));
 		pegs.add(new NotPegNode(new AnyPegNode()));
 		PegNode peg = new SequencePegNode(pegs);
 
@@ -149,8 +149,8 @@ public class Grammar06AST{
 		rules.add(digit);
 
 
-		func.add(new CallExprNode("AdaptableFunctions", new ArrayList<ExprNode>()));
-		opts.add(ADAPTABLE);
+		func.add("AdaptableFunctions");
+		opts.add(GrammarOption.ADAPTABLE);
 		GrammarNode gram = new GrammarNode("adapdatadependent", opts, " ", rules, func, null);
 	}
 }

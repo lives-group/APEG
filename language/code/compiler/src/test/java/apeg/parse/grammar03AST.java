@@ -21,7 +21,7 @@ public class Grammar03AST{
 
 		
 		
-		assigs.add(new AttributeExprNode("i"),new BooleanExprNode(true));
+		assigs.add(new AssignmentNode(new AttributeExprNode("i"),new BooleanExprNode(true)));
 		PegNode peg = new UpdatePegNode(assigs);
 
 		param.add(new VarDeclarationNode("x", new IntTypeNode()));
@@ -33,6 +33,7 @@ public class Grammar03AST{
 
 
 		RuleNode s = new RuleNode("s", Annotation.NONE, param, returns, peg);
+		rules.add(s);
 		
 		opts.add(null);
 		GrammarNode gram = new GrammarNode("expression", opts, "", rules, null, null);

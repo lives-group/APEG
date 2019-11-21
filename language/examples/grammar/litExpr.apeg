@@ -1,6 +1,11 @@
 apeg litExpr;
 
+
 s[int c, int b] returns [int x]:
-  '0' {x = c + 4 ;}
- /'1' {x = 1;}
+  ss<5> '0' {x = c - b;}
+ /ss<5> '1' {x = c + b;}
+;
+
+ss[int c]:
+  { c = c + 1;}
 ;

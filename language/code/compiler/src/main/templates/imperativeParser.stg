@@ -23,6 +23,7 @@ public class <name> extends StateFullBaseParser{
 rule( name, peg_expr, aridade) ::= <<
 public PegResult <name>(Object[] v){
    startRule("<name>");
+   Object[] copy;
    <peg_expr>
    if(isOk()){return success();} else{return fail();}
 }>>
@@ -49,7 +50,12 @@ if(isOk()){
 }<endif> >>
 
 match(value)::= <<match("<value>");>>
-call(name,env,tam,iniList) ::= <<<name>(<env>,tam);>>
+call(name,expr,expr1) ::=
+<<
+<expr>
+<name>(v);
+<expr1>
+>>
 
 and_peg(peg_expr) ::=
 <<
@@ -134,3 +140,9 @@ seq_expr(exprs) ::=  << <exprs; separator="\n"> >>
 access_key(name,key,type)::= << (<type>) <name>[<key>] >>
 
 record_key(name,key,value) ::= << <name>[<key>] = <value>; >>
+
+iniParamList(env,key,value) ::= << <env>[<key>] = <value>; >>
+
+copy(ninh,var,var_copy,menor)::= <<
+for(int i=0;i <menor> <ninh> ;i++) {<var_copy>[i]=<var>[i];}
+>>

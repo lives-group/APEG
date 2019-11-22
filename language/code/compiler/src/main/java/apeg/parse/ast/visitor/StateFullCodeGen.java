@@ -327,10 +327,11 @@ public class StateFullCodeGen  extends FormalVisitor{
     //aux.add("env", envname);
     //System.out.println();
     //int tam = ntTable.get(peg.getName()).getLocals().size();
-    int ninh = ntTable.get(peg.getName()).getSig().getNumInherited();
+    //int ninh = ntTable.get(peg.getName()).getSig().getNumInherited();
     //int ntp = ntTable.get(peg.getName()).getSig().getNumParams();
     //int nsyn = ntTable.get(peg.getName()).getSig().getNumSintetized();
 
+    // vector copy
     ST copy = groupTemplate.getInstanceOf("copy");
     copy.add("ninh",ntTable.get(currentRule).getSig().getNumInherited());
     copy.add("menor","<");
@@ -342,22 +343,33 @@ public class StateFullCodeGen  extends FormalVisitor{
     copy1.add("var","copy");
     copy1.add("menor","<");
 
-    //aux.add("tam", tam);
+    // parameters vector
+    ST  parm = groupTemplate.getInstanceOf("iniParamList");
+    ST  listParam = groupTemplate.getInstanceOf("seq_expr");
+    ST obj = groupTemplate.getInstanceOf("inst_object");
+    obj.add("name","list_param");
+    obj.add("size",ntTable.get(peg.getName()).getSig().getNumParams());
+    listParam.add("exprs",obj);
+    obj = groupTemplate.getInstanceOf("inst_object");
+    obj.add("name","copy");
+    obj.add("size",ntTable.get(currentRule).getSig().getNumInherited());
+    listParam.add("exprs",obj);
 
-    ST  parm = groupTemplate.getInstanceOf("record_key");
-
-    //s(){
-    //v[x]=5;
-    //f(v);
-    //}
-    //
-    //f(int x){...}
-  
-    for(int i = 0; i < ninh; i++) {
-      peg.getExprs().get(i).accept(this);
-      System.out.println(peg.getExprs().get(i));
+    int ind=0;
+    for(ExprNode e : peg.getExprs()){
+      e.accept(this);
+      parm.add("env","list_param");
+      parm.add("key",ind);
+      parm.add("value",expr);
+      listParam.add("exprs",parm);
+      ind++;
     }
 
+    // template
+    listParam.add("exprs",copy);
+    listParam.add("exprs",aux);
+    listParam.add("exprs",copy1);
+    this.expr = listParam;
 
     // ST root = groupTemplate.getInstanceOf("iniParamList");
     // ST last = root;
@@ -400,9 +412,6 @@ public class StateFullCodeGen  extends FormalVisitor{
     //   }
     //   //aux.add("posList", root);
     // }
-    aux.add("expr",copy);
-    aux.add("expr1",copy1);
-    this.expr = aux;
   }
 
   @Override

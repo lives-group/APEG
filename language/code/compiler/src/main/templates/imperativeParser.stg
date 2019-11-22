@@ -24,6 +24,7 @@ rule( name, peg_expr, aridade) ::= <<
 public PegResult <name>(Object[] v){
    startRule("<name>");
    Object[] copy;
+   Object[] list_param;
    <peg_expr>
    if(isOk()){return success();} else{return fail();}
 }>>
@@ -50,12 +51,8 @@ if(isOk()){
 }<endif> >>
 
 match(value)::= <<match("<value>");>>
-call(name,expr,expr1) ::=
-<<
-<expr>
-<name>(v);
-<expr1>
->>
+call(name) ::=
+<<<name>(list_param);>>
 
 and_peg(peg_expr) ::=
 <<
@@ -135,7 +132,7 @@ lit(expr) ::= "<expr>"
 
 bexpr(exprl, exprr,op) ::= "<exprl> <op> <exprr>"
 
-seq_expr(exprs) ::=  << <exprs; separator="\n"> >>
+seq_expr(exprs) ::=  <<<exprs; separator="\n"> >>
 
 access_key(name,key,type)::= << (<type>) <name>[<key>] >>
 
@@ -146,3 +143,5 @@ iniParamList(env,key,value) ::= << <env>[<key>] = <value>; >>
 copy(ninh,var,var_copy,menor)::= <<
 for(int i=0;i <menor> <ninh> ;i++) {<var_copy>[i]=<var>[i];}
 >>
+
+inst_object(name,size)::= << <name> = new Object[<size>];>>

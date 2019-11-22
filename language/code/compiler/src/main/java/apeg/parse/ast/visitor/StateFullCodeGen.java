@@ -344,16 +344,25 @@ public class StateFullCodeGen  extends FormalVisitor{
     copy1.add("menor","<");
 
     // parameters vector
+    int tam_param = ntTable.get(peg.getName()).getSig().getNumParams();
+    int ninh_cur = ntTable.get(currentRule).getSig().getNumInherited();
     ST  parm = groupTemplate.getInstanceOf("iniParamList");
     ST  listParam = groupTemplate.getInstanceOf("seq_expr");
     ST obj = groupTemplate.getInstanceOf("inst_object");
-    obj.add("name","list_param");
-    obj.add("size",ntTable.get(peg.getName()).getSig().getNumParams());
-    listParam.add("exprs",obj);
+
+    if(tam_param>0){
+      obj.add("name","list_param");
+      obj.add("size",tam_param);
+      listParam.add("exprs",obj);
+    }
+
     obj = groupTemplate.getInstanceOf("inst_object");
-    obj.add("name","copy");
-    obj.add("size",ntTable.get(currentRule).getSig().getNumInherited());
-    listParam.add("exprs",obj);
+
+    if(tam_param>0){
+      obj.add("name","copy");
+      obj.add("size",ninh_cur);
+      listParam.add("exprs",obj);
+    }
 
     int ind=0;
     for(ExprNode e : peg.getExprs()){
@@ -367,9 +376,9 @@ public class StateFullCodeGen  extends FormalVisitor{
     }
 
     // template
-    listParam.add("exprs",copy);
+    if(tam_param>0){listParam.add("exprs",copy);}
     listParam.add("exprs",aux);
-    listParam.add("exprs",copy1);
+    if(tam_param>0){listParam.add("exprs",copy1);}
     this.expr = listParam;
 
     // ST root = groupTemplate.getInstanceOf("iniParamList");

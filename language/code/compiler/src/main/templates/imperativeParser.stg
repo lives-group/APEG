@@ -132,7 +132,7 @@ lit(expr) ::= "<expr>"
 
 bexpr(exprl, exprr,op) ::= "<exprl> <op> <exprr>"
 
-seq_expr(exprs) ::=  <<<exprs; separator="\n"> >>
+seq_expr(exprs) ::=  << <exprs; separator="\n"> >>
 
 access_key(name,key,type)::= << (<type>) <name>[<key>] >>
 

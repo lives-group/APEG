@@ -357,10 +357,11 @@ public class StateFullCodeGen  extends FormalVisitor{
 
     int ind=0;
     for(ExprNode e : peg.getExprs()){
+      parm = groupTemplate.getInstanceOf("iniParamList");
       e.accept(this);
       parm.add("env","list_param");
       parm.add("key",ind);
-      parm.add("value",expr);
+      parm.add("value",this.expr);
       listParam.add("exprs",parm);
       ind++;
     }

@@ -54,12 +54,10 @@ public class StateFullCodeGen  extends FormalVisitor{
 
   @Override
   public void visit(AttributeExprNode expr) {
-
     ST aux_peg =  groupTemplate.getInstanceOf("access_key");
     aux_peg.add("key",ntTable.get(currentRule).getLocals().get(expr.getName()).getAccessCode());
     aux_peg.add("type",ntTable.get(currentRule).getLocals().get(expr.getName()).getType().getName());
     aux_peg.add("name","v");
-
     this.expr = aux_peg;
   }
 
@@ -330,35 +328,40 @@ public class StateFullCodeGen  extends FormalVisitor{
     //int ninh = ntTable.get(peg.getName()).getSig().getNumInherited();
     //int ntp = ntTable.get(peg.getName()).getSig().getNumParams();
     //int nsyn = ntTable.get(peg.getName()).getSig().getNumSintetized();
+    int nihn = ntTable.get(peg.getName()).getSig().getNumInherited();
+    int num_param = ntTable.get(peg.getName()).getSig().getNumParams();
+    int tam_vet_param = ntTable.get(peg.getName()).getLocals().size();
+    int ninh_cur = ntTable.get(peg.getName()).getSig().getNumInherited();
 
-    // vector copy
+    // vector copy - se num inherited > 0 -
     ST copy = groupTemplate.getInstanceOf("copy");
-    copy.add("ninh",ntTable.get(currentRule).getSig().getNumInherited());
-    copy.add("menor","<");
-    copy.add("var","v");
-    copy.add("var_copy","copy");
     ST copy1 = groupTemplate.getInstanceOf("copy");
-    copy1.add("ninh",ntTable.get(currentRule).getSig().getNumInherited());
-    copy1.add("var_copy","v");
-    copy1.add("var","copy");
-    copy1.add("menor","<");
+    if(nihn>0){
+      copy.add("ninh",ninh_cur);
+      copy.add("menor","<");
+      copy.add("var","v");
+      copy.add("var_copy","copy");
+      copy1.add("ninh",ninh_cur);
+      copy1.add("var_copy","v");
+      copy1.add("var","copy");
+      copy1.add("menor","<");
+    }
 
     // parameters vector
-    int tam_param = ntTable.get(peg.getName()).getSig().getNumParams();
-    int ninh_cur = ntTable.get(currentRule).getSig().getNumInherited();
     ST  parm = groupTemplate.getInstanceOf("iniParamList");
     ST  listParam = groupTemplate.getInstanceOf("seq_expr");
     ST obj = groupTemplate.getInstanceOf("inst_object");
 
-    if(tam_param>0){
+    // vector param (num_inherited + num_variable_locals)
+    if(tam_vet_param>0){
       obj.add("name","list_param");
-      obj.add("size",tam_param);
+      obj.add("size",tam_vet_param);
       listParam.add("exprs",obj);
     }
 
     obj = groupTemplate.getInstanceOf("inst_object");
-
-    if(tam_param>0){
+    // vector copy (num_inherited)
+    if(ninh_cur>0){
       obj.add("name","copy");
       obj.add("size",ninh_cur);
       listParam.add("exprs",obj);
@@ -375,10 +378,10 @@ public class StateFullCodeGen  extends FormalVisitor{
       ind++;
     }
 
-    // template
-    if(tam_param>0){listParam.add("exprs",copy);}
+    // template  - copy if nihn > 0 -
+    if(nihn>0){listParam.add("exprs",copy);}
     listParam.add("exprs",aux);
-    if(tam_param>0){listParam.add("exprs",copy1);}
+    if(nihn>0){listParam.add("exprs",copy1);}
     this.expr = listParam;
 
     // ST root = groupTemplate.getInstanceOf("iniParamList");
@@ -644,12 +647,12 @@ public class StateFullCodeGen  extends FormalVisitor{
     this.expr=aux_peg;
   }
 
-  //   @Override
-  //   public void visit(VarDeclarationNode var) {
-  //     var.getType().accept(this);
-  //     ST aux_peg = groupTemplate.getInstanceOf("var_decl");
-  //     aux_peg.add("type",peg_expr);
-  //     aux_peg.add("name",var.getName());
-  //     peg_expr=aux_peg;
-  //   }
+  // @Override
+  // public void visit(VarDeclarationNode var) {
+  //   var.getType().accept(this);
+  //   ST aux_peg = groupTemplate.getInstanceOf("var_decl");
+  //   aux_peg.add("type",peg_expr);
+  //   aux_peg.add("name",var.getName());
+  //   this.expr=aux_peg;
+  // }
 }

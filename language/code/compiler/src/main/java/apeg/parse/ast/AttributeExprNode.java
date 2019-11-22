@@ -6,11 +6,11 @@ import apeg.parse.ast.visitor.ASTNodeVisitor;
 public class AttributeExprNode extends ExprNode {
 
 	private String name;
-	
+
 	public AttributeExprNode(String name) {
 		this.name = name;
 	}
-	
+
 	public String getName() {
 		return name;
 	}

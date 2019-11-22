@@ -132,16 +132,14 @@ lit(expr) ::= "<expr>"
 
 bexpr(exprl, exprr,op) ::= "<exprl> <op> <exprr>"
 
-seq_expr(exprs) ::=  << <exprs; separator="\n"> >>
+seq_expr(exprs) ::=  <<<exprs; separator="\n"> >>
 
 access_key(name,key,type)::= << (<type>) <name>[<key>] >>
 
-record_key(name,key,value) ::= << <name>[<key>] = <value>; >>
+record_key(name,key,value) ::= <<<name>[<key>] = <value>; >>
 
-iniParamList(env,key,value) ::= << <env>[<key>] = <value>; >>
+iniParamList(env,key,value) ::= <<<env>[<key>] = <value>; >>
 
-copy(ninh,var,var_copy,menor)::= <<
-for(int i=0;i <menor> <ninh> ;i++) {<var_copy>[i]=<var>[i];}
->>
+copy(ninh,var,var_copy,menor)::= <<for(int i=0;i<menor><ninh>;i++) {<var_copy>[i]=<var>[i];}>>
 
-inst_object(name,size)::= << <name> = new Object[<size>];>>
+inst_object(name,size)::= <<<name> = new Object[<size>];>>

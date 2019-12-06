@@ -25,6 +25,7 @@ public PegResult <name>(Object[] v){
    startRule("<name>");
    Object[] copy;
    Object[] list_param;
+   Object[] v_restore;
    <peg_expr>
    if(isOk()){return success();} else{return fail();}
 }>>
@@ -34,10 +35,13 @@ public PegResult <name>(Object[] v){
   */
 choice_peg(left_peg, right_peg) ::=
 <<mkBacktracPoint();
+v_restore = v.copy();
 <left_peg>
 if(isOk()){ return success();}
 restore();
+v = v_restore;
 mkBacktracPoint();
+v_restore = v.copy();
 <right_peg>
 if(isOk()){ return success();}
 >>
@@ -57,15 +61,18 @@ call(name) ::=
 and_peg(peg_expr) ::=
 <<
 mkBacktracPoint();
+v_restore = v.copy();
 <peg_expr>
-restore();>>
+restore();
+v = v_restore;>>
 
 star_peg(peg_expr) ::=
 <<
 do{
    mkBacktracPoint();
+   v_restore = v.copy();
    <peg_expr>
-   if(!isOk()){restore();} else{dismissBacktracPoint();}
+   if(!isOk()){restore(); v = v_restore;} else{dismissBacktracPoint();}
 }while(isOk());
 done();
 >>
@@ -78,8 +85,9 @@ if(!isOk()){
 }
 do{
    mkBacktracPoint();
+   v_restore = v.copy();
    <peg_expr>
-   if(!isOk()){restore();} else{dismissBacktracPoint();}
+   if(!isOk()){restore(); v = v_restore;} else{dismissBacktracPoint();}
 }while(isOk());
 done();
 >>
@@ -87,8 +95,9 @@ done();
 not_peg(peg_expr) ::=
 <<
 mkBacktracPoint();
+v_restore = v.copy();
 <peg_expr>
-if(isOk()){ restore(); fail();}
+if(isOk()){ restore(); v = v_restore; fail();}
 else{
     dismissBacktracPoint();
     done();
@@ -99,9 +108,10 @@ else{
 optional_peg(peg_expr) ::=
 <<
 mkBacktracPoint();
+v_restore = v.copy();
 <peg_expr>
 if(isOk()){ dismissBacktracPoint();}
-else{ restore(); done(); }
+else{ restore(); v = v_restore; done(); }
 >>
 
 any_peg() ::=

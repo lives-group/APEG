@@ -8,11 +8,11 @@ import apeg.visitor.Visitor;
 
 public class GrammarNode extends ASTNode {
 
-	private String name, preamble;
+	private String name;
 	private List<GrammarOption> opts;
 	private List<RulePEG> rules;
 	
-	public GrammarNode(String name, List<GrammarOption> opts, String preamble, List<RulePEG> rules) {
+	public GrammarNode(String name, List<GrammarOption> opts, List<RulePEG> rules) {
 		this.name = name;
 		this.opts = opts;
 		this.preamble = preamble;
@@ -25,10 +25,6 @@ public class GrammarNode extends ASTNode {
 
 	public List<GrammarOption> getOptions() {
 		return opts;
-	}
-
-	public String getPreamble() {
-		return preamble;
 	}
 	
 	public List<RulePEG> getRules() {

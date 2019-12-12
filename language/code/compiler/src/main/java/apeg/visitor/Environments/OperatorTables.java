@@ -1,7 +1,7 @@
-package apeg.parse.ast.visitor.Environments;
+package apeg.visitor.Environments;
 
 import java.util.ArrayList;
-import apeg.parse.ast.*;
+import apeg.ast.*;
 
 /**
  * Table with the types of the each operator.

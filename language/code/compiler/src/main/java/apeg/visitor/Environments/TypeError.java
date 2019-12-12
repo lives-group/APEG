@@ -1,7 +1,7 @@
-package apeg.parse.ast.visitor.Environments;
+package apeg.visitor.Environments;
 
-import apeg.parse.ast.TypeNode;
-import apeg.parse.ast.visitor.ASTNodeVisitor;
+import apeg.ast.types.Type;
+import apeg.visitor.Visitor;
 
 
 /**
@@ -12,13 +12,13 @@ import apeg.parse.ast.visitor.ASTNodeVisitor;
  * @author deise
  * 06/12/2017
  */
-public class TypeError extends TypeNode {
+public class TypeError extends Type {
      
 	  public TypeError(){
 	     super("Error");  
 	  }
 	  
-	  public boolean match(TypeNode type) { return true; }
+	  public boolean match(Type type) { return true; }
 	  
-	  public void accept(ASTNodeVisitor v){}
+	  public void accept(Visitor v){}
 }

@@ -1,4 +1,4 @@
-package apeg.parse.ast.visitor;
+package apeg.visitor;
 
 import java.util.ListIterator;
 import java.util.List;

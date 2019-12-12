@@ -1,10 +1,10 @@
-package apeg.parse.ast.visitor.Environments;
+package apeg.visitor.Environments;
 
-import apeg.parse.ast.TypeNode;
+import apeg.ast.types.Type;
 
 public class VarType {
 
-	private TypeNode type;
+	private Type type;
 	private AttrDirection atributo;
 	
 	public static enum AttrDirection{
@@ -12,7 +12,7 @@ public class VarType {
 	}
 
 	
-    public VarType(TypeNode tipo, AttrDirection atributo){	
+    public VarType(Type tipo, AttrDirection atributo){	
 	   this.type = tipo;
 	   this.atributo = atributo;	
     }
@@ -22,7 +22,7 @@ public class VarType {
     	return s;
     }
     
-	public TypeNode getType() {
+	public Type getType() {
 		return type;
 	}
 

@@ -1,4 +1,4 @@
-package apeg.parse.ast.visitor;
+package apeg.visitor;
 
 import apeg.parse.ast.TypeNode;
 import apeg.parse.ast.RuleNode;

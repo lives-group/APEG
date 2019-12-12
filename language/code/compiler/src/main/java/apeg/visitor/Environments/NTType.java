@@ -1,20 +1,20 @@
-package apeg.parse.ast.visitor.Environments;
+package apeg.visitor.Environments;
 
-import apeg.parse.ast.TypeNode;
+import apeg.ast.types.Type;
 
 public class NTType {
-   private TypeNode[] types;
+   private Type[] types;
    private int inherited;
    
-   public NTType(TypeNode params[], TypeNode returns[]){
-	   types = new TypeNode[params.length + returns.length];
+   public NTType(Type params[], Type returns[]){
+	   types = new Type[params.length + returns.length];
 	   int i = 0;
 	   inherited = params.length;
-	   for(TypeNode n : params){
+	   for(Type n : params){
 		   types[i] = n;
 		   i++;
 	   }
-	   for(TypeNode n : returns){
+	   for(Type n : returns){
 		   types[i] = n;
 		   i++;   
 	   }
@@ -28,7 +28,7 @@ public class NTType {
 	   return inherited;
    }
    
-   public TypeNode getParamAt(int i){
+   public Type getParamAt(int i){
        if(i >= inherited){ throw new ArrayIndexOutOfBoundsException("Index:  " + i);} 
 	   return types[i];
    }
@@ -45,7 +45,7 @@ public class NTType {
 	   
    }
    
-   public boolean matchInherited(TypeNode n[]){
+   public boolean matchInherited(Type n[]){
 	   boolean r = false;
 	   if(getNumInherited() == n.length){
 		   r = true;
@@ -56,7 +56,7 @@ public class NTType {
 	   return r;
    }
    
-   public boolean matchSintetized(TypeNode n[]){
+   public boolean matchSintetized(Type n[]){
 	   boolean r = false;
 	   if(getNumSintetized() == n.length){
 		   r = true;
@@ -69,7 +69,7 @@ public class NTType {
    
    
    
-   public TypeNode getReturnAt(int i){
+   public Type getReturnAt(int i){
        if(i > getNumSintetized()){ throw new ArrayIndexOutOfBoundsException("Index:  " + i);} 
 	   return types[inherited+i];
    }
@@ -78,7 +78,7 @@ public class NTType {
 	   return types.length;
    }
    
-   public TypeNode getType(int i){
+   public Type getType(int i){
 	return types[i];
 	   
    }

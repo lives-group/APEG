@@ -1,4 +1,4 @@
-package apeg.parse.ast.visitor.Environments;
+package apeg.visitor.Environments;
 
 import java.util.HashSet;
 import java.util.Hashtable;

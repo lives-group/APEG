@@ -1,4 +1,4 @@
-package apeg.parse.ast.visitor.Environments;
+package apeg.visitor.Environments;
 
 public class NTInfo {
 	

@@ -5,15 +5,15 @@ import apeg.util.SymInfo;
 
 public class BindPEG extends APEG{
 
-    private Expr expr;
+    private APEG peg;
     private String attribute;
     
-    public BindPEG(SymInfo s,String attribute,Expr e){
+    public BindPEG(SymInfo s,String attribute,APEG peg){
         super(s);
-        expr = e;
+        expr = peg;
     }
-    public Expr getExpr(){
-        return expr;
+    public APEG getExpr(){
+        return peg;
     }
     public String getAttribute(){
         return attribute;

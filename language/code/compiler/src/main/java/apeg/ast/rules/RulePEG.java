@@ -13,10 +13,10 @@ public class RulePEG extends ASTNode{
     private String ruleName;
     private RulePEG.Annotation anno;
     private List<Pair<Type,String>> inh;
-    private List<Pair<Type,Expr>> syn;
+    private List<Expr> syn;
     private APEG peg;
     
-    public RulePEG(SymInfo s,String ruleName,RulePEG.Annotation anno,List<Pair<Type,String>> inh,List<Pair<Type,Expr>> syn,APEG peg){
+    public RulePEG(SymInfo s,String ruleName,RulePEG.Annotation anno,List<Pair<Type,String>> inh,List<Expr> syn,APEG peg){
         super(s);
         this.syn = syn;
         this.inh = inh;
@@ -30,7 +30,7 @@ public class RulePEG extends ASTNode{
     public List<Pair<Type,String>> getInh(){
         return inh;
     }
-    public List<Pair<Type,Expr>> getSyn(){
+    public List<Expr> getSyn(){
         return syn;
     }
     public APEG getPeg(){

@@ -7,7 +7,7 @@ import apeg.ast.expr.Attribute;
 import apeg.ast.expr.Expr;
 import apeg.util.SymInfo;
 
-public class UpdatePeg extends APEG{
+public class UpdatePEG extends APEG{
 
     private List<Pair<Attribute,Expr>> assigs;
     

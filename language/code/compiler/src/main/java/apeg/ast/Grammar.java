@@ -6,7 +6,7 @@ import apeg.ast.rules.RulePEG;
 
 import apeg.visitor.Visitor;
 
-public class GrammarNode extends ASTNode {
+public class Grammar extends ASTNode {
 
 	private String name;
 	private List<GrammarOption> opts;

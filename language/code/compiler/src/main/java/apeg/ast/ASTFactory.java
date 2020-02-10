@@ -1,325 +1,1053 @@
-package apeg.parse.ast;
+package apeg.ast;
 
 import java.util.List;
 
-import apeg.parse.ast.BinaryExprNode.Operator;
+/*import apeg.parse.ast.BinaryExprNode.Operator;
 import apeg.parse.ast.EqualityExprNode.EqualityOperator;
 import apeg.parse.ast.GrammarNode.GrammarOption;
 import apeg.parse.ast.RuleNode.Annotation;
+import apeg.ast.expr.operators.*;
+ */
+import apeg.ast.expr.*;
+import apeg.ast.expr.operators.*;
+import apeg.ast.rules.*;
+import apeg.ast.types.*;
+import apeg.util.*;
+import apeg.ast.Grammar.GrammarOption;
 
 //import apeg.util.Pair;
 
 public interface ASTFactory {
+	
+	/*------------------------------------------------------
+	 * Expr
+	 * ------------------------------------------------------
+	 */
+	
 	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @param attrName
+	 * 			Attribute's name
+	 * @return a attribute expression node
+	 */
+	public Attribute newAttributeExpr(SymInfo s, String attrName);
+	
+
+	/*------------------------------------------------------
+	 * Expr: literals
+	 * ------------------------------------------------------
+	 */
+	
+
+	/**
+	 * @param s 
+	 * 			corresponding SymInfo node
+	 * @param value
+	 * 			boolean point expression value
+	 * 
+	 * @return a boolean expression node
+	 */
+	public BoolLit newBooleanExpr(SymInfo s, boolean value);
+	
+	/**
+	 * 
+	 * @param s 
+	 * 			corresponding node Syminfo
+	 * @param value
+	 * 			char point expression value
+	 * @return a char expression node
+	 */
+
+	public CharLit newCharExpr(SymInfo s, char value);
+
+	/**
+	 * @param s 
+	 * 			corresponding node SymInfo
+	 * @param value
+	 *            floating point expression value
+	 * 
+	 * @return a floating expression node
+	 */
+
+	public FloatLit newFloatExpr( SymInfo s, double value);
+
+	/**
+	 * @param s 
+	 * 			corresponding node SymInfo
+	 * @param value
+	 * 			int point expression value
+	 * 
+	 * @return a floating point node
+	 */
+	public IntLit newIntExpr(SymInfo s, int value);
+	
+	/**
+	 * 
+	 * @param s 
+	 * 			corresponding node SymInfo
+	 * @param assocs 
+	 * 			a hasmap of names to values
+	 * @return  a map node
+	 */
+	public MapLit newMapExpr(SymInfo s, Pair<Expr, Expr>[] assocs);
+	
+	/**
+	 * @param s 
+	 * 		corresponding node SymInfo
+	 * @param value
+	 *            String point expression value
+	 *            
+	 * @return a plus parsing expression node
+	 */
+
+	public StrLit newStringExpr(SymInfo s, String value);
+	
+	
+	/*------------------------------------------------------
+	 * Expr: operators
+	 * ------------------------------------------------------
+	 */
+	
+	/**
+	 * 
+	 * 
+	 * @param s
+	 * 			corresponding node SymInfo
+	 * @param left
+	 * 				the left-hand side expression
+	 * @param right
+	 * 				the right-hand side expression
+	 * 
+	 * @return a Add expression node
+	 */
+	public Add newAddExpr(SymInfo s, Expr left, Expr right);
+	
+	/**
+	 * @param s corresponding node SymInfo
 	 * @param left
 	 *            the left-hand side expression
 	 * @param right
 	 *            the right-hand side expression
-	 * @return an AND expression node
+	 *            
+	 * @return a AND expression node
 	 */
-	public AndExprNode newAndExpr(ExprNode left, ExprNode right);
+	public And newAndExpr(SymInfo s, Expr left, Expr right);
+	
+	/**
+	 * 
+	 * @param s
+	 * 				corresponding node SymInfo
+	 * @param left
+	 * 				the left-hand side expression
+	 * @param right
+	 * 				the right-hand side expression
+	 * 
+	 * @return a Compose expression node
+	 */
+	public Compose newComposeExpr(SymInfo s, Expr left, Expr right);
+	
+	/**
+	 * 
+	 * @param s
+	 * 				corresponding SymInfo node
+	 * @param left
+	 * 				the left-hand side expression
+	 * @param right
+	 * 				the right-hand side expression
+	 * 
+	 * @return a Concat expression node
+	 */
+	public Concat newConcatExpr(SymInfo s, Expr left, Expr right);
+	
+	/**
+	 * 
+	 * @param s
+	 * 				corresponding SymInfo node
+	 * @param left
+	 * 				the left-hand side expression
+	 * @param right
+	 * 				the right-hand side expression
+	 * 
+	 * @return a Div expression node
+	 */
+	public Div newDivExpr(SymInfo s, Expr left, Expr right);
+	
+	/**
+	 * 
+	 * @param s
+	 * 				corresponding SymInfo node
+	 * @param left
+	 * 				the left-hand side expression
+	 * @param right
+	 * 				the right-hand side expression
+	 * @return a Mult expression node
+	 */
+	public Mult newMultExpr(SymInfo s, Expr left, Expr right);
+	
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @param expr
+	 * 				
+	 * @return a not expression node
+	 */
+	public Not newNotExpr(SymInfo s, Expr expr);
+	
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @param expr
+	 * @return a not equals expression node
+	 */
+	public NotEq newNotEqExpr(SymInfo s, Expr expr);
+	
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @param left
+	 * 			the left-hand side expression
+	 * @param right
+	 * 			the right-hand side expression
+	 * @return a pointer to an equals object
+	 */
+	public Equals newEqualityExpr(SymInfo s, Expr left, Expr right);
 
 	/**
-	 * @param peg
-	 *            parsing expression
-	 * @return a and-predicate parsing expression node
+	 * @param s corresponding node SymInfo 
+	 * @param Expr left: the left subexpression 
+	 * @param Expr right: the right subexpression
+	 * 
+	 * @return  a pointer to an greater object
 	 */
-	public AndPegNode newAndPeg(PegNode peg);
+	public Greater newGreaterExpr(SymInfo s, Expr left, Expr right);
 
 	/**
+	 * @param s corresponding node SymInfo 
+	 * @param Expr left: the left subexpression 
+	 * @param Expr right: the right subexpression
+	 * 
+	 * @return  a pointer to an greater or equals object
+	 */
+	public GreaterEq newGreaterEqExpr(SymInfo s, Expr left, Expr right);
+
+	/**
+	 * @param s corresponding node SymInfo 
+	 * @param Expr left: the left subexpression 
+	 * @param Expr right: the right subexpression
+	 * 
+	 * @return  a pointer to an less object
+	 */
+	public Less newLessExpr(SymInfo s, Expr left, Expr right);
+
+	/**
+	 * @param s corresponding node SymInfo 
+	 * @param Expr left: the left subexpression 
+	 * @param Expr right: the right subexpression
+	 * 
+	 * @return  a pointer to an less or equals object
+	 */
+	public LessEq newLessEqExpr(SymInfo s, Expr left, Expr right);
+
+
+	/**
+	 * @param s corresponding node SymInfo
+	 * @param Expr left: the left subexpression
+	 * @param Expr right: the right subexpression
+	 * @return an integer type node
+	 */
+	public Sub newMinusExpr(SymInfo s, Expr left, Expr right);
+
+	/**
+	 * @param s corresponding node SymInfo
+	 *            
+	 * @param Expr left: the left subexpression
+	 * @param Expr right: the right subexpression
+	 * @return a nonterminal parsing expression node
+	 */
+	public Not newNotExpr(SymInfo s, Expr left, Expr right);
+
+	/**
+	 * @param s corresponding node SymInfo
+	 * @param Expr left: the left subexpression
+	 * @param Expr right: the right subexpression
+	 * @return a not-predicate parsing expression node
+	 */
+	public Or newOrExpr(SymInfo s, Expr left, Expr right);
+	
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @param e
+	 * @return
+	 */
+	public UMinus newUMinus(SymInfo s,Expr e);
+
+	/*------------------------------------------------------
+	 * Rules 
+	 * ------------------------------------------------------
+	 */
+	
+		/**
+		 * 
+		 * @param s
+		 * 			corresponding SymInfo node
+		 * @param peg
+		 * 			a parsing expression
+		 * @return a And peg node
+		 */
+	public AndPEG newAndPeg(SymInfo s, APEG peg);
+
+	/**
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * 
 	 * @return an any parsing expression node
 	 */
-	public AnyPegNode newAnyPeg();
-
+	public AnyPEG newAnyPeg(SymInfo s);
+	
 	/**
-	 * @param varName
-	 *            name of the left-hand side variable
-	 * @param expr
-	 *            right-hand side expression of the assignment
-	 * @return an assignment node
-	 */
-	public AssignmentNode newAssignment(AttributeExprNode varName, ExprNode expr);
-
-	/**
-	 * @param attrName
-	 *            attribute name
-	 * @return an attribute expression node
-	 */
-	public AttributeExprNode newAttributeExpr(String attrName);
-
-	/**
-	 * @return a grammar reference attribute expression node
-	 */
-	public AttributeExprNode newAttributeGrammarExpr();
-
-	/**
-	 * @param left
-	 *            left-hand side expression
-	 * @param right
-	 *            right-hand side expression
-	 * @param op
-	 *            operator type
-	 * @return a binary expression node
-	 */
-	public BinaryExprNode newBinaryExpr(ExprNode left, ExprNode right,
-			Operator op);
-
-	/**
-	 * @param attrName
-	 *            attribute expression
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @param attribute
+	 * 			 the bind attribute's name
 	 * @param peg
-	 *            parsing expression
-	 * @return a bind parsing expression node
+	 * 				parsing expression
+	 * @return a bind peg node
+	 * 			
 	 */
-	public BindPegNode newBindPeg(AttributeExprNode attrName, PegNode peg);
-
+	public BindPEG newBindPeg(SymInfo s, String attribute, APEG peg );
+	
 	/**
-	 * @param value
-	 *            boolean value
-	 * @return a boolean expression node
+	 * 
+	 * @param s
+	 * 				corresponding SymInfo node
+	 * @param i
+	 * 			character interval
+	 * @return
+	 * 			a choice list node
 	 */
-	public BooleanExprNode newBooleanExpr(boolean value);
-
+	public ChoiceList newChoiceList(SymInfo s, CharInterval i);
 	/**
-	 * @return a boolean type node
-	 */
-	public TypeNode newBooleanType();
-
-	/**
-	 * @param funcName
-	 *            function name
-	 * @param param
-	 *            set of parameter expressions
-	 * @return a call expression node
-	 */
-	public CallExprNode newCallExpr(String funcName, List<ExprNode> param);
-
-	/**
+	 * 
+	 * @param s
+	 * 				corresponding SymInfo node
 	 * @param left
-	 *            first parsing expression of the choice
+	 * 				the left parsing expression
 	 * @param right
-	 *            second parsing expression of the choice
-	 * @return a choice parsing expression node
+	 * 				the right parsing expression
+	 * @return
+	 * 			a choice peg node
 	 */
-	public ChoicePegNode newChoicePeg(PegNode left, PegNode right);
+	public ChoicePEG newChoicePeg(SymInfo s, APEG left, APEG right);
+	
 
 	/**
+	 * @param s
+	 * 			corresponding SymInfo node
 	 * @param expr
 	 *            a boolean expression node
 	 * @return a constraint parsing expression node
 	 */
-	public ConstraintPegNode newConstraintPeg(ExprNode expr);
-
+	public ConstraintPEG newConstraintPeg(SymInfo s, Expr expr);
+	
 	/**
-	 * 
-	 * @param left
-	 *            the left-hand side expression
-	 * @param right
-	 *            the right-hand side expression
-	 * @param op
-	 *            type of the equality operator. If it is equal or not equal
-	 * @return an Equal expression node
-	 */
-	public EqualityExprNode newEqualityExpr(ExprNode left, ExprNode right,
-			EqualityOperator op);
-
-	/**
-	 * @param value
-	 *            floating point expression value
-	 * @return a floating expression node
-	 */
-	public FloatExprNode newFloatExpr(double value);
-
-	/**
-	 * @return a floating point type node
-	 */
-	public TypeNode newFloatType();
-
-	/**
-	 * @param name
-	 *            grammar name
-	 * @param opts
-	 *            set of grammar options
-	 * @param preamble
-	 *            any code (unchecked) to be included at the generated parser
-	 * @param rules
-	 *            set of grammar rules
-	 * @param func
-	 *            set of external functions
-	 * @param func_source
-	 *            set of source file where contains the functions
-	 * @return a grammar node
-	 */
-	public GrammarNode newGrammar(String name, List<GrammarOption> opts,
-			String preamble, List<RuleNode> rules, List<String> func,
-			List<String> func_source);
-
-	/**
-	 * @return a grammar type node
-	 */
-	public TypeNode newGrammarType();
-
-	/**
-	 * @param ranges
-	 *            set of character ranges
-	 * @return a group parsing expression node
-	 */
-	// public GroupPegNode newGroupPeg(List<Pair<Character, Character>> ranges);
-	public GroupPegNode newGroupPeg(String ranges);
-
-	/**
-	 * @param value
-	 *            int expression value
-	 * @return an integer expression node
-	 */
-	public IntExprNode newIntExpr(int value);
-
-	/**
-	 * @return an integer type node
-	 */
-	public TypeNode newIntType();
-
-	/**
-	 * @return a lambda parsing expression node
-	 */
-	public LambdaPegNode newLambdaPeg();
-
-	/**
-	 * @param value
-	 *            literal expression value
-	 * @return a literal parsing expression node
-	 */
-	public LiteralPegNode newLiteralPeg(String value);
-
-	/**
-	 * @param expr
-	 *            rules expression
-	 * @return rules expression node (meta-programming)
-	 */
-	public MetaPegExprNode newMetaPeg(ExprNode expr);
-
-	/**
-	 * @param expr
-	 *            expression
-	 * @return a minus expression node
-	 */
-	public MinusExprNode newMinusExpr(ExprNode expr);
-
-	/**
-	 * @param name
-	 *            nonterminal name
-	 * @param attrs
-	 *            set of attributes (inherited and synthesized)
-	 * @return a nonterminal parsing expression node
-	 */
-	public NonterminalPegNode newNonterminalPeg(String name,
-			List<ExprNode> attrs);
-
-	/**
-	 * @param expr
-	 *            expression
-	 * @return a not-expression node
-	 */
-	public NotExprNode newNotExpr(ExprNode expr);
-
-	/**
-	 * @param peg
-	 *            parsing expression
-	 * @return a not-predicate parsing expression node
-	 */
-	public NotPegNode newNotPeg(PegNode peg);
-
-	/**
-	 * @param peg
-	 *            parsing expression
-	 * @return an optional parsing expression node
-	 */
-	public OptionalPegNode newOptionalPeg(PegNode peg);
-
-	/**
-	 * @param left
-	 *            left-hand side expression
-	 * @param right
-	 *            right-hand side expression
-	 * @return a boolean OR expression node
-	 */
-	public OrExprNode newOrExpr(ExprNode left, ExprNode right);
-
-	/**
-	 * @param peg
-	 *            parsing expression
-	 * @return a plus parsing expression node
-	 */
-	public PlusPegNode newPlusPeg(PegNode peg);
-
-	/**
-	 * @param name
-	 *            rule name
-	 * @param anno
-	 *            rule annotation
-	 * @param param
-	 *            set of inherited attributes
-	 * @param ret
-	 *            set of synthesized attributes
-	 * @param peg
-	 *            rule parsing expression
-	 * @return a rule node
-	 */
-	public RuleNode newRule(String name, Annotation anno,
-			List<VarDeclarationNode> param, List<VarDeclarationNode> ret,
-			PegNode peg);
-
-	/**
-	 * @return a rule type node
-	 */
-	public TypeNode newRuleType();
-
-	/**
-	 * @param pegs
-	 *            set of parsing expressions
-	 * @return a sequence parsing expression node
-	 */
-	public SequencePegNode newSequencePeg(List<PegNode> pegs);
-
-	/**
+	 * @param s
+	 * 				corresponding SymInfo node
 	 * @param peg
 	 *            parsing expression
 	 * @return a star parsing expression node
 	 */
-	public StarPegNode newStarPeg(PegNode peg);
-
+	public KleneePEG newStarPeg(SymInfo s, APEG peg);
+	
 	/**
+	 * @param s
+	 * 			corresponding SymInfo node
 	 * @param value
-	 *            string expression value
-	 * @return a string expression node
+	 *            literal expression value
+	 * @return a literal parsing expression node
 	 */
-	public StringExprNode newStringExpr(String value);
+	public LitPEG newLiteralPeg(SymInfo s, String value);
 
+	
 	/**
-	 * @return a string type
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @param name
+	 * 				nonterminal's name
+	 * @param attrs
+	 * 			attributes's list
+	 * @return a nonterminal peg node
 	 */
-	public TypeNode newStringType();
-
+	public NonterminalPEG newNonterminalPeg(SymInfo s, String name,
+			List<Expr> attrs);
+	
+	
 	/**
-	 * @param type
-	 *            type name
-	 * @return an user type node
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @param peg
+	 * 			a parsing expression
+	 * @return a not peg node
 	 */
-	public TypeNode newUserType(String type);
-
+	public NotPEG newNotPeg(SymInfo s, APEG peg);
+	
 	/**
-	 * @param assigs
-	 *            set of assignments
-	 * @return an update parsing expression node
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @param peg
+	 *            a parsing expression
+	 * @return an optional parsing expression node
 	 */
-	public UpdatePegNode newUpdatePeg(List<AssignmentNode> assigs);
+	public OptionalPEG newOptionalPeg(SymInfo s, APEG peg);
+	
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @param peg
+	 * 			a parsing expression
+	 * @return a positive Klenee peg node
+	 */
+	public PKlenee newPositiveKleneePeg(SymInfo s, APEG peg);
 
 	/**
 	 * @param name
-	 *            variable name
-	 * @param type
-	 *            variable type
-	 * @return a variable declaration node
+	 *            rule's name
+	 * @param anno
+	 *            rule's annotation
+	 * @param inh
+	 *            List of inherited attributes
+	 * @param syn
+	 *            List of synthesized attributes
+	 * @param peg
+	 *            rule parsing expression
+	 * @return a rule node
 	 */
-	public VarDeclarationNode newVarDeclaration(String name, TypeNode type);
+	public RulePEG newRule(SymInfo s, String name, RulePEG.Annotation anno,
+			List<Pair<Type,String>> inh,List<Pair<Type,Expr>> syn,APEG peg);
+	
+
+	/**
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @param pegs
+	 *            set of parsing expressions
+	 *            
+	 * @return a sequence parsing expression node
+	 */
+	public SeqPEG newSequencePeg(SymInfo s, List<APEG> pegs);
+
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @param assigs
+	 * 				
+	 * @return a update peg node
+	 */
+	public UpdatePEG newAssignment(SymInfo s,List<Pair<Attribute, Expr>>assigs);
+	
+
+	/*------------------------------------------------------
+	 * Types
+	 * ------------------------------------------------------
+	 */	
+
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @return  a Grammar type node
+	 */
+	public TyBool newBooleanType(SymInfo s);
+
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @return
+	 */
+	public TyFloat newFloatType(SymInfo s);
+
+	/**
+	 * @param s
+	 * 			corresponding SymInfo
+	 * @return a grammar type node
+	 */
+	public TyGrammar newGrammarType(SymInfo s);
+	
+	/**
+	 * @param s
+	 * 			corresponding SymInfo
+	 * @return a int type node
+	 */
+	public TyInt newIntType(SymInfo s);
+	
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @return a Lang type node
+	 */
+	public TyLang newLangType(SymInfo s);
+	
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @return a Map type node
+	 */
+	public TyMap newMapType(SymInfo s);
+	
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @return a Meta type node
+	 */
+	public TyMeta newMetaType(SymInfo s);
+
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @return a String type node
+	 */
+	public TyString newStringType(SymInfo s);
+	
+
+	/*------------------------------------------------------
+	 * Meta
+	 * ------------------------------------------------------
+	 */	
+	
+	
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @param ml
+	 * 			meta expression left
+	 * @param mr
+	 * 			meta expression right
+	 * @return meta add node
+	 */
+	public MetaAdd newMetaAdd(SymInfo s,MetaExpr ml,MetaExpr mr);
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @param ml
+	 * 			meta expression left
+	 * @param mr
+	 * 			meta expression right
+	 * @return meta and node
+	 */
+	public MetaAnd newMetaAnd(SymInfo s,MetaExpr ml,MetaExpr mr);
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @param ml
+	 * 			 meta expression left
+	 * @param mr
+	 * 			meta expression right
+	 * @return meta binary operator node
+	 */
+	public MetaBinaryOP newMetaBinaryOp(SymInfo s,MetaExpr ml,MetaExpr mr);
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node;
+	 * @param ml
+	 * 			meta expression left
+	 * @param mr
+	 * 			meta expression right
+	 * @return meta compose node
+	 */
+	public MetaCompose newMetaCompose(SymInfo s,MetaExpr ml,MetaExpr mr);
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @param ml
+	 * 			meta expression left
+	 * @param mr
+	 * 			meta expression right
+	 * @return meta concat node
+	 */
+	public MetaConcat newMetaConcat(SymInfo s,MetaExpr ml,MetaExpr mr);
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @param ml
+	 * 			meta expression left
+	 * @param mr
+	 * 			meta expression right
+	 * @return meta div node
+	 */
+	public MetaDiv newMetaDiv(SymInfo s,MetaExpr ml,MetaExpr mr);
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @param ml
+	 * 			meta expression left
+	 * @param mr
+	 * 			meta expression right
+	 * @return meta equals node
+	 */
+	public MetaEquals newMetaEquals(SymInfo s,MetaExpr ml,MetaExpr mr);
+	/**
+	 * 
+	 * @param s
+	 * corresponding SymInfo node
+	 * @param ml
+	 * 			meta expression left
+	 * @param mr
+	 * 			meta expression right
+	 * @return meta greater node
+	 */
+	public MetaGreater newMetaGreater(SymInfo s,MetaExpr ml,MetaExpr mr);
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @param ml
+	 * 			meta expression left
+	 * @param mr
+	 * 			meta expression right
+	 * @return meta greater-equals node
+	 */
+	public MetaGreaterEq newMetaGreaterEq(SymInfo s,MetaExpr ml,MetaExpr mr);
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @param ml
+	 * 			meta expression left
+	 * @param mr
+	 * 			meta expression right
+	 * @return meta less node
+	 */
+	public MetaLess newMetaLess(SymInfo s,MetaExpr ml,MetaExpr mr);
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @param ml
+	 * 			meta expression left
+	 * @param mr
+	 * 			meta expression right
+	 * @return meta less-equals node
+	 */
+	public MetaLessEq newMetaLessEq(SymInfo s,MetaExpr ml,MetaExpr mr);
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @param map
+	 * @param index
+	 * @return meta MapAcces node
+	 */
+	public MetaMapAcces newMetaMapAcces(SymInfo s,Expr map,Expr index);
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @param map
+	 * @param key
+	 * @param value
+	 * @return meta map extension node
+	 */
+	public MetaMapExtension newMetaMapExtension(SymInfo s,Expr map,Expr key,Expr value);
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @param ml
+	 * 			meta expression left
+	 * @param mr
+	 * 			meta expression right
+	 * @return
+	 */
+	public MetaMult newMetaMult(SymInfo s,MetaExpr ml,MetaExpr mr);
+	/**
+	 * 
+	 * @param s
+	 * 		corresponding SymInfo node
+	 * @param e
+	 * 			
+	 * @return meta not node
+	 */
+	public MetaNot newMetaNot(SymInfo s, Expr e);
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @param ml
+	 * 			meta expression left
+	 * @param mr
+	 * 			meta expression right
+	 * @return meta not-equals node
+	 */
+	public MetaNotEq newMetaNotEq(SymInfo s,MetaExpr ml,MetaExpr mr);
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @param ml
+	 * 			meta expression left
+	 * @param mr
+	 * 			meta expression right
+	 * @return meta or node
+	 */
+	public MetaOr newMetaOr(SymInfo s,MetaExpr ml,MetaExpr mr);
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @param ml
+	 * 			meta expression left
+	 * @param mr
+	 * 			meta expression right
+	 * @return meta Sub node
+	 */
+	public MetaSub newMetaSub(SymInfo s,MetaExpr ml,MetaExpr mr);
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @param e
+	 * @return meta unary minus node
+	 */
+	public MetaUMinus newMetaUMinus(SymInfo s, Expr e);
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @param e
+	 * 			a meta parsing expression
+	 * @return meta and peg node
+	 */
+	public MetaAndPEG newMetaAndPeg(SymInfo s,MetaAPEG e);
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @return meta any peg node
+	 */
+	public MetaAnyPEG newMetaAnyPeg(SymInfo s);
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @param name
+	 * 				attribute's name
+	 * @return meta attribute node
+	 */
+	public MetaAttribute newMetaAttribute(SymInfo s,String name);
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @param attribute
+	 * @param e
+	 * 			a meta expression
+	 * @return meta bind peg node
+	 */
+	public MetaBindPEG newMetaBindPEG(SymInfo s,String attribute,MetaExpr e);
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @param value
+	 * 				a boolean value
+	 * @return meta boolean literal node
+	 */
+	public MetaBoolLit newMetaBoolLit(SymInfo s,boolean value);
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @param value
+	 * 				 a char value
+	 * @return meta char literal node
+	 */
+	public MetaCharLit newMetaCharLit(SymInfo s,char value);
+	/** 
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @param i
+	 * 		a char interval
+	 * @return a meta choice list
+	 */
+	public MetaChoiceList newMetaChoiceList(SymInfo s,CharInterval i);
+	/** 
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @param leftPeg
+	 * 				left-hand side parsing expression
+	 * @param rightPeg
+	 * 				right-hand side parsing expression
+	 * @return meta choice peg node
+	 */
+	public MetaChoicePEG newMetaChoicePEG(SymInfo s,MetaAPEG leftPeg,MetaAPEG rightPeg);
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @param e
+	 * 			a meta expression
+	 * @return a meta constraint peg node
+	 */
+	public MetaConstraintPEG newMetaConstraintPeg(SymInfo s,MetaExpr e);
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @param value
+	 * 				a float value
+	 * @return meta float literal node
+	 */
+	public MetaFloatLit newMetaFloatLit(SymInfo s,float value);
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @param value
+	 * 			a int value
+	 * @return meta int literal node
+	 */
+	public MetaIntLit newMetaIntLit(SymInfo s,int value);
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @param e
+	 * 			a meta parsing expression
+	 * @return meta star klenee peg node
+	 */
+	public MetaKleneePEG newMetaKleneePeg(SymInfo s,MetaAPEG e);
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @param lit
+	 * 			
+	 * @return meta literal peg node
+	 */
+	public MetaLitPEG newMetaLitPeg(SymInfo s,String lit);
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @param assocs
+	 * @return a meta map literal node
+	 */
+	public MetaMapLit newMetaMapLit(SymInfo s,Pair<Expr,Expr>[] assocs);
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @param name
+	 * 			nonterminal's name
+	 * @param args
+	 * 			set of nonterminal's arguments
+	 * @return meta nonterminal peg node
+	 */
+	public MetaNonterminalPEG newMetaNonterminalPeg(SymInfo s,String name,List<MetaExpr> args);
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @param e
+	 * 			a meta expression
+	 * @return meta not node
+	 */
+	public MetaNot newMetaNot(SymInfo s,MetaExpr e);
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @param e
+	 * 			a meta parsing expression
+	 * @return meta not peg node
+	 */
+    public MetaNotPEG newMetaNotPeg(SymInfo s,MetaAPEG e);
+    /**
+     * 
+     * @param s
+     * 			corresponding SymInfo node
+     * @param e
+     * 			a meta parsing expression
+     * @return meta optional peg node
+     */
+    public MetaOptionalPEG newMetaOptionalPeg(SymInfo s,MetaAPEG e);
+    /**
+     * 
+     * @param s
+     * 			corresponding SymInfo node
+     * @param e
+     * 			a meta parsing expression
+     * @return a meta plus klenee node
+     */
+    public MetaPKlenee newMetaPKlenee(SymInfo s,MetaAPEG e);
+    /**
+     * 
+     * @param s
+     * 			corresponding SymInfo node
+     * @param ruleName
+     * 				the rule's name
+     * @param anno
+     * 			rule's annotation
+     * @param inh
+     * 			set of inherited attributes
+     * @param syn
+     * 			set of synthesized  attributes
+     * @param peg
+     * 			set of meta parsing expression
+     * @return
+     */
+    public MetaRulePEG newMetaRulePeg(SymInfo s,String ruleName,RulePEG.Annotation anno,List<Pair<MetaType,String>> inh,List<Pair<MetaType,MetaExpr>> syn,MetaAPEG peg);
+    /**
+     * 
+     * @param s
+     * 			corresponding SymInfo node
+     * @param p
+     * 			set of meta parsing expression
+     * @return meta sequence peg node
+     */
+	public MetaSeqPEG newMetaSeqPeg(SymInfo s,MetaAPEG[] p);
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo Node
+	 * @param value
+	 * 			a string value
+	 * @return meta string literal node
+	 */
+	public MetaStrLit newMetaStrLit(SymInfo s,String value);
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @return meta boolean node
+	 */
+	public MetaTyBool newMetaTyBool(SymInfo s);
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @return meta char node
+	 */
+	public MetaTyChar newMetaTyChar(SymInfo s);
+	/**
+	 * 
+	 * @param s
+	 * 				corresponding SymInfo node
+	 * @return meta float node
+	 */
+	public MetaTyFloat newMetaTyFloat(SymInfo s);
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @return meta grammar node
+	 */
+	public MetaTyGrammar newMetaTyGrammar(SymInfo s);
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @return meta int node
+	 */
+	public MetaTyInt newMetaTyInt(SymInfo s);
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @return meta lang node
+	 */
+	public MetaTyLang newMetaTyLang(SymInfo s);
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @param tyParameter
+	 * @return meta map node
+	 */
+	public MetaTyMap newMetaTyMap(SymInfo s,MetaType tyParameter);
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo 
+	 * @return meta meta node
+	 */
+	public MetaTyMeta newMetaTyMeta(SymInfo s);
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @return meta string node
+	 */
+	public MetaTyString newMetaTyString(SymInfo s);
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @param e 
+	 * 			meta expression
+	 * @return meta unary minus node
+	 */
+	public MetaUMinus newMetaUMinus(SymInfo s,MetaExpr e);
+	/** 
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @param assigs
+	 * 				set of assignments
+	 * @return meta update peg node
+	 */
+	public MetaUpdatePeg newMetaUpdatePeg(SymInfo s,List<Pair<MetaAttribute,MetaExpr>> assigs);
+	/**
+	 * 
+	 * @param s
+	 * 		 corresponding SymInfo node
+	 * @param name
+	 * 			meta var's name
+	 * @return meta var node
+	 */
+	public MetaVar newMetaVar(SymInfo s,String name);
+
+
+	/*------------------------------------------------------
+	 * Generic nodes
+	 * ------------------------------------------------------
+	 */	
+
+	/**
+	 * 
+	 * @param name
+	 * 				grammar name
+	 * @param opts
+	 * 				set of grammar options
+	 * @param rules
+	 * 				set of grammar's rules
+	 * @return a grammar node
+	 */
+	public Grammar newGrammar(String name, List<GrammarOption> opts, List<RulePEG> rules);
+
 }

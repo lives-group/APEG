@@ -16,13 +16,15 @@ import apeg.parse.APEGParser;
 import apeg.ast.ASTFactory;
 import apeg.ast.ASTFactoryImpl;
 import apeg.ast.Grammar;
-import apeg.visitor.ASTNodeVisitor;
-import apeg.visitor.BuildRuleEnvironmetVisitor;
-import apeg.visitor.DOTVisitor;
-import apeg.visitor.PrettyPrintVisitor;
-import apeg.visitor.VerifyVisitor;
-import apeg.visitor.StateFullCodeGen;
-import apeg.visitor.Environments.OperatorTables;
+
+//import apeg.visitor.ASTNodeVisitor;
+//import apeg.visitor.BuildRuleEnvironmetVisitor;
+//import apeg.visitor.DOTVisitor;
+//import apeg.visitor.PrettyPrintVisitor;
+//import apeg.visitor.VerifyVisitor;
+//import apeg.visitor.StateFullCodeGen;
+//import apeg.visitor.Environments.OperatorTables;
+
 import apeg.util.lang.LangInfo;
 import apeg.util.lang.java.JavaInfo;
 import apeg.util.path.AbsolutePath;
@@ -36,7 +38,9 @@ public class Tool {
 	 * */
 	private Path outputPath; // the output directory
 	private String namespace; // the package/namespace of the generated code
+	@TODO
 	private Path extdir; // path of the external functions
+	@TODO
 	private LangInfo targetLang; // informations about the target language and
 									// external functions
 	private Stack<String> warnings;

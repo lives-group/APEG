@@ -9,10 +9,10 @@ import apeg.visitor.Visitor;
 public class Grammar extends ASTNode {
 
 	private String name;
-	private List<GrammarOption> opts;
+	private GrammarOption opts;
 	private List<RulePEG> rules;
 	
-	public GrammarNode(String name, List<GrammarOption> opts, List<RulePEG> rules) {
+	public Grammar(String name, GrammarOption opts, List<RulePEG> rules) {
 		this.name = name;
 		this.opts = opts;
 		this.preamble = preamble;
@@ -23,7 +23,7 @@ public class Grammar extends ASTNode {
 		return name;
 	}
 
-	public List<GrammarOption> getOptions() {
+	public GrammarOption getOptions() {
 		return opts;
 	}
 	
@@ -35,13 +35,16 @@ public class Grammar extends ASTNode {
 		v.visit(this);
 	}
 
-	public enum GrammarOption {
-		ADAPTABLE, // if the grammar is adaptable
-		NO_ADAPTABLE, // if the grammar is not adaptable
-		MEMOIZE, // if it is to memoize intermediate results
-		NO_MEMOIZE, // if it is not to memoize intermediate results
-		USUAL_SEMANTICS, // if it is to use conventional APEG choice semantics
-		SIMPLE_ENV_SEMANTICS // if it is to use non conventional APEG semantics
+	public class GrammarOption {
+	    public boolean adaptable; // if the grammar is adaptable or not
+	    public boolean memoize; // if it is to memoize intermediate results or not
+	    public boolean usual_semantics; // if it is to use conventional APEG choice semantics or not
+
+	    public GrammarOption() {
+		adaptable = false;
+		memoize = false;
+		usual_semantics = true;
+	    }
 	}
 	
 }

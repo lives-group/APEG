@@ -4,7 +4,7 @@ grammar APEG;
 {
     package apeg.parse;
     
-    import apeg.parse.ast.*;
+    import apeg.ast.*;
     
     import java.util.List;
     import java.util.ArrayList;
@@ -29,40 +29,30 @@ grammar APEG;
  * The preamble of the grammar
  ***/
 
-grammarDef returns[apeg.parse.ast.GrammarNode gram]:
-  'apeg' ID ';' option header functions rules
-  {$gram = factory.newGrammar($ID.text, $option.list, $header.h,
+grammarDef returns[apeg.ast.Grammar gram]:
+  'apeg' ID ';' option header rules
+  /*{$gram = factory.newGrammar($ID.text, $option.list, $header.h,
   	                  $rules.list, $functions.func, $functions.func_sources);
-  }
+  }*/
 ;
 
 /***
  *  Option Section
  ***/
 
-option returns[List<apeg.parse.ast.GrammarNode.GrammarOption> list]:
-   {$list = new ArrayList<apeg.parse.ast.GrammarNode.GrammarOption>();}
-   'options' '{' (r=grammar_opt {$list.add($r.opt);} ';')* '}'
+option returns[apeg.ast.Grammar.GrammarOption opt]:
+   {$opt = new apeg.ast.Grammar.GrammarOption();}
+   'options' '{' (r=grammar_opt[$opt] {$opt = $r.result;} ';')* '}'
   |
-   {$list = new ArrayList<apeg.parse.ast.GrammarNode.GrammarOption>();}
+   {$opt = new apeg.ast.Grammar.GrammarOption();}
 ;
 
-grammar_opt returns[apeg.parse.ast.GrammarNode.GrammarOption opt]:
-  'isAdaptable' '=' 
-   ('true' {$opt = apeg.parse.ast.GrammarNode.GrammarOption.ADAPTABLE;}
-  | 'false' {$opt = apeg.parse.ast.GrammarNode.GrammarOption.NO_ADAPTABLE;}
-  )
+grammar_opt[apeg.ast.Grammar.GrammarNode opt] returns[apeg.ast.Grammar.GrammarNode result]:
+  'isAdaptable' {$opt.adaptable = true; $result = $opt;}
  |
-  'memoize' '='
-   ('true' {$opt = apeg.parse.ast.GrammarNode.GrammarOption.MEMOIZE;}
-  | 'false' {$opt = apeg.parse.ast.GrammarNode.GrammarOption.NO_MEMOIZE;}
-  )
+  'memoize' {$opt.memoize = true; $result = $opt;}
  |
-  'envSemantics' '='
-   ('simple' {$opt = apeg.parse.ast.GrammarNode.GrammarOption.SIMPLE_ENV_SEMANTICS;}
-  | 'discardChangesWhenFail'
-         {$opt = apeg.parse.ast.GrammarNode.GrammarOption.USUAL_SEMANTICS;}
-  )
+  'noUsualChoiceSemantics' {$opt.usual_semantics = false; $result = $opt;}
 ;
 
 /***
@@ -80,47 +70,33 @@ h_text:
   (.*?);
 
 /***
- * Functions Declaration
- ***/
- 
-functions returns[List<String> func, List<String> func_sources]:
-   {$func = new ArrayList<String>();}
-   {$func_sources = new ArrayList<String>();}
-   'functions' (f=ID {$func.add($f.text);})*
-   'from' '{' (s=ID {$func_sources.add($s.text);})+ '}' ';'
-  |
-   {$func = new ArrayList<String>();}
-   {$func_sources = new ArrayList<String>();}
-;
-
-/***
  * Grammar Rule Section
  ***/
 
-rules returns[List<apeg.parse.ast.RuleNode> list]:
-   {$list = new ArrayList<apeg.parse.ast.RuleNode>();}
-   (r=production {$list.add($r.rule);})+
+rules returns[List<apeg.ast.RulePEG> list]:
+   /*{$list = new ArrayList<apeg.ast.RulePEG>();}*/
+   (r=production /*{$list.add($r.rule);}*/)+
 ;
 
 // A definition of an APEG rule
-production returns[apeg.parse.ast.RuleNode rule]:
-   annotation ID optDecls optReturn optLocals ':' peg_expr ';'
-   {$rule = factory.newRule($ID.text, $annotation.anno, $optDecls.list,
+production returns[apeg.ast.RulePEG rule]:
+   annotation ID optDecls optReturn ':' peg_expr ';'
+   /*{$rule = factory.newRule($ID.text, $annotation.anno, $optDecls.list,
    	                        $optReturn.list, $peg_expr.peg);
-   }
+   }*/
   |
-   ID optDecls optReturn optLocals ':' peg_expr ';'
-   {$rule = factory.newRule($ID.text, apeg.parse.ast.RuleNode.Annotation.NONE,
+   ID optDecls optReturn ':' peg_expr ';'
+   /*{$rule = factory.newRule($ID.text, apeg.ast.RulePEG.Annotation.NONE,
    	                        $optDecls.list, $optReturn.list, $peg_expr.peg);
-   }
+   }*/
 ;
 
-annotation returns[apeg.parse.ast.RuleNode.Annotation anno]:
-   // to use together with the option memoize=false
-   '@memoize' {$anno = apeg.parse.ast.RuleNode.Annotation.MEMOIZE;}
+annotation returns[apeg.ast.RulePEG.Annotation anno]:
+   // to use together with the option memoize disabled
+   '@memoize' /*{$anno = apeg.ast.RulePEG.Annotation.MEMOIZE;}*/
   |
-   // to use together with the option memoize=true
-   '@transient' {$anno = apeg.parse.ast.RuleNode.Annotation.TRANSIENT;}
+   // to use together with the option memoize
+   '@transient' /*{$anno = apeg.parse.ast.RulePEG.Annotation.TRANSIENT;}*/
   ;
 
 /***
@@ -128,49 +104,52 @@ annotation returns[apeg.parse.ast.RuleNode.Annotation anno]:
  ***/
 
 // This rule defines the list of inherited attributes
-optDecls returns[List<VarDeclarationNode> list]:
-   decls {$list = $decls.list;}
+optDecls returns[List<Pair<apeg.ast.types.Type, String>> list]:
+   decls /*{$list = $decls.list;}*/
   |
-   {$list = new ArrayList<VarDeclarationNode>();}
+   /*{$list = new ArrayList<Pair<apeg.ast.types.Type, String>>();}*/
 ;
 
 // This rule defines the list of synthesized attributes
-optReturn returns[List<VarDeclarationNode> list]:
-   'returns' decls {$list = $decls.list;}
+optReturn returns[List<apeg.ast.expr.Expr> list]:
+   'returns' decls /*{$list = $decls.list;}*/
   |
-   {$list = new ArrayList<VarDeclarationNode>();}
-;
-
-optLocals returns[List<VarDeclarationNode> list]:
-   'locals' decls {$list = $decls.list;}
-  |
-   {$list = new ArrayList<VarDeclarationNode>();}
+   /*{$list = new ArrayList<apeg.ast.expr.Expr>();}*/
 ;
 
 // This rule defines the lists of all attributes
-decls returns[List<VarDeclarationNode> list]:
-  '[' {$list = new ArrayList<VarDeclarationNode>();} 
-  v1=varDecl {$list.add($v1.var);} (',' v2=varDecl {$list.add($v2.var);})* ']'
+decls returns[List<Pair<apeg.ast.types.Type, String>> list]:
+  '[' /*{$list = new ArrayList<Pair<apeg.ast.types.Type, String>>();} */
+  v1=varDecl /*{$list.add($v1.var);}*/ (',' v2=varDecl /*{$list.add($v2.var);}*/)* ']'
 ;
 
-varDecl returns[VarDeclarationNode var]:
-  type ID {$var = factory.newVarDeclaration($ID.text, $type.tp);}
+exprs returns[List<apeg.ast.expr.Expr> list] :
+  '[' /*{$list = new ArrayListExpr>();} */
+   e1=expr /*{$list.add($e1.expr);}*/ (',' e2=expr /*{$list.add($e2.expr);}*/)* ']'
 ;
 
-type returns[TypeNode tp]:
-  INT_TYPE {$tp = factory.newIntType();}
+varDecl returns[Pair<apeg.ast.types.Type, String> var]:
+  type ID /*{$var = factory.newVarDeclaration($ID.text, $type.tp);}*/
+;
+
+type returns[apeg.ast.types.Type tp]:
+  INT_TYPE /*{$tp = factory.newIntType();}*/
  |
-  FLOAT_TYPE {$tp = factory.newFloatType();}
+  FLOAT_TYPE /*{$tp = factory.newFloatType();}*/
  |
-  BOOLEAN_TYPE {$tp = factory.newBooleanType();}
+  BOOLEAN_TYPE /*{$tp = factory.newBooleanType();}*/
  |
-  STRING_TYPE {$tp = factory.newStringType();}
+  STRING_TYPE /*{$tp = factory.newStringType();}*/
  |
-  GRAMMAR_TYPE {$tp = factory.newGrammarType();}
+  CHAR_TYPE /*{$tp = factory.newStringType();}*/
  |
-  RULE_TYPE {$tp = factory.newRuleType();}
+  GRAMMAR_TYPE /*{$tp = factory.newGrammarType();}*/
  |
-  ID {$tp = factory.newUserType($ID.text);}
+  LANGUAGE_TYPE /*{$tp = factory.newRuleType();}*/
+ |
+  MAP_TYPE /*{$tp = factory.newUserType($ID.text);}*/
+ |
+  META_TYPE /*{$tp = factory.newUserType($ID.text);}*/
 ;
 
 /***
@@ -438,8 +417,11 @@ INT_TYPE: 'int';
 FLOAT_TYPE: 'float';
 BOOLEAN_TYPE: 'boolean';
 STRING_TYPE: 'string';
+CHAR_TYPE: 'char';
 GRAMMAR_TYPE: 'grammar';
-RULE_TYPE: 'rule';
+LANGUAGE_TYPE: 'language';
+MAP_TYPE: 'map';
+META_TYPE: 'meta';
 
 // Operators
 OP_AND : '&&';

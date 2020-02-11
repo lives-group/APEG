@@ -10,6 +10,9 @@ grammar APEG;
     import apeg.ast.rules.*;
     import apeg.ast.types.*;
     
+    import apeg.util.SymInfo;
+    import apeg.util.Pair;
+    
     import java.util.List;
     import java.util.ArrayList;
 }
@@ -34,10 +37,9 @@ grammar APEG;
  ***/
 
 grammarDef returns[Grammar gram]:
-  'apeg' ID ';' option /*header*/ rules
-  /*{$gram = factory.newGrammar($ID.text, $option.list, $header.h,
-  	                  $rules.list, $functions.func, $functions.func_sources);
-  }*/
+  t='apeg' ID ';' option /*header*/ rules
+  {$gram = factory.newGrammar(new SymInfo($t.line, $t.pos), $ID.text, $option.opt, $rules.list);
+  }
 ;
 
 /***
@@ -78,29 +80,29 @@ h_text:
  ***/
 
 rules returns[List<RulePEG> list]:
-   /*{$list = new ArrayList<RulePEG>();}*/
-   (r=production /*{$list.add($r.rule);}*/)+
+   {$list = new ArrayList<RulePEG>();}
+   (r=production {$list.add($r.rule);})+
 ;
 
 // A definition of an APEG rule
 production returns[RulePEG rule]:
    annotation ID optDecls optReturn ':' peg_expr ';'
-   /*{$rule = factory.newRule($ID.text, $annotation.anno, $optDecls.list,
+   {$rule = factory.newRule(new SymInfo($ID.line, $ID.pos) ,$ID.text, $annotation.anno, $optDecls.list,
    	                        $optReturn.list, $peg_expr.peg);
-   }*/
+   }
   |
    ID optDecls optReturn ':' peg_expr ';'
-   /*{$rule = factory.newRule($ID.text, RulePEG.Annotation.NONE,
+   {$rule = factory.newRule(new SymInfo($ID.line, $ID.pos), $ID.text, RulePEG.Annotation.NONE,
    	                        $optDecls.list, $optReturn.list, $peg_expr.peg);
-   }*/
+   }
 ;
 
 annotation returns[RulePEG.Annotation anno]:
    // to use together with the option memoize disabled
-   '@memoize' /*{$anno = RulePEG.Annotation.MEMOIZE;}*/
+   '@memoize' {$anno = RulePEG.Annotation.MEMOIZE;}
   |
    // to use together with the option memoize
-   '@transient' /*{$anno = RulePEG.Annotation.TRANSIENT;}*/
+   '@transient' {$anno = RulePEG.Annotation.TRANSIENT;}
   ;
 
 /***

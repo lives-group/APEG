@@ -10,7 +10,7 @@ public class BindPEG extends APEG{
     
     public BindPEG(SymInfo s,String attribute,APEG peg){
         super(s);
-        expr = peg;
+       this.peg =peg;
     }
     public APEG getExpr(){
         return peg;

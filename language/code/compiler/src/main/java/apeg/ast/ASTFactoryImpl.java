@@ -1,53 +1,62 @@
+package apeg.ast;
 
-public class ASTFactoryImpl extends ASTFactory{
+import apeg.ast.expr.*;
+import apeg.ast.expr.operators.*;
+import apeg.ast.rules.*;
+import apeg.ast.types.*;
+import apeg.util.*;
+import java.util.List;
+import apeg.ast.Grammar.GrammarOption;
 
-    public Add newAdd(SymInfo s,Expr l,Expr r){
+public class ASTFactoryImpl implements ASTFactory{
+
+    public Add newAddExpr(SymInfo s,Expr l,Expr r){
         return new Add(s,l,r);
     }
-    public Sub newSub(SymInfo s,Expr l,Expr r){
+    public Sub newMinusExpr(SymInfo s,Expr l,Expr r){
         return new Sub(s,l,r);
     }
-    public Mult newMult(SymInfo s,Expr l,Expr r){
+    public Mult newMultExpr(SymInfo s,Expr l,Expr r){
         return new Mult(s,l,r);
     }
-    public Div newDiv(SymInfo s,Expr l,Expr r){
+    public Div newDivExpr(SymInfo s,Expr l,Expr r){
         return new Div(s,l,r);
     }
-    public And newAnd(SymInfo s,Expr l,Expr r){
+    public And newAndExpr(SymInfo s,Expr l,Expr r){
         return new And(s,l,r);
     }
-    public Or newOr(SymInfo s,Expr l,Expr r){
+    public Or newOrExpr(SymInfo s,Expr l,Expr r){
         return new Or(s,l,r);
     }
-    public Less newLess(SymInfo s,Expr l,Expr r){
+    public Less newLessExpr(SymInfo s,Expr l,Expr r){
         return new Less(s,l,r);
     }
-    public Equals newEquals(SymInfo s,Expr l,Expr r){
+    public Equals newEqualityExpr(SymInfo s,Expr l,Expr r){
         return new Equals(s,l,r);
     }
-    public Greater newGreater(SymInfo s,Expr l,Expr r){
+    public Greater newGreaterExpr(SymInfo s,Expr l,Expr r){
         return new Greater(s,l,r);
     }
-    public LessEq newLessEq(SymInfo s,Expr l,Expr r){
+    public LessEq newLessEqExpr(SymInfo s,Expr l,Expr r){
         return new LessEq(s,l,r);
     }
-    public GreaterEq newGreaterEq(SymInfo s,Expr l,Expr r){
+    public GreaterEq newGreaterEqExpr(SymInfo s,Expr l,Expr r){
         return new GreaterEq(s,l,r);
     }
-    public NotEq newNotEq(SymInfo s,Expr l,Expr r){
-        return new NotEq(s,l,r);
+    public NotEq newNotEqExpr(SymInfo s,Expr l, Expr r){
+        return new NotEq(s,l, r);
     }
-    public Concat newConcat(SymInfo s,Expr l,Expr r){
+    public Concat newConcatExpr(SymInfo s,Expr l,Expr r){
         return new Concat(s,l,r);
     }
-    public Compose newCompose(SymInfo s,Expr l,Expr r){
+    public Compose newComposeExpr(SymInfo s,Expr l,Expr r){
         return new Compose(s,l,r);
     }
-    public MetaNot newMetaNot(SymInfo s,Expr l,Expr r,Expr e){
-        return new MetaNot(s,l,r,e);
+    public MetaNot newMetaNot(SymInfo s, MetaExpr e){
+        return new MetaNot(s, e);
     }
-    public MetaUMinus newMetaUMinus(SymInfo s,Expr l,Expr r,Expr e){
-        return new MetaUMinus(s,l,r,e);
+    public MetaUMinus newMetaUMinus(SymInfo s,MetaExpr e){
+        return new MetaUMinus(s, e);
     }
     public MapAcces newMapAcces(SymInfo s,Expr map,Expr index){
         return new MapAcces(s,map,index);
@@ -55,31 +64,31 @@ public class ASTFactoryImpl extends ASTFactory{
     public MapExtension newMapExtension(SymInfo s,Expr map,Expr key,Expr value){
         return new MapExtension(s,map,key,value);
     }
-    public Not newNot(SymInfo s,Expr e){
+    public Not newNotExpr(SymInfo s,Expr e){
         return new Not(s,e);
     }
     public UMinus newUMinus(SymInfo s,Expr e){
         return new UMinus(s,e);
     }
-    public Attribute newAttribute(SymInfo s,String name){
+    public Attribute newAttributeExpr(SymInfo s,String name){
         return new Attribute(s,name);
     }
-    public IntLit newIntLit(SymInfo s,int value){
+    public IntLit newIntExpr(SymInfo s,int value){
         return new IntLit(s,value);
     }
-    public FloatLit newFloatLit(SymInfo s,float value){
+    public FloatLit newFloatExpr(SymInfo s,float value){
         return new FloatLit(s,value);
     }
-    public CharLit newCharLit(SymInfo s,char value){
+    public CharLit newCharExpr(SymInfo s,char value){
         return new CharLit(s,value);
     }
-    public BoolLit newBoolLit(SymInfo s,boolean value){
+    public BoolLit newBooleanExpr(SymInfo s,boolean value){
         return new BoolLit(s,value);
     }
-    public StrLit newStrLit(SymInfo s,String value){
+    public StrLit newStringExpr(SymInfo s,String value){
         return new StrLit(s,value);
     }
-    public MapLit newMapLit(SymInfo s,Pair<Expr,Expr>[] assocs){
+    public MapLit newMapExpr(SymInfo s,Pair<Expr,Expr>[] assocs){
         return new MapLit(s,assocs);
     }
     public MetaAdd newMetaAdd(SymInfo s,MetaExpr ml,MetaExpr mr){
@@ -193,8 +202,8 @@ public class ASTFactoryImpl extends ASTFactory{
     public MetaRulePEG newMetaRulePEG(SymInfo s,String ruleName,RulePEG.Annotation anno,List<Pair<MetaType,String>> inh,List<Pair<MetaType,MetaExpr>> syn,MetaAPEG peg){
         return new MetaRulePEG(s,ruleName,anno,inh,syn,peg);
     }
-    public MetaUpdatePeg newMetaUpdatePeg(SymInfo s,List<Pair<MetaAttribute,MetaExpr>> assigs){
-        return new MetaUpdatePeg(s,assigs);
+    public MetaUpdatePEG newMetaUpdatePEG(SymInfo s,List<Pair<MetaAttribute,MetaExpr>> assigs){
+        return new MetaUpdatePEG(s,assigs);
     }
     public MetaBindPEG newMetaBindPEG(SymInfo s,String attribute,MetaExpr e){
         return new MetaBindPEG(s,attribute,e);
@@ -226,7 +235,7 @@ public class ASTFactoryImpl extends ASTFactory{
     public MetaTyMeta newMetaTyMeta(SymInfo s){
         return new MetaTyMeta(s);
     }
-    public RulePEG newRulePEG(SymInfo s,String ruleName,RulePEG.Annotation anno,List<Pair<Type,String>> inh,List<Pair<Type,Expr>> syn,APEG peg){
+    public RulePEG newRule(SymInfo s,String ruleName,RulePEG.Annotation anno,List<Pair<Type,String>> inh,List<Expr> syn,APEG peg){
         return new RulePEG(s,ruleName,anno,inh,syn,peg);
     }
     public AndPEG newAndPEG(SymInfo s,APEG e){
@@ -235,26 +244,26 @@ public class ASTFactoryImpl extends ASTFactory{
     public NotPEG newNotPEG(SymInfo s,APEG e){
         return new NotPEG(s,e);
     }
-    public KleneePEG newKleneePEG(SymInfo s,APEG e){
+    public KleneePEG newStarPEG(SymInfo s,APEG e){
         return new KleneePEG(s,e);
     }
     public OptionalPEG newOptionalPEG(SymInfo s,APEG e){
         return new OptionalPEG(s,e);
     }
-    public PKlenee newPKlenee(SymInfo s,APEG e){
+    public PKlenee newPositiveKleneePEG(SymInfo s,APEG e){
         return new PKlenee(s,e);
     }
     public ChoicePEG newChoicePEG(SymInfo s,APEG leftPeg,APEG rightPeg){
         return new ChoicePEG(s,leftPeg,rightPeg);
     }
-    public SeqPEG newSeqPEG(SymInfo s,APEG[] p){
+    public SeqPEG newSequencePEG(SymInfo s,APEG[] p){
         return new SeqPEG(s,p);
     }
-    public UpdatePeg newUpdatePeg(SymInfo s,List<Pair<Attribute,Expr>> assigs){
-        return new UpdatePeg(s,assigs);
+    public UpdatePEG newAssignment(SymInfo s,List<Pair<Attribute,Expr>> assigs){
+        return new UpdatePEG(s,assigs);
     }
-    public BindPEG newBindPEG(SymInfo s,String attribute,Expr e){
-        return new BindPEG(s,attribute,e);
+    public BindPEG newBindPEG(SymInfo s,String attribute,APEG peg){
+        return new BindPEG(s,attribute,peg);
     }
     public ChoiceList newChoiceList(SymInfo s,CharInterval i){
         return new ChoiceList(s,i);
@@ -262,7 +271,7 @@ public class ASTFactoryImpl extends ASTFactory{
     public AnyPEG newAnyPEG(SymInfo s){
         return new AnyPEG(s);
     }
-    public LitPEG newLitPEG(SymInfo s,String lit){
+    public LitPEG newLiteralPEG(SymInfo s,String lit){
         return new LitPEG(s,lit);
     }
     public ConstraintPEG newConstraintPEG(SymInfo s,Expr e){
@@ -271,32 +280,35 @@ public class ASTFactoryImpl extends ASTFactory{
     public NonterminalPEG newNonterminalPEG(SymInfo s,String name,List<Expr> args){
         return new NonterminalPEG(s,name,args);
     }
-    public TyMap newTyMap(SymInfo s,Type tyParameter){
+    public TyMap newMapType(SymInfo s,Type tyParameter){
         return new TyMap(s,tyParameter);
     }
-    public TyInt newTyInt(SymInfo s){
+    public TyInt newIntType(SymInfo s){
         return new TyInt(s);
     }
-    public TyFloat newTyFloat(SymInfo s){
+    public TyFloat newFloatType(SymInfo s){
         return new TyFloat(s);
     }
-    public TyBool newTyBool(SymInfo s){
+    public TyBool newBooleanType(SymInfo s){
         return new TyBool(s);
     }
-    public TyChar newTyChar(SymInfo s){
+    public TyChar newCharType(SymInfo s){
         return new TyChar(s);
     }
-    public TyString newTyString(SymInfo s){
+    public TyString newStringType(SymInfo s){
         return new TyString(s);
     }
-    public TyLang newTyLang(SymInfo s){
+    public TyLang newLangType(SymInfo s){
         return new TyLang(s);
     }
-    public TyGrammar newTyGrammar(SymInfo s){
+    public TyGrammar newGrammarType(SymInfo s){
         return new TyGrammar(s);
     }
-    public TyMeta newTyMeta(SymInfo s){
+    public TyMeta newMetaType(SymInfo s){
         return new TyMeta(s);
+    }
+    public Grammar newGrammar(SymInfo s, String name, GrammarOption opts, List<RulePEG> rules) {
+    	return new Grammar(s, name, opts, rules);
     }
 
 }

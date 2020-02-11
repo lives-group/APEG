@@ -2,6 +2,8 @@ package apeg.ast;
 
 import java.util.List;
 
+import apeg.util.*;
+
 import apeg.ast.rules.RulePEG;
 
 import apeg.visitor.Visitor;
@@ -12,10 +14,11 @@ public class Grammar extends ASTNode {
 	private GrammarOption opts;
 	private List<RulePEG> rules;
 	
-	public Grammar(String name, GrammarOption opts, List<RulePEG> rules) {
+	public Grammar(SymInfo s, String name, GrammarOption opts, List<RulePEG> rules) {
+		super (s);
 		this.name = name;
 		this.opts = opts;
-		this.preamble = preamble;
+	//	this.preamble = preamble;
 		this.rules = rules;
 	}
 	

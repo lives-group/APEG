@@ -71,7 +71,7 @@ public interface ASTFactory {
 	 * @return a floating expression node
 	 */
 
-	public FloatLit newFloatExpr( SymInfo s, double value);
+	public FloatLit newFloatExpr( SymInfo s, float value);
 
 	/**
 	 * @param s 
@@ -177,6 +177,30 @@ public interface ASTFactory {
 	/**
 	 * 
 	 * @param s
+	 * 			corresponding SymInfo node
+	 * @param map
+	 * 			a map expression
+	 * @param key
+	 * 			a key expression
+	 * @param value
+	 * 			a value expression
+	 * @return a Map Extension node
+	 */
+	public MapExtension newMapExtension(SymInfo s, Expr map, Expr key, Expr value);
+	
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @param map
+	 * @param index
+	 * @return a map acces node
+	 */
+	public MapAcces newMapAcces(SymInfo s,Expr map,Expr index);
+	
+	/**
+	 * 
+	 * @param s
 	 * 				corresponding SymInfo node
 	 * @param left
 	 * 				the left-hand side expression
@@ -203,7 +227,7 @@ public interface ASTFactory {
 	 * @param expr
 	 * @return a not equals expression node
 	 */
-	public NotEq newNotEqExpr(SymInfo s, Expr expr);
+	public NotEq newNotEqExpr(SymInfo s, Expr l, Expr r);
 	
 	/**
 	 * 
@@ -262,14 +286,7 @@ public interface ASTFactory {
 	 */
 	public Sub newMinusExpr(SymInfo s, Expr left, Expr right);
 
-	/**
-	 * @param s corresponding node SymInfo
-	 *            
-	 * @param Expr left: the left subexpression
-	 * @param Expr right: the right subexpression
-	 * @return a nonterminal parsing expression node
-	 */
-	public Not newNotExpr(SymInfo s, Expr left, Expr right);
+	
 
 	/**
 	 * @param s corresponding node SymInfo
@@ -301,7 +318,7 @@ public interface ASTFactory {
 		 * 			a parsing expression
 		 * @return a And peg node
 		 */
-	public AndPEG newAndPeg(SymInfo s, APEG peg);
+	public AndPEG newAndPEG(SymInfo s, APEG peg);
 
 	/**
 	 * @param s
@@ -309,7 +326,7 @@ public interface ASTFactory {
 	 * 
 	 * @return an any parsing expression node
 	 */
-	public AnyPEG newAnyPeg(SymInfo s);
+	public AnyPEG newAnyPEG(SymInfo s);
 	
 	/**
 	 * 
@@ -322,7 +339,7 @@ public interface ASTFactory {
 	 * @return a bind peg node
 	 * 			
 	 */
-	public BindPEG newBindPeg(SymInfo s, String attribute, APEG peg );
+	public BindPEG newBindPEG(SymInfo s, String attribute, APEG peg );
 	
 	/**
 	 * 
@@ -345,7 +362,7 @@ public interface ASTFactory {
 	 * @return
 	 * 			a choice peg node
 	 */
-	public ChoicePEG newChoicePeg(SymInfo s, APEG left, APEG right);
+	public ChoicePEG newChoicePEG(SymInfo s, APEG left, APEG right);
 	
 
 	/**
@@ -355,7 +372,7 @@ public interface ASTFactory {
 	 *            a boolean expression node
 	 * @return a constraint parsing expression node
 	 */
-	public ConstraintPEG newConstraintPeg(SymInfo s, Expr expr);
+	public ConstraintPEG newConstraintPEG(SymInfo s, Expr expr);
 	
 	/**
 	 * @param s
@@ -364,7 +381,7 @@ public interface ASTFactory {
 	 *            parsing expression
 	 * @return a star parsing expression node
 	 */
-	public KleneePEG newStarPeg(SymInfo s, APEG peg);
+	public KleneePEG newStarPEG(SymInfo s, APEG peg);
 	
 	/**
 	 * @param s
@@ -373,7 +390,7 @@ public interface ASTFactory {
 	 *            literal expression value
 	 * @return a literal parsing expression node
 	 */
-	public LitPEG newLiteralPeg(SymInfo s, String value);
+	public LitPEG newLiteralPEG(SymInfo s, String value);
 
 	
 	/**
@@ -386,7 +403,7 @@ public interface ASTFactory {
 	 * 			attributes's list
 	 * @return a nonterminal peg node
 	 */
-	public NonterminalPEG newNonterminalPeg(SymInfo s, String name,
+	public NonterminalPEG newNonterminalPEG(SymInfo s, String name,
 			List<Expr> attrs);
 	
 	
@@ -398,7 +415,7 @@ public interface ASTFactory {
 	 * 			a parsing expression
 	 * @return a not peg node
 	 */
-	public NotPEG newNotPeg(SymInfo s, APEG peg);
+	public NotPEG newNotPEG(SymInfo s, APEG peg);
 	
 	/**
 	 * @param s
@@ -407,7 +424,7 @@ public interface ASTFactory {
 	 *            a parsing expression
 	 * @return an optional parsing expression node
 	 */
-	public OptionalPEG newOptionalPeg(SymInfo s, APEG peg);
+	public OptionalPEG newOptionalPEG(SymInfo s, APEG peg);
 	
 	/**
 	 * 
@@ -417,7 +434,7 @@ public interface ASTFactory {
 	 * 			a parsing expression
 	 * @return a positive Klenee peg node
 	 */
-	public PKlenee newPositiveKleneePeg(SymInfo s, APEG peg);
+	public PKlenee newPositiveKleneePEG(SymInfo s, APEG peg);
 
 	/**
 	 * @param name
@@ -433,7 +450,7 @@ public interface ASTFactory {
 	 * @return a rule node
 	 */
 	public RulePEG newRule(SymInfo s, String name, RulePEG.Annotation anno,
-			List<Pair<Type,String>> inh,List<Pair<Type,Expr>> syn,APEG peg);
+			List<Pair<Type,String>> inh,List<Expr> syn,APEG peg);
 	
 
 	/**
@@ -444,7 +461,7 @@ public interface ASTFactory {
 	 *            
 	 * @return a sequence parsing expression node
 	 */
-	public SeqPEG newSequencePeg(SymInfo s, List<APEG> pegs);
+	public SeqPEG newSequencePEG(SymInfo s, APEG[] p);
 
 	/**
 	 * 
@@ -506,7 +523,7 @@ public interface ASTFactory {
 	 * 			corresponding SymInfo node
 	 * @return a Map type node
 	 */
-	public TyMap newMapType(SymInfo s);
+	public TyMap newMapType(SymInfo s, Type tyParameter);
 	
 	/**
 	 * 
@@ -553,17 +570,7 @@ public interface ASTFactory {
 	 * @return meta and node
 	 */
 	public MetaAnd newMetaAnd(SymInfo s,MetaExpr ml,MetaExpr mr);
-	/**
-	 * 
-	 * @param s
-	 * 			corresponding SymInfo node
-	 * @param ml
-	 * 			 meta expression left
-	 * @param mr
-	 * 			meta expression right
-	 * @return meta binary operator node
-	 */
-	public MetaBinaryOP newMetaBinaryOp(SymInfo s,MetaExpr ml,MetaExpr mr);
+	
 	/**
 	 * 
 	 * @param s
@@ -682,15 +689,7 @@ public interface ASTFactory {
 	 * @return
 	 */
 	public MetaMult newMetaMult(SymInfo s,MetaExpr ml,MetaExpr mr);
-	/**
-	 * 
-	 * @param s
-	 * 		corresponding SymInfo node
-	 * @param e
-	 * 			
-	 * @return meta not node
-	 */
-	public MetaNot newMetaNot(SymInfo s, Expr e);
+
 	/**
 	 * 
 	 * @param s
@@ -724,14 +723,7 @@ public interface ASTFactory {
 	 * @return meta Sub node
 	 */
 	public MetaSub newMetaSub(SymInfo s,MetaExpr ml,MetaExpr mr);
-	/**
-	 * 
-	 * @param s
-	 * 			corresponding SymInfo node
-	 * @param e
-	 * @return meta unary minus node
-	 */
-	public MetaUMinus newMetaUMinus(SymInfo s, Expr e);
+
 	/**
 	 * 
 	 * @param s
@@ -740,14 +732,14 @@ public interface ASTFactory {
 	 * 			a meta parsing expression
 	 * @return meta and peg node
 	 */
-	public MetaAndPEG newMetaAndPeg(SymInfo s,MetaAPEG e);
+	public MetaAndPEG newMetaAndPEG(SymInfo s,MetaAPEG e);
 	/**
 	 * 
 	 * @param s
 	 * 			corresponding SymInfo node
 	 * @return meta any peg node
 	 */
-	public MetaAnyPEG newMetaAnyPeg(SymInfo s);
+	public MetaAnyPEG newMetaAnyPEG(SymInfo s);
 	/**
 	 * 
 	 * @param s
@@ -798,13 +790,13 @@ public interface ASTFactory {
 	 * 
 	 * @param s
 	 * 			corresponding SymInfo node
-	 * @param leftPeg
+	 * @param leftPEG
 	 * 				left-hand side parsing expression
-	 * @param rightPeg
+	 * @param rightPEG
 	 * 				right-hand side parsing expression
 	 * @return meta choice peg node
 	 */
-	public MetaChoicePEG newMetaChoicePEG(SymInfo s,MetaAPEG leftPeg,MetaAPEG rightPeg);
+	public MetaChoicePEG newMetaChoicePEG(SymInfo s,MetaAPEG leftPEG,MetaAPEG rightPEG);
 	/**
 	 * 
 	 * @param s
@@ -813,7 +805,7 @@ public interface ASTFactory {
 	 * 			a meta expression
 	 * @return a meta constraint peg node
 	 */
-	public MetaConstraintPEG newMetaConstraintPeg(SymInfo s,MetaExpr e);
+	public MetaConstraintPEG newMetaConstraintPEG(SymInfo s,MetaExpr e);
 	/**
 	 * 
 	 * @param s
@@ -840,7 +832,7 @@ public interface ASTFactory {
 	 * 			a meta parsing expression
 	 * @return meta star klenee peg node
 	 */
-	public MetaKleneePEG newMetaKleneePeg(SymInfo s,MetaAPEG e);
+	public MetaKleneePEG newMetaKleneePEG(SymInfo s,MetaAPEG e);
 	/**
 	 * 
 	 * @param s
@@ -849,7 +841,7 @@ public interface ASTFactory {
 	 * 			
 	 * @return meta literal peg node
 	 */
-	public MetaLitPEG newMetaLitPeg(SymInfo s,String lit);
+	public MetaLitPEG newMetaLitPEG(SymInfo s,String lit);
 	/**
 	 * 
 	 * @param s
@@ -868,7 +860,7 @@ public interface ASTFactory {
 	 * 			set of nonterminal's arguments
 	 * @return meta nonterminal peg node
 	 */
-	public MetaNonterminalPEG newMetaNonterminalPeg(SymInfo s,String name,List<MetaExpr> args);
+	public MetaNonterminalPEG newMetaNonterminalPEG(SymInfo s,String name,List<MetaExpr> args);
 	/**
 	 * 
 	 * @param s
@@ -886,7 +878,7 @@ public interface ASTFactory {
 	 * 			a meta parsing expression
 	 * @return meta not peg node
 	 */
-    public MetaNotPEG newMetaNotPeg(SymInfo s,MetaAPEG e);
+    public MetaNotPEG newMetaNotPEG(SymInfo s,MetaAPEG e);
     /**
      * 
      * @param s
@@ -895,7 +887,7 @@ public interface ASTFactory {
      * 			a meta parsing expression
      * @return meta optional peg node
      */
-    public MetaOptionalPEG newMetaOptionalPeg(SymInfo s,MetaAPEG e);
+    public MetaOptionalPEG newMetaOptionalPEG(SymInfo s,MetaAPEG e);
     /**
      * 
      * @param s
@@ -921,7 +913,7 @@ public interface ASTFactory {
      * 			set of meta parsing expression
      * @return
      */
-    public MetaRulePEG newMetaRulePeg(SymInfo s,String ruleName,RulePEG.Annotation anno,List<Pair<MetaType,String>> inh,List<Pair<MetaType,MetaExpr>> syn,MetaAPEG peg);
+    public MetaRulePEG newMetaRulePEG(SymInfo s,String ruleName,RulePEG.Annotation anno,List<Pair<MetaType,String>> inh,List<Pair<MetaType,MetaExpr>> syn,MetaAPEG peg);
     /**
      * 
      * @param s
@@ -930,7 +922,7 @@ public interface ASTFactory {
      * 			set of meta parsing expression
      * @return meta sequence peg node
      */
-	public MetaSeqPEG newMetaSeqPeg(SymInfo s,MetaAPEG[] p);
+	public MetaSeqPEG newMetaSeqPEG(SymInfo s,MetaAPEG[] p);
 	/**
 	 * 
 	 * @param s
@@ -1021,7 +1013,7 @@ public interface ASTFactory {
 	 * 				set of assignments
 	 * @return meta update peg node
 	 */
-	public MetaUpdatePeg newMetaUpdatePeg(SymInfo s,List<Pair<MetaAttribute,MetaExpr>> assigs);
+	public MetaUpdatePEG newMetaUpdatePEG(SymInfo s,List<Pair<MetaAttribute,MetaExpr>> assigs);
 	/**
 	 * 
 	 * @param s
@@ -1048,6 +1040,6 @@ public interface ASTFactory {
 	 * 				set of grammar's rules
 	 * @return a grammar node
 	 */
-	public Grammar newGrammar(String name, List<GrammarOption> opts, List<RulePEG> rules);
+	public Grammar newGrammar(SymInfo s, String name, GrammarOption opts, List<RulePEG> rules);
 
 }

@@ -7,11 +7,11 @@ import apeg.ast.expr.Attribute;
 import apeg.ast.expr.Expr;
 import apeg.util.SymInfo;
 
-public class UpdatePEG extends APEG{
+public class UpdatePEG extends APEG {
 
     private List<Pair<Attribute,Expr>> assigs;
     
-    public UpdatePeg(SymInfo s,List<Pair<Attribute,Expr>> assigs){
+    public UpdatePEG(SymInfo s,List<Pair<Attribute,Expr>> assigs){
         super(s);
         this.assigs = assigs;
     }

@@ -50,7 +50,7 @@ public abstract class Visitor {
     public abstract void visit(MetaTyMap n);
     public abstract void visit(MetaTyMeta n);
     public abstract void visit(MetaTyString n);
-    public abstract void visit(MetaUpdatePeg n);
+    public abstract void visit(MetaUpdatePEG n);
     public abstract void visit(MetaVar n);
 
     // Operators
@@ -108,7 +108,7 @@ public abstract class Visitor {
     public abstract void visit(PKlenee n);
     public abstract void visit(RulePEG n);
     public abstract void visit(SeqPEG n);
-    public abstract void visit(UpdatePeg n);
+    public abstract void visit(UpdatePEG n);
         
     // Types
     public abstract void visit(TyBool n);

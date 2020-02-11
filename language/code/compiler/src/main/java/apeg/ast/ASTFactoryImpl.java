@@ -1,4 +1,4 @@
-package apeg.parse.ast;
+package apeg.ast;
 
 import java.util.List;
 

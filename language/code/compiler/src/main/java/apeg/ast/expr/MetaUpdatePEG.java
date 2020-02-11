@@ -4,14 +4,14 @@ import java.util.List;
 import java.util.LinkedList;
 import apeg.visitor.Visitor;
 import apeg.util.Pair;
-import apeg.ast.rules.UpdatePeg;
+import apeg.ast.rules.UpdatePEG;
 import apeg.util.SymInfo;
 
-public class MetaUpdatePeg extends MetaAPEG{
+public class MetaUpdatePEG extends MetaAPEG{
 
-    private UpdatePeg embeedNode;
+    private UpdatePEG embeedNode;
     
-    public MetaUpdatePeg(SymInfo s,List<Pair<MetaAttribute,MetaExpr>> assigs){
+    public MetaUpdatePEG(SymInfo s,List<Pair<MetaAttribute,MetaExpr>> assigs){
         super(s);
         List<Pair<Attribute,Expr>> assigs_T1 = new LinkedList<Pair<Attribute,Expr>>();
         for(Pair<MetaAttribute,MetaExpr> i:assigs){
@@ -19,7 +19,7 @@ public class MetaUpdatePeg extends MetaAPEG{
         }
         embeedNode = new UpdatePeg(s,assigs_T1);
     }
-    public UpdatePeg getEmbeedNode(){
+    public UpdatePEG getEmbeedNode(){
         return embeedNode;
     }
     public void accept(Visitor v){ v.visit(this); }

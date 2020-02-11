@@ -1,5 +1,5 @@
-package apeg.ast.expr;
-import apeg.ast.ASTNode;
+package apeg.ast;
+import apeg.ast.expr.Expr;
 import apeg.ast.rules.APEG;
 import apeg.visitor.Visitor;
 import apeg.util.SymInfo;

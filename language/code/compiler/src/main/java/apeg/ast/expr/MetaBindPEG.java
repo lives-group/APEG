@@ -8,9 +8,9 @@ public class MetaBindPEG extends MetaAPEG{
 
     private BindPEG embeedNode;
     
-    public MetaBindPEG(SymInfo s,String attribute,MetaExpr e){
+    public MetaBindPEG(SymInfo s,String attribute,MetaAPEG p){
         super(s);
-        embeedNode = new BindPEG(s,attribute,e.getEmbeedNode());
+        embeedNode = new BindPEG(s,attribute,p.getEmbeedNode());
     }
     public BindPEG getEmbeedNode(){
         return embeedNode;

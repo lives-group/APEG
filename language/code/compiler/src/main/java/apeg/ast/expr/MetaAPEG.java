@@ -1,4 +1,5 @@
 package apeg.ast.expr;
+import apeg.ast.MetaASTNode;
 import apeg.ast.rules.APEG;
 import apeg.visitor.Visitor;
 import apeg.util.SymInfo;

@@ -199,14 +199,14 @@ public class ASTFactoryImpl implements ASTFactory{
     public MetaSeqPEG newMetaSeqPEG(SymInfo s,MetaAPEG[] p){
         return new MetaSeqPEG(s,p);
     }
-    public MetaRulePEG newMetaRulePEG(SymInfo s,String ruleName,RulePEG.Annotation anno,List<Pair<MetaType,String>> inh,List<Pair<MetaType,MetaExpr>> syn,MetaAPEG peg){
+    public MetaRulePEG newMetaRulePEG(SymInfo s,String ruleName,RulePEG.Annotation anno,List<Pair<MetaType,String>> inh,List<MetaExpr> syn,MetaAPEG peg){
         return new MetaRulePEG(s,ruleName,anno,inh,syn,peg);
     }
     public MetaUpdatePEG newMetaUpdatePEG(SymInfo s,List<Pair<MetaAttribute,MetaExpr>> assigs){
         return new MetaUpdatePEG(s,assigs);
     }
-    public MetaBindPEG newMetaBindPEG(SymInfo s,String attribute,MetaExpr e){
-        return new MetaBindPEG(s,attribute,e);
+    public MetaBindPEG newMetaBindPEG(SymInfo s,String attribute,MetaAPEG p){
+        return new MetaBindPEG(s,attribute,p);
     }
     public MetaTyMap newMetaTyMap(SymInfo s,MetaType tyParameter){
         return new MetaTyMap(s,tyParameter);

@@ -758,7 +758,7 @@ public interface ASTFactory {
 	 * 			a meta expression
 	 * @return meta bind peg node
 	 */
-	public MetaBindPEG newMetaBindPEG(SymInfo s,String attribute,MetaExpr e);
+	public MetaBindPEG newMetaBindPEG(SymInfo s,String attribute,MetaAPEG p);
 	/**
 	 * 
 	 * @param s
@@ -913,7 +913,7 @@ public interface ASTFactory {
      * 			set of meta parsing expression
      * @return
      */
-    public MetaRulePEG newMetaRulePEG(SymInfo s,String ruleName,RulePEG.Annotation anno,List<Pair<MetaType,String>> inh,List<Pair<MetaType,MetaExpr>> syn,MetaAPEG peg);
+    public MetaRulePEG newMetaRulePEG(SymInfo s,String ruleName,RulePEG.Annotation anno,List<Pair<MetaType,String>> inh,List<MetaExpr> syn,MetaAPEG peg);
     /**
      * 
      * @param s

@@ -12,5 +12,8 @@ public class TyChar extends Type{
     public boolean match(Type t){
         return t instanceof TyChar;
     }
+    public void accept (Visitor v) {
+    	v.visit(this);
+    }
 
 }

@@ -12,5 +12,7 @@ public class TyInt extends Type{
     public boolean match(Type t){
         return t instanceof TyInt;
     }
-
+    public void accept (Visitor v) {
+    	v.visit(this);
+    }
 }

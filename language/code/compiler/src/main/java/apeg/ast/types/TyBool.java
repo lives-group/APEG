@@ -12,5 +12,9 @@ public class TyBool extends Type{
     public boolean match(Type t){
         return t instanceof TyBool;
     }
+    
+    public void accept (Visitor v) {
+    	v.visit(this);
+    }
 
 }

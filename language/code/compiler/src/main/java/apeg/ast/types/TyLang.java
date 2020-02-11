@@ -12,5 +12,8 @@ public class TyLang extends Type{
     public boolean match(Type t){
         return t instanceof TyLang;
     }
+    public void accept (Visitor v) {
+    	v.visit(this);
+    }
 
 }

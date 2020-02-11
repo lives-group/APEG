@@ -4,8 +4,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 import apeg.util.SymInfo;
-import apeg.ast.GrammarNode;
-import apeg.ast.GrammarNode.GrammarOption;
+import apeg.visitor.RuleCountVisitor;
 import apeg.ast.rules.*;
 
 
@@ -13,7 +12,7 @@ public class Grammar01AST {
 	
 	public static void main(String args[]){
 
-		List<GrammarOption>opts = new ArrayList<GrammarOption>();
+		
 		List<RulePEG>rules = new ArrayList<RulePEG>();
 		
 		//Regra a
@@ -59,8 +58,12 @@ public class Grammar01AST {
 		rules.add(b);
 	
 		
-		opts.add(GrammarOption.MEMOIZE);
-		GrammarNode gram = new GrammarNode("Annotation", opts, rules);
+		
+		Grammar gram = new Grammar(new SymInfo (0,0), "Annotation", null, rules);
+
+		RuleCountVisitor v = new RuleCountVisitor();
+		gram.accept(v);
+		v.report();
 	}
 
 }

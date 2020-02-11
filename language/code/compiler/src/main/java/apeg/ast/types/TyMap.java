@@ -19,5 +19,7 @@ public class TyMap extends Type{
     public Type getTyParameter(){
         return tyParameter;
     }
-
+    public void accept (Visitor v) {
+    	v.visit(this);
+    }
 }

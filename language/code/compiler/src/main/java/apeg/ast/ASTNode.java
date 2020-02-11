@@ -12,5 +12,6 @@ public abstract class ASTNode {
     public SymInfo getSymInfo(){
         return symInfo;
     }
+    public abstract void accept(Visitor v);
 
 }

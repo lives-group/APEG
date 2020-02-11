@@ -31,6 +31,8 @@ import apeg.util.path.AbsolutePath;
 import apeg.util.path.Path;
 import apeg.util.path.RelativePath;
 
+import apeg.visitor.*;
+
 public class Tool {
 
 	/**
@@ -158,6 +160,8 @@ public class Tool {
 								           "src/main/templates/imperativeParser.stg"));;
 		       g.accept(parservisitor);
 		       */	
+				
+				RuleCountVisitor v = new RuleCountVisitor();
 	
 			} catch (FileNotFoundException e) {
 				System.err.println("File " + s + " do not exist");

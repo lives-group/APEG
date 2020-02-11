@@ -12,5 +12,8 @@ public class TyString extends Type{
     public boolean match(Type t){
         return t instanceof TyString;
     }
+    public void accept (Visitor v) {
+    	v.visit(this);
+    }
 
 }

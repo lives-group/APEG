@@ -12,5 +12,8 @@ public class TyMeta extends Type{
     public boolean match(Type t){
         return t instanceof TyMeta;
     }
+    public void accept (Visitor v) {
+    	v.visit(this);
+    }
 
 }

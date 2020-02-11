@@ -38,9 +38,7 @@ public class Tool {
 	 * */
 	private Path outputPath; // the output directory
 	private String namespace; // the package/namespace of the generated code
-	@TODO
 	private Path extdir; // path of the external functions
-	@TODO
 	private LangInfo targetLang; // informations about the target language and
 									// external functions
 	private Stack<String> warnings;

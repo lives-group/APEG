@@ -34,7 +34,7 @@ grammar APEG;
  ***/
 
 grammarDef returns[Grammar gram]:
-  'apeg' ID ';' option header rules
+  'apeg' ID ';' option /*header*/ rules
   /*{$gram = factory.newGrammar($ID.text, $option.list, $header.h,
   	                  $rules.list, $functions.func, $functions.func_sources);
   }*/

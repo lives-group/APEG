@@ -5,6 +5,10 @@ grammar APEG;
     package apeg.parse;
     
     import apeg.ast.*;
+    import apeg.ast.expr.*;
+    import apeg.ast.expr.operators.*;
+    import apeg.ast.rules.*;
+    import apeg.ast.types.*;
     
     import java.util.List;
     import java.util.ArrayList;
@@ -29,7 +33,7 @@ grammar APEG;
  * The preamble of the grammar
  ***/
 
-grammarDef returns[apeg.ast.Grammar gram]:
+grammarDef returns[Grammar gram]:
   'apeg' ID ';' option header rules
   /*{$gram = factory.newGrammar($ID.text, $option.list, $header.h,
   	                  $rules.list, $functions.func, $functions.func_sources);
@@ -40,14 +44,14 @@ grammarDef returns[apeg.ast.Grammar gram]:
  *  Option Section
  ***/
 
-option returns[apeg.ast.Grammar.GrammarOption opt]:
-   {$opt = new apeg.ast.Grammar.GrammarOption();}
+option returns[Grammar.GrammarOption opt]:
+   {$opt = new Grammar.GrammarOption();}
    'options' '{' (r=grammar_opt[$opt] {$opt = $r.result;} ';')* '}'
   |
-   {$opt = new apeg.ast.Grammar.GrammarOption();}
+   {$opt = new Grammar.GrammarOption();}
 ;
 
-grammar_opt[apeg.ast.Grammar.GrammarNode opt] returns[apeg.ast.Grammar.GrammarNode result]:
+grammar_opt[Grammar.GrammarOption opt] returns[Grammar.GrammarOption result]:
   'isAdaptable' {$opt.adaptable = true; $result = $opt;}
  |
   'memoize' {$opt.memoize = true; $result = $opt;}
@@ -73,30 +77,30 @@ h_text:
  * Grammar Rule Section
  ***/
 
-rules returns[List<apeg.ast.RulePEG> list]:
-   /*{$list = new ArrayList<apeg.ast.RulePEG>();}*/
+rules returns[List<RulePEG> list]:
+   /*{$list = new ArrayList<RulePEG>();}*/
    (r=production /*{$list.add($r.rule);}*/)+
 ;
 
 // A definition of an APEG rule
-production returns[apeg.ast.RulePEG rule]:
+production returns[RulePEG rule]:
    annotation ID optDecls optReturn ':' peg_expr ';'
    /*{$rule = factory.newRule($ID.text, $annotation.anno, $optDecls.list,
    	                        $optReturn.list, $peg_expr.peg);
    }*/
   |
    ID optDecls optReturn ':' peg_expr ';'
-   /*{$rule = factory.newRule($ID.text, apeg.ast.RulePEG.Annotation.NONE,
+   /*{$rule = factory.newRule($ID.text, RulePEG.Annotation.NONE,
    	                        $optDecls.list, $optReturn.list, $peg_expr.peg);
    }*/
 ;
 
-annotation returns[apeg.ast.RulePEG.Annotation anno]:
+annotation returns[RulePEG.Annotation anno]:
    // to use together with the option memoize disabled
-   '@memoize' /*{$anno = apeg.ast.RulePEG.Annotation.MEMOIZE;}*/
+   '@memoize' /*{$anno = RulePEG.Annotation.MEMOIZE;}*/
   |
    // to use together with the option memoize
-   '@transient' /*{$anno = apeg.parse.ast.RulePEG.Annotation.TRANSIENT;}*/
+   '@transient' /*{$anno = RulePEG.Annotation.TRANSIENT;}*/
   ;
 
 /***
@@ -104,35 +108,35 @@ annotation returns[apeg.ast.RulePEG.Annotation anno]:
  ***/
 
 // This rule defines the list of inherited attributes
-optDecls returns[List<Pair<apeg.ast.types.Type, String>> list]:
+optDecls returns[List<Pair<Type, String>> list]:
    decls /*{$list = $decls.list;}*/
   |
-   /*{$list = new ArrayList<Pair<apeg.ast.types.Type, String>>();}*/
+   /*{$list = new ArrayList<Pair<Type, String>>();}*/
 ;
 
 // This rule defines the list of synthesized attributes
-optReturn returns[List<apeg.ast.expr.Expr> list]:
+optReturn returns[List<Expr> list]:
    'returns' decls /*{$list = $decls.list;}*/
   |
-   /*{$list = new ArrayList<apeg.ast.expr.Expr>();}*/
+   /*{$list = new ArrayList<Expr>();}*/
 ;
 
 // This rule defines the lists of all attributes
-decls returns[List<Pair<apeg.ast.types.Type, String>> list]:
-  '[' /*{$list = new ArrayList<Pair<apeg.ast.types.Type, String>>();} */
+decls returns[List<Pair<Type, String>> list]:
+  '[' /*{$list = new ArrayList<Pair<Type, String>>();} */
   v1=varDecl /*{$list.add($v1.var);}*/ (',' v2=varDecl /*{$list.add($v2.var);}*/)* ']'
 ;
 
-exprs returns[List<apeg.ast.expr.Expr> list] :
-  '[' /*{$list = new ArrayListExpr>();} */
+exprs returns[List<Expr> list] :
+  '[' /*{$list = new ArrayList<Expr>();} */
    e1=expr /*{$list.add($e1.expr);}*/ (',' e2=expr /*{$list.add($e2.expr);}*/)* ']'
 ;
 
-varDecl returns[Pair<apeg.ast.types.Type, String> var]:
+varDecl returns[Pair<Type, String> var]:
   type ID /*{$var = factory.newVarDeclaration($ID.text, $type.tp);}*/
 ;
 
-type returns[apeg.ast.types.Type tp]:
+type returns[Type tp]:
   INT_TYPE /*{$tp = factory.newIntType();}*/
  |
   FLOAT_TYPE /*{$tp = factory.newFloatType();}*/
@@ -160,28 +164,28 @@ type returns[apeg.ast.types.Type tp]:
 // This rule defines that the CHOICE operator has the lowest precedence 
 // The precedence of CHOICE operator is 1
 // CHOICE is an associative operator. We decided for right association because it may be faster to interpret
-peg_expr returns[PegNode peg]:
-  peg_seq '/' e=peg_expr {$peg = factory.newChoicePeg($peg_seq.peg, $e.peg);}
+peg_expr returns[APEG peg]:
+  peg_seq '/' e=peg_expr /*{$peg = factory.newChoicePeg($peg_seq.peg, $e.peg);}*/
  |
-  peg_seq {$peg = $peg_seq.peg;}
+  peg_seq /*{$peg = $peg_seq.peg;}*/
 ;
 
 // This rule defines a sequence operator: e1 e2 
 // The precedence of sequence operator is 2
-peg_seq returns[PegNode peg]: 
-   p1=peg_capturetext {List<PegNode> l = new ArrayList<PegNode>(); l.add($p1.peg);}
-   (p2=peg_capturetext {l.add($p2.peg);})+ {$peg = factory.newSequencePeg(l);}
+peg_seq returns[APEG peg]: 
+   p1=peg_capturetext /*{List<APEG> l = new ArrayList<APEG>(); l.add($p1.peg);}*/
+   (p2=peg_capturetext /*{l.add($p2.peg);}*/)+ /*{$peg = factory.newSequencePeg(l);}*/
   |
-   peg_capturetext {$peg = $peg_capturetext.peg;}
+   peg_capturetext /*{$peg = $peg_capturetext.peg;}*/
   |
-   {$peg = factory.newLambdaPeg();}// LAMBDA parsing expression
+   /*{$peg = factory.newLambdaPeg();}*/ // LAMBDA parsing expression
 ;
 
-peg_capturetext returns[PegNode peg]:
-   peg_unary_op {$peg = $peg_unary_op.peg;}
+peg_capturetext returns[APEG peg]:
+   peg_unary_op /*{$peg = $peg_unary_op.peg;}*/
   |
    attribute_ref '=' peg_unary_op
-    {$peg = factory.newBindPeg($attribute_ref.exp, $peg_unary_op.peg);}
+   /* {$peg = factory.newBindPeg($attribute_ref.exp, $peg_unary_op.peg);}*/
 ;
 
 
@@ -191,26 +195,26 @@ peg_capturetext returns[PegNode peg]:
 // e+ (One-or-more with precedence 4)
 // &e (And-predicate with precedence 3)
 // !e (Not-predicate with precedence 3)
-peg_unary_op returns[PegNode peg]:
-   peg_factor '?' {$peg = factory.newOptionalPeg($peg_factor.peg);}
+peg_unary_op returns[APEG peg]:
+   peg_factor '?' /*{$peg = factory.newOptionalPeg($peg_factor.peg);}*/
   | 
-   peg_factor '*' {$peg = factory.newStarPeg($peg_factor.peg);}
+   peg_factor '*' /*{$peg = factory.newStarPeg($peg_factor.peg);}*/
   | 
-   peg_factor '+' {$peg = factory.newPlusPeg($peg_factor.peg);}
+   peg_factor '+' /*{$peg = factory.newPlusPeg($peg_factor.peg);}*/
   |
-   peg_factor {$peg = $peg_factor.peg;}
+   peg_factor /*{$peg = $peg_factor.peg;}*/
   |
-   '&' peg_factor {$peg = factory.newAndPeg($peg_factor.peg);}
+   '&' peg_factor /*{$peg = factory.newAndPeg($peg_factor.peg);}*/
   |
-   '!' peg_factor {$peg = factory.newNotPeg($peg_factor.peg);}
+   '!' peg_factor /*{$peg = factory.newNotPeg($peg_factor.peg);}*/
   |
-   '{?' condExpr '}' {$peg = factory.newConstraintPeg($condExpr.exp);}
+   '{?' condExpr '}' /*{$peg = factory.newConstraintPeg($condExpr.exp);}*/
   |
    '{' st1=assign
-     {List<AssignmentNode> l = new ArrayList<AssignmentNode>();
+     /*{List<AssignmentNode> l = new ArrayList<AssignmentNode>();
       l.add($st1.stm);
-     } (st2=assign {l.add($st2.stm);})*
-   '}' {$peg = factory.newUpdatePeg(l);}
+     }*/ (st2=assign /*{l.add($st2.stm);}*/)*
+   '}' /*{$peg = factory.newUpdatePeg(l);}*/
 ;
 
 // This rule defines the other operators and basic expressions
@@ -221,26 +225,26 @@ peg_unary_op returns[PegNode peg]:
 // (e) (Grouping with precedence 5)
 // A<...> (non-terminal basic expression)
 // \lambda (empty basic expression)
-peg_factor returns[PegNode peg]:
+peg_factor returns[APEG peg]:
    STRING_LITERAL { 
      String s = $STRING_LITERAL.text;
      s = s.substring(1, s.length()-1);
-     $peg = factory.newLiteralPeg(s);
+     /*$peg = factory.newLiteralPeg(s);*/
    }
   |
    ntcall {$peg = $ntcall.peg;}
   |
-   '[' range_pair ']' {$peg = factory.newGroupPeg($range_pair.text);}
+   '[' range_pair ']' /*{$peg = factory.newGroupPeg($range_pair.text);}*/
   |
-   '.' {$peg = factory.newAnyPeg();}
+   '.' /*{$peg = factory.newAnyPeg();}*/
   |
    '(' peg_expr ')' {$peg = $peg_expr.peg;}
 ;
 
-ntcall returns[PegNode peg]:
-   ID '<' actPars '>' {$peg = factory.newNonterminalPeg($ID.text, $actPars.list);}
+ntcall returns[APEG peg]:
+   ID '<' actPars '>' /*{$peg = factory.newNonterminalPeg($ID.text, $actPars.list);}*/
   |
-   ID {$peg = factory.newNonterminalPeg($ID.text, new ArrayList<ExprNode>());}
+   ID /*{$peg = factory.newNonterminalPeg($ID.text, new ArrayList<ExprNode>());}*/
 ;
 
 range_pair:
@@ -265,147 +269,142 @@ single_pair: ID | INT_NUMBER | ESC;
  * Constraint and Update Expressions
  ***/
 
-assign returns[AssignmentNode stm]:
+assign returns[Pair<Attribute, Expr> stm]:
   attribute_ref '=' expr ';'
-     {$stm = factory.newAssignment($attribute_ref.exp, $expr.exp);}
+     /*{$stm = factory.newAssignment($attribute_ref.exp, $expr.exp);}*/
 ;
 
-expr returns[ExprNode exp]: condExpr {$exp = $condExpr.exp;};
+expr returns[Expr exp]: condExpr {$exp = $condExpr.exp;};
 
-condExpr returns[ExprNode exp]:
+condExpr returns[Expr exp]:
    or_cond {$exp = $or_cond.exp;}
  |
    e1=or_cond (equalityOp e2=or_cond
-   	 {$exp = factory.newEqualityExpr($e1.exp, $e2.exp, $equalityOp.op);}
+   	 /*{$exp = factory.newEqualityExpr($e1.exp, $e2.exp, $equalityOp.op);}*/
    )+
 ;
 
-or_cond returns[ExprNode exp]:
+or_cond returns[Expr exp]:
    and_cond {$exp = $and_cond.exp;}
   |
-   e1=and_cond (OP_OR e2=and_cond {$exp = factory.newOrExpr($e1.exp, $e2.exp);})+
+   e1=and_cond (OP_OR e2=and_cond /*{$exp = factory.newOrExpr($e1.exp, $e2.exp);}*/)+
 ;
 
-and_cond returns[ExprNode exp]:
+and_cond returns[Expr exp]:
   bool_expr {$exp = $bool_expr.exp;}    
  |
-  e1=bool_expr (OP_AND e2=bool_expr {$exp = factory.newAndExpr($e1.exp, $e2.exp);})+
+  e1=bool_expr (OP_AND e2=bool_expr /*{$exp = factory.newAndExpr($e1.exp, $e2.exp);}*/)+
 ;
 
-bool_expr returns[ExprNode exp]:  
+bool_expr returns[Expr exp]:  
    aexpr {$exp = $aexpr.exp;}
  |
   e1=aexpr relOp e2=aexpr
-   {$exp = factory.newBinaryExpr($e1.exp, $e2.exp, $relOp.op);}
+   /*{$exp = factory.newBinaryExpr($e1.exp, $e2.exp, $relOp.op);}*/
 ;
 
-aexpr returns[ExprNode exp]:
+aexpr returns[Expr exp]:
     termOptUnary {$exp = $termOptUnary.exp;}
   |
     termOptUnary (addOp term)+
-     {$exp = factory.newBinaryExpr($termOptUnary.exp, $term.exp, $addOp.op);}
+     /*{$exp = factory.newBinaryExpr($termOptUnary.exp, $term.exp, $addOp.op);}*/
 ;
 
-termOptUnary returns[ExprNode exp]:
-   OP_SUB term {$exp = factory.newMinusExpr($term.exp);}
+termOptUnary returns[Expr exp]:
+   OP_SUB term /*{$exp = factory.newMinusExpr($term.exp);}*/
   |
    term {$exp = $term.exp;}
 ;
  
-term returns[ExprNode exp]:
+term returns[Expr exp]:
    factor {$exp = $factor.exp;}
   |
    e1=factor (mulOp e2=factor)+
-    {$exp = factory.newBinaryExpr($e1.exp, $e2.exp, $mulOp.op);}
+    /*{$exp = factory.newBinaryExpr($e1.exp, $e2.exp, $mulOp.op);}*/
 ;
 
-factor returns[ExprNode exp]:
-   attrORfuncall {$exp = $attrORfuncall.exp;}
+factor returns[Expr exp]:
+   attribute_ref {$exp = $attribute_ref.exp;}
   |
-   number {$exp = $number.exp;}
+   number /*{$exp = $number.exp;}*/
   |
    STRING_LITERAL
     { 
       String s = $STRING_LITERAL.text;
       s = s.substring(1, s.length()-1);
-      $exp = factory.newStringExpr(s);
+      /*$exp = factory.newStringExpr(s);*/
     }
   |
    '(' expr ')' {$exp = $expr.exp;}
   |
-   '!' f=factor {$exp = factory.newNotExpr($f.exp);}
+   '!' f=factor /*{$exp = factory.newNotExpr($f.exp);}*/
   |
-   TRUE {$exp = factory.newBooleanExpr(true);}
+   TRUE /*{$exp = factory.newBooleanExpr(true);}*/
   |
-   FALSE {$exp = factory.newBooleanExpr(false);}
+   FALSE /*{$exp = factory.newBooleanExpr(false);}*/
   |
-   meta_peg {$exp = $meta_peg.exp;}
+   meta_peg /*{$exp = $meta_peg.exp;}*/
 ;
 
-attrORfuncall returns[ExprNode exp]:
-   ID '(' actPars ')' {$exp = factory.newCallExpr($ID.text, $actPars.list);}
-  |
-   attribute_ref {$exp = $attribute_ref.exp;}
-;
-
-attribute_ref returns[AttributeExprNode exp]:
-  ID {$exp = factory.newAttributeExpr($ID.text);}
+attribute_ref returns[Attribute exp]:
+  ID /*{$exp = factory.newAttributeExpr($ID.text);}*/
  |
-  '$g' {$exp = factory.newAttributeGrammarExpr();}
+  '$g' /*{$exp = factory.newAttributeGrammarExpr();}*/
 ;
 
-number returns[ExprNode exp]:
-   INT_NUMBER {$exp = factory.newIntExpr(Integer.parseInt($INT_NUMBER.text));}
+number returns[Expr exp]:
+   INT_NUMBER /*{$exp = factory.newIntExpr(Integer.parseInt($INT_NUMBER.text));}*/
   |
-   REAL_NUMBER {$exp = factory.newFloatExpr(Double.parseDouble($REAL_NUMBER.text));}
+   REAL_NUMBER /*{$exp = factory.newFloatExpr(Double.parseDouble($REAL_NUMBER.text));}*/
 ;
 
-actPars returns[List<ExprNode> list]:
-   {$list = new ArrayList<ExprNode>();} e1=aexpr {$list.add($e1.exp);}
-    (',' e2=aexpr {$list.add($e2.exp);})*
+actPars returns[List<Expr> list]:
+   /*{$list = new ArrayList<Expr>();}*/ e1=aexpr /*{$list.add($e1.exp);}*/
+    (',' e2=aexpr /*{$list.add($e2.exp);}*/)*
   |
-    {$list = new ArrayList<ExprNode>();}
+    /*{$list = new ArrayList<Expr>();}*/
 ; 
 
-equalityOp returns[EqualityExprNode.EqualityOperator op]:
-  OP_NE {$op = EqualityExprNode.EqualityOperator.NE;}
+equalityOp returns[int op]:
+  OP_NE /*{$op = EqualityExprNode.EqualityOperator.NE;}*/
  |
-  OP_EQ {$op = EqualityExprNode.EqualityOperator.EQ;};
-
-relOp returns[BinaryExprNode.Operator op]:
- 
-   OP_LT {$op = BinaryExprNode.Operator.LT;}
-  |
-   OP_GT {$op = BinaryExprNode.Operator.GT;}
-  |
-   OP_LE {$op = BinaryExprNode.Operator.LE;}
-  |
-   OP_GE {$op = BinaryExprNode.Operator.GE;}
+  OP_EQ /*{$op = EqualityExprNode.EqualityOperator.EQ;}*/
 ;
 
-addOp returns[BinaryExprNode.Operator op]:
+relOp returns[int op]:
+ 
+   OP_LT /*{$op = BinaryExprNode.Operator.LT;}*/
+  |
+   OP_GT /*{$op = BinaryExprNode.Operator.GT;}*/
+  |
+   OP_LE /*{$op = BinaryExprNode.Operator.LE;}*/
+  |
+   OP_GE /*{$op = BinaryExprNode.Operator.GE;}*/
+;
+
+addOp returns[boolean op]:
    
-   OP_SUB {$op = BinaryExprNode.Operator.SUB;}
+   OP_SUB /*{$op = BinaryExprNode.Operator.SUB;}*/
    |
-   OP_ADD {$op = BinaryExprNode.Operator.ADD;}
+   OP_ADD /*{$op = BinaryExprNode.Operator.ADD;}*/
  
 ;
 
-mulOp returns[BinaryExprNode.Operator op]:
-   OP_MUL {$op = BinaryExprNode.Operator.MUL;}
+mulOp returns[int op]:
+   OP_MUL /*{$op = BinaryExprNode.Operator.MUL;}*/
   |
-   OP_DIV {$op = BinaryExprNode.Operator.DIV;}
+   OP_DIV /*{$op = BinaryExprNode.Operator.DIV;}*/
   |
-   OP_MOD {$op = BinaryExprNode.Operator.MOD;}
+   OP_MOD /*{$op = BinaryExprNode.Operator.MOD;}*/
 ;
 
 /***
  * Rules for metaprogramming
  */
 
-meta_peg returns[MetaPegExprNode exp]:
+meta_peg returns[MetaASTNode exp]:
 '@[' expr ']'
-  {$exp = factory.newMetaPeg($expr.exp); }
+  /*{$exp = factory.newMetaPeg($expr.exp); }*/
 ;
 
 /***

@@ -1,257 +1,309 @@
-package apeg.parse.ast;
 
-import java.util.List;
+import apeg.ast.expr.*;
+import apeg.ast.expr.operators.*;
+import apeg.ast.rules.*;
+import apeg.ast.types.*;
+import apeg.util.*;
+import apeg.ast.*;
 
+public class ASTFactoryImpl implements ASTFactory{
 
-
-
-
-//import apeg.parse.ast.FunctionNode;
-import apeg.parse.ast.AndExprNode;
-import apeg.parse.ast.AndPegNode;
-import apeg.parse.ast.AnyPegNode;
-import apeg.parse.ast.AssignmentNode;
-import apeg.parse.ast.AttributeExprNode;
-import apeg.parse.ast.BinaryExprNode;
-import apeg.parse.ast.BinaryExprNode.Operator;
-import apeg.parse.ast.BindPegNode;
-import apeg.parse.ast.BooleanExprNode;
-import apeg.parse.ast.CallExprNode;
-import apeg.parse.ast.ChoicePegNode;
-import apeg.parse.ast.ConstraintPegNode;
-import apeg.parse.ast.EqualityExprNode;
-import apeg.parse.ast.EqualityExprNode.EqualityOperator;
-import apeg.parse.ast.FloatExprNode;
-import apeg.parse.ast.GrammarNode;
-import apeg.parse.ast.GrammarNode.GrammarOption;
-import apeg.parse.ast.GroupPegNode;
-import apeg.parse.ast.IntExprNode;
-import apeg.parse.ast.LambdaPegNode;
-import apeg.parse.ast.LiteralPegNode;
-import apeg.parse.ast.MetaPegExprNode;
-import apeg.parse.ast.MinusExprNode;
-import apeg.parse.ast.NonterminalPegNode;
-import apeg.parse.ast.NotExprNode;
-import apeg.parse.ast.NotPegNode;
-import apeg.parse.ast.OptionalPegNode;
-import apeg.parse.ast.OrExprNode;
-import apeg.parse.ast.PlusPegNode;
-import apeg.parse.ast.RuleNode;
-import apeg.parse.ast.RuleNode.Annotation;
-import apeg.parse.ast.SequencePegNode;
-import apeg.parse.ast.StarPegNode;
-import apeg.parse.ast.StringExprNode;
-import apeg.parse.ast.TypeNode;
-import apeg.parse.ast.UpdatePegNode;
-import apeg.parse.ast.VarDeclarationNode;
-
-public class ASTFactoryImpl implements ASTFactory {
-
-	@Override
-	public AndExprNode newAndExpr(ExprNode left, ExprNode right) {
-		return new AndExprNode(left, right);
-	}
-
-	@Override
-	public AndPegNode newAndPeg(PegNode peg) {
-		return new AndPegNode(peg);
-	}
-
-	@Override
-	public AnyPegNode newAnyPeg() {
-		return new AnyPegNode();
-	}
-
-	@Override
-	public AssignmentNode newAssignment(AttributeExprNode varName, ExprNode expr) {
-		return new AssignmentNode(varName, expr);
-	}
-
-	@Override
-	public AttributeExprNode newAttributeExpr(String attrName) {
-		return new AttributeExprNode(attrName);
-	}
-
-	@Override
-	public AttributeExprNode newAttributeGrammarExpr() {
-		return new AttributeGrammarExprNode();
-	}
-
-	@Override
-	public BinaryExprNode newBinaryExpr(ExprNode left, ExprNode right,
-			Operator op) {
-		return new BinaryExprNode(left, right, op);
-	}
-
-	@Override
-	public BindPegNode newBindPeg(AttributeExprNode attrName, PegNode peg) {
-		return new BindPegNode(attrName, peg);
-	}
-
-	@Override
-	public BooleanExprNode newBooleanExpr(boolean value) {
-		return new BooleanExprNode(value);
-	}
-
-	@Override
-	public TypeNode newBooleanType() {
-		return new BooleanTypeNode();
-	}
-
-	@Override
-	public CallExprNode newCallExpr(String funcName, List<ExprNode> param) {
-		return new CallExprNode(funcName, param);
-	}
-
-	@Override
-	public ChoicePegNode newChoicePeg(PegNode left, PegNode right) {
-		return new ChoicePegNode(left, right);
-	}
-
-	@Override
-	public ConstraintPegNode newConstraintPeg(ExprNode expr) {
-		return new ConstraintPegNode(expr);
-	}
-
-	@Override
-	public EqualityExprNode newEqualityExpr(ExprNode left, ExprNode right,
-			EqualityOperator op) {
-		return new EqualityExprNode(left, right, op);
-	}
-
-	@Override
-	public FloatExprNode newFloatExpr(double value) {
-		return new FloatExprNode(value);
-	}
-
-	@Override
-	public TypeNode newFloatType() {
-		return new FloatTypeNode();
-	}
-
-	@Override
-	public GrammarNode newGrammar(String name, List<GrammarOption> opts,
-			String preamble, List<RuleNode> rules, List<String> func,
-			List<String> fsource) {
-		return new GrammarNode(name, opts, preamble, rules, func, fsource);
-	}
-
-	@Override
-	public TypeNode newGrammarType() {
-		return new GrammarTypeNode();
-	}
-
-	@Override
-	public GroupPegNode newGroupPeg(String ranges) {
-		return new GroupPegNode(ranges);
-	}
-
-	@Override
-	public IntExprNode newIntExpr(int value) {
-		return new IntExprNode(value);
-	}
-
-	@Override
-	public TypeNode newIntType() {
-		return new IntTypeNode();
-	}
-
-	@Override
-	public LambdaPegNode newLambdaPeg() {
-		return new LambdaPegNode();
-	}
-
-	@Override
-	public LiteralPegNode newLiteralPeg(String value) {
-		return new LiteralPegNode(value);
-	}
-
-	@Override
-	public MetaPegExprNode newMetaPeg(ExprNode expr) {
-		return new MetaPegExprNode(expr);
-	}
-
-	@Override
-	public MinusExprNode newMinusExpr(ExprNode expr) {
-		return new MinusExprNode(expr);
-	}
-
-	@Override
-	public NonterminalPegNode newNonterminalPeg(String name,
-			List<ExprNode> attrs) {
-		return new NonterminalPegNode(name, attrs);
-	}
-
-	@Override
-	public NotExprNode newNotExpr(ExprNode expr) {
-		return new NotExprNode(expr);
-	}
-
-	@Override
-	public NotPegNode newNotPeg(PegNode peg) {
-		return new NotPegNode(peg);
-	}
-
-	@Override
-	public OptionalPegNode newOptionalPeg(PegNode peg) {
-		return new OptionalPegNode(peg);
-	}
-
-	@Override
-	public OrExprNode newOrExpr(ExprNode left, ExprNode right) {
-		return new OrExprNode(left, right);
-	}
-
-	@Override
-	public PlusPegNode newPlusPeg(PegNode peg) {
-		return new PlusPegNode(peg);
-	}
-
-	@Override
-	public RuleNode newRule(String name, Annotation anno,
-			List<VarDeclarationNode> param, List<VarDeclarationNode> ret,
-			PegNode peg) {
-		return new RuleNode(name, anno, param, ret, peg);
-	}
-
-	@Override
-	public TypeNode newRuleType() {
-		return new RuleTypeNode();
-	}
-
-	@Override
-	public SequencePegNode newSequencePeg(List<PegNode> pegs) {
-		return new SequencePegNode(pegs);
-	}
-
-	@Override
-	public StarPegNode newStarPeg(PegNode peg) {
-		return new StarPegNode(peg);
-	}
-
-	@Override
-	public StringExprNode newStringExpr(String value) {
-		return new StringExprNode(value);
-	}
-
-	@Override
-	public TypeNode newStringType() {
-		return new StringTypeNode();
-	}
-
-	@Override
-	public TypeNode newUserType(String type) {
-		return new UserTypeNode(type);
-	}
-
-	@Override
-	public UpdatePegNode newUpdatePeg(List<AssignmentNode> assigs) {
-		return new UpdatePegNode(assigs);
-	}
-
-	@Override
-	public VarDeclarationNode newVarDeclaration(String name, TypeNode type) {
-		return new VarDeclarationNode(name, type);
-	}
+    public Add newAdd(){
+        return new Add();
+    }
+    public Sub newSub(){
+        return new Sub();
+    }
+    public Mult newMult(){
+        return new Mult();
+    }
+    public Div newDiv(){
+        return new Div();
+    }
+    public And newAnd(){
+        return new And();
+    }
+    public Or newOr(){
+        return new Or();
+    }
+    public Less newLess(){
+        return new Less();
+    }
+    public Equals newEquals(){
+        return new Equals();
+    }
+    public Greater newGreater(){
+        return new Greater();
+    }
+    public LessEq newLessEq(){
+        return new LessEq();
+    }
+    public GreaterEq newGreaterEq(){
+        return new GreaterEq();
+    }
+    public NotEq newNotEq(){
+        return new NotEq();
+    }
+    public Concat newConcat(){
+        return new Concat();
+    }
+    public Compose newCompose(){
+        return new Compose();
+    }
+    public MetaNot newMetaNot(Expr e){
+        return new MetaNot(e);
+    }
+    public MetaUMinus newMetaUMinus(Expr e){
+        return new MetaUMinus(e);
+    }
+    public MapAcces newMapAcces(Expr map,Expr index){
+        return new MapAcces(map,index);
+    }
+    public MapExtension newMapExtension(Expr map,Expr key,Expr value){
+        return new MapExtension(map,key,value);
+    }
+    public Not newNot(Expr e){
+        return new Not(e);
+    }
+    public UMinus newUMinus(Expr e){
+        return new UMinus(e);
+    }
+    public Attribute newAttribute(String name){
+        return new Attribute(name);
+    }
+    public IntLit newIntLit(int value){
+        return new IntLit(value);
+    }
+    public FloatLit newFloatLit(float value){
+        return new FloatLit(value);
+    }
+    public CharLit newCharLit(char value){
+        return new CharLit(value);
+    }
+    public BoolLit newBoolLit(boolean value){
+        return new BoolLit(value);
+    }
+    public StrLit newStrLit(String value){
+        return new StrLit(value);
+    }
+    public MapLit newMapLit(Pair<Expr,Expr>[] assocs){
+        return new MapLit(assocs);
+    }
+    public MetaAdd newMetaAdd(){
+        return new MetaAdd();
+    }
+    public MetaSub newMetaSub(){
+        return new MetaSub();
+    }
+    public MetaMult newMetaMult(){
+        return new MetaMult();
+    }
+    public MetaDiv newMetaDiv(){
+        return new MetaDiv();
+    }
+    public MetaAnd newMetaAnd(){
+        return new MetaAnd();
+    }
+    public MetaOr newMetaOr(){
+        return new MetaOr();
+    }
+    public MetaLess newMetaLess(){
+        return new MetaLess();
+    }
+    public MetaEquals newMetaEquals(){
+        return new MetaEquals();
+    }
+    public MetaGreater newMetaGreater(){
+        return new MetaGreater();
+    }
+    public MetaLessEq newMetaLessEq(){
+        return new MetaLessEq();
+    }
+    public MetaGreaterEq newMetaGreaterEq(){
+        return new MetaGreaterEq();
+    }
+    public MetaNotEq newMetaNotEq(){
+        return new MetaNotEq();
+    }
+    public MetaConcat newMetaConcat(){
+        return new MetaConcat();
+    }
+    public MetaCompose newMetaCompose(){
+        return new MetaCompose();
+    }
+    public MetaMapAcces newMetaMapAcces(Expr map,Expr index){
+        return new MetaMapAcces(map,index);
+    }
+    public MetaMapExtension newMetaMapExtension(Expr map,Expr key,Expr value){
+        return new MetaMapExtension(map,key,value);
+    }
+    public MetaAttribute newMetaAttribute(String name){
+        return new MetaAttribute(name);
+    }
+    public MetaIntLit newMetaIntLit(int value){
+        return new MetaIntLit(value);
+    }
+    public MetaFloatLit newMetaFloatLit(float value){
+        return new MetaFloatLit(value);
+    }
+    public MetaCharLit newMetaCharLit(char value){
+        return new MetaCharLit(value);
+    }
+    public MetaBoolLit newMetaBoolLit(boolean value){
+        return new MetaBoolLit(value);
+    }
+    public MetaStrLit newMetaStrLit(String value){
+        return new MetaStrLit(value);
+    }
+    public MetaMapLit newMetaMapLit(Pair<Expr,Expr>[] assocs){
+        return new MetaMapLit(assocs);
+    }
+    public MetaVar newMetaVar(String name){
+        return new MetaVar(name);
+    }
+    public MetaAndPEG newMetaAndPEG(MetaAPEG e){
+        return new MetaAndPEG(e);
+    }
+    public MetaNotPEG newMetaNotPEG(MetaAPEG e){
+        return new MetaNotPEG(e);
+    }
+    public MetaKleneePEG newMetaKleneePEG(MetaAPEG e){
+        return new MetaKleneePEG(e);
+    }
+    public MetaOptionalPEG newMetaOptionalPEG(MetaAPEG e){
+        return new MetaOptionalPEG(e);
+    }
+    public MetaPKlenee newMetaPKlenee(MetaAPEG e){
+        return new MetaPKlenee(e);
+    }
+    public MetaAnyPEG newMetaAnyPEG(){
+        return new MetaAnyPEG();
+    }
+    public MetaLitPEG newMetaLitPEG(String lit){
+        return new MetaLitPEG(lit);
+    }
+    public MetaConstraintPEG newMetaConstraintPEG(MetaExpr e){
+        return new MetaConstraintPEG(e);
+    }
+    public MetaChoiceList newMetaChoiceList(CharInterval i){
+        return new MetaChoiceList(i);
+    }
+    public MetaNonterminalPEG newMetaNonterminalPEG(String name,List<MetaExpr> args){
+        return new MetaNonterminalPEG(name,args);
+    }
+    public MetaChoicePEG newMetaChoicePEG(MetaAPEG leftPeg,MetaAPEG rightPeg){
+        return new MetaChoicePEG(leftPeg,rightPeg);
+    }
+    public MetaSeqPEG newMetaSeqPEG(MetaAPEG[] p){
+        return new MetaSeqPEG(p);
+    }
+    public MetaRulePEG newMetaRulePEG(String ruleName,RulePEG.Annotation anno,List<Pair<MetaType,String>> inh,List<Pair<MetaType,MetaExpr>> syn,MetaAPEG peg){
+        return new MetaRulePEG(ruleName,anno,inh,syn,peg);
+    }
+    public MetaUpdatePeg newMetaUpdatePeg(List<Pair<MetaAttribute,MetaExpr>> assigs){
+        return new MetaUpdatePeg(assigs);
+    }
+    public MetaBindPEG newMetaBindPEG(String attribute,MetaExpr e){
+        return new MetaBindPEG(attribute,e);
+    }
+    public MetaTyMap newMetaTyMap(MetaType tyParameter){
+        return new MetaTyMap(tyParameter);
+    }
+    public MetaTyInt newMetaTyInt(){
+        return new MetaTyInt();
+    }
+    public MetaTyFloat newMetaTyFloat(){
+        return new MetaTyFloat();
+    }
+    public MetaTyBool newMetaTyBool(){
+        return new MetaTyBool();
+    }
+    public MetaTyChar newMetaTyChar(){
+        return new MetaTyChar();
+    }
+    public MetaTyString newMetaTyString(){
+        return new MetaTyString();
+    }
+    public MetaTyLang newMetaTyLang(){
+        return new MetaTyLang();
+    }
+    public MetaTyGrammar newMetaTyGrammar(){
+        return new MetaTyGrammar();
+    }
+    public MetaTyMeta newMetaTyMeta(){
+        return new MetaTyMeta();
+    }
+    public RulePEG newRulePEG(String ruleName,RulePEG.Annotation anno,List<Pair<Type,String>> inh,List<Pair<Type,Expr>> syn,APEG peg){
+        return new RulePEG(ruleName,anno,inh,syn,peg);
+    }
+    public AndPEG newAndPEG(APEG e){
+        return new AndPEG(e);
+    }
+    public NotPEG newNotPEG(APEG e){
+        return new NotPEG(e);
+    }
+    public KleneePEG newKleneePEG(APEG e){
+        return new KleneePEG(e);
+    }
+    public OptionalPEG newOptionalPEG(APEG e){
+        return new OptionalPEG(e);
+    }
+    public PKlenee newPKlenee(APEG e){
+        return new PKlenee(e);
+    }
+    public ChoicePEG newChoicePEG(APEG leftPeg,APEG rightPeg){
+        return new ChoicePEG(leftPeg,rightPeg);
+    }
+    public SeqPEG newSeqPEG(APEG[] p){
+        return new SeqPEG(p);
+    }
+    public UpdatePeg newUpdatePeg(List<Pair<Attribute,Expr>> assigs){
+        return new UpdatePeg(assigs);
+    }
+    public BindPEG newBindPEG(String attribute,Expr e){
+        return new BindPEG(attribute,e);
+    }
+    public ChoiceList newChoiceList(CharInterval i){
+        return new ChoiceList(i);
+    }
+    public AnyPEG newAnyPEG(){
+        return new AnyPEG();
+    }
+    public LitPEG newLitPEG(String lit){
+        return new LitPEG(lit);
+    }
+    public ConstraintPEG newConstraintPEG(Expr e){
+        return new ConstraintPEG(e);
+    }
+    public NonterminalPEG newNonterminalPEG(String name,List<Expr> args){
+        return new NonterminalPEG(name,args);
+    }
+    public TyMap newTyMap(Type tyParameter){
+        return new TyMap(tyParameter);
+    }
+    public TyInt newTyInt(){
+        return new TyInt();
+    }
+    public TyFloat newTyFloat(){
+        return new TyFloat();
+    }
+    public TyBool newTyBool(){
+        return new TyBool();
+    }
+    public TyChar newTyChar(){
+        return new TyChar();
+    }
+    public TyString newTyString(){
+        return new TyString();
+    }
+    public TyLang newTyLang(){
+        return new TyLang();
+    }
+    public TyGrammar newTyGrammar(){
+        return new TyGrammar();
+    }
+    public TyMeta newTyMeta(){
+        return new TyMeta();
+    }
 
 }

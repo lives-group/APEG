@@ -38,7 +38,7 @@ public class Grammar extends ASTNode {
 		v.visit(this);
 	}
 
-	public class GrammarOption {
+	public static class GrammarOption {
 	    public boolean adaptable; // if the grammar is adaptable or not
 	    public boolean memoize; // if it is to memoize intermediate results or not
 	    public boolean usual_semantics; // if it is to use conventional APEG choice semantics or not

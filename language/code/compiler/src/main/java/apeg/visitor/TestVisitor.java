@@ -1,67 +1,44 @@
 package apeg.visitor;
 
-import apeg.visitor.*;
 import apeg.ast.*;
 import apeg.ast.expr.*;
 import apeg.ast.expr.operators.*;
 import apeg.ast.rules.*;
 import apeg.ast.types.*;
-
+import apeg.util.*;
 import java.util.*;
 
-public class CounterVisitor extends Visitor{
-	
-	int expr[] = new int[7];
-	int operators[] = new int[18];
-	int rules[] = new int[15];
-	int types[] = new int[9];
-	
-	public CounterVisitor() {
-		
-		
-		for(int i =0; i<7; i++) {
-			expr[i] = 0;
-		}
-		for(int i =0; i<18; i++) {
-			operators[i] = 0;
-		}
-		for(int i = 0; i<15; i++) {
-			rules[1] = 0;
-		}
-		for(int i = 0; i< 9; i++) {
-			types[i] = 0;
-		}
-		
-	}
+
+public class TestVisitor extends Visitor{
 
 	@Override
 	public void visit(Attribute n) {
 		// TODO Auto-generated method stub
-		
+		System.out.println(n.getName());
 	}
 
 	@Override
 	public void visit(BoolLit n) {
 		// TODO Auto-generated method stub
-		
+		System.out.println(n.getValue());
 	}
 
 	@Override
 	public void visit(CharLit n) {
 		// TODO Auto-generated method stub
-		
+		System.out.println(n.getValue());
 	}
 
 	@Override
 	public void visit(FloatLit n) {
 		// TODO Auto-generated method stub
-		
+		System.out.println(n.getValue());
 	}
 
 	@Override
 	public void visit(IntLit n) {
 		// TODO Auto-generated method stub
-		
+		System.out.println(n.getValue());
 	}
 
 	@Override
@@ -73,7 +50,7 @@ public class CounterVisitor extends Visitor{
 	@Override
 	public void visit(StrLit n) {
 		// TODO Auto-generated method stub
-		
+		System.out.println(n.getValue());
 	}
 
 	@Override
@@ -271,61 +248,81 @@ public class CounterVisitor extends Visitor{
 	@Override
 	public void visit(Add n) {
 		// TODO Auto-generated method stub
-		
+		System.out.println("Operator Add");
+		n.getLeft().accept(this);
+		n.getRight().accept(this);
 	}
 
 	@Override
 	public void visit(And n) {
 		// TODO Auto-generated method stub
-		
+		System.out.println("Operator: And");
+		n.getLeft().accept(this);
+		n.getRight().accept(this);
 	}
 
 	@Override
 	public void visit(Compose n) {
 		// TODO Auto-generated method stub
-		
+		System.out.println("Operator: Compose");
+		n.getLeft().accept(this);
+		n.getRight().accept(this);
 	}
 
 	@Override
 	public void visit(Concat n) {
 		// TODO Auto-generated method stub
-		
+		System.out.println("Operator: Concat");
+		n.getLeft().accept(this);
+		n.getRight().accept(this);
 	}
 
 	@Override
 	public void visit(Div n) {
 		// TODO Auto-generated method stub
-		
+		System.out.println("Operator Div");
+		n.getLeft().accept(this);
+		n.getRight().accept(this);
 	}
 
 	@Override
 	public void visit(Equals n) {
 		// TODO Auto-generated method stub
-		
+		System.out.println("Operator: Equals");
+		n.getLeft().accept(this);
+		n.getRight().accept(this);
 	}
 
 	@Override
 	public void visit(Greater n) {
 		// TODO Auto-generated method stub
-		
+		System.out.println("Operator: Greater");
+		n.getLeft().accept(this);
+		n.getRight().accept(this);
 	}
 
 	@Override
 	public void visit(GreaterEq n) {
 		// TODO Auto-generated method stub
-		
+		System.out.println("Operator: Greater Equals");
+		n.getLeft().accept(this);
+		n.getRight().accept(this);
 	}
 
 	@Override
 	public void visit(Less n) {
 		// TODO Auto-generated method stub
-		
+		System.out.println("Operator: Less");
+		n.getLeft().accept(this);
+		n.getRight().accept(this);
 	}
 
 	@Override
 	public void visit(LessEq n) {
 		// TODO Auto-generated method stub
-		
+		System.out.println("Operator: Less Equals");
+		n.getLeft().accept(this);
+		n.getRight().accept(this);
 	}
 
 	@Override
@@ -343,37 +340,47 @@ public class CounterVisitor extends Visitor{
 	@Override
 	public void visit(Mult n) {
 		// TODO Auto-generated method stub
-		
+		System.out.println("Operator: Mult");
+		n.getLeft().accept(this);
+		n.getRight().accept(this);
 	}
 
 	@Override
 	public void visit(Not n) {
 		// TODO Auto-generated method stub
-		
+		System.out.println("Operator: Not");
+		n.getExpr().accept(this);
 	}
 
 	@Override
 	public void visit(NotEq n) {
 		// TODO Auto-generated method stub
-		
+		System.out.println("Operator: Not Equals");
+		n.getLeft().accept(this);
+		n.getRight().accept(this);
 	}
 
 	@Override
 	public void visit(Or n) {
 		// TODO Auto-generated method stub
-		
+		System.out.println("Operator: Or");
+		n.getLeft().accept(this);
+		n.getRight().accept(this);
 	}
 
 	@Override
 	public void visit(Sub n) {
 		// TODO Auto-generated method stub
-		
+		System.out.println("Operator: Sub");
+		n.getLeft().accept(this);
+		n.getRight().accept(this);
 	}
 
 	@Override
 	public void visit(UMinus n) {
 		// TODO Auto-generated method stub
-		
+		System.out.println("Operator: Unary Minus");
+		n.getExpr().accept(this);
 	}
 
 	@Override
@@ -487,151 +494,191 @@ public class CounterVisitor extends Visitor{
 	@Override
 	public void visit(AndPEG n) {
 		// TODO Auto-generated method stub
-		
+		System.out.println("And peg");
+		n.getPegExp().accept(this);
 	}
 
 	@Override
 	public void visit(AnyPEG n) {
 		// TODO Auto-generated method stub
+		System.out.println("Any peg");
 		
 	}
 
 	@Override
 	public void visit(BindPEG n) {
 		// TODO Auto-generated method stub
+		System.out.println("Bind peg");
+		System.out.println("Attribute: " + n.getAttribute());
+		n.getExpr().accept(this);
 		
 	}
 
 	@Override
 	public void visit(ChoiceList n) {
 		// TODO Auto-generated method stub
-		
+		System.out.println("Choice List");
+		System.out.println("Intervals: " + n.getInterval().getEnd() + "  " + n.getInterval().getStart());
 	}
 
 	@Override
 	public void visit(ChoicePEG n) {
 		// TODO Auto-generated method stub
-		
+		System.out.println("Choice peg");
+		n.getLeftPeg().accept(this);
+		n.getRightPeg().accept(this);
 	}
 
 	@Override
 	public void visit(ConstraintPEG n) {
 		// TODO Auto-generated method stub
-		
+		System.out.println("Constraint peg");
+		n.getExpr().accept(this);
 	}
 
 	@Override
 	public void visit(KleneePEG n) {
 		// TODO Auto-generated method stub
-		
+		System.out.println("Star Klenee peg");
+		n.getPegExp().accept(this);
 	}
 
 	@Override
 	public void visit(LitPEG n) {
 		// TODO Auto-generated method stub
-		
+		System.out.println("Literal peg: " + n.getLit());
 	}
 
 	@Override
 	public void visit(NonterminalPEG n) {
 		// TODO Auto-generated method stub
-		
+		System.out.println("Nonterminal peg: " + n.getName());
+		for(Expr e: n.getArgs()) {
+			e.accept(this);
+		}
 	}
 
 	@Override
 	public void visit(NotPEG n) {
 		// TODO Auto-generated method stub
-		
+		System.out.println("Not peg");
+		n.getPegExp().accept(this);
 	}
 
 	@Override
 	public void visit(OptionalPEG n) {
 		// TODO Auto-generated method stub
-		
+		System.out.println("Optional Peg");
+		n.getPegExp().accept(this);
 	}
 
 	@Override
 	public void visit(PKlenee n) {
 		// TODO Auto-generated method stub
-		
+		System.out.println("Plus Klenee peg");
+		n.getPegExp().accept(this);
 	}
 
 	@Override
 	public void visit(RulePEG n) {
 		// TODO Auto-generated method stub
 		
-		System.out.println("Rule : " + n.getRuleName());
-		System.out.println("Number of syn attributes: " + n.getSyn().size());
-		System.out.println("Number of inh attributes: " + n.getInh().size());
+		System.out.println("Rule: " + n.getRuleName());
 		
+		switch(n.getAnno()) {
+		case MEMOIZE:
+			System.out.println("Annotation: MEMOIZE");
+			break;
+		case NONE:
+			System.out.println("None annotation");
+			break;
+		case TRANSIENT:
+			System.out.println("Annotation: TRANSIENT");
+			break;
+		default:
+			break;
+		}
 		
+		for(Expr e: n.getSyn()) {
+			e.accept(this);
+		}
 		
+		n.getPeg().accept(this);
+		
+				
 	}
 
 	@Override
 	public void visit(SeqPEG n) {
 		// TODO Auto-generated method stub
-		
+		System.out.println("Sequence Peg");
+		for(APEG p: n.getPegs()) {
+			p.accept(this);
+		}
 	}
 
 	@Override
 	public void visit(UpdatePEG n) {
 		// TODO Auto-generated method stub
-		
+		System.out.println("Update Peg");
+		for(Pair<Attribute, Expr>assigs: n.getAssigs()) {
+			assigs.getFirst().accept(this);
+			assigs.getSecond().accept(this);
+		}
 	}
 
 	@Override
 	public void visit(TyBool n) {
 		// TODO Auto-generated method stub
-		
+		System.out.println("Boolean Type");
 	}
 
 	@Override
 	public void visit(TyChar n) {
 		// TODO Auto-generated method stub
-		
+		System.out.println("Char Type");
 	}
 
 	@Override
 	public void visit(TyFloat n) {
 		// TODO Auto-generated method stub
-		
+		System.out.println("Float Type");
 	}
 
 	@Override
 	public void visit(TyGrammar n) {
 		// TODO Auto-generated method stub
-		
+		System.out.println("Grammar Type");
 	}
 
 	@Override
 	public void visit(TyInt n) {
 		// TODO Auto-generated method stub
-		
+		System.out.println("Int Type");
 	}
 
 	@Override
 	public void visit(TyLang n) {
 		// TODO Auto-generated method stub
-		
+		System.out.println("Lang Type");
 	}
 
 	@Override
 	public void visit(TyMap n) {
 		// TODO Auto-generated method stub
-		
+		System.out.println("Map Type");
 	}
 
 	@Override
 	public void visit(TyMeta n) {
 		// TODO Auto-generated method stub
-		
+		System.out.println("Meta Type");
 	}
 
 	@Override
 	public void visit(TyString n) {
 		// TODO Auto-generated method stub
-		
+		System.out.println("String Type");
 	}
 
 	@Override
@@ -641,11 +688,8 @@ public class CounterVisitor extends Visitor{
 		System.out.println("Grammar " + n.getName());
 		System.out.println("Options: " + n.getOptions());
 		
-		for(RulePEG r:n.getRules()) {
-			
+		for(RulePEG r: n.getRules()) 
 			r.accept(this);
-		}
-		
 		
 		
 	}

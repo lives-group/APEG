@@ -1,6 +1,5 @@
 package apeg.ast.rules;
 import apeg.visitor.Visitor;
-import apeg.ast.expr.Expr;
 import apeg.util.SymInfo;
 
 public class BindPEG extends APEG{

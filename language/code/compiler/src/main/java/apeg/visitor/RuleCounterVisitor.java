@@ -709,15 +709,13 @@ public class RuleCounterVisitor extends Visitor {
 	public void visit(Grammar n) {
 		// TODO Auto-generated method stub
 		
-		for(RulePEG r:n.getRules()) {
-			
-			r.accept(this);
-		}
+		System.out.println(n.getRules().size());
 		
 	}
 	
 	public void report () {
 		System.out.println("Número de regras:" + counter);
+		
 	}
 	
 	

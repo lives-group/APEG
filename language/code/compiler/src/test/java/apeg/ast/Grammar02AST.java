@@ -4,16 +4,16 @@ import java.util.List;
 import java.util.ArrayList;
 
 import apeg.util.SymInfo;
-import apeg.ast.GrammarNode;
-import apeg.ast.GrammarNode.GrammarOption;
 import apeg.ast.rules.*;
+import apeg.ast.Grammar;
+import apeg.ast.Grammar.GrammarOption;
 
 
 public class Grammar02AST {
 	
 	public static void main(String args[]){
 
-		List<GrammarOption>opts = new ArrayList<GrammarOption>();
+		
 		List<RulePEG>rules = new ArrayList<RulePEG>();
 		
 		//Regra a
@@ -59,8 +59,7 @@ public class Grammar02AST {
 		rules.add(b);
 	
 		
-		opts.add(GrammarOption.NO_MEMOIZE);
-		GrammarNode gram = new GrammarNode("Annotation", opts, rules);
+		Grammar gram = new Grammar(new SymInfo(0,0), "Annotation", null, rules);
 	}
 
 }

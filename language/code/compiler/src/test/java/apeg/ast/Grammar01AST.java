@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 import apeg.util.SymInfo;
-import apeg.visitor.RuleCountVisitor;
+import apeg.visitor.CounterVisitor;
 import apeg.ast.rules.*;
 
 
@@ -61,9 +61,9 @@ public class Grammar01AST {
 		
 		Grammar gram = new Grammar(new SymInfo (0,0), "Annotation", null, rules);
 
-		RuleCountVisitor v = new RuleCountVisitor();
+		CounterVisitor v = new CounterVisitor();
 		gram.accept(v);
-		v.report();
+		
 	}
 
 }

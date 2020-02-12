@@ -14,7 +14,7 @@ public class Grammar05AST {
 		
 		List<RulePEG>rules = new ArrayList<RulePEG>();
 		List<Pair<Type, String>>inh = new ArrayList<Pair<Type, String>>();
-		List<Pair<Type, Expr>>syn = new ArrayList<Pair<Type, Expr>>();
+		List<Expr>syn = new ArrayList<Expr>();
 		List<Pair<Attribute, Expr>>assigs = new ArrayList<Pair<Attribute, Expr>>();
 	
 		
@@ -24,11 +24,11 @@ public class Grammar05AST {
 		
 		inh.add(new Pair<Type, String>(new TyInt(new SymInfo(5, 11)), "x"));
 		inh.add(new Pair<Type, String>(new TyInt(new SymInfo(5, 14)), "y"));
-		syn.add(new Pair<Type, Expr>(new TyInt(new SymInfo(5, 30)), new MetaVar(new SymInfo(5, 34), "z")));
+		syn.add(new Attribute(new SymInfo(5, 34), "z"));
 		
 //		assigs.add(new Pair<Attribute, Expr>(new Attribute(new SymInfo(6, 5), "z")));   add(x, y)
 		
-		pegs[0] = new UpdatePeg(new SymInfo(6, 5), assigs);
+		pegs[0] = new UpdatePEG(new SymInfo(6, 5), assigs);
 		List<Expr>arg = new ArrayList<Expr>();
 		Expr l0, r0;
 		l0 = new Attribute(new SymInfo(7, 9), "z");
@@ -44,7 +44,7 @@ public class Grammar05AST {
 		//Regra strN
 		inh = new ArrayList<Pair<Type, String>>();
 		inh.add(new Pair<Type, String>(new TyInt(new SymInfo(10,6)), "n"));
-		syn = new ArrayList<Pair<Type, Expr>>();
+		syn = new ArrayList<Expr>();
 		
 		APEG pegs0[] = new APEG[4];
 		APEG pegs1[] = new APEG[4];
@@ -62,7 +62,7 @@ public class Grammar05AST {
 		le = new Attribute(new SymInfo(10, 39), "n");
 		ri = new IntLit(new SymInfo(10, 43), 1);
 		assigs.add(new Pair<Attribute, Expr>(new Attribute(new SymInfo(10, 35), "n"), new Sub(new SymInfo(10, 41), le, ri)));
-		pegs1[2] = new UpdatePeg(new SymInfo(10, 33), assigs);
+		pegs1[2] = new UpdatePEG(new SymInfo(10, 33), assigs);
 		
 		p = new SeqPEG(new SymInfo(10,17), pegs1);
 		pegs0[0] = new PKlenee(new SymInfo(10,49), p);
@@ -80,7 +80,7 @@ public class Grammar05AST {
 		
 		//regra CHAR
 		inh = new ArrayList<Pair<Type, String>>();
-		syn = new ArrayList<Pair<Type, Expr>>();
+		syn = new ArrayList<Expr>();
 		
 		peg = new AnyPEG(new SymInfo(12,8));
 		
@@ -88,6 +88,6 @@ public class Grammar05AST {
 		rules.add(CHAR);
 		
 		
-		GrammarNode gram = new GrammarNode("testfunction", null, rules );
+		Grammar gram = new Grammar(new SymInfo(0,0), "testfunction", null, rules );
 	}
 }

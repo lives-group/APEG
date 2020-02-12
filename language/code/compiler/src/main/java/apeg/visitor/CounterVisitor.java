@@ -2,113 +2,36 @@ package apeg.visitor;
 
 import apeg.visitor.*;
 import apeg.ast.*;
-import apeg.ast.expr.Attribute;
-import apeg.ast.expr.BoolLit;
-import apeg.ast.expr.CharLit;
-import apeg.ast.expr.FloatLit;
-import apeg.ast.expr.IntLit;
-import apeg.ast.expr.MapLit;
-import apeg.ast.expr.MetaAndPEG;
-import apeg.ast.expr.MetaAnyPEG;
-import apeg.ast.expr.MetaAttribute;
-import apeg.ast.expr.MetaBindPEG;
-import apeg.ast.expr.MetaBoolLit;
-import apeg.ast.expr.MetaCharLit;
-import apeg.ast.expr.MetaChoiceList;
-import apeg.ast.expr.MetaChoicePEG;
-import apeg.ast.expr.MetaConstraintPEG;
-import apeg.ast.expr.MetaFloatLit;
-import apeg.ast.expr.MetaIntLit;
-import apeg.ast.expr.MetaKleneePEG;
-import apeg.ast.expr.MetaLitPEG;
-import apeg.ast.expr.MetaMapLit;
-import apeg.ast.expr.MetaNonterminalPEG;
-import apeg.ast.expr.MetaNot;
-import apeg.ast.expr.MetaNotPEG;
-import apeg.ast.expr.MetaOptionalPEG;
-import apeg.ast.expr.MetaPKlenee;
-import apeg.ast.expr.MetaRulePEG;
-import apeg.ast.expr.MetaSeqPEG;
-import apeg.ast.expr.MetaStrLit;
-import apeg.ast.expr.MetaTyBool;
-import apeg.ast.expr.MetaTyChar;
-import apeg.ast.expr.MetaTyFloat;
-import apeg.ast.expr.MetaTyGrammar;
-import apeg.ast.expr.MetaTyInt;
-import apeg.ast.expr.MetaTyLang;
-import apeg.ast.expr.MetaTyMap;
-import apeg.ast.expr.MetaTyMeta;
-import apeg.ast.expr.MetaTyString;
-import apeg.ast.expr.MetaUMinus;
-import apeg.ast.expr.MetaUpdatePEG;
-import apeg.ast.expr.MetaVar;
-import apeg.ast.expr.StrLit;
-import apeg.ast.expr.operators.Add;
-import apeg.ast.expr.operators.And;
-import apeg.ast.expr.operators.Compose;
-import apeg.ast.expr.operators.Concat;
-import apeg.ast.expr.operators.Div;
-import apeg.ast.expr.operators.Equals;
-import apeg.ast.expr.operators.Greater;
-import apeg.ast.expr.operators.GreaterEq;
-import apeg.ast.expr.operators.Less;
-import apeg.ast.expr.operators.LessEq;
-import apeg.ast.expr.operators.MapAcces;
-import apeg.ast.expr.operators.MapExtension;
-import apeg.ast.expr.operators.MetaAdd;
-import apeg.ast.expr.operators.MetaAnd;
-import apeg.ast.expr.operators.MetaCompose;
-import apeg.ast.expr.operators.MetaConcat;
-import apeg.ast.expr.operators.MetaDiv;
-import apeg.ast.expr.operators.MetaEquals;
-import apeg.ast.expr.operators.MetaGreater;
-import apeg.ast.expr.operators.MetaGreaterEq;
-import apeg.ast.expr.operators.MetaLess;
-import apeg.ast.expr.operators.MetaLessEq;
-import apeg.ast.expr.operators.MetaMapAcces;
-import apeg.ast.expr.operators.MetaMapExtension;
-import apeg.ast.expr.operators.MetaMult;
-import apeg.ast.expr.operators.MetaNotEq;
-import apeg.ast.expr.operators.MetaOr;
-import apeg.ast.expr.operators.MetaSub;
-import apeg.ast.expr.operators.Mult;
-import apeg.ast.expr.operators.Not;
-import apeg.ast.expr.operators.NotEq;
-import apeg.ast.expr.operators.Or;
-import apeg.ast.expr.operators.Sub;
-import apeg.ast.expr.operators.UMinus;
-import apeg.ast.rules.AndPEG;
-import apeg.ast.rules.AnyPEG;
-import apeg.ast.rules.BindPEG;
-import apeg.ast.rules.ChoiceList;
-import apeg.ast.rules.ChoicePEG;
-import apeg.ast.rules.ConstraintPEG;
-import apeg.ast.rules.KleneePEG;
-import apeg.ast.rules.LitPEG;
-import apeg.ast.rules.NonterminalPEG;
-import apeg.ast.rules.NotPEG;
-import apeg.ast.rules.OptionalPEG;
-import apeg.ast.rules.PKlenee;
-import apeg.ast.rules.RulePEG;
-import apeg.ast.rules.SeqPEG;
-import apeg.ast.rules.UpdatePEG;
-import apeg.ast.types.TyBool;
-import apeg.ast.types.TyChar;
-import apeg.ast.types.TyFloat;
-import apeg.ast.types.TyGrammar;
-import apeg.ast.types.TyInt;
-import apeg.ast.types.TyLang;
-import apeg.ast.types.TyMap;
-import apeg.ast.types.TyMeta;
-import apeg.ast.types.TyString;
+import apeg.ast.expr.*;
+import apeg.ast.expr.operators.*;
+import apeg.ast.rules.*;
+import apeg.ast.types.*;
 
+import java.util.*;
 
-public class RuleCounterVisitor extends Visitor {
+public class CounterVisitor extends Visitor{
 	
-	private int counter;
+	int expr[] = new int[7];
+	int operators[] = new int[18];
+	int rules[] = new int[15];
+	int types[] = new int[9];
 	
-	public RuleCounterVisitor() {
-		counter =0;
+	public CounterVisitor() {
+		
+		
+		for(int i =0; i<7; i++) {
+			expr[i] = 0;
+		}
+		for(int i =0; i<18; i++) {
+			operators[i] = 0;
+		}
+		for(int i = 0; i<15; i++) {
+			rules[1] = 0;
+		}
+		for(int i = 0; i< 9; i++) {
+			types[i] = 0;
+		}
+		
 	}
 
 	@Override
@@ -636,7 +559,13 @@ public class RuleCounterVisitor extends Visitor {
 	@Override
 	public void visit(RulePEG n) {
 		// TODO Auto-generated method stub
-		counter ++;
+		
+		System.out.println("Rule : " + n.getRuleName());
+		System.out.println("Number of syn attributes: " + n.getSyn().size());
+		System.out.println("Number of inh attributes: " + n.getInh().size());
+		
+		
+		
 	}
 
 	@Override
@@ -709,17 +638,16 @@ public class RuleCounterVisitor extends Visitor {
 	public void visit(Grammar n) {
 		// TODO Auto-generated method stub
 		
+		System.out.println("Grammar " + n.getName());
+		System.out.println("Options: " + n.getOptions());
+		
 		for(RulePEG r:n.getRules()) {
 			
 			r.accept(this);
 		}
 		
+		
+		
 	}
-	
-	public void report () {
-		System.out.println("Número de regras:" + counter);
-	}
-	
-	
 
 }

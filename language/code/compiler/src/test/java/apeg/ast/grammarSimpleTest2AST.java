@@ -5,14 +5,14 @@ import apeg.util.*;
 import apeg.ast.expr.*;
 import apeg.ast.rules.*;
 import apeg.ast.types.*;
-import apeg.ast.GrammarNode;
+
 
 public class grammarSimpleTest2AST {
 	public static void main (String args[]){
 		
 		List<RulePEG>rules = new ArrayList<RulePEG>();
 		List<Pair<Type, String>>inh = new ArrayList<Pair<Type, String>>();
-		List<Pair<Type, Expr>>syn = new ArrayList<Pair<Type, Expr>>();
+		List<Expr>syn = new ArrayList<Expr>();
 		
 		//Regra s
 		
@@ -40,6 +40,6 @@ public class grammarSimpleTest2AST {
 		rules.add(a);
 		
 		
-		GrammarNode gram = new GrammarNode("simpleTest", null, rules);
+		Grammar gram = new Grammar(new SymInfo(0,0), "simpleTest", null, rules);
 	}
 }

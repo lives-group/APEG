@@ -5,7 +5,6 @@ import apeg.util.*;
 import apeg.ast.expr.*;
 import apeg.ast.rules.*;
 import apeg.ast.types.*;
-import apeg.ast.GrammarNode;
 
 
 public class Grammar03AST {
@@ -19,7 +18,7 @@ public class Grammar03AST {
 		APEG peg;
 		
 		assigs.add(new Pair<Attribute, Expr>(new Attribute(new SymInfo(5, 4), "i"), new BoolLit(new SymInfo(5, 8),true)));
-		peg = new UpdatePeg(new SymInfo(5, 6), assigs);
+		peg = new UpdatePEG(new SymInfo(5, 6), assigs);
 		
 		inh.add(new Pair<Type, String>(new TyInt(new SymInfo(3, 3)), "x"));
 		inh.add(new Pair<Type, String>(new TyInt(new SymInfo(3, 10)), "y"));
@@ -29,7 +28,7 @@ public class Grammar03AST {
 		
 		RulePEG s = new RulePEG(new SymInfo(3, 1), "s", RulePEG.Annotation.NONE, inh, null, peg);
 		
-		GrammarNode gram = new GrammarNode("expression", null, rules);
+		Grammar gram = new Grammar(new SymInfo(0,0), "expression", null, rules);
 		
 	}
 

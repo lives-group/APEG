@@ -161,7 +161,7 @@ public class Tool {
 		       g.accept(parservisitor);
 		       */	
 				
-				RuleCountVisitor v = new RuleCountVisitor();
+				RuleCounterVisitor v = new RuleCounterVisitor();
 	
 			} catch (FileNotFoundException e) {
 				System.err.println("File " + s + " do not exist");

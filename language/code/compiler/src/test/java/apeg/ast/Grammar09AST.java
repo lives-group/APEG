@@ -3,7 +3,7 @@ package apeg.ast;
 import java.util.*;
 import apeg.util.*;
 import apeg.ast.rules.*;
-import apeg.ast.GrammarNode;
+
 
 
 public class Grammar09AST {
@@ -70,7 +70,7 @@ public class Grammar09AST {
 		RulePEG e = new RulePEG(new SymInfo(34, 1), "e", RulePEG.Annotation.NONE, null, null, peg);
 		rules.add(e);
 		
-		GrammarNode gram = new GrammarNode("notDiscardChanges", null, rules);
+		Grammar gram = new Grammar(new SymInfo(0,0), "notDiscardChanges", null, rules);
 	}
 
 }

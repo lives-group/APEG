@@ -5,7 +5,7 @@ import apeg.util.*;
 import apeg.ast.expr.*;
 import apeg.ast.rules.*;
 import apeg.ast.types.*;
-import apeg.ast.GrammarNode;
+
 
 
 public class Grammar10AST {
@@ -13,7 +13,7 @@ public class Grammar10AST {
 		
 		List<RulePEG>rules = new ArrayList<RulePEG>();
 		List<Pair<Type, String>>inh = new ArrayList<Pair<Type, String>>();
-		List<Pair<Type, Expr>>syn = new ArrayList<Pair<Type, Expr>>();
+		List<Expr>syn = new ArrayList<Expr>();
 		
 		//Regra s
 		
@@ -108,7 +108,7 @@ public class Grammar10AST {
 		RulePEG a7 = new RulePEG(new SymInfo(36, 1), "a7", RulePEG.Annotation.NONE, inh, syn, peg);
 		rules.add(a7);
 		
-		GrammarNode gram = new GrammarNode("notDiscardChanges", null, rules);
+		Grammar gram = new Grammar(new SymInfo(0,0), "notDiscardChanges", null, rules);
 	}
 
 }

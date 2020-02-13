@@ -5,6 +5,7 @@ import apeg.util.*;
 import apeg.ast.expr.*;
 import apeg.ast.rules.*;
 import apeg.ast.types.*;
+import apeg.visitor.TestVisitor;
 
 
 public class Grammar03AST {
@@ -27,9 +28,12 @@ public class Grammar03AST {
 		inh.add(new Pair<Type, String>(new TyBool(new SymInfo(3, 31)), "i"));
 		
 		RulePEG s = new RulePEG(new SymInfo(3, 1), "s", RulePEG.Annotation.NONE, inh, null, peg);
+		rules.add(s);
 		
 		Grammar gram = new Grammar(new SymInfo(0,0), "expression", null, rules);
 		
+		TestVisitor v = new TestVisitor();
+		gram.accept(v);
 	}
 
 }

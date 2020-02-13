@@ -8,6 +8,7 @@ public class LitPEG extends APEG{
     
     public LitPEG(SymInfo s,String lit){
         super(s);
+        this.lit = lit;
     }
     public String getLit(){
         return lit;

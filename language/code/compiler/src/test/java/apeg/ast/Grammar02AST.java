@@ -4,9 +4,11 @@ import java.util.List;
 import java.util.ArrayList;
 
 import apeg.util.SymInfo;
+import apeg.visitor.TestVisitor;
 import apeg.ast.rules.*;
 import apeg.ast.Grammar;
 import apeg.ast.Grammar.GrammarOption;
+import apeg.visitor.TestVisitor;
 
 
 public class Grammar02AST {
@@ -19,47 +21,39 @@ public class Grammar02AST {
 		//Regra a
 
 		APEG peg, leftPeg, rightPeg;
-		APEG pegs[] = new APEG[4];
+		APEG pegs[] = new APEG[2];
+		APEG p[] = new APEG[2];
 		
-		SymInfo c = new SymInfo(8,3);
-		pegs[0] = new NonterminalPEG(c, "b", null);
-
+	
+		pegs[0] = new NonterminalPEG(new SymInfo(8, 3), "b", null);
+		leftPeg = new LitPEG(new SymInfo(8, 6), "1");
+		p[0] = new NonterminalPEG(new SymInfo(10, 3), "b", null);
+		p[1] = new LitPEG(new SymInfo(10, 6), "2");
+		rightPeg = new SeqPEG(new SymInfo(10, 2), p);
+		pegs[1] = new ChoicePEG(new SymInfo(9, 2), leftPeg, rightPeg);
+		peg = new SeqPEG(new SymInfo(8, 3), pegs);
 		
-		c = new SymInfo(8,6);
-		leftPeg = new LitPEG(c, "1");
-		
-		c = new SymInfo(10,2);
-		rightPeg = new SeqPEG(c, pegs);
-		
-		c = new SymInfo(9,2);
-		pegs[1] = new ChoicePEG(c, leftPeg, rightPeg );
-		
-		c = new SymInfo(10,3);
-		pegs[2] = new NonterminalPEG(c ,"b", null);
-		
-		c = new SymInfo(10,6);
-		pegs[3] = new LitPEG(c, "2");
-		
-		c = new SymInfo(8,3);
-		peg = new SeqPEG(c, pegs);
-		
-		
-		c = new SymInfo(3,3);
-		RulePEG a = new RulePEG(c, "a", RulePEG.Annotation.NONE, null, null, peg);
+		RulePEG a = new RulePEG(new SymInfo(3, 3), "a", RulePEG.Annotation.NONE, null, null, peg);
 		rules.add(a);
 		
 		//Regra b
 		
 		APEG peg1;
-		c = new SymInfo(15,3);
-		peg1 = new LitPEG(c, "b");
 		
-		c = new SymInfo(8,3);
-		RulePEG b = new RulePEG(c, "b", RulePEG.Annotation.MEMOIZE, null, null, peg1 );
+		peg1 = new LitPEG(new SymInfo(15, 3), "b");
+		
+		
+		RulePEG b = new RulePEG(new SymInfo(8, 3), "b", RulePEG.Annotation.MEMOIZE, null, null, peg1 );
 		rules.add(b);
 	
+		GrammarOption opts = new GrammarOption();
+		opts.memoize = false;
 		
-		Grammar gram = new Grammar(new SymInfo(0,0), "Annotation", null, rules);
+		Grammar gram = new Grammar(new SymInfo(0,0), "Annotation",opts, rules);
+	
+		//TestVisitor v = new TestVisitor();
+		//gram.accept(v);
+
 	}
 
 }

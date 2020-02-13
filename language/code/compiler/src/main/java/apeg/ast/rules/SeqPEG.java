@@ -8,7 +8,7 @@ public class SeqPEG extends APEG{
     
     public SeqPEG(SymInfo s,APEG[] p){
         super(s);
-        pegs = p;
+        this.pegs = p;
     }
     public APEG[] getPegs(){
         return pegs;

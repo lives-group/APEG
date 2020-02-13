@@ -18,6 +18,9 @@ public class RulePEG extends ASTNode{
     
     public RulePEG(SymInfo s,String ruleName,RulePEG.Annotation anno,List<Pair<Type,String>> inh,List<Expr> syn,APEG peg){
         super(s);
+        this.ruleName = ruleName;
+        this.anno = anno;
+        this.peg = peg;
         this.syn = syn;
         this.inh = inh;
     }

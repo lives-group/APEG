@@ -524,8 +524,10 @@ public class TestVisitor extends Visitor{
 	@Override
 	public void visit(ChoicePEG n) {
 		// TODO Auto-generated method stub
-		System.out.println("Choice peg");
+		
+	
 		n.getLeftPeg().accept(this);
+		System.out.println("/");
 		n.getRightPeg().accept(this);
 	}
 
@@ -551,16 +553,15 @@ public class TestVisitor extends Visitor{
 	@Override
 	public void visit(LitPEG n) {
 		// TODO Auto-generated method stub
-		System.out.println("Literal peg: " + n.getLit());
+		System.out.println("'" + n.getLit() + "'");
 	}
 
 	@Override
 	public void visit(NonterminalPEG n) {
 		// TODO Auto-generated method stub
-		System.out.println("Nonterminal peg: " + n.getName());
-		for(Expr e: n.getArgs()) {
-			e.accept(this);
-		}
+		
+		System.out.println("'" + n.getName() + "'");
+		
 	}
 
 	@Override
@@ -588,27 +589,30 @@ public class TestVisitor extends Visitor{
 	public void visit(RulePEG n) {
 		// TODO Auto-generated method stub
 		
-		System.out.println("Rule: " + n.getRuleName());
 		
-		switch(n.getAnno()) {
-		case MEMOIZE:
-			System.out.println("Annotation: MEMOIZE");
+
+	    switch(n.getAnno()){
+		
+		case MEMOIZE: 
+				System.out.println("@memoize");
+				break;
+				
+		case NONE: 
+			System.out.println(" ");
 			break;
-		case NONE:
-			System.out.println("None annotation");
-			break;
-		case TRANSIENT:
-			System.out.println("Annotation: TRANSIENT");
-			break;
+				
+		case TRANSIENT: 
+				System.out.println("@transient");
+				break;
+			
 		default:
-			break;
-		}
+		};
 		
-		for(Expr e: n.getSyn()) {
-			e.accept(this);
-		}
+		System.out.println(n.getRuleName() + ":");
 		
 		n.getPeg().accept(this);
+		System.out.println(";");
+		
 		
 				
 	}
@@ -616,20 +620,21 @@ public class TestVisitor extends Visitor{
 	@Override
 	public void visit(SeqPEG n) {
 		// TODO Auto-generated method stub
-		System.out.println("Sequence Peg");
-		for(APEG p: n.getPegs()) {
-			p.accept(this);
+		
+		int size = n.getSize();
+		for(int i = 0; i < size; i++) {
+			
+			n.getAt(i).accept(this);
 		}
+		
+		
 	}
 
 	@Override
 	public void visit(UpdatePEG n) {
 		// TODO Auto-generated method stub
 		System.out.println("Update Peg");
-		for(Pair<Attribute, Expr>assigs: n.getAssigs()) {
-			assigs.getFirst().accept(this);
-			assigs.getSecond().accept(this);
-		}
+		
 	}
 
 	@Override
@@ -690,9 +695,26 @@ public class TestVisitor extends Visitor{
 	public void visit(Grammar n) {
 		// TODO Auto-generated method stub
 		
-		System.out.println("Grammar " + n.getName());
-		System.out.println("Options: " + n.getOptions());
+		System.out.println("apeg " + n.getName());
+		System.out.println("options {");
 		
+		if(n.getOptions().memoize == true) {
+			System.out.println("  memoize=false;");
+		}
+		if(n.getOptions().memoize == false) {
+		    System.out.println("  memoize=false;");
+		}
+		
+		if(n.getOptions().adaptable == true) {
+			System.out.println("  adaptable=true;");
+		}
+		else
+			System.out.println(" ");
+		
+		
+		System.out.println("}");
+		
+	
 		for(RulePEG r: n.getRules()) 
 			r.accept(this);
 		

@@ -12,6 +12,8 @@ public class NonterminalPEG extends APEG{
     
     public NonterminalPEG(SymInfo s,String name,List<Expr> args){
         super(s);
+        this.name = name;
+        this.args = args;
     }
     public String getName(){
         return name;

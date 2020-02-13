@@ -8,7 +8,7 @@ public class PKlenee extends APEG{
     
     public PKlenee(SymInfo s,APEG e){
         super(s);
-        pegExp = e;
+        this.pegExp = e;
     }
     public APEG getPegExp(){
         return pegExp;

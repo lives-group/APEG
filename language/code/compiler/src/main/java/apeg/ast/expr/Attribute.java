@@ -8,6 +8,7 @@ public class Attribute extends Expr{
     
     public Attribute(SymInfo s,String name){
         super(s);
+        this.name =name;
     }
     public String getName(){
         return name;

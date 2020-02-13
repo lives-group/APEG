@@ -576,8 +576,9 @@ public class TestVisitor extends Visitor{
 	@Override
 	public void visit(PKlenee n) {
 		// TODO Auto-generated method stub
-		System.out.println("Plus Klenee peg");
+		
 		n.getPegExp().accept(this);
+		System.out.println(")*");
 	}
 
 	@Override
@@ -603,10 +604,34 @@ public class TestVisitor extends Visitor{
 		default:
 		};
 		
-		System.out.println(n.getRuleName() + ":");
+		System.out.println(n.getRuleName());
+		if(n.getInh().isEmpty()) {
+			if(n.getSyn().isEmpty()) {
+				System.out.println(":");
+			}
+			else {
+				System.out.println("returns[");
+				for(Expr e: n.getSyn()) {
+					
+					e.accept(this);
+				}
+				System.out.println("]");
+			}
+		}
+		else {
+			System.out.println("[");
+			for(Pair<Type, String>inh: n.getInh()) {
+				inh.getFirst().accept(this);
+				System.out.println(inh.getSecond());
+			}
+		}
+		System.out.println("]");
+		System.out.println(":");
+		
 		
 		n.getPeg().accept(this);
 		System.out.println(";");
+	
 		
 		
 				
@@ -628,62 +653,66 @@ public class TestVisitor extends Visitor{
 	@Override
 	public void visit(UpdatePEG n) {
 		// TODO Auto-generated method stub
-		System.out.println("Update Peg");
+		for(Pair<Attribute, Expr> assigs: n.getAssigs()) {
+			assigs.getFirst().accept(this);
+			System.out.println(" = ");
+			assigs.getSecond().accept(this);
+		}
 		
 	}
 
 	@Override
 	public void visit(TyBool n) {
 		// TODO Auto-generated method stub
-		System.out.println("Boolean Type");
+		System.out.println("Boolean");
 	}
 
 	@Override
 	public void visit(TyChar n) {
 		// TODO Auto-generated method stub
-		System.out.println("Char Type");
+		System.out.println("Char");
 	}
 
 	@Override
 	public void visit(TyFloat n) {
 		// TODO Auto-generated method stub
-		System.out.println("Float Type");
+		System.out.println("Float");
 	}
 
 	@Override
 	public void visit(TyGrammar n) {
 		// TODO Auto-generated method stub
-		System.out.println("Grammar Type");
+		System.out.println("Grammar");
 	}
 
 	@Override
 	public void visit(TyInt n) {
 		// TODO Auto-generated method stub
-		System.out.println("Int Type");
+		System.out.println("Int");
 	}
 
 	@Override
 	public void visit(TyLang n) {
 		// TODO Auto-generated method stub
-		System.out.println("Lang Type");
+		System.out.println("Lang");
 	}
 
 	@Override
 	public void visit(TyMap n) {
 		// TODO Auto-generated method stub
-		System.out.println("Map Type");
+		System.out.println("Map");
 	}
 
 	@Override
 	public void visit(TyMeta n) {
 		// TODO Auto-generated method stub
-		System.out.println("Meta Type");
+		System.out.println("Meta");
 	}
 
 	@Override
 	public void visit(TyString n) {
 		// TODO Auto-generated method stub
-		System.out.println("String Type");
+		System.out.println("String");
 	}
 
 	@Override
@@ -693,7 +722,7 @@ public class TestVisitor extends Visitor{
 		System.out.println("apeg " + n.getName());
 		System.out.println("options {");
 		
-		if(n.getOptions().memoize == true) {
+		/*if(n.getOptions().memoize == true) {
 			System.out.println("  memoize=false;");
 		}
 		if(n.getOptions().memoize == false) {
@@ -703,8 +732,10 @@ public class TestVisitor extends Visitor{
 		if(n.getOptions().adaptable == true) {
 			System.out.println("  adaptable=true;");
 		}
-		else
+		else {
 			System.out.println(" ");
+		}
+		*/
 		
 		
 		System.out.println("}");

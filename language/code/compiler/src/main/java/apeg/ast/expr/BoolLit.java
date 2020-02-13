@@ -8,6 +8,7 @@ public class BoolLit extends Expr{
     
     public BoolLit(SymInfo s,boolean value){
         super(s);
+        this.value = value;
     }
     public boolean getValue(){
         return value;

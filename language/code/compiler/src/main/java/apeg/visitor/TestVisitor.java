@@ -120,7 +120,7 @@ public class TestVisitor extends Visitor{
 	}
 
 	@Override
-	public void visit(MetaKleneePEG n) {
+	public void visit(MetaKleenePEG n) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -156,7 +156,7 @@ public class TestVisitor extends Visitor{
 	}
 
 	@Override
-	public void visit(MetaPKlenee n) {
+	public void visit(MetaPKleene n) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -539,12 +539,17 @@ public class TestVisitor extends Visitor{
 	}
 
 	@Override
-	public void visit(KleneePEG n) {
+	public void visit(KleenePEG n) {
 		// TODO Auto-generated method stub
-		System.out.println("Star Klenee peg");
+		System.out.println("Star Kleene peg");
 		n.getPegExp().accept(this);
 	}
 
+       @Override
+       public void visit(LambdaPEG n) {
+	   System.out.println("Lambda peg");
+       }
+    
 	@Override
 	public void visit(LitPEG n) {
 		// TODO Auto-generated method stub
@@ -574,9 +579,13 @@ public class TestVisitor extends Visitor{
 	}
 
 	@Override
-	public void visit(PKlenee n) {
+	public void visit(PKleene n) {
 		// TODO Auto-generated method stub
+<<<<<<< HEAD
 		
+=======
+		System.out.println("Plus Kleene peg");
+>>>>>>> 6e49fb2bcb9198a3f52bbd6be2331df701c116df
 		n.getPegExp().accept(this);
 		System.out.println(")*");
 	}

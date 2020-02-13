@@ -19,14 +19,14 @@ import apeg.ast.expr.MetaChoicePEG;
 import apeg.ast.expr.MetaConstraintPEG;
 import apeg.ast.expr.MetaFloatLit;
 import apeg.ast.expr.MetaIntLit;
-import apeg.ast.expr.MetaKleneePEG;
+import apeg.ast.expr.MetaKleenePEG;
 import apeg.ast.expr.MetaLitPEG;
 import apeg.ast.expr.MetaMapLit;
 import apeg.ast.expr.MetaNonterminalPEG;
 import apeg.ast.expr.MetaNot;
 import apeg.ast.expr.MetaNotPEG;
 import apeg.ast.expr.MetaOptionalPEG;
-import apeg.ast.expr.MetaPKlenee;
+import apeg.ast.expr.MetaPKleene;
 import apeg.ast.expr.MetaRulePEG;
 import apeg.ast.expr.MetaSeqPEG;
 import apeg.ast.expr.MetaStrLit;
@@ -83,12 +83,13 @@ import apeg.ast.rules.BindPEG;
 import apeg.ast.rules.ChoiceList;
 import apeg.ast.rules.ChoicePEG;
 import apeg.ast.rules.ConstraintPEG;
-import apeg.ast.rules.KleneePEG;
+import apeg.ast.rules.KleenePEG;
+import apeg.ast.rules.LambdaPEG;
 import apeg.ast.rules.LitPEG;
 import apeg.ast.rules.NonterminalPEG;
 import apeg.ast.rules.NotPEG;
 import apeg.ast.rules.OptionalPEG;
-import apeg.ast.rules.PKlenee;
+import apeg.ast.rules.PKleene;
 import apeg.ast.rules.RulePEG;
 import apeg.ast.rules.SeqPEG;
 import apeg.ast.rules.UpdatePEG;
@@ -220,7 +221,7 @@ public class RuleCounterVisitor extends Visitor {
 	}
 
 	@Override
-	public void visit(MetaKleneePEG n) {
+	public void visit(MetaKleenePEG n) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -256,7 +257,7 @@ public class RuleCounterVisitor extends Visitor {
 	}
 
 	@Override
-	public void visit(MetaPKlenee n) {
+	public void visit(MetaPKleene n) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -598,9 +599,14 @@ public class RuleCounterVisitor extends Visitor {
 	}
 
 	@Override
-	public void visit(KleneePEG n) {
+	public void visit(KleenePEG n) {
 		// TODO Auto-generated method stub
 		
+	}
+
+        @Override
+	public void visit(LambdaPEG n) {
+	    // TODO Auto-generated method stub
 	}
 
 	@Override
@@ -628,7 +634,7 @@ public class RuleCounterVisitor extends Visitor {
 	}
 
 	@Override
-	public void visit(PKlenee n) {
+	public void visit(PKleene n) {
 		// TODO Auto-generated method stub
 		
 	}

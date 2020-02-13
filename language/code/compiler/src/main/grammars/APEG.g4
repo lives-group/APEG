@@ -111,51 +111,51 @@ annotation returns[RulePEG.Annotation anno]:
 
 // This rule defines the list of inherited attributes
 optDecls returns[List<Pair<Type, String>> list]:
-   decls /*{$list = $decls.list;}*/
+   decls {$list = $decls.list;}
   |
-   /*{$list = new ArrayList<Pair<Type, String>>();}*/
+   {$list = new ArrayList<Pair<Type, String>>();}
 ;
 
 // This rule defines the list of synthesized attributes
 optReturn returns[List<Expr> list]:
-   'returns' decls /*{$list = $decls.list;}*/
+   'returns' exprs {$list = $exprs.list;}
   |
-   /*{$list = new ArrayList<Expr>();}*/
+   {$list = new ArrayList<Expr>();}
 ;
 
 // This rule defines the lists of all attributes
 decls returns[List<Pair<Type, String>> list]:
-  '[' /*{$list = new ArrayList<Pair<Type, String>>();} */
-  v1=varDecl /*{$list.add($v1.var);}*/ (',' v2=varDecl /*{$list.add($v2.var);}*/)* ']'
+  '[' {$list = new ArrayList<Pair<Type, String>>();}
+  v1=varDecl {$list.add($v1.var);} (',' v2=varDecl {$list.add($v2.var);})* ']'
 ;
 
 exprs returns[List<Expr> list] :
-  '[' /*{$list = new ArrayList<Expr>();} */
-   e1=expr /*{$list.add($e1.expr);}*/ (',' e2=expr /*{$list.add($e2.expr);}*/)* ']'
+  '[' {$list = new ArrayList<Expr>();}
+   e1=expr {$list.add($e1.exp);} (',' e2=expr {$list.add($e2.exp);})* ']'
 ;
 
 varDecl returns[Pair<Type, String> var]:
-  type ID /*{$var = factory.newVarDeclaration($ID.text, $type.tp);}*/
+  type ID {$var = new Pair<Type, String>($type.tp, $ID.text);}
 ;
 
 type returns[Type tp]:
-  INT_TYPE /*{$tp = factory.newIntType();}*/
+  INT_TYPE {$tp = factory.newIntType(new SymInfo($INT_TYPE.line, $INT_TYPE.pos));}
  |
-  FLOAT_TYPE /*{$tp = factory.newFloatType();}*/
+  FLOAT_TYPE {$tp = factory.newFloatType(new SymInfo($FLOAT_TYPE.line, $FLOAT_TYPE.pos));}
  |
-  BOOLEAN_TYPE /*{$tp = factory.newBooleanType();}*/
+  BOOLEAN_TYPE {$tp = factory.newBooleanType(new SymInfo($BOOLEAN_TYPE.line, $BOOLEAN_TYPE.pos));}
  |
-  STRING_TYPE /*{$tp = factory.newStringType();}*/
+  STRING_TYPE {$tp = factory.newStringType(new SymInfo($STRING_TYPE.line, $STRING_TYPE.pos));}
  |
-  CHAR_TYPE /*{$tp = factory.newStringType();}*/
+  CHAR_TYPE {$tp = factory.newCharType(new SymInfo($CHAR_TYPE.line, $CHAR_TYPE.pos));}
  |
-  GRAMMAR_TYPE /*{$tp = factory.newGrammarType();}*/
+  GRAMMAR_TYPE {$tp = factory.newGrammarType(new SymInfo($GRAMMAR_TYPE.line, $GRAMMAR_TYPE.pos));}
  |
-  LANGUAGE_TYPE /*{$tp = factory.newRuleType();}*/
+  LANGUAGE_TYPE {$tp = factory.newLangType(new SymInfo($LANGUAGE_TYPE.line, $LANGUAGE_TYPE.pos));}
  |
-  MAP_TYPE /*{$tp = factory.newUserType($ID.text);}*/
+  MAP_TYPE '(' type ')' {$tp = factory.newMapType(new SymInfo($MAP_TYPE.line, $MAP_TYPE.pos) , $type.tp);}
  |
-  META_TYPE /*{$tp = factory.newUserType($ID.text);}*/
+  META_TYPE {$tp = factory.newMetaType(new SymInfo($META_TYPE.line, $META_TYPE.pos));}
 ;
 
 /***
@@ -167,27 +167,26 @@ type returns[Type tp]:
 // The precedence of CHOICE operator is 1
 // CHOICE is an associative operator. We decided for right association because it may be faster to interpret
 peg_expr returns[APEG peg]:
-  peg_seq '/' e=peg_expr /*{$peg = factory.newChoicePeg($peg_seq.peg, $e.peg);}*/
+  peg_seq '/' e=peg_expr {$peg = factory.newChoicePEG($peg_seq.peg.getSymInfo(), $peg_seq.peg, $e.peg);}
  |
-  peg_seq /*{$peg = $peg_seq.peg;}*/
+  peg_seq {$peg = $peg_seq.peg;}
 ;
 
 // This rule defines a sequence operator: e1 e2 
 // The precedence of sequence operator is 2
 peg_seq returns[APEG peg]: 
-   p1=peg_capturetext /*{List<APEG> l = new ArrayList<APEG>(); l.add($p1.peg);}*/
-   (p2=peg_capturetext /*{l.add($p2.peg);}*/)+ /*{$peg = factory.newSequencePeg(l);}*/
+   p1=peg_capturetext {List<APEG> l = new ArrayList<APEG>(); l.add($p1.peg);}
+   (p2=peg_capturetext {l.add($p2.peg);})+ {$peg = factory.newSequencePEG($p1.peg.getSymInfo(), (APEG[]) l.toArray());}
   |
-   peg_capturetext /*{$peg = $peg_capturetext.peg;}*/
+   peg_capturetext {$peg = $peg_capturetext.peg;}
   |
-   /*{$peg = factory.newLambdaPeg();}*/ // LAMBDA parsing expression
+   {$peg = factory.newLambdaPEG(new SymInfo(_ctx.start.getLine(), _ctx.start.getCharPositionInLine()));}/ // LAMBDA parsing expression
 ;
 
 peg_capturetext returns[APEG peg]:
-   peg_unary_op /*{$peg = $peg_unary_op.peg;}*/
+   peg_unary_op {$peg = $peg_unary_op.peg;}
   |
-   attribute_ref '=' peg_unary_op
-   /* {$peg = factory.newBindPeg($attribute_ref.exp, $peg_unary_op.peg);}*/
+   attribute_ref '=' peg_unary_op {$peg = factory.newBindPEG($attribute_ref.exp.getSymInfo(), $attribute_ref.exp, $peg_unary_op.peg);}
 ;
 
 
@@ -198,25 +197,25 @@ peg_capturetext returns[APEG peg]:
 // &e (And-predicate with precedence 3)
 // !e (Not-predicate with precedence 3)
 peg_unary_op returns[APEG peg]:
-   peg_factor '?' /*{$peg = factory.newOptionalPeg($peg_factor.peg);}*/
+   peg_factor '?' {$peg = factory.newOptionalPEG($peg_factor.peg.getSymInfo(), $peg_factor.peg);}
   | 
-   peg_factor '*' /*{$peg = factory.newStarPeg($peg_factor.peg);}*/
+   peg_factor '*' {$peg = factory.newStarPEG($peg_factor.peg.getSymInfo(), $peg_factor.peg);}
   | 
-   peg_factor '+' /*{$peg = factory.newPlusPeg($peg_factor.peg);}*/
+   peg_factor '+' {$peg = factory.newPositiveKleenePEG($peg_factor.peg.getSymInfo(), $peg_factor.peg);}
   |
-   peg_factor /*{$peg = $peg_factor.peg;}*/
+   peg_factor {$peg = $peg_factor.peg;}
   |
-   '&' peg_factor /*{$peg = factory.newAndPeg($peg_factor.peg);}*/
+   t='&' peg_factor {$peg = factory.newAndPEG(new SymInfo($t.line, $t.pos), $peg_factor.peg);}
   |
-   '!' peg_factor /*{$peg = factory.newNotPeg($peg_factor.peg);}*/
+   t='!' peg_factor {$peg = factory.newNotPEG(new SymInfo($t.line, $t.pos), $peg_factor.peg);}
   |
-   '{?' condExpr '}' /*{$peg = factory.newConstraintPeg($condExpr.exp);}*/
+   t='{?' condExpr '}' {$peg = factory.newConstraintPEG(new SymInfo($t.line, $t.pos), $condExpr.exp);}
   |
-   '{' st1=assign
-     /*{List<AssignmentNode> l = new ArrayList<AssignmentNode>();
+   t='{' st1=assign
+     {List<Pair<Attribute, Expr>> l = new ArrayList<Pair<Attribute, Expr>>();
       l.add($st1.stm);
-     }*/ (st2=assign /*{l.add($st2.stm);}*/)*
-   '}' /*{$peg = factory.newUpdatePeg(l);}*/
+     } (st2=assign {l.add($st2.stm);})*
+   '}' {$peg = factory.newUpdatePEG(new SymInfo($t.line, $t.pos), l);}
 ;
 
 // This rule defines the other operators and basic expressions
@@ -231,22 +230,22 @@ peg_factor returns[APEG peg]:
    STRING_LITERAL { 
      String s = $STRING_LITERAL.text;
      s = s.substring(1, s.length()-1);
-     /*$peg = factory.newLiteralPeg(s);*/
+     $peg = factory.newLiteralPEG(new SymInfo($STRING_LITERAL.line, $STRING_LITERAL.pos), s);
    }
   |
    ntcall {$peg = $ntcall.peg;}
   |
    '[' range_pair ']' /*{$peg = factory.newGroupPeg($range_pair.text);}*/
   |
-   '.' /*{$peg = factory.newAnyPeg();}*/
+   t='.' {$peg = factory.newAnyPEG(new SymInfo($t.line, $t.pos));}
   |
    '(' peg_expr ')' {$peg = $peg_expr.peg;}
 ;
 
 ntcall returns[APEG peg]:
-   ID '<' actPars '>' /*{$peg = factory.newNonterminalPeg($ID.text, $actPars.list);}*/
+   ID '<' actPars '>' {$peg = factory.newNonterminalPEG(new SymInfo($ID.line, $ID.pos), $ID.text, $actPars.list);}
   |
-   ID /*{$peg = factory.newNonterminalPeg($ID.text, new ArrayList<ExprNode>());}*/
+   ID {$peg = factory.newNonterminalPEG(new SymInfo($ID.line, $ID.pos), $ID.text, new ArrayList<Expr>());}
 ;
 
 range_pair:

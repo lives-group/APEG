@@ -2,11 +2,11 @@ package apeg.ast.rules;
 import apeg.visitor.Visitor;
 import apeg.util.SymInfo;
 
-public class PKlenee extends APEG{
+public class PKleene extends APEG{
 
     private APEG pegExp;
     
-    public PKlenee(SymInfo s,APEG e){
+    public PKleene(SymInfo s,APEG e){
         super(s);
         this.pegExp = e;
     }

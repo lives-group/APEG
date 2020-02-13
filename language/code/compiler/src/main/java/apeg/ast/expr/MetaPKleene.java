@@ -2,18 +2,18 @@ package apeg.ast.expr;
 import apeg.ast.rules.APEG;
 import apeg.visitor.Visitor;
 import apeg.ast.rules.APEG;
-import apeg.ast.rules.PKlenee;
+import apeg.ast.rules.PKleene;
 import apeg.util.SymInfo;
 
-public class MetaPKlenee extends MetaAPEG{
+public class MetaPKleene extends MetaAPEG{
 
-    private PKlenee embeedNode;
+    private PKleene embeedNode;
     
-    public MetaPKlenee(SymInfo s,MetaAPEG e){
+    public MetaPKleene(SymInfo s,MetaAPEG e){
         super(s);
-        embeedNode = new PKlenee(s,e.getEmbeedNode());
+        embeedNode = new PKleene(s,e.getEmbeedNode());
     }
-    public PKlenee getEmbeedNode(){
+    public PKleene getEmbeedNode(){
         return embeedNode;
     }
     public void accept(Visitor v){ v.visit(this); }

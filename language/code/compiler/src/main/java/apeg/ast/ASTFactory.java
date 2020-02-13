@@ -339,7 +339,7 @@ public interface ASTFactory {
 	 * @return a bind peg node
 	 * 			
 	 */
-	public BindPEG newBindPEG(SymInfo s, String attribute, APEG peg );
+	public BindPEG newBindPEG(SymInfo s, Attribute attribute, APEG peg );
 	
 	/**
 	 * 
@@ -381,8 +381,17 @@ public interface ASTFactory {
 	 *            parsing expression
 	 * @return a star parsing expression node
 	 */
-	public KleneePEG newStarPEG(SymInfo s, APEG peg);
-	
+	public KleenePEG newStarPEG(SymInfo s, APEG peg);
+
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 *
+	 * @return a Lambda peg node
+	 */
+	public LambdaPEG newLambdaPEG(SymInfo s);
+    
 	/**
 	 * @param s
 	 * 			corresponding SymInfo node
@@ -432,9 +441,9 @@ public interface ASTFactory {
 	 * 			corresponding SymInfo node
 	 * @param peg
 	 * 			a parsing expression
-	 * @return a positive Klenee peg node
+	 * @return a positive Kleene peg node
 	 */
-	public PKlenee newPositiveKleneePEG(SymInfo s, APEG peg);
+	public PKleene newPositiveKleenePEG(SymInfo s, APEG peg);
 
 	/**
 	 * @param name
@@ -471,7 +480,7 @@ public interface ASTFactory {
 	 * 				
 	 * @return a update peg node
 	 */
-	public UpdatePEG newAssignment(SymInfo s,List<Pair<Attribute, Expr>>assigs);
+	public UpdatePEG newUpdatePEG(SymInfo s,List<Pair<Attribute, Expr>>assigs);
 	
 
 	/*------------------------------------------------------
@@ -487,6 +496,14 @@ public interface ASTFactory {
 	 */
 	public TyBool newBooleanType(SymInfo s);
 
+        /**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @return  a Grammar type node
+	 */
+	public TyChar newCharType(SymInfo s);
+    
 	/**
 	 * 
 	 * @param s
@@ -758,7 +775,7 @@ public interface ASTFactory {
 	 * 			a meta expression
 	 * @return meta bind peg node
 	 */
-	public MetaBindPEG newMetaBindPEG(SymInfo s,String attribute,MetaAPEG p);
+	public MetaBindPEG newMetaBindPEG(SymInfo s, Attribute attribute,MetaAPEG p);
 	/**
 	 * 
 	 * @param s
@@ -832,7 +849,7 @@ public interface ASTFactory {
 	 * 			a meta parsing expression
 	 * @return meta star klenee peg node
 	 */
-	public MetaKleneePEG newMetaKleneePEG(SymInfo s,MetaAPEG e);
+	public MetaKleenePEG newMetaKleenePEG(SymInfo s,MetaAPEG e);
 	/**
 	 * 
 	 * @param s
@@ -896,7 +913,7 @@ public interface ASTFactory {
      * 			a meta parsing expression
      * @return a meta plus klenee node
      */
-    public MetaPKlenee newMetaPKlenee(SymInfo s,MetaAPEG e);
+    public MetaPKleene newMetaPKleene(SymInfo s,MetaAPEG e);
     /**
      * 
      * @param s

@@ -169,14 +169,14 @@ public class ASTFactoryImpl implements ASTFactory{
     public MetaNotPEG newMetaNotPEG(SymInfo s,MetaAPEG e){
         return new MetaNotPEG(s,e);
     }
-    public MetaKleneePEG newMetaKleneePEG(SymInfo s,MetaAPEG e){
-        return new MetaKleneePEG(s,e);
+    public MetaKleenePEG newMetaKleenePEG(SymInfo s,MetaAPEG e){
+        return new MetaKleenePEG(s,e);
     }
     public MetaOptionalPEG newMetaOptionalPEG(SymInfo s,MetaAPEG e){
         return new MetaOptionalPEG(s,e);
     }
-    public MetaPKlenee newMetaPKlenee(SymInfo s,MetaAPEG e){
-        return new MetaPKlenee(s,e);
+    public MetaPKleene newMetaPKleene(SymInfo s,MetaAPEG e){
+        return new MetaPKleene(s,e);
     }
     public MetaAnyPEG newMetaAnyPEG(SymInfo s){
         return new MetaAnyPEG(s);
@@ -205,7 +205,7 @@ public class ASTFactoryImpl implements ASTFactory{
     public MetaUpdatePEG newMetaUpdatePEG(SymInfo s,List<Pair<MetaAttribute,MetaExpr>> assigs){
         return new MetaUpdatePEG(s,assigs);
     }
-    public MetaBindPEG newMetaBindPEG(SymInfo s,String attribute,MetaAPEG p){
+    public MetaBindPEG newMetaBindPEG(SymInfo s, Attribute attribute,MetaAPEG p){
         return new MetaBindPEG(s,attribute,p);
     }
     public MetaTyMap newMetaTyMap(SymInfo s,MetaType tyParameter){
@@ -244,14 +244,14 @@ public class ASTFactoryImpl implements ASTFactory{
     public NotPEG newNotPEG(SymInfo s,APEG e){
         return new NotPEG(s,e);
     }
-    public KleneePEG newStarPEG(SymInfo s,APEG e){
-        return new KleneePEG(s,e);
+    public KleenePEG newStarPEG(SymInfo s,APEG e){
+        return new KleenePEG(s,e);
     }
     public OptionalPEG newOptionalPEG(SymInfo s,APEG e){
         return new OptionalPEG(s,e);
     }
-    public PKlenee newPositiveKleneePEG(SymInfo s,APEG e){
-        return new PKlenee(s,e);
+    public PKleene newPositiveKleenePEG(SymInfo s,APEG e){
+        return new PKleene(s,e);
     }
     public ChoicePEG newChoicePEG(SymInfo s,APEG leftPeg,APEG rightPeg){
         return new ChoicePEG(s,leftPeg,rightPeg);
@@ -259,10 +259,10 @@ public class ASTFactoryImpl implements ASTFactory{
     public SeqPEG newSequencePEG(SymInfo s,APEG[] p){
         return new SeqPEG(s,p);
     }
-    public UpdatePEG newAssignment(SymInfo s,List<Pair<Attribute,Expr>> assigs){
+    public UpdatePEG newUpdatePEG(SymInfo s,List<Pair<Attribute,Expr>> assigs){
         return new UpdatePEG(s,assigs);
     }
-    public BindPEG newBindPEG(SymInfo s,String attribute,APEG peg){
+    public BindPEG newBindPEG(SymInfo s, Attribute attribute,APEG peg){
         return new BindPEG(s,attribute,peg);
     }
     public ChoiceList newChoiceList(SymInfo s,CharInterval i){
@@ -270,6 +270,9 @@ public class ASTFactoryImpl implements ASTFactory{
     }
     public AnyPEG newAnyPEG(SymInfo s){
         return new AnyPEG(s);
+    }
+    public LambdaPEG newLambdaPEG(SymInfo s) {
+	return new LambdaPEG(s);
     }
     public LitPEG newLiteralPEG(SymInfo s,String lit){
         return new LitPEG(s,lit);

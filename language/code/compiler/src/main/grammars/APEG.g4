@@ -293,9 +293,13 @@ condExpr returns[Expr exp]:
 or_cond returns[Expr exp]:
    and_cond {$exp = $and_cond.exp;}
   |
-   {List<Expr> list = new ArrayList<Expr>();}
-   e1=and_cond {list.add($e1.exp);} (OP_OR e2=and_cond {list.add($e2.exp);})+
-   {$exp = factory.newLeftAssocBinOpList((Expr ex1, Expr ex2) -> factory.newOrExpr(null, ex1, ex2), list);}
+   {List<Expr> list = new ArrayList<Expr>(); List<BinOPFactory> funcs = new ArrayList<BinOPFactory>();}
+   e1=and_cond {list.add($e1.exp);} (OP_OR e2=and_cond
+   {list.add($e2.exp);
+     funcs.add((Expr ex1, Expr ex2) -> factory.newOrExpr(new SymInfo($OP_OR.line, $OP_OR.pos), ex1, ex2));
+   }
+   )+
+   {$exp = factory.newLeftAssocBinOpList(list, funcs);}
 ;
 
 and_cond returns[Expr exp]:

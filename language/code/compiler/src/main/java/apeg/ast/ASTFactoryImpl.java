@@ -314,9 +314,11 @@ public class ASTFactoryImpl implements ASTFactory{
     	return new Grammar(s, name, opts, rules);
     }
     
-    public BinaryOP newLeftAssocBinOpList(BinOPFactory f, List<Expr> l){
-        BinaryOP root = f.newOP(l.remove(0), l.remove(0));
+    public BinaryOP newLeftAssocBinOpList(List<Expr> l, List<BinOPFactory> funcs){
+	BinOPFactory f = funcs.remove(0);
+	BinaryOP root = f.newOP(l.remove(0), l.remove(0));
         for(Expr e : l){
+	    f = funcs.remove(0);
             root = f.newOP(root,e);
         }
         return root;

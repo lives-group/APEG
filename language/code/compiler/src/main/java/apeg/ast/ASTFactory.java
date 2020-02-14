@@ -1065,6 +1065,6 @@ public interface ASTFactory {
 	 *
 	 */
 	 
-    public BinaryOP newLeftAssocBinOpList(BinOPFactory f,List<Expr> l);
+    public BinaryOP newLeftAssocBinOpList(List<Expr> l, List<BinOPFactory> funcs);
 
 }

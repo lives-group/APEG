@@ -3,6 +3,7 @@ package apeg.visitor;
 import apeg.visitor.*;
 import apeg.ast.*;
 import apeg.ast.expr.Attribute;
+import apeg.ast.expr.AttributeGrammar;
 import apeg.ast.expr.BoolLit;
 import apeg.ast.expr.CharLit;
 import apeg.ast.expr.FloatLit;
@@ -68,10 +69,12 @@ import apeg.ast.expr.operators.MetaLessEq;
 import apeg.ast.expr.operators.MetaMapAcces;
 import apeg.ast.expr.operators.MetaMapExtension;
 import apeg.ast.expr.operators.MetaMult;
+import apeg.ast.expr.operators.MetaMod;
 import apeg.ast.expr.operators.MetaNotEq;
 import apeg.ast.expr.operators.MetaOr;
 import apeg.ast.expr.operators.MetaSub;
 import apeg.ast.expr.operators.Mult;
+import apeg.ast.expr.operators.Mod;
 import apeg.ast.expr.operators.Not;
 import apeg.ast.expr.operators.NotEq;
 import apeg.ast.expr.operators.Or;
@@ -118,6 +121,12 @@ public class RuleCounterVisitor extends Visitor {
 		
 	}
 
+	@Override
+	public void visit(AttributeGrammar n) {
+		// TODO Auto-generated method stub
+		
+	}
+    
 	@Override
 	public void visit(BoolLit n) {
 		// TODO Auto-generated method stub
@@ -425,6 +434,12 @@ public class RuleCounterVisitor extends Visitor {
 	}
 
 	@Override
+	public void visit(Mod n) {
+		// TODO Auto-generated method stub
+		
+	}    
+    
+	@Override
 	public void visit(Not n) {
 		// TODO Auto-generated method stub
 		
@@ -532,6 +547,12 @@ public class RuleCounterVisitor extends Visitor {
 		
 	}
 
+	@Override
+	public void visit(MetaMod n) {
+		// TODO Auto-generated method stub
+		
+	}
+    
 	@Override
 	public void visit(MetaNot n) {
 		// TODO Auto-generated method stub

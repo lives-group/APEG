@@ -280,14 +280,17 @@ expr returns[Expr exp]: condExpr {$exp = $condExpr.exp;};
 condExpr returns[Expr exp]:
    or_cond {$exp = $or_cond.exp;}
  |
-   e1=or_cond (op=equalityOp e2=or_cond
+   {List<Expr> list = new ArrayList<Expr>(); List<BinOPFactory> funcs = new ArrayList<BinOPFactory>();}
+   e1=or_cond {list.add($e1.exp);} (op=equalityOp e2=or_cond
    	 {
+   	 list.add($e2.exp);
    	  if($op.isequals) // if operator is EQUALS
-        $exp = factory.newEqualityExpr(new SymInfo($op.line, $op.pos), $e1.exp, $e2.exp);
+        funcs.add((Expr ex1, Expr ex2) -> factory.newEqualityExpr(new SymInfo($op.line, $op.pos), ex1, ex2));
       else // the operator is not equals
-        $exp = factory.newNotEqExpr(new SymInfo($op.line, $op.pos), $e1.exp, $e2.exp);
+       funcs.add((Expr ex1, Expr ex2) -> factory.newNotEqExpr(new SymInfo($op.line, $op.pos), ex1, ex2));
    	 }
    )+
+   {$exp = factory.newLeftAssocBinOpList(list, funcs);}
 ;
 
 or_cond returns[Expr exp]:
@@ -305,25 +308,50 @@ or_cond returns[Expr exp]:
 and_cond returns[Expr exp]:
   bool_expr {$exp = $bool_expr.exp;}    
  |
-  e1=bool_expr (OP_AND e2=bool_expr /*{$exp = factory.newAndExpr($e1.exp, $e2.exp);}*/)+
+  {List<Expr> list = new ArrayList<Expr>(); List<BinOPFactory> funcs = new ArrayList<BinOPFactory>();}
+  e1=bool_expr {list.add($e1.exp);} (OP_AND e2=bool_expr
+  {
+  list.add($e2.exp);
+  funcs.add((Expr ex1, Expr ex2) -> factory.newAndExpr(new SymInfo($OP_AND.line, $OP_AND.pos), ex1, ex2));
+  }
+  )+
+  {$exp = factory.newLeftAssocBinOpList(list, funcs);} 
 ;
 
 bool_expr returns[Expr exp]:  
    aexpr {$exp = $aexpr.exp;}
  |
   e1=aexpr relOp e2=aexpr
-   /*{$exp = factory.newBinaryExpr($e1.exp, $e2.exp, $relOp.op);}*/
+  {
+  if($relOp.op == 1) // LT
+    $exp = factory.newLessExpr(new SymInfo($relOp.line, $relOp.pos), $e1.exp, $e2.exp);
+  else if ($relOp.op == 2) // GT
+    $exp = factory.newGreaterExpr(new SymInfo($relOp.line, $relOp.pos), $e1.exp, $e2.exp);
+  else if ($relOp.op == 3) // LE
+    $exp = factory.newLessEqExpr(new SymInfo($relOp.line, $relOp.pos), $e1.exp, $e2.exp);
+  else if ($relOp.op == 4) // GE
+    $exp = factory.newGreaterEqExpr(new SymInfo($relOp.line, $relOp.pos), $e1.exp, $e2.exp);
+  }
 ;
 
 aexpr returns[Expr exp]:
     termOptUnary {$exp = $termOptUnary.exp;}
   |
-    termOptUnary (addOp term)+
-     /*{$exp = factory.newBinaryExpr($termOptUnary.exp, $term.exp, $addOp.op);}*/
+    {List<Expr> list = new ArrayList<Expr>(); List<BinOPFactory> funcs = new ArrayList<BinOPFactory>();}
+    e1=termOptUnary {list.add($e1.exp);} (addOp e2=term
+    {
+    list.add($e2.exp);
+    if($addOp.op) // it is an add
+        funcs.add((Expr ex1, Expr ex2) -> factory.newAddExpr(new SymInfo($addOp.line, $addOp.pos), ex1, ex2));
+    else // it is a SUB
+        funcs.add((Expr ex1, Expr ex2) -> factory.newSubExpr(new SymInfo($addOp.line, $addOp.pos), ex1, ex2));
+    }
+    )+
+    {$exp = factory.newLeftAssocBinOpList(list, funcs);} 
 ;
 
 termOptUnary returns[Expr exp]:
-   OP_SUB term /*{$exp = factory.newMinusExpr($term.exp);}*/
+   OP_SUB term {$exp = factory.newUMinusExpr(new SymInfo($OP_SUB.line, $OP_SUB.pos), $term.exp);}
   |
    term {$exp = $term.exp;}
 ;
@@ -331,50 +359,61 @@ termOptUnary returns[Expr exp]:
 term returns[Expr exp]:
    factor {$exp = $factor.exp;}
   |
-   e1=factor (mulOp e2=factor)+
-    /*{$exp = factory.newBinaryExpr($e1.exp, $e2.exp, $mulOp.op);}*/
+   {List<Expr> list = new ArrayList<Expr>(); List<BinOPFactory> funcs = new ArrayList<BinOPFactory>();}
+   e1=factor (mulOp e2=factor
+   {
+   list.add($e2.exp);
+   if($mulOp.op == 1) // it is a mult operator
+     funcs.add((Expr ex1, Expr ex2) -> factory.newMultExpr(new SymInfo($mulOp.line, $mulOp.pos), ex1, ex2));
+   else if($mulOp.op == 2) // it is a div operator
+     funcs.add((Expr ex1, Expr ex2) -> factory.newDivExpr(new SymInfo($mulOp.line, $mulOp.pos), ex1, ex2));
+   else if($mulOp.op == 3) // it is a mod operator
+     funcs.add((Expr ex1, Expr ex2) -> factory.newModExpr(new SymInfo($mulOp.line, $mulOp.pos), ex1, ex2));
+   }
+   )+
+   {$exp = factory.newLeftAssocBinOpList(list, funcs);} 
 ;
 
 factor returns[Expr exp]:
    attribute_ref {$exp = $attribute_ref.exp;}
   |
-   number /*{$exp = $number.exp;}*/
+   number {$exp = $number.exp;}
   |
    STRING_LITERAL
     { 
       String s = $STRING_LITERAL.text;
       s = s.substring(1, s.length()-1);
-      /*$exp = factory.newStringExpr(s);*/
+      $exp = factory.newStringExpr(new SymInfo($STRING_LITERAL.line, $STRING_LITERAL.pos), s);
     }
   |
    '(' expr ')' {$exp = $expr.exp;}
   |
-   '!' f=factor /*{$exp = factory.newNotExpr($f.exp);}*/
+   t='!' f=factor {$exp = factory.newNotExpr(new SymInfo($t.line, $t.pos), $f.exp);}
   |
-   TRUE /*{$exp = factory.newBooleanExpr(true);}*/
+   TRUE {$exp = factory.newBooleanExpr(new SymInfo($TRUE.line, $TRUE.pos), true);}
   |
-   FALSE /*{$exp = factory.newBooleanExpr(false);}*/
+   FALSE {$exp = factory.newBooleanExpr(new SymInfo($FALSE.line, $FALSE.pos), false);}
   |
-   meta_peg /*{$exp = $meta_peg.exp;}*/
+   meta_peg {$exp = $meta_peg.exp;}
 ;
 
 attribute_ref returns[Attribute exp]:
-  ID /*{$exp = factory.newAttributeExpr($ID.text);}*/
+  ID {$exp = factory.newAttributeExpr(new SymInfo($ID.line, $ID.pos), $ID.text);}
  |
-  '$g' /*{$exp = factory.newAttributeGrammarExpr();}*/
+  t='$g' {$exp = factory.newAttributeGrammarExpr(new SymInfo($t.line, $t.pos));}
 ;
 
 number returns[Expr exp]:
-   INT_NUMBER /*{$exp = factory.newIntExpr(Integer.parseInt($INT_NUMBER.text));}*/
+   INT_NUMBER {$exp = factory.newIntExpr(new SymInfo($INT_NUMBER.line, $INT_NUMBER.pos), Integer.parseInt($INT_NUMBER.text));}
   |
-   REAL_NUMBER /*{$exp = factory.newFloatExpr(Double.parseDouble($REAL_NUMBER.text));}*/
+   REAL_NUMBER {$exp = factory.newFloatExpr(new SymInfo($REAL_NUMBER.line, $REAL_NUMBER.pos), Float.parseFloat($REAL_NUMBER.text));}
 ;
 
 actPars returns[List<Expr> list]:
-   /*{$list = new ArrayList<Expr>();}*/ e1=aexpr /*{$list.add($e1.exp);}*/
-    (',' e2=aexpr /*{$list.add($e2.exp);}*/)*
+   {$list = new ArrayList<Expr>();} e1=aexpr {$list.add($e1.exp);}
+    (',' e2=aexpr {$list.add($e2.exp);})*
   |
-    /*{$list = new ArrayList<Expr>();}*/
+    {$list = new ArrayList<Expr>();}
 ; 
 
 equalityOp returns[boolean isequals, int line, int pos]:
@@ -383,31 +422,30 @@ equalityOp returns[boolean isequals, int line, int pos]:
   OP_EQ {$isequals = true; $line = $OP_EQ.line; $line = $OP_EQ.pos;}
 ;
 
-relOp returns[int op]:
+relOp returns[int op, int line, int pos]:
  
-   OP_LT /*{$op = BinaryExprNode.Operator.LT;}*/
+   OP_LT {$op = 1; $line = $OP_LT.line; $pos = $OP_LT.pos;}
   |
-   OP_GT /*{$op = BinaryExprNode.Operator.GT;}*/
+   OP_GT {$op = 2; $line = $OP_GT.line; $pos = $OP_GT.pos;}
   |
-   OP_LE /*{$op = BinaryExprNode.Operator.LE;}*/
+   OP_LE {$op = 3; $line = $OP_LE.line; $pos = $OP_LE.pos;}
   |
-   OP_GE /*{$op = BinaryExprNode.Operator.GE;}*/
+   OP_GE {$op = 4; $line = $OP_GE.line; $pos = $OP_GE.pos;}
 ;
 
-addOp returns[boolean op]:
+addOp returns[boolean op, int line, int pos]:
    
-   OP_SUB /*{$op = BinaryExprNode.Operator.SUB;}*/
+   OP_SUB {$op = false; $line = $OP_SUB.line; $pos = $OP_SUB.pos;}
    |
-   OP_ADD /*{$op = BinaryExprNode.Operator.ADD;}*/
- 
+   OP_ADD {$op = false; $line = $OP_ADD.line; $pos = $OP_ADD.pos;}
 ;
 
-mulOp returns[int op]:
-   OP_MUL /*{$op = BinaryExprNode.Operator.MUL;}*/
+mulOp returns[int op, int line, int pos]:
+   OP_MUL {$op = 1; $line = $OP_MUL.line; $pos = $OP_MUL.pos;}
   |
-   OP_DIV /*{$op = BinaryExprNode.Operator.DIV;}*/
+   OP_DIV {$op = 2; $line = $OP_DIV.line; $pos = $OP_DIV.pos;}
   |
-   OP_MOD /*{$op = BinaryExprNode.Operator.MOD;}*/
+   OP_MOD {$op = 3; $line = $OP_MOD.line; $pos = $OP_MOD.pos;}
 ;
 
 /***

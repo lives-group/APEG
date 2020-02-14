@@ -13,9 +13,14 @@ public class ASTFactoryImpl implements ASTFactory{
     public Add newAddExpr(SymInfo s,Expr l,Expr r){
         return new Add(s,l,r);
     }
-    public Sub newMinusExpr(SymInfo s,Expr l,Expr r){
+    public Sub newSubExpr(SymInfo s,Expr l,Expr r){
         return new Sub(s,l,r);
     }
+
+    public Mod newModExpr(SymInfo s,Expr l,Expr r){
+        return new Mod(s,l,r);
+    }
+    
     public Mult newMultExpr(SymInfo s,Expr l,Expr r){
         return new Mult(s,l,r);
     }
@@ -67,12 +72,15 @@ public class ASTFactoryImpl implements ASTFactory{
     public Not newNotExpr(SymInfo s,Expr e){
         return new Not(s,e);
     }
-    public UMinus newUMinus(SymInfo s,Expr e){
+    public UMinus newUMinusExpr(SymInfo s,Expr e){
         return new UMinus(s,e);
     }
     public Attribute newAttributeExpr(SymInfo s,String name){
         return new Attribute(s,name);
     }
+    public AttributeGrammar newAttributeGrammarExpr(SymInfo s){
+        return new AttributeGrammar(s);
+    }    
     public IntLit newIntExpr(SymInfo s,int value){
         return new IntLit(s,value);
     }
@@ -96,6 +104,9 @@ public class ASTFactoryImpl implements ASTFactory{
     }
     public MetaSub newMetaSub(SymInfo s,MetaExpr ml,MetaExpr mr){
         return new MetaSub(s,ml,mr);
+    }
+    public MetaMod newMetaMod(SymInfo s,MetaExpr ml,MetaExpr mr){
+        return new MetaMod(s,ml,mr);
     }
     public MetaMult newMetaMult(SymInfo s,MetaExpr ml,MetaExpr mr){
         return new MetaMult(s,ml,mr);

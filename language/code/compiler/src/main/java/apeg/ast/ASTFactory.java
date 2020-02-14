@@ -33,7 +33,14 @@ public interface ASTFactory {
 	 * @return a attribute expression node
 	 */
 	public Attribute newAttributeExpr(SymInfo s, String attrName);
-	
+
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @return a attribute expression node
+	 */
+	public AttributeGrammar newAttributeGrammarExpr(SymInfo s);    
 
 	/*------------------------------------------------------
 	 * Expr: literals
@@ -197,7 +204,19 @@ public interface ASTFactory {
 	 * @return a map acces node
 	 */
 	public MapAcces newMapAcces(SymInfo s,Expr map,Expr index);
-	
+
+	/**
+	 * 
+	 * @param s
+	 * 				corresponding SymInfo node
+	 * @param left
+	 * 				the left-hand side expression
+	 * @param right
+	 * 				the right-hand side expression
+	 * @return a Mod expression node
+	 */
+	public Mod newModExpr(SymInfo s, Expr left, Expr right);
+    
 	/**
 	 * 
 	 * @param s
@@ -284,7 +303,7 @@ public interface ASTFactory {
 	 * @param Expr right: the right subexpression
 	 * @return an integer type node
 	 */
-	public Sub newMinusExpr(SymInfo s, Expr left, Expr right);
+	public Sub newSubExpr(SymInfo s, Expr left, Expr right);
 
 	
 
@@ -303,7 +322,7 @@ public interface ASTFactory {
 	 * @param e
 	 * @return
 	 */
-	public UMinus newUMinus(SymInfo s,Expr e);
+	public UMinus newUMinusExpr(SymInfo s,Expr e);
 
 	/*------------------------------------------------------
 	 * Rules 
@@ -695,7 +714,20 @@ public interface ASTFactory {
 	 * @return meta map extension node
 	 */
 	public MetaMapExtension newMetaMapExtension(SymInfo s,Expr map,Expr key,Expr value);
+
 	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @param ml
+	 * 			meta expression left
+	 * @param mr
+	 * 			meta expression right
+	 * @return
+	 */
+	public MetaMod newMetaMod(SymInfo s,MetaExpr ml,MetaExpr mr);    
+
+        /**
 	 * 
 	 * @param s
 	 * 			corresponding SymInfo node
@@ -1058,5 +1090,13 @@ public interface ASTFactory {
 	 * @return a grammar node
 	 */
 	public Grammar newGrammar(SymInfo s, String name, GrammarOption opts, List<RulePEG> rules);
+	
+	
+	/*
+	 * Create an left associative tree of some kind of binary operator based on a list.
+	 *
+	 */
+	 
+    public BinaryOP newLeftAssocBinOpList(List<Expr> l, List<BinOPFactory> funcs);
 
 }

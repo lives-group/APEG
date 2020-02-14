@@ -167,7 +167,7 @@ type returns[Type tp]:
 // The precedence of CHOICE operator is 1
 // CHOICE is an associative operator. We decided for right association because it may be faster to interpret
 peg_expr returns[APEG peg]:
-  peg_seq '/' e=peg_expr {$peg = factory.newChoicePEG($peg_seq.peg.getSymInfo(), $peg_seq.peg, $e.peg);}
+  peg_seq t='/' e=peg_expr {$peg = factory.newChoicePEG(new SymInfo($t.line, $t.pos), $peg_seq.peg, $e.peg);}
  |
   peg_seq {$peg = $peg_seq.peg;}
 ;
@@ -186,7 +186,7 @@ peg_seq returns[APEG peg]:
 peg_capturetext returns[APEG peg]:
    peg_unary_op {$peg = $peg_unary_op.peg;}
   |
-   attribute_ref '=' peg_unary_op {$peg = factory.newBindPEG($attribute_ref.exp.getSymInfo(), $attribute_ref.exp, $peg_unary_op.peg);}
+   attribute_ref t='=' peg_unary_op {$peg = factory.newBindPEG(new SymInfo($t.line, $t.pos), $attribute_ref.exp, $peg_unary_op.peg);}
 ;
 
 
@@ -197,11 +197,11 @@ peg_capturetext returns[APEG peg]:
 // &e (And-predicate with precedence 3)
 // !e (Not-predicate with precedence 3)
 peg_unary_op returns[APEG peg]:
-   peg_factor '?' {$peg = factory.newOptionalPEG($peg_factor.peg.getSymInfo(), $peg_factor.peg);}
+   peg_factor t= '?' {$peg = factory.newOptionalPEG(new SymInfo($t.line, $t.pos), $peg_factor.peg);}
   | 
-   peg_factor '*' {$peg = factory.newStarPEG($peg_factor.peg.getSymInfo(), $peg_factor.peg);}
+   peg_factor t='*' {$peg = factory.newStarPEG(new SymInfo($t.line, $t.pos), $peg_factor.peg);}
   | 
-   peg_factor '+' {$peg = factory.newPositiveKleenePEG($peg_factor.peg.getSymInfo(), $peg_factor.peg);}
+   peg_factor t='+' {$peg = factory.newPositiveKleenePEG(new SymInfo($t.line, $t.pos), $peg_factor.peg);}
   |
    peg_factor {$peg = $peg_factor.peg;}
   |
@@ -280,12 +280,12 @@ expr returns[Expr exp]: condExpr {$exp = $condExpr.exp;};
 condExpr returns[Expr exp]:
    or_cond {$exp = $or_cond.exp;}
  |
-   e1=or_cond (equalityOp e2=or_cond
+   e1=or_cond (op=equalityOp e2=or_cond
    	 {
-   	  if($equalityOp.isequals) // if operator is EQUALS
-        $exp = factory.newEqualityExpr($e1.exp.getSymInfo(), $e1.exp, $e2.exp);
+   	  if($op.isequals) // if operator is EQUALS
+        $exp = factory.newEqualityExpr(new SymInfo($op.line, $op.pos), $e1.exp, $e2.exp);
       else // the operator is not equals
-        $exp = factory.newNotEqExpr($e1.exp.getSymInfo(), $e1.exp, $e2.exp);
+        $exp = factory.newNotEqExpr(new SymInfo($op.line, $op.pos), $e1.exp, $e2.exp);
    	 }
    )+
 ;
@@ -371,10 +371,10 @@ actPars returns[List<Expr> list]:
     /*{$list = new ArrayList<Expr>();}*/
 ; 
 
-equalityOp returns[boolean isequals]:
-  OP_NE {$isequals = false;}
+equalityOp returns[boolean isequals, int line, int pos]:
+  OP_NE {$isequals = false; $line = $OP_NE.line; $line = $OP_NE.pos;}
  |
-  OP_EQ {$isequals = true;}
+  OP_EQ {$isequals = true; $line = $OP_EQ.line; $line = $OP_EQ.pos;}
 ;
 
 relOp returns[int op]:

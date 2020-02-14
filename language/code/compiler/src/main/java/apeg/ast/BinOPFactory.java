@@ -7,6 +7,6 @@ import apeg.ast.types.*;
 import apeg.util.*;
 import apeg.ast.Grammar.GrammarOption;
 
-interface BinOPFactory{
+public interface BinOPFactory {
     BinaryOP newOP(Expr e, Expr d);
 }

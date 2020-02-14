@@ -315,7 +315,7 @@ public class ASTFactoryImpl implements ASTFactory{
     }
     
     public BinaryOP newLeftAssocBinOpList(BinOPFactory f, List<Expr> l){
-        Expr root = l.remove(0);
+        BinaryOP root = f.newOP(l.remove(0), l.remove(0));
         for(Expr e : l){
             root = f.newOP(root,e);
         }

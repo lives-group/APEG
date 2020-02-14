@@ -272,7 +272,7 @@ single_pair: ID | INT_NUMBER | ESC;
 
 assign returns[Pair<Attribute, Expr> stm]:
   attribute_ref '=' expr ';'
-     /*{$stm = factory.newAssignment($attribute_ref.exp, $expr.exp);}*/
+     {$stm = new Pair<Attribute, Expr>($attribute_ref.exp, $expr.exp);}
 ;
 
 expr returns[Expr exp]: condExpr {$exp = $condExpr.exp;};
@@ -281,7 +281,12 @@ condExpr returns[Expr exp]:
    or_cond {$exp = $or_cond.exp;}
  |
    e1=or_cond (equalityOp e2=or_cond
-   	 /*{$exp = factory.newEqualityExpr($e1.exp, $e2.exp, $equalityOp.op);}*/
+   	 {
+   	  if($equalityOp.isequals) // if operator is EQUALS
+        $exp = factory.newEqualityExpr($e1.exp.getSymInfo(), $e1.exp, $e2.exp);
+      else // the operator is not equals
+        $exp = factory.newNotEqExpr($e1.exp.getSymInfo(), $e1.exp, $e2.exp);
+   	 }
    )+
 ;
 
@@ -366,10 +371,10 @@ actPars returns[List<Expr> list]:
     /*{$list = new ArrayList<Expr>();}*/
 ; 
 
-equalityOp returns[int op]:
-  OP_NE /*{$op = EqualityExprNode.EqualityOperator.NE;}*/
+equalityOp returns[boolean isequals]:
+  OP_NE {$isequals = false;}
  |
-  OP_EQ /*{$op = EqualityExprNode.EqualityOperator.EQ;}*/
+  OP_EQ {$isequals = true;}
 ;
 
 relOp returns[int op]:

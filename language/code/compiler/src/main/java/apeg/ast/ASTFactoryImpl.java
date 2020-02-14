@@ -313,5 +313,14 @@ public class ASTFactoryImpl implements ASTFactory{
     public Grammar newGrammar(SymInfo s, String name, GrammarOption opts, List<RulePEG> rules) {
     	return new Grammar(s, name, opts, rules);
     }
+    
+    public BinaryOP newLeftAssocBinOpList(BinOPFactory f, List<Expr> l){
+        Expr root = l.remove(0);
+        for(Expr e : l){
+            root = f.newOP(root,e);
+        }
+        return root;
+    }
+
 
 }

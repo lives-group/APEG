@@ -1058,5 +1058,13 @@ public interface ASTFactory {
 	 * @return a grammar node
 	 */
 	public Grammar newGrammar(SymInfo s, String name, GrammarOption opts, List<RulePEG> rules);
+	
+	
+	/*
+	 * Create an left associative tree of some kind of binary operator based on a list.
+	 *
+	 */
+	 
+    public BinaryOP newLeftAssocBinOpList(BinOPFactory f,List<Expr> l);
 
 }

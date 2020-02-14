@@ -8,7 +8,7 @@ public class KleenePEG extends APEG{
     
     public KleenePEG(SymInfo s,APEG e){
         super(s);
-        pegExp = e;
+        this.pegExp = e;
     }
     public APEG getPegExp(){
         return pegExp;

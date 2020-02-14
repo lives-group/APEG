@@ -8,6 +8,7 @@ public class IntLit extends Expr{
     
     public IntLit(SymInfo s,int value){
         super(s);
+        this.value = value;
     }
     public int getValue(){
         return value;

@@ -5,6 +5,8 @@ import apeg.util.*;
 import apeg.ast.expr.*;
 import apeg.ast.rules.*;
 import apeg.ast.types.*;
+import apeg.visitor.*;
+import apeg.ast.Grammar.GrammarOption;
 
 
 
@@ -14,20 +16,21 @@ public class Grammar11AST {
 		List<RulePEG>rules = new ArrayList<RulePEG>();
 		List<Pair<Type, String>>inh = new ArrayList<Pair<Type, String>>();
 		List<Expr>syn = new ArrayList<Expr>();
+		List<Expr>att = new ArrayList<Expr>();
 		
 		//Regra s
 		
 		APEG peg, lpeg, rpeg;
 		APEG pegs[] = new APEG[6];
 		
-		pegs[0] = new NonterminalPEG(new SymInfo(4, 4), "a1", null);
-		lpeg = new NonterminalPEG(new SymInfo(4, 10), "a2", null);
-		rpeg = new NonterminalPEG(new SymInfo(4, 17), "a4", null);
-		pegs[1] = new PKlenee(new SymInfo(4, 22), new ChoicePEG(new SymInfo(4, 15), lpeg, rpeg));
-		pegs[2] = new AndPEG(new SymInfo(4, 24), new NonterminalPEG(new SymInfo(4, 25), "a3", null));
-		pegs[3] = new NonterminalPEG(new SymInfo(4, 30), "b3", null);
+		pegs[0] = new NonterminalPEG(new SymInfo(4, 4), "a1", att);
+		lpeg = new NonterminalPEG(new SymInfo(4, 10), "a2", att);
+		rpeg = new NonterminalPEG(new SymInfo(4, 17), "a4", att);
+		pegs[1] = new KleenePEG(new SymInfo(4, 22), new ChoicePEG(new SymInfo(4, 15), lpeg, rpeg));
+		pegs[2] = new AndPEG(new SymInfo(4, 24), new NonterminalPEG(new SymInfo(4, 25), "a3", att));
+		pegs[3] = new NonterminalPEG(new SymInfo(4, 30), "b3", att);
 		//pegs[4] = new     'e'+
-		pegs[5] = new NonterminalPEG(new SymInfo(4, 40), "b1", null);
+		pegs[5] = new NonterminalPEG(new SymInfo(4, 40), "b1", att);
 		peg = new SeqPEG(new SymInfo(4, 4), pegs);
 		
 		RulePEG s = new RulePEG(new SymInfo(4, 1), "s", RulePEG.Annotation.NONE, inh, syn, peg);
@@ -39,15 +42,15 @@ public class Grammar11AST {
 		APEG lpeg1, rpeg1, lpeg2, rpeg2;
 		
 		lpeg = new LitPEG(new SymInfo(6, 7), "x");
-		pegs[0] = new ConstraintPEG(new SymInfo(6, 15), new StrLit(new SymInfo(6, 13), "y"));
+		pegs1[0] = new ConstraintPEG(new SymInfo(6, 15), new StrLit(new SymInfo(6, 13), "y"));
 		lpeg1 = new LitPEG(new SymInfo(6, 17), "www");
 		pegs2[0] = new LitPEG(new SymInfo(6, 25), "nada");
 		pegs2[1] = new LitPEG(new SymInfo(6, 32), "aver");
-		lpeg2 = new NonterminalPEG(new SymInfo(6, 38), "a1", null);
-		rpeg2 = new NonterminalPEG(new SymInfo(6, 45), "b0", null);
+		lpeg2 = new NonterminalPEG(new SymInfo(6, 38), "a1", att);
+		rpeg2 = new NonterminalPEG(new SymInfo(6, 45), "b0", att);
 		pegs2[2] = new ChoicePEG(new SymInfo(6, 43), lpeg2, rpeg2);
 		rpeg1 = new SeqPEG(new SymInfo(6, 24), pegs2);
-		pegs[1] = new ChoicePEG(new SymInfo(6, 22), lpeg1, rpeg1);
+		pegs1[1] = new ChoicePEG(new SymInfo(6, 22), lpeg1, rpeg1);
 		rpeg = new SeqPEG(new SymInfo(6, 12), pegs1);
 		peg = new ChoicePEG(new SymInfo(6, 10), lpeg, rpeg);
 		
@@ -55,17 +58,18 @@ public class Grammar11AST {
 		rules.add(a2);
 		
 		//Regra b0
+		APEG p[] = new APEG[2];
 		
-		pegs2[0] = new LitPEG(new SymInfo(8, 7), "(");
-		pegs2[1] = new NotPEG(new SymInfo(8, 10), new LitPEG(new SymInfo(8, 13), ")"));
-		peg = new SeqPEG(new SymInfo(8, 6), pegs2);
+		p[0] = new LitPEG(new SymInfo(8, 7), "(");
+		p[1] = new NotPEG(new SymInfo(8, 10), new LitPEG(new SymInfo(8, 13), ")"));
+		peg = new SeqPEG(new SymInfo(8, 6), p);
 		
 		RulePEG b0 = new RulePEG(new SymInfo(8, 1), "b0", RulePEG.Annotation.NONE, inh, syn, peg);
 		rules.add(b0);
 		
 		//Regra b2
 		
-		peg = new NotPEG(new SymInfo(9, 6), null);
+		peg = new AnyPEG(new SymInfo(9, 6));
 		
 		RulePEG b2 = new RulePEG(new SymInfo(9, 1), "b2", RulePEG.Annotation.NONE, inh, syn, peg);
 		rules.add(b2);
@@ -87,7 +91,7 @@ public class Grammar11AST {
 		//Regra a1
 		
 		lpeg = new LitPEG(new SymInfo(15, 6), "a");
-		lpeg1 = new PKlenee(new SymInfo(15, 14), new LitPEG(new SymInfo(15,12), "b"));
+		lpeg1 = new KleenePEG(new SymInfo(15, 14), new LitPEG(new SymInfo(15,12), "b"));
 		rpeg1 = new NotPEG(new SymInfo(15, 18), new LitPEG(new SymInfo(15, 20), "c"));
 		rpeg = new ChoicePEG(new SymInfo(15, 16), lpeg1, rpeg1);
 		peg = new ChoicePEG(new SymInfo(15, 9), lpeg, rpeg);
@@ -109,7 +113,12 @@ public class Grammar11AST {
 		RulePEG a4 = new RulePEG(new SymInfo(19, 1), "a4", RulePEG.Annotation.NONE, inh, syn, peg);
 		rules.add(a4);
 		
-		Grammar gram = new Grammar(new SymInfo(0,0), "notDiscardChanges", null, rules);
+		GrammarOption opts = new GrammarOption();
+		
+		Grammar gram = new Grammar(new SymInfo(0,0), "notDiscardChanges", opts, rules);
+		
+		TestVisitor v = new TestVisitor();
+		gram.accept(v);
 	}
 
 }

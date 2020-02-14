@@ -6,7 +6,7 @@ import apeg.ast.expr.operators.*;
 import apeg.ast.rules.*;
 import apeg.ast.types.*;
 import apeg.util.*;
-import java.util.*;
+
 
 
 public class TestVisitor extends Visitor{
@@ -248,16 +248,18 @@ public class TestVisitor extends Visitor{
 	@Override
 	public void visit(Add n) {
 		// TODO Auto-generated method stub
-		System.out.println("Operator Add");
+		
 		n.getLeft().accept(this);
+		System.out.println(" + ");
 		n.getRight().accept(this);
 	}
 
 	@Override
 	public void visit(And n) {
 		// TODO Auto-generated method stub
-		System.out.println("Operator: And");
+	
 		n.getLeft().accept(this);
+		System.out.println("&&");
 		n.getRight().accept(this);
 	}
 
@@ -288,8 +290,9 @@ public class TestVisitor extends Visitor{
 	@Override
 	public void visit(Equals n) {
 		// TODO Auto-generated method stub
-		System.out.println("Operator: Equals");
+		
 		n.getLeft().accept(this);
+		System.out.println(" == ");
 		n.getRight().accept(this);
 	}
 
@@ -340,8 +343,9 @@ public class TestVisitor extends Visitor{
 	@Override
 	public void visit(Mult n) {
 		// TODO Auto-generated method stub
-		System.out.println("Operator: Mult");
+		
 		n.getLeft().accept(this);
+		System.out.println("*");
 		n.getRight().accept(this);
 	}
 
@@ -501,7 +505,7 @@ public class TestVisitor extends Visitor{
 	@Override
 	public void visit(AnyPEG n) {
 		// TODO Auto-generated method stub
-		System.out.println("Any peg");
+		System.out.println(".");
 		
 	}
 
@@ -534,15 +538,21 @@ public class TestVisitor extends Visitor{
 	@Override
 	public void visit(ConstraintPEG n) {
 		// TODO Auto-generated method stub
-		System.out.println("Constraint peg");
+		
+		System.out.println("{ ? ");
+		
 		n.getExpr().accept(this);
+		System.out.println("}");
 	}
 
 	@Override
 	public void visit(KleenePEG n) {
 		// TODO Auto-generated method stub
-		System.out.println("Star Kleene peg");
+		System.out.println("(");
 		n.getPegExp().accept(this);
+		System.out.println(")*");
+		
+		
 	}
 
        @Override
@@ -560,14 +570,22 @@ public class TestVisitor extends Visitor{
 	public void visit(NonterminalPEG n) {
 		// TODO Auto-generated method stub
 		
-		System.out.println("'" + n.getName() + "'");
+		System.out.println(n.getName());
+		System.out.println("<");
+		for(Expr args: n.getArgs()) {
+			
+			args.accept(this);
+			System.out.println(" , ");
+			break;
+		}
+		System.out.println(">");
 		
 	}
 
 	@Override
 	public void visit(NotPEG n) {
 		// TODO Auto-generated method stub
-		System.out.println("Not peg");
+		System.out.println("!");
 		n.getPegExp().accept(this);
 	}
 
@@ -581,11 +599,8 @@ public class TestVisitor extends Visitor{
 	@Override
 	public void visit(PKleene n) {
 		// TODO Auto-generated method stub
-<<<<<<< HEAD
-		
-=======
+
 		System.out.println("Plus Kleene peg");
->>>>>>> 6e49fb2bcb9198a3f52bbd6be2331df701c116df
 		n.getPegExp().accept(this);
 		System.out.println(")*");
 	}
@@ -614,27 +629,39 @@ public class TestVisitor extends Visitor{
 		};
 		
 		System.out.println(n.getRuleName());
+		
 		if(n.getInh().isEmpty()) {
 			if(n.getSyn().isEmpty()) {
-				System.out.println(":");
+				System.out.println(" ");
 			}
 			else {
-				System.out.println("returns[");
-				for(Expr e: n.getSyn()) {
-					
-					e.accept(this);
+				System.out.println("returns[ ");
+				for(Expr syn: n.getSyn()) {
+					syn.accept(this);
 				}
 				System.out.println("]");
 			}
 		}
 		else {
+			
 			System.out.println("[");
 			for(Pair<Type, String>inh: n.getInh()) {
 				inh.getFirst().accept(this);
 				System.out.println(inh.getSecond());
 			}
+			System.out.println("]");
+			if(n.getSyn().isEmpty()) {
+				System.out.println(" ");
+			}
+			else {
+				System.out.println("returns[ ");
+				for(Expr syn: n.getSyn()) {
+					syn.accept(this);
+				}
+				System.out.println("]");
+			}
 		}
-		System.out.println("]");
+		
 		System.out.println(":");
 		
 		
@@ -666,7 +693,9 @@ public class TestVisitor extends Visitor{
 			assigs.getFirst().accept(this);
 			System.out.println(" = ");
 			assigs.getSecond().accept(this);
+			break;
 		}
+		System.out.println(";");
 		
 	}
 
@@ -731,20 +760,23 @@ public class TestVisitor extends Visitor{
 		System.out.println("apeg " + n.getName());
 		System.out.println("options {");
 		
-		/*if(n.getOptions().memoize == true) {
-			System.out.println("  memoize=false;");
-		}
-		if(n.getOptions().memoize == false) {
-		    System.out.println("  memoize=false;");
-		}
-		
-		if(n.getOptions().adaptable == true) {
-			System.out.println("  adaptable=true;");
+		/*if(n.getOptions().adaptable == false) {
+			if(n.getOptions().memoize == false) {
+				if(n.getOptions().usual_semantics == true) {
+					System.out.println(" ");
+				}
+				else {
+					System.out.println("  memoize=true");
+				}
+			}
+			
 		}
 		else {
-			System.out.println(" ");
+			System.out.println(" adaptable=true");
 		}
 		*/
+		
+		
 		
 		
 		System.out.println("}");

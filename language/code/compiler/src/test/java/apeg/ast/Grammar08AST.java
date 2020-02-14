@@ -7,6 +7,7 @@ import apeg.ast.expr.operators.*;
 import apeg.ast.rules.*;
 import apeg.ast.types.*;
 import apeg.ast.Grammar;
+import apeg.visitor.TestVisitor;
 
 
 public class Grammar08AST {
@@ -54,6 +55,7 @@ public class Grammar08AST {
 		
 		//Regra a
 		APEG pegs1[] = new APEG[3];
+		APEG pegs2[] = new APEG [2];
 		
 		pegs1[0] = new LitPEG(new SymInfo(13, 5), "a");  
 		arg = new ArrayList<Expr>();
@@ -65,7 +67,6 @@ public class Grammar08AST {
 		r = new IntLit(new SymInfo(13, 21), 1);
 		assigs.add(new Pair<Attribute, Expr>(new Attribute(new SymInfo(13, 15), "na"), new Add(new SymInfo(13, 20), l, r)));
 		lpeg = new UpdatePEG(new SymInfo(13, 17), assigs);
-		APEG pegs2[] = new APEG[2];
 		pegs2[0] = new LitPEG(new SymInfo(15, 5), "a");
 		assigs = new ArrayList<Pair<Attribute, Expr>>();
 		assigs.add(new Pair<Attribute, Expr>(new Attribute(new SymInfo(15, 9), "na"), new IntLit(new SymInfo(15, 14), 1)));
@@ -82,22 +83,25 @@ public class Grammar08AST {
 		
 		//Regra b
 		
-		pegs1[0] = new LitPEG(new SymInfo(19, 5), "b");  
+		APEG pegs3[] = new APEG[3];
+		APEG pegs4[] = new APEG[2];
+		
+		pegs3[0] = new LitPEG(new SymInfo(19, 5), "b");  
 		arg = new ArrayList<Expr>();
 		arg.add(new Attribute(new SymInfo(19, 10), "nb"));
-		pegs1[1] = new NonterminalPEG(new SymInfo(19, 8),"b", arg);
+		pegs3[1] = new NonterminalPEG(new SymInfo(19, 8),"b", arg);
 		assigs = new ArrayList<Pair<Attribute, Expr>>();
 		l = new Attribute(new SymInfo(19, 18), "nb");
 		r = new IntLit(new SymInfo(19, 21), 1);
 		assigs.add(new Pair<Attribute, Expr>(new Attribute(new SymInfo(19, 15), "nb"), new Add(new SymInfo(19, 20), l, r)));
 		lpeg = new UpdatePEG(new SymInfo(19, 17), assigs);
-		pegs2[0] = new LitPEG(new SymInfo(21, 5), "b");
+		pegs4[0] = new LitPEG(new SymInfo(21, 5), "b");
 		assigs = new ArrayList<Pair<Attribute, Expr>>();
 		assigs.add(new Pair<Attribute, Expr>(new Attribute(new SymInfo(21, 9), "nb"), new IntLit(new SymInfo(21, 14), 1)));
-		pegs2[1] = new UpdatePEG(new SymInfo(21, 12), assigs);
-		rpeg = new SeqPEG(new SymInfo(21, 4), pegs2);
-		pegs1[2] = new ChoicePEG(new SymInfo(20, 5), lpeg, rpeg);
-		peg = new SeqPEG(new SymInfo(19, 4), pegs1);
+		pegs4[1] = new UpdatePEG(new SymInfo(21, 12), assigs);
+		rpeg = new SeqPEG(new SymInfo(21, 4), pegs4);
+		pegs3[2] = new ChoicePEG(new SymInfo(20, 5), lpeg, rpeg);
+		peg = new SeqPEG(new SymInfo(19, 4), pegs3);
 		
 		syn = new ArrayList<Expr>();
 		syn.add(new Attribute(new SymInfo(18, 15), "nb"));
@@ -106,23 +110,26 @@ public class Grammar08AST {
 		rules.add(b);
 		
 		//Regra c
+		
+		APEG pegs5[] = new APEG[3];
+		APEG pegs6[] = new APEG[2];
 			
-		pegs1[0] = new LitPEG(new SymInfo(25, 5), "c");  
+		pegs5[0] = new LitPEG(new SymInfo(25, 5), "c");  
 		arg = new ArrayList<Expr>();
 		arg.add(new Attribute(new SymInfo(25, 10), "nc"));
-		pegs1[1] = new NonterminalPEG(new SymInfo(25, 8),"c", arg);
+		pegs5[1] = new NonterminalPEG(new SymInfo(25, 8),"c", arg);
 		assigs = new ArrayList<Pair<Attribute, Expr>>();
 		l = new Attribute(new SymInfo(25, 18), "nc");
 		r = new IntLit(new SymInfo(25, 21), 1);
 		assigs.add(new Pair<Attribute, Expr>(new Attribute(new SymInfo(25, 15), "nc"), new Add(new SymInfo(25, 20), l, r)));
 		lpeg = new UpdatePEG(new SymInfo(25, 17), assigs);
-		pegs2[0] = new LitPEG(new SymInfo(27, 5), "c");
+		pegs6[0] = new LitPEG(new SymInfo(27, 5), "c");
 		assigs = new ArrayList<Pair<Attribute, Expr>>();
 		assigs.add(new Pair<Attribute, Expr>(new Attribute(new SymInfo(27, 9), "nc"), new IntLit(new SymInfo(27, 14), 1)));
-		pegs2[1] = new UpdatePEG(new SymInfo(27, 12), assigs);
-		rpeg = new SeqPEG(new SymInfo(27, 4), pegs2);
-		pegs1[2] = new ChoicePEG(new SymInfo(26, 5), lpeg, rpeg);
-		peg = new SeqPEG(new SymInfo(25, 4), pegs1);
+		pegs6[1] = new UpdatePEG(new SymInfo(27, 12), assigs);
+		rpeg = new SeqPEG(new SymInfo(27, 4), pegs6);
+		pegs5[2] = new ChoicePEG(new SymInfo(26, 5), lpeg, rpeg);
+		peg = new SeqPEG(new SymInfo(25, 4), pegs5);
 		
 		syn = new ArrayList<Expr>();
 		syn.add(new Attribute(new SymInfo(24, 15), "nc"));
@@ -130,5 +137,8 @@ public class Grammar08AST {
 		rules.add(c);
  		
 		Grammar gram = new Grammar(new SymInfo(0,0), "notDiscardChanges", null, rules);
+		
+		//TestVisitor v = new TestVisitor();
+		//gram.accept(v);
 	}
 }

@@ -8,6 +8,7 @@ import apeg.ast.rules.*;
 import apeg.ast.types.*;
 import apeg.ast.Grammar;
 import apeg.ast.Grammar.GrammarOption;
+import apeg.visitor.TestVisitor;
 
 
 public class Grammar07AST {
@@ -33,14 +34,19 @@ public class Grammar07AST {
 		
 		//Regra b
 		
+		inh = new ArrayList<Pair<Type, String>>();
+		syn = new ArrayList<Expr>();
+		
 		APEG pegs[] = new APEG[3];
 		APEG pegs1[] = new APEG[3];
+		APEG pegs2[] = new APEG[3];
 		
 		List<Pair<Attribute, Expr>>assigs = new ArrayList<Pair<Attribute, Expr>>();
 		Expr l, r;
 		
 		l = new Attribute(new SymInfo(15, 9), "x");
 		r = new IntLit(new SymInfo(15, 13), 1);
+		assigs = new ArrayList<Pair<Attribute, Expr>>();
 		assigs.add(new Pair<Attribute, Expr>(new Attribute(new SymInfo(15, 5), "x"), new Add(new SymInfo(15, 11), l, r) ));
 		pegs[0] = new UpdatePEG(new SymInfo(15, 7), assigs);
 		pegs[1] = new LitPEG(new SymInfo(15, 19), "0");
@@ -58,7 +64,7 @@ public class Grammar07AST {
 		assigs = new ArrayList<Pair<Attribute, Expr>>();
 		assigs.add(new Pair<Attribute, Expr>(new Attribute(new SymInfo(17, 24), "x1"), new Attribute(new SymInfo(17, 29), "x")));
 		lpeg1 = new UpdatePEG(new SymInfo(17, 27), assigs);
-		APEG pegs2[] = new APEG[3];
+		
 		assigs = new ArrayList<Pair<Attribute, Expr>>();
 		l = new Attribute(new SymInfo(19, 9), "x");
 		r = new IntLit(new SymInfo(19, 13), 1);
@@ -70,7 +76,7 @@ public class Grammar07AST {
 		pegs2[2] = new UpdatePEG(new SymInfo(19, 27), assigs);
 		rpeg1 = new SeqPEG(new SymInfo(19, 3), pegs2);
 		pegs1[2] = new ChoicePEG(new SymInfo(18, 3), lpeg1, rpeg1);
-		rpeg = new SeqPEG(new SymInfo(17, 3), pegs);
+		rpeg = new SeqPEG(new SymInfo(17, 3), pegs1);
 		pegs[2] = new ChoicePEG(new SymInfo(16, 3), lpeg, rpeg);
 		peg = new SeqPEG(new SymInfo(15, 3), pegs);
 		
@@ -80,9 +86,12 @@ public class Grammar07AST {
 		RulePEG b = new RulePEG(new SymInfo(14, 1), "b", RulePEG.Annotation.NONE, inh, syn, peg);
 		rules.add(b);
 		
+		GrammarOption opts = new GrammarOption();
 		
+		Grammar gram = new Grammar(new SymInfo(0,0), "choiceback",opts, rules);
 		
-		Grammar gram = new Grammar(new SymInfo(0,0), "choiceback", null, rules);
+		//TestVisitor v = new TestVisitor();
+		//gram.accept(v);
 	}
 
 }

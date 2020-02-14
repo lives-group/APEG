@@ -25,11 +25,11 @@ public class Grammar04AST {
 		
 	
 		arg.add(new IntLit(new SymInfo(15, 22), 0));
-	
+		arg.add(new Attribute(new SymInfo(15, 24), "k"));
 		
 		peg = new NonterminalPEG(new SymInfo(15, 20), "b", arg );
 		
-		inh.add(new Pair<Type, String>(new TyInt(new SymInfo(15,15)), "k"));
+		syn.add(new Attribute(new SymInfo(15, 15), "k"));
 		
 		
 		RulePEG a = new RulePEG(new SymInfo(15, 1), "a", RulePEG.Annotation.NONE, inh, syn, peg);
@@ -47,27 +47,32 @@ public class Grammar04AST {
 		APEG p2[] = new APEG[3];
 		APEG p3[] = new APEG[3];
 		APEG lp, rp, leftPeg, rightPeg;
-		Expr l, r;
+		Expr l, r, l1, l2, r1, r2;
 		
 		l = new Attribute(new SymInfo(18, 9), "x");
-		r = new IntLit(new SymInfo(18, 13), '1');
+		r = new IntLit(new SymInfo(18, 13), 1);
 		assigs.add(new Pair<Attribute, Expr>(new Attribute(new SymInfo(18, 5), "x"), new Add(new SymInfo(18, 11), l ,r)));
 		p[0] = new UpdatePEG(new SymInfo(18, 7), assigs);
-		p[1] =new LitPEG(new SymInfo(18, 19), "1");
+		p[1] =new LitPEG(new SymInfo(18, 19), "0");
+		assigs = new ArrayList<Pair<Attribute, Expr>>();
 		assigs.add(new Pair<Attribute, Expr>(new Attribute(new SymInfo(18, 24), "x1"), new Attribute(new SymInfo(18, 29), "x")));
 		lp = new UpdatePEG(new SymInfo(18, 27), assigs);
-		l = new Attribute(new SymInfo(20, 9), "x");
-		r = new IntLit(new SymInfo(20, 13), '1');
-		assigs.add(new Pair<Attribute, Expr>(new Attribute(new SymInfo(20, 5), "x"), new Add(new SymInfo(20, 11), l, r)));
+		l1 = new Attribute(new SymInfo(20, 9), "x");
+		r1 = new IntLit(new SymInfo(20, 13), 1);
+		assigs = new ArrayList<Pair<Attribute, Expr>>();
+		assigs.add(new Pair<Attribute, Expr>(new Attribute(new SymInfo(20, 5), "x"), new Add(new SymInfo(20, 11), l1, r1)));
 		p2[0] = new UpdatePEG(new SymInfo(20, 7), assigs);
 		p2[1] = new LitPEG(new SymInfo(20, 19), "1");
+		assigs = new ArrayList<Pair<Attribute, Expr>>();
 		assigs.add(new Pair<Attribute, Expr>(new Attribute(new SymInfo(20, 24), "x1"), new Attribute(new SymInfo(20, 29), "x")));
 		leftPeg = new UpdatePEG(new SymInfo(20, 27), assigs);
-		l = new Attribute(new SymInfo(22, 9), "X" );
-	    r = new IntLit(new SymInfo(22, 13), '1');
-		assigs.add(new Pair<Attribute, Expr>(new Attribute(new SymInfo(22, 5), "x"), new Add(new SymInfo(22, 11), l ,r)));
+		l2= new Attribute(new SymInfo(22, 9), "x" );
+	    r2 = new IntLit(new SymInfo(22, 13), 1);
+	    assigs = new ArrayList<Pair<Attribute, Expr>>();
+		assigs.add(new Pair<Attribute, Expr>(new Attribute(new SymInfo(22, 5), "x"), new Add(new SymInfo(22, 11), l2 ,r2)));
 		p3[0] = new UpdatePEG(new SymInfo(22, 7), assigs);
 		p3[1] = new LitPEG(new SymInfo(22, 19), "2");
+		assigs = new ArrayList<Pair<Attribute, Expr>>();
 		assigs.add(new Pair<Attribute, Expr>(new Attribute(new SymInfo(22, 24), "x1"), new Attribute(new SymInfo(22, 29), "x")));
 		p3[2] = new UpdatePEG(new SymInfo(22, 27), assigs);
 		rightPeg = new SeqPEG(new SymInfo(22, 5), p3);
@@ -82,42 +87,37 @@ public class Grammar04AST {
 		
 		//Regra c
 		
-		inh = new ArrayList<Pair<Type, String>>();
 		syn = new ArrayList<Expr>();
+		inh = new ArrayList<Pair<Type, String>>();
 		assigs = new ArrayList<Pair<Attribute, Expr>>();
 		
-		APEG pegs[] = new APEG[4];
+		syn.add(new Attribute(new SymInfo(26, 15), "x"));
 		
-		syn.add(new Attribute(new SymInfo(26, 15), "x")); 
+		APEG p4[] = new APEG[2];
+		APEG p5[] = new APEG[2];
+		APEG pe;
 		
-
-		assigs.add(new Pair<Attribute, Expr>(new Attribute(new SymInfo(27,5), "x"), new IntLit(new SymInfo(27,9), '0')));
-		pegs[0] = new UpdatePEG(new SymInfo(27, 5), assigs);
-		
-		APEG e;
-		
+		assigs.add(new Pair<Attribute, Expr>(new Attribute(new SymInfo(27, 5), "x"), new IntLit(new SymInfo(27, 9), 0)));
+		p4[0] = new UpdatePEG(new SymInfo(27, 7), assigs);
+		l = new Attribute(new SymInfo(29, 11), "x");
+		r = new IntLit(new SymInfo(29, 15), 1);
 		assigs = new ArrayList<Pair<Attribute, Expr>>();
-		Expr l1, r1;
-		
-		l1 = new Attribute(new SymInfo(29,11), "x");
-		r1 = new IntLit(new SymInfo(29,15), 1);
-		assigs.add(new Pair<Attribute, Expr>(new Attribute(new SymInfo(29,7), "x"), new Add(new SymInfo(29,11), l1, r1)));
-		pegs[2] = new UpdatePEG(new SymInfo(29,7), assigs);
-		pegs[3] = new LitPEG(new SymInfo(30,6), "2");
-		e = new SeqPEG(new SymInfo(29,5), pegs);
-		pegs[1] = new PKlenee(new SymInfo(28, 3), e);
-		peg = new SeqPEG(new SymInfo(27, 3), pegs);
+		assigs.add(new Pair<Attribute, Expr>(new Attribute(new SymInfo(29, 7), "x"), new Add(new SymInfo(29, 13), l, r)));
+		p5[0] = new UpdatePEG(new SymInfo(29, 9),assigs);
+		p5[1] = new LitPEG(new SymInfo(30, 6), "2");
+		pe = new SeqPEG(new SymInfo(29, 5), p5);
+		p4[1] = new KleenePEG(new SymInfo(31, 5), pe);
+		peg = new SeqPEG(new SymInfo(27, 3), p4);
 		
 
 		RulePEG c = new RulePEG(new SymInfo(26, 1), "c", RulePEG.Annotation.NONE, inh, syn, peg);
 		rules.add(c);
 		
-		
+		//boolean teste = true == 2 == 1;
 		
 		Grammar gram = new Grammar(new SymInfo(0,0), "notDiscardChanges", null, rules);
 		
-		TestVisitor v = new TestVisitor();
-		gram.accept(v);
+		
 	}
 
 }

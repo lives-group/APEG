@@ -518,7 +518,8 @@ public class TestVisitor extends Visitor{
 	@Override
 	public void visit(AndPEG n) {
 		// TODO Auto-generated method stub
-		System.out.println("And peg");
+		
+		System.out.println("&");
 		n.getPegExp().accept(this);
 	}
 
@@ -559,10 +560,10 @@ public class TestVisitor extends Visitor{
 	public void visit(ConstraintPEG n) {
 		// TODO Auto-generated method stub
 		
-		System.out.println("{ ? ");
-		
 		n.getExpr().accept(this);
-		System.out.println("}");
+		System.out.println("? ");
+		
+	
 	}
 
 	@Override
@@ -619,13 +620,10 @@ public class TestVisitor extends Visitor{
 	@Override
 	public void visit(PKleene n) {
 		// TODO Auto-generated method stub
-<<<<<<< HEAD
 
-=======
->>>>>>> 7aef9fc7a790592197b5ec8f9e28e9a71bb0e37a
-		System.out.println("Plus Kleene peg");
+		
 		n.getPegExp().accept(this);
-		System.out.println(")*");
+		System.out.println("+");
 	}
 
 	@Override

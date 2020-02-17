@@ -8,6 +8,7 @@ public class CharLit extends Expr{
     
     public CharLit(SymInfo s,char value){
         super(s);
+        this.value = value;
     }
     public char getValue(){
         return value;

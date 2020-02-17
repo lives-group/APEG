@@ -8,7 +8,7 @@ public class AndPEG extends APEG{
     
     public AndPEG(SymInfo s,APEG e){
         super(s);
-        pegExp = e;
+        this.pegExp = e;
     }
     public APEG getPegExp(){
         return pegExp;

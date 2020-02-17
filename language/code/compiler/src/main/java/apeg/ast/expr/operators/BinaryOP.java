@@ -10,8 +10,8 @@ public abstract class BinaryOP extends Expr{
     
     public BinaryOP(SymInfo s,Expr l,Expr r){
         super(s);
-        left = l;
-        right = r;
+        this.left = l;
+        this.right = r;
     }
     public Expr getLeft(){
         return left;

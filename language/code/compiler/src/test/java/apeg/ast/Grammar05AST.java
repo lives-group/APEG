@@ -93,8 +93,7 @@ public class Grammar05AST {
 		
 		Grammar gram = new Grammar(new SymInfo(0,0), "testfunction", null, rules );
 		
-		//TestVisitor v = new TestVisitor();
-		//gram.accept(v);
-		
+		TestVisitor v = new TestVisitor();
+		gram.accept(v);
 	}
 }

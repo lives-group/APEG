@@ -9,7 +9,7 @@ public class ChoiceList extends APEG{
     
     public ChoiceList(SymInfo s,CharInterval i){
         super(s);
-        interval = i;
+        this.interval = i;
     }
     public CharInterval getInterval(){
         return interval;

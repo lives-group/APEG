@@ -8,6 +8,7 @@ public class StrLit extends Expr{
     
     public StrLit(SymInfo s,String value){
         super(s);
+        this.value = value;
     }
     public String getValue(){
         return value;

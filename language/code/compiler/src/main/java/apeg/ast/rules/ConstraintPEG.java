@@ -9,7 +9,7 @@ public class ConstraintPEG extends APEG{
     
     public ConstraintPEG(SymInfo s,Expr e){
         super(s);
-        expr = e;
+        this.expr = e;
     }
     public Expr getExpr(){
         return expr;

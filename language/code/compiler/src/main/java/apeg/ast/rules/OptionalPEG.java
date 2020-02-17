@@ -8,7 +8,7 @@ public class OptionalPEG extends APEG{
     
     public OptionalPEG(SymInfo s,APEG e){
         super(s);
-        pegExp = e;
+        this.pegExp = e;
     }
     public APEG getPegExp(){
         return pegExp;

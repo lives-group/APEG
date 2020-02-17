@@ -11,8 +11,8 @@ public abstract class MetaBinaryOP extends MetaExpr{
     
     public MetaBinaryOP(SymInfo s,MetaExpr ml,MetaExpr mr){
         super(s);
-        left = ml;
-        right = mr;
+        this.left = ml;
+        this.right = mr;
     }
     public MetaExpr getLeft(){
         return left;

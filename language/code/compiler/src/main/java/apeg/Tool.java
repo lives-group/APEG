@@ -110,6 +110,10 @@ public class Tool {
 					// ARTLR has already printed error messages, thus we stop
 					continue;
 				}
+
+				// Pretty printing the grammar. Just for testing
+				Visitor prettyprint = new TestVisitor();
+				g.accept(prettyprint);
 								
 				// Pretty printing the grammar. Just for testing
 			/*	ASTNodeVisitor prettyprint = new PrettyPrintVisitor(
@@ -160,8 +164,6 @@ public class Tool {
 								           "src/main/templates/imperativeParser.stg"));;
 		       g.accept(parservisitor);
 		       */	
-				
-				RuleCounterVisitor v = new RuleCounterVisitor();
 	
 			} catch (FileNotFoundException e) {
 				System.err.println("File " + s + " do not exist");

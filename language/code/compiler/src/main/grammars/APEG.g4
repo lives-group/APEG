@@ -176,7 +176,7 @@ peg_expr returns[APEG peg]:
 // The precedence of sequence operator is 2
 peg_seq returns[APEG peg]: 
    p1=peg_capturetext {List<APEG> l = new ArrayList<APEG>(); l.add($p1.peg);}
-   (p2=peg_capturetext {l.add($p2.peg);})+ {$peg = factory.newSequencePEG($p1.peg.getSymInfo(), (APEG[]) l.toArray());}
+   (p2=peg_capturetext {l.add($p2.peg);})+ {$peg = factory.newSequencePEG($p1.peg.getSymInfo(), l.toArray(new APEG[l.size()]));}
   |
    peg_capturetext {$peg = $peg_capturetext.peg;}
   |

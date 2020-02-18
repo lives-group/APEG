@@ -1,9 +1,7 @@
 apeg testfunction;
 
-functions add concat copyGrammar addRule adapt from {Functions1 AdaptableFunctions};
-
-teste[int x, int y] returns [int z] :
-  { z = add(x,y); }
+teste[int x, int y] returns [z] :
+  { z = x+y; }
   strN<z*2>
   ;
 

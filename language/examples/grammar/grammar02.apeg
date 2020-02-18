@@ -1,9 +1,5 @@
 apeg annotation;
 
-options {
- memoize=false;
-}
-
 a:
   b '1'
  /

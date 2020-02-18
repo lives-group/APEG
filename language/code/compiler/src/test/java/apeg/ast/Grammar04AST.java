@@ -7,6 +7,7 @@ import apeg.ast.types.*;
 import apeg.ast.expr.*;
 import apeg.ast.expr.operators.*;
 import apeg.visitor.TestVisitor;
+import apeg.ast.Grammar.GrammarOption;
 
 public class Grammar04AST {
 	
@@ -113,10 +114,12 @@ public class Grammar04AST {
 		RulePEG c = new RulePEG(new SymInfo(26, 1), "c", RulePEG.Annotation.NONE, inh, syn, peg);
 		rules.add(c);
 		
-		//boolean teste = true == 2 == 1;
+		GrammarOption opts = new GrammarOption();
 		
-		Grammar gram = new Grammar(new SymInfo(0,0), "notDiscardChanges", null, rules);
+		Grammar gram = new Grammar(new SymInfo(0,0), "notDiscardChanges", opts, rules);
 		
+		TestVisitor v = new TestVisitor();
+		gram.accept(v);
 		
 	}
 

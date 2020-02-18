@@ -6,6 +6,7 @@ import apeg.ast.expr.*;
 import apeg.ast.rules.*;
 import apeg.ast.types.*;
 import apeg.visitor.TestVisitor;
+import apeg.ast.Grammar.GrammarOption;
 
 
 public class Grammar03AST {
@@ -14,6 +15,7 @@ public class Grammar03AST {
 
 		List<RulePEG>rules = new ArrayList<RulePEG>();
 		List<Pair<Type, String>>inh = new ArrayList<Pair<Type, String>>();
+		List<Expr>syn = new ArrayList<Expr>();
 		List<Pair<Attribute, Expr>>assigs = new ArrayList<Pair<Attribute, Expr>>();
 		
 		APEG peg;
@@ -27,13 +29,15 @@ public class Grammar03AST {
 		inh.add(new Pair<Type, String>(new TyInt(new SymInfo(3, 24)), "w"));
 		inh.add(new Pair<Type, String>(new TyBool(new SymInfo(3, 31)), "i"));
 		
-		RulePEG s = new RulePEG(new SymInfo(3, 1), "s", RulePEG.Annotation.NONE, inh, null, peg);
+		RulePEG s = new RulePEG(new SymInfo(3, 1), "s", RulePEG.Annotation.NONE, inh, syn, peg);
 		rules.add(s);
 		
-		Grammar gram = new Grammar(new SymInfo(0,0), "expression", null, rules);
 		
-		//TestVisitor v = new TestVisitor();
-		//gram.accept(v);
+		GrammarOption opts = new GrammarOption();
+		Grammar gram = new Grammar(new SymInfo(0,0), "expression", opts, rules);
+		
+		TestVisitor v = new TestVisitor();
+		gram.accept(v);
 	}
 
 }

@@ -14,36 +14,41 @@ public class TestVisitor extends Visitor{
 	@Override
 	public void visit(Attribute n) {
 		// TODO Auto-generated method stub
+		
 		System.out.println(n.getName());
 	}
 
 	@Override
 	public void visit(AttributeGrammar n) {
+		
 		// TODO Auto-generated method stub
-		System.out.println(n.getName());
 	}    
     
 	@Override
 	public void visit(BoolLit n) {
 		// TODO Auto-generated method stub
+		
 		System.out.println(n.getValue());
 	}
 
 	@Override
 	public void visit(CharLit n) {
 		// TODO Auto-generated method stub
+		
 		System.out.println(n.getValue());
 	}
 
 	@Override
 	public void visit(FloatLit n) {
 		// TODO Auto-generated method stub
+		
 		System.out.println(n.getValue());
 	}
 
 	@Override
 	public void visit(IntLit n) {
 		// TODO Auto-generated method stub
+		
 		System.out.println(n.getValue());
 	}
 
@@ -56,6 +61,7 @@ public class TestVisitor extends Visitor{
 	@Override
 	public void visit(StrLit n) {
 		// TODO Auto-generated method stub
+		
 		System.out.println(n.getValue());
 	}
 
@@ -272,7 +278,7 @@ public class TestVisitor extends Visitor{
 	@Override
 	public void visit(Compose n) {
 		// TODO Auto-generated method stub
-		System.out.println("Operator: Compose");
+	
 		n.getLeft().accept(this);
 		n.getRight().accept(this);
 	}
@@ -280,16 +286,15 @@ public class TestVisitor extends Visitor{
 	@Override
 	public void visit(Concat n) {
 		// TODO Auto-generated method stub
-		System.out.println("Operator: Concat");
-		n.getLeft().accept(this);
-		n.getRight().accept(this);
+
 	}
 
 	@Override
 	public void visit(Div n) {
 		// TODO Auto-generated method stub
-		System.out.println("Operator Div");
+	
 		n.getLeft().accept(this);
+		System.out.println("/");
 		n.getRight().accept(this);
 	}
 
@@ -305,32 +310,37 @@ public class TestVisitor extends Visitor{
 	@Override
 	public void visit(Greater n) {
 		// TODO Auto-generated method stub
-		System.out.println("Operator: Greater");
+	
 		n.getLeft().accept(this);
+		System.out.println(" > ");
 		n.getRight().accept(this);
 	}
 
 	@Override
 	public void visit(GreaterEq n) {
 		// TODO Auto-generated method stub
-		System.out.println("Operator: Greater Equals");
+		
 		n.getLeft().accept(this);
+		System.out.println(" >= ");
 		n.getRight().accept(this);
 	}
 
 	@Override
 	public void visit(Less n) {
 		// TODO Auto-generated method stub
-		System.out.println("Operator: Less");
+		
 		n.getLeft().accept(this);
+		System.out.println(" < ");
 		n.getRight().accept(this);
 	}
 
 	@Override
 	public void visit(LessEq n) {
 		// TODO Auto-generated method stub
-		System.out.println("Operator: Less Equals");
+	
+		
 		n.getLeft().accept(this);
+		System.out.println(" <=");
 		n.getRight().accept(this);
 	}
 
@@ -349,8 +359,9 @@ public class TestVisitor extends Visitor{
         @Override
 	public void visit(Mod n) {
 		// TODO Auto-generated method stub
-		System.out.println("Operator: Mod");
+
 		n.getLeft().accept(this);
+		System.out.println(" % ");
 		n.getRight().accept(this);
 	}
     
@@ -366,39 +377,41 @@ public class TestVisitor extends Visitor{
 	@Override
 	public void visit(Not n) {
 		// TODO Auto-generated method stub
-		System.out.println("Operator: Not");
+		
+		System.out.println("!");
 		n.getExpr().accept(this);
 	}
 
 	@Override
 	public void visit(NotEq n) {
 		// TODO Auto-generated method stub
-		System.out.println("Operator: Not Equals");
+		
 		n.getLeft().accept(this);
+		System.out.println(" != ");
 		n.getRight().accept(this);
 	}
 
 	@Override
 	public void visit(Or n) {
 		// TODO Auto-generated method stub
-		System.out.println("Operator: Or");
 		n.getLeft().accept(this);
+		System.out.println(" || ");
 		n.getRight().accept(this);
 	}
 
 	@Override
 	public void visit(Sub n) {
 		// TODO Auto-generated method stub
-		System.out.println("Operator: Sub");
+		
 		n.getLeft().accept(this);
+		System.out.println(" - ");
 		n.getRight().accept(this);
 	}
 
 	@Override
 	public void visit(UMinus n) {
 		// TODO Auto-generated method stub
-		System.out.println("Operator: Unary Minus");
-		n.getExpr().accept(this);
+		
 	}
 
 	@Override
@@ -533,16 +546,14 @@ public class TestVisitor extends Visitor{
 	@Override
 	public void visit(BindPEG n) {
 		// TODO Auto-generated method stub
-		System.out.println("Bind peg");
-		System.out.println("Attribute: " + n.getAttribute());
-		n.getExpr().accept(this);
+		
 		
 	}
 
 	@Override
 	public void visit(ChoiceList n) {
 		// TODO Auto-generated method stub
-		System.out.println("Choice List");
+		
 		System.out.println("Intervals: " + n.getInterval().getEnd() + "  " + n.getInterval().getStart());
 	}
 
@@ -578,7 +589,7 @@ public class TestVisitor extends Visitor{
 
        @Override
        public void visit(LambdaPEG n) {
-	   System.out.println("Lambda peg");
+	   System.out.println("λ");
        }
     
 	@Override
@@ -592,14 +603,23 @@ public class TestVisitor extends Visitor{
 		// TODO Auto-generated method stub
 		
 		System.out.println(n.getName());
-		System.out.println("<");
-		for(Expr args: n.getArgs()) {
+		
+		if(n.getArgs().isEmpty()) {
+	
+		}
+		else {
+			
+			System.out.println("<");
+			
+			for(Expr args: n.getArgs()) {
 			
 			args.accept(this);
 			System.out.println(" , ");
 			break;
+			}
+			
+			System.out.println(">");
 		}
-		System.out.println(">");
 		
 	}
 
@@ -779,29 +799,33 @@ public class TestVisitor extends Visitor{
 		// TODO Auto-generated method stub
 		
 		System.out.println("apeg " + n.getName());
-		System.out.println("options {");
 		
-		/*if(n.getOptions().adaptable == false) {
+		if(n.getOptions().adaptable == false) {
 			if(n.getOptions().memoize == false) {
 				if(n.getOptions().usual_semantics == true) {
-					System.out.println(" ");
+			
 				}
 				else {
-					System.out.println("  memoize=true");
+					System.out.println("options {");
+					System.out.println(" usual_semantics;");
+					System.out.println("}");
 				}
+			}
+			
+			else {
+				System.out.println("options {");
+				System.out.println(" memoize;");
+				System.out.println("}");
 			}
 			
 		}
 		else {
-			System.out.println(" adaptable=true");
+			System.out.println("options {");
+			System.out.println(" adaptable;");
+			System.out.println("}");
 		}
-		*/
 		
-		
-		
-		
-		System.out.println("}");
-		
+
 	
 		for(RulePEG r: n.getRules()) 
 			r.accept(this);

@@ -1,33 +1,31 @@
 apeg adapdatadependent;
 
 options {
-  isAdaptable = true;
+  isAdaptable;
 }
 
-functions from { AdaptableFunctions };
-
-literal3[Grammar g] :
+literal3[grammar g] :
     literal<g> literal<g> literal<g> !. ;
 
-literal[Grammar g] locals[int n, Grammar g1]:
+literal[grammar g] :
     number<n>
-	{ g1 = addRule(copyGrammar(g), concat(concat('strN : ', concatN('CHAR ', n)), ';')) ; }
+	// { g1 = addRule(copyGrammar(g), concat(concat('strN : ', concatN('CHAR ', n)), ';')) ; } <- we must to define a concrete syntax for it
 	'['
 	strN<g1>
 	']'
     ;
 
-strN[Grammar g]:
+strN[grammar g]:
     {? false }
 	;
 
 CHAR : . ;
 
-number returns[int r] locals[int aux] :
+number returns[r]  :
     digit<r> ( digit<aux> { r = r * 10 + aux; } )*
     ;
   
-digit returns [int x1] :
+digit returns [x1] :
   '0'  { x1 = 0; }
   / '1'  { x1 = 1; }
   / '2'  { x1 = 2; }

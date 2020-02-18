@@ -37,7 +37,7 @@ grammar APEG;
  ***/
 
 grammarDef returns[Grammar gram]:
-  t='apeg' ID ';' option /*header*/ rules
+  t='apeg' ID ';' option  rules
   {$gram = factory.newGrammar(new SymInfo($t.line, $t.pos), $ID.text, $option.opt, $rules.list);
   }
 ;
@@ -360,7 +360,7 @@ term returns[Expr exp]:
    factor {$exp = $factor.exp;}
   |
    {List<Expr> list = new ArrayList<Expr>(); List<BinOPFactory> funcs = new ArrayList<BinOPFactory>();}
-   e1=factor (mulOp e2=factor
+   e1=factor {list.add($e1.exp);} (mulOp e2=factor
    {
    list.add($e2.exp);
    if($mulOp.op == 1) // it is a mult operator
@@ -437,7 +437,7 @@ addOp returns[boolean op, int line, int pos]:
    
    OP_SUB {$op = false; $line = $OP_SUB.line; $pos = $OP_SUB.pos;}
    |
-   OP_ADD {$op = false; $line = $OP_ADD.line; $pos = $OP_ADD.pos;}
+   OP_ADD {$op = true; $line = $OP_ADD.line; $pos = $OP_ADD.pos;}
 ;
 
 mulOp returns[int op, int line, int pos]:
@@ -530,6 +530,6 @@ REAL_NUMBER :
   ;
 fragment EXPONENT : ('e'|'E') ('+'|'-')? DIGIT+ ;
 WS : (' ' | '\t' | '\r' | '\n') { skip(); } ;
-COMMENT : '/*' .* '*/' { skip(); } ;
+COMMENT : '/*' .*? '*/' { skip(); } ;
 LINE_COMMENT : '//' ~('\n'|'\r')* '\r'? '\n' { skip(); } ;
 

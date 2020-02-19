@@ -86,6 +86,7 @@ public class Tool {
 			else // the string do not have a file separator
 				fName = s.substring(0, s.length()-5);
 			try {
+				System.out.println(fpath.toString());
 				FileReader file = new FileReader(fpath.getFile());
 				// Create an ANTLR input stream
 				ANTLRInputStream input = new ANTLRInputStream(file);
@@ -112,15 +113,12 @@ public class Tool {
 				}
 
 				// Pretty printing the grammar. Just for testing
-				Visitor prettyprint = new TestVisitor();
-				g.accept(prettyprint);
-								
-				// Pretty printing the grammar. Just for testing
-			/*	ASTNodeVisitor prettyprint = new PrettyPrintVisitor(
+				Visitor prettyprint = new PrettyPrint(
 						new RelativePath(new AbsolutePath("."),
 								"src/main/templates/prettyprint.stg"));
 				g.accept(prettyprint);
-			*/
+				
+			
 
 			/*
 			BuildRuleEnvironmetVisitor build = new BuildRuleEnvironmetVisitor();

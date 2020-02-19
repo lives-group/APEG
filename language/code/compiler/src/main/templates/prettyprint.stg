@@ -1,7 +1,7 @@
 group prettyprint;
 
 /** Defining the grammar specfication template */
-apeg(name, option, header, functions, func_sources, rules) ::= <<
+apeg(name, option, rules) ::= <<
 apeg <name>;
 <if(option)>
 
@@ -10,31 +10,17 @@ options {
 }
 <endif>
 
-<if(header)>
-
-header {
- <header>
-}
-<endif>
-
-<if(func_sources)>
-
-functions <if(functions)><functions; separator=" ", wrap> <endif>from {
-  <func_sources; separator=" ", wrap>
-};
-<endif>
-
 <rules; separator="\n\n">
 >>
 
 
 /** Template for rules specification */
-rule(annotation, name, inh_attr, syn_attr, ret_attr, peg_expr) ::= <<
+rule(annotation, name, inh, syn, peg) ::= <<
 <if(annotation)>
 @<annotation> 
 <endif>
-<name><if(inh_attr)>[<inh_attr; separator=", ", wrap>]<endif><if(syn_attr)> returns[<syn_attr; separator=", ", wrap>]<endif><if(ret_attr)> locals[<ret_attr; separator=", ", wrap>]<endif>:
-  <peg_expr>
+<name><if(inh_attr)>[<inh; separator=", ", wrap>]<endif><if(syn)> returns[<syn; separator=", ", wrap>]<endif>:
+  <peg>
 ;
 >>
 
@@ -44,17 +30,19 @@ decl(type, name) ::= "<type> <name>"
 
 
 /** Template for types */
-int_type() ::= "int"
-float_type() ::= "float"
-string_type() ::= "string"
 boolean_type() ::= "boolean"
-grammar_type() ::= "grammar"
-rule_type() ::= "rule"
-user_type(name) ::= "<name>"
+char_type() ::= "char"
+float_type() ::= "float"
+grammar_type() :: "grammar"
+int_type() ::= "int"
+lang_type() ::= "lang"
+map_type() ::= "map"
+string_type() ::= "string"
 
 
 /** Template for expressions */
 atribute_expr(name) ::= "<name>"
+attribute_grammar(name) ::= "$<name>"
 
 gt_expr(left_expr, right_expr) ::= "(<left_expr> > <right_expr>)"
 ge_expr(left_expr, right_expr) ::= "(<left_expr> \>= <right_expr>)"
@@ -69,11 +57,11 @@ sub_expr(left_expr, right_expr) ::= "(<left_expr> - <right_expr>)"
 equals_expr(left_expr, right_expr) ::= "(<left_expr> == <right_expr>)"
 no_equals_expr(left_expr, right_expr) ::= "(<left_expr> != <right_expr>)"
 
-call_expr(name, params) ::=  "<name>(<params; separator=\", \", wrap>)" 
-
 boolean_expr(value) ::= "<value>"
+char_expr(value) ::= "<value>"
 float_expr(value) ::= "<value>"
 int_expr(value) ::= "<value>"
+/** map lit  --> Pair<expr, expr> */
 string_expr(value) ::= "'<value>'"
 meta_expr(expr) ::= "@[ <expr> ]"
 minus_expr(expr) ::= "-<expr>"

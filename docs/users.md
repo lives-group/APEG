@@ -17,9 +17,9 @@ literal: number<n> "[" strN<n> "]" !.;
 
 strN[int n]: ({? n > 0} CHAR {n = n-1;})* {? n == 0};
 
-number returns[int n]: digit<n> (digit<x> {n = n*10 + x;})*;
+number returns[n]: digit<n> (digit<x> {n = n*10 + x;})*;
 
-digit returns[int x]:
+digit returns[x]:
    "0" {x = 0;}
  / "1" {x = 1;}
  / "2" {x = 2;}

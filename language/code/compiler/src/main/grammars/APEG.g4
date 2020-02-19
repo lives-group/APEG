@@ -209,7 +209,7 @@ peg_unary_op returns[APEG peg]:
   |
    t='!' peg_factor {$peg = factory.newNotPEG(new SymInfo($t.line, $t.pos), $peg_factor.peg);}
   |
-   t='{?' condExpr '}' {$peg = factory.newConstraintPEG(new SymInfo($t.line, $t.pos), $condExpr.exp);}
+   t='{?' expr '}' {$peg = factory.newConstraintPEG(new SymInfo($t.line, $t.pos), $expr.exp);}
   |
    t='{' st1=assign
      {List<Pair<Attribute, Expr>> l = new ArrayList<Pair<Attribute, Expr>>();
@@ -275,23 +275,7 @@ assign returns[Pair<Attribute, Expr> stm]:
      {$stm = new Pair<Attribute, Expr>($attribute_ref.exp, $expr.exp);}
 ;
 
-expr returns[Expr exp]: condExpr {$exp = $condExpr.exp;};
-
-condExpr returns[Expr exp]:
-   or_cond {$exp = $or_cond.exp;}
- |
-   {List<Expr> list = new ArrayList<Expr>(); List<BinOPFactory> funcs = new ArrayList<BinOPFactory>();}
-   e1=or_cond {list.add($e1.exp);} (op=equalityOp e2=or_cond
-   	 {
-   	 list.add($e2.exp);
-   	  if($op.isequals) // if operator is EQUALS
-        funcs.add((Expr ex1, Expr ex2) -> factory.newEqualityExpr(new SymInfo($op.line, $op.pos), ex1, ex2));
-      else // the operator is not equals
-       funcs.add((Expr ex1, Expr ex2) -> factory.newNotEqExpr(new SymInfo($op.line, $op.pos), ex1, ex2));
-   	 }
-   )+
-   {$exp = factory.newLeftAssocBinOpList(list, funcs);}
-;
+expr returns[Expr exp]: or_cond {$exp = $or_cond.exp;};
 
 or_cond returns[Expr exp]:
    and_cond {$exp = $and_cond.exp;}
@@ -306,16 +290,32 @@ or_cond returns[Expr exp]:
 ;
 
 and_cond returns[Expr exp]:
-  bool_expr {$exp = $bool_expr.exp;}    
+  condExpr {$exp = $condExpr.exp;}    
  |
   {List<Expr> list = new ArrayList<Expr>(); List<BinOPFactory> funcs = new ArrayList<BinOPFactory>();}
-  e1=bool_expr {list.add($e1.exp);} (OP_AND e2=bool_expr
+  e1=condExpr {list.add($e1.exp);} (OP_AND e2=condExpr
   {
   list.add($e2.exp);
   funcs.add((Expr ex1, Expr ex2) -> factory.newAndExpr(new SymInfo($OP_AND.line, $OP_AND.pos), ex1, ex2));
   }
   )+
   {$exp = factory.newLeftAssocBinOpList(list, funcs);} 
+;
+
+condExpr returns[Expr exp]:
+   bool_expr {$exp = $bool_expr.exp;}
+ |
+   {List<Expr> list = new ArrayList<Expr>(); List<BinOPFactory> funcs = new ArrayList<BinOPFactory>();}
+   e1=bool_expr {list.add($e1.exp);} (op=equalityOp e2=bool_expr
+   	 {
+   	 list.add($e2.exp);
+   	  if($op.isequals) // if operator is EQUALS
+        funcs.add((Expr ex1, Expr ex2) -> factory.newEqualityExpr(new SymInfo($op.line, $op.pos), ex1, ex2));
+      else // the operator is not equals
+       funcs.add((Expr ex1, Expr ex2) -> factory.newNotEqExpr(new SymInfo($op.line, $op.pos), ex1, ex2));
+   	 }
+   )+
+   {$exp = factory.newLeftAssocBinOpList(list, funcs);}
 ;
 
 bool_expr returns[Expr exp]:  

@@ -1,6 +1,6 @@
 apeg testfunction;
 
-teste[int x, int y] returns [z] :
+teste[int x, int y] returns z :
   { z = x+y; }
   strN<z*2>
   ;

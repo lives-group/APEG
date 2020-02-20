@@ -7,24 +7,24 @@ header {
 }
 */
 
-g returns[b, na, nb, nc] : 
+g returns b, na, nb, nc : 
    a<na> b<nb> c<nc> 
    {b = (a==b) && (b==c);}
 ;
  
-a returns[na] :
+a returns na :
    'a' a<na> {na=na+1;}
     / 
    'a' {na = 1;}
   ;
  
-b returns[nb] :
+b returns nb :
    'b' b<nb> {nb=nb+1;}
     / 
    'b' {nb = 1;}
   ;
 
-c returns[nc] :
+c returns nc :
    'c' c<nc> {nc=nc+1;}
     / 
    'c' {nc = 1;}

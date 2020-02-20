@@ -21,11 +21,11 @@ strN[grammar g]:
 
 CHAR : . ;
 
-number returns[r]  :
+number returns r  :
     digit<r> ( digit<aux> { r = r * 10 + aux; } )*
     ;
   
-digit returns [x1] :
+digit returns x1 :
   '0'  { x1 = 0; }
   / '1'  { x1 = 1; }
   / '2'  { x1 = 2; }

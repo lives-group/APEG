@@ -130,8 +130,8 @@ decls returns[List<Pair<Type, String>> list]:
 ;
 
 exprs returns[List<Expr> list] :
-  '[' {$list = new ArrayList<Expr>();}
-   e1=expr {$list.add($e1.exp);} (',' e2=expr {$list.add($e2.exp);})* ']'
+   {$list = new ArrayList<Expr>();}
+   e1=expr {$list.add($e1.exp);} (',' e2=expr {$list.add($e2.exp);})*
 ;
 
 varDecl returns[Pair<Type, String> var]:

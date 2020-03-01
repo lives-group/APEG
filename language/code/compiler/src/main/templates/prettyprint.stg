@@ -10,6 +10,7 @@ options {
 }
 <endif>
 
+
 <rules; separator="\n\n">
 >>
 
@@ -19,7 +20,7 @@ rule(annotation, name, inh, syn, peg) ::= <<
 <if(annotation)>
 @<annotation> 
 <endif>
-<name><if(inh_attr)>[<inh; separator=", ", wrap>]<endif><if(syn)> returns[<syn; separator=", ", wrap>]<endif>:
+<name><if(inh)>[<inh; separator=", ", wrap>]<endif><if(syn)> returns[<syn; separator=", ", wrap>]<endif>:
   <peg>
 ;
 >>
@@ -30,19 +31,18 @@ decl(type, name) ::= "<type> <name>"
 
 
 /** Template for types */
-boolean_type() ::= "boolean"
-char_type() ::= "char"
-float_type() ::= "float"
-grammar_type() :: "grammar"
 int_type() ::= "int"
-lang_type() ::= "lang"
-map_type() ::= "map"
+float_type() ::= "float"
 string_type() ::= "string"
+boolean_type() ::= "boolean"
+grammar_type() ::= "grammar"
+rule_type() ::= "rule"
+user_type(name) ::= "<name>"
 
 
 /** Template for expressions */
 atribute_expr(name) ::= "<name>"
-attribute_grammar(name) ::= "$<name>"
+attribute_grammar(name) ::="<name>"
 
 gt_expr(left_expr, right_expr) ::= "(<left_expr> > <right_expr>)"
 ge_expr(left_expr, right_expr) ::= "(<left_expr> \>= <right_expr>)"
@@ -53,15 +53,15 @@ div_expr(left_expr, right_expr) ::= "(<left_expr> / <right_expr>)"
 mod_expr(left_expr, right_expr) ::= "(<left_expr> % <right_expr>)"
 add_expr(left_expr, right_expr) ::= "(<left_expr> + <right_expr>)"
 sub_expr(left_expr, right_expr) ::= "(<left_expr> - <right_expr>)"
+concat_expr(left_expr, right_expr) ::= "(<left_expr> ++ <right_expr>)"
 
 equals_expr(left_expr, right_expr) ::= "(<left_expr> == <right_expr>)"
 no_equals_expr(left_expr, right_expr) ::= "(<left_expr> != <right_expr>)"
+ 
 
 boolean_expr(value) ::= "<value>"
-char_expr(value) ::= "<value>"
 float_expr(value) ::= "<value>"
 int_expr(value) ::= "<value>"
-/** map lit  --> Pair<expr, expr> */
 string_expr(value) ::= "'<value>'"
 meta_expr(expr) ::= "@[ <expr> ]"
 minus_expr(expr) ::= "-<expr>"
@@ -74,7 +74,7 @@ and_expr(left_expr, right_expr) ::= "(<left_expr> && <right_expr>)"
 and_peg(peg_expr) ::= "&<peg_expr>"
 any_peg() ::= "."
 bind_peg(name, peg_expr) ::="<name>=<peg_expr>)"
-choice_peg(left_peg, right_peg) ::= <<
+choice_peg(left_peg, right_peg) ::=<<
  <left_peg>
 /
 <right_peg>
@@ -84,11 +84,11 @@ group_peg(ranges) ::= "[<ranges>]"
 literal_peg(value) ::= "'<value>'"
 lambda_peg() ::= " " 
 nonterminal_peg(name, attrs) ::= "<name>\<<attrs; separator=\", \", wrap>>"
-not_peg(peg_expr) ::= "!(<peg_expr>)"
-plus_peg(peg_expr) ::= "(<peg_expr>)+"
-optional_peg(peg_expr) ::= "(<peg_expr>)?"
+not_peg(peg_expr) ::= "!(<peg>)"
+plus_peg(peg_expr) ::= "(<peg>)+"
+optional_peg(peg_expr) ::= "(<peg>)?"
 sequence_peg(peg_exprs) ::= "<peg_exprs:{x | <x>}; separator=\" \">"
-star_peg(peg_expr) ::= "(<peg_expr>)*"
+star_peg(peg_expr) ::= "(<peg>)*"
 update_peg(assigns) ::= <<{<assigns; separator=" ">}>>
 
 

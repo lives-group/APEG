@@ -19,9 +19,9 @@ public class PrettyPrint extends Visitor{
 	
 	private ST template;
 	
-	private ST att;
+	private ST attr;
 	private ST type;
-	private ST expr, peg, assig;
+	private ST expr, peg, assign;
 	
 	public PrettyPrint (Path filePath) {
 		
@@ -32,17 +32,23 @@ public class PrettyPrint extends Visitor{
 	public void visit(Attribute n) {
 		// TODO Auto-generated method stub
 		
-		ST aux_expr = groupTemplate.getInstanceOf("attribute_expr");
-		aux_expr.add("name", n.getName());
+		//set the current expression template
+		expr = groupTemplate.getInstanceOf("attribute");
+		//set the attribute's name
+		expr.add("name", n.getName());
+		attr = expr;
+		
 	}
 
 	@Override
 	public void visit(AttributeGrammar n) {
 		// TODO Auto-generated method stub
 		
-		ST aux_expr = groupTemplate.getInstanceOf("attribute_grammar");
-		
-		aux_expr.add("name", n.getName());
+		//set the current expression template
+		expr = groupTemplate.getInstanceOf("attribute_grammar");
+		//set the grammar's name
+		expr.add("name", n.getName());
+		attr = expr;
 		
 	}
 
@@ -458,7 +464,7 @@ public class PrettyPrint extends Visitor{
 	public void visit(Mult n) {
 		// TODO Auto-generated method stub
 		
-		ST aux_expr = groupTemplate.getInstanceOf("mult_expr");
+		ST aux_expr = groupTemplate.getInstanceOf("mul_expr");
 		
 		n.getLeft().accept(this);
 		aux_expr.add("left_expr", this.expr);
@@ -662,7 +668,8 @@ public class PrettyPrint extends Visitor{
 	public void visit(AnyPEG n) {
 		// TODO Auto-generated method stub
 		
-		peg = groupTemplate.getInstanceOf("any_peg");
+		this.peg = groupTemplate.getInstanceOf("any_peg");
+		
 	}
 
 	@Override
@@ -718,10 +725,11 @@ public class PrettyPrint extends Visitor{
 	public void visit(KleenePEG n) {
 		// TODO Auto-generated method stub
 		
-		ST aux_expr = groupTemplate.getInstanceOf("star_peg");
+		ST aux_peg = groupTemplate.getInstanceOf("star_peg");
 		n.getPegExp().accept(this);
-		aux_expr.add("peg",peg);
-		peg = aux_expr;
+		aux_peg.add("peg_expr", this.peg);
+		aux_peg = this.peg;
+		
 	}
 
 	@Override
@@ -761,11 +769,14 @@ public class PrettyPrint extends Visitor{
 	public void visit(NotPEG n) {
 		// TODO Auto-generated method stub
 		
+		// set the current parsing expression template
 		ST aux_peg = groupTemplate.getInstanceOf("not_peg");
-		
+		// visit the parsing expression
 		n.getPegExp().accept(this);
-		aux_peg.add("peg", peg);	
-		peg = aux_peg;
+		// adding the parsing expression on star template
+		aux_peg.add("peg_expr", peg);
+		
+		
 	}
 
 	@Override
@@ -824,6 +835,7 @@ public class PrettyPrint extends Visitor{
 		//visit synthesized attributes
 		for(Expr syn: n.getSyn()) {
 			syn.accept(this);
+			r.add("syn", attr);
 		}
 		
 		//visit the parsing expressions
@@ -855,16 +867,16 @@ public class PrettyPrint extends Visitor{
 		
 		//set the current parsing expression template as a update parsing expression
 		
-		ST peg_expr = groupTemplate.getInstanceOf("update_peg");
+		peg = groupTemplate.getInstanceOf("update_peg");
 		
 		for(Pair<Attribute, Expr>assig: n.getAssigs()) {
 			
 			assig.getFirst().accept(this);
-			assig.getSecond().accept(this);
+			peg.add("attrs",attr);
 			
-			peg_expr.add("assig",assig);
+			assig.getSecond().accept(this);
+			peg.add("expr", expr);
 		}
-		
 		
 	}
 
@@ -937,37 +949,37 @@ public class PrettyPrint extends Visitor{
 		
 		template.add("name", n.getName());
 		
-		// print the options
+		// print the option
 	
-		/*if(n.getOptions().adaptable == true) {
+		if(n.getOptions().adaptable== true) {
 			
-			template.add("options", "adaptalbe");
+			template.add("option", "adaptalbe");
 			
 			if((n.getOptions().memoize == true)) {
 				
-				template.add("options","memoize");
+				template.add("option","memoize");
 				if(n.getOptions().usual_semantics == false) {
 					
-					template.add("options","usual_semantics");
+					template.add("option","Not_usual_semantics");
 				}
 			}
 		}
 		else {
 			if(n.getOptions().memoize == true) {
 				
-				template.add("Options", "memoize");
+				template.add("option", "memoize");
 				
 				if(n.getOptions().usual_semantics == false) {
 					
-					template.add("Options","usual_semantics");
+					template.add("option","Not_usual_semantics");
 				}
 			}
 			if(n.getOptions().usual_semantics == false) {
 				
-				template.add("Options","usual_semantics");
+				template.add("option","Not_usual_semantics");
 			}
 		}
-		*/
+		
 		
 		//visit the rules
 		

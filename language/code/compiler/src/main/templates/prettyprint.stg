@@ -10,7 +10,6 @@ options {
 }
 <endif>
 
-
 <rules; separator="\n\n">
 >>
 
@@ -20,7 +19,7 @@ rule(annotation, name, inh, syn, peg) ::= <<
 <if(annotation)>
 @<annotation> 
 <endif>
-<name><if(inh)>[<inh; separator=", ", wrap>]<endif><if(syn)> returns[<syn; separator=", ", wrap>]<endif>:
+<name><if(inh)>[<inh; separator=", ", wrap>]<endif><if(syn)> returns <syn; separator=", ", wrap><endif>:
   <peg>
 ;
 >>
@@ -41,7 +40,7 @@ user_type(name) ::= "<name>"
 
 
 /** Template for expressions */
-atribute_expr(name) ::= "<name>"
+attribute(name) ::="<name>"
 attribute_grammar(name) ::="<name>"
 
 gt_expr(left_expr, right_expr) ::= "(<left_expr> > <right_expr>)"
@@ -89,11 +88,9 @@ plus_peg(peg_expr) ::= "(<peg>)+"
 optional_peg(peg_expr) ::= "(<peg>)?"
 sequence_peg(peg_exprs) ::= "<peg_exprs:{x | <x>}; separator=\" \">"
 star_peg(peg_expr) ::= "(<peg>)*"
-update_peg(assigns) ::= <<{<assigns; separator=" ">}>>
+update_peg(attrs, expr) ::= "{ <attrs> = <expr> }"
 
 
-/** Template for assignment from update parsing expressions */
-assign(name, expr) ::= "(<name> = <expr>);"
 
 
 /** func(f) ::= "<f>"  Not implemented yet */

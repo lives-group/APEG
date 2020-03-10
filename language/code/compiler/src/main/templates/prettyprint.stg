@@ -83,15 +83,16 @@ group_peg(ranges) ::= "[<ranges>]"
 literal_peg(value) ::= "'<value>'"
 lambda_peg() ::= " " 
 nonterminal_peg(name, attrs) ::= "<name>\<<attrs; separator=\", \", wrap>>"
-not_peg(peg_expr) ::= "!(<peg>)"
-plus_peg(peg_expr) ::= "(<peg>)+"
-optional_peg(peg_expr) ::= "(<peg>)?"
+not_peg(peg_expr) ::= "!(<peg_expr>)"
+plus_peg(peg_expr) ::= "(<peg_expr>)+"
+optional_peg(peg_expr) ::= "(<peg_expr>)?"
 sequence_peg(peg_exprs) ::= "<peg_exprs:{x | <x>}; separator=\" \">"
-star_peg(peg_expr) ::= "(<peg>)*"
-update_peg(attrs, expr) ::= "{ <attrs> = <expr> }"
+kleene(peg) ::= "(<peg>)*"
+update_peg(assig) ::= "<assig>"
 
+assig(attr, expr) ::= "{<attr> = <expr>;}"
 
-
+inh(type, name) ::= "<type> <name>"
 
 /** func(f) ::= "<f>"  Not implemented yet */
 

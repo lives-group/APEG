@@ -8,6 +8,7 @@ public class FloatLit extends Expr{
     
     public FloatLit(SymInfo s,float value){
         super(s);
+        this.value = value;
     }
     public float getValue(){
         return value;

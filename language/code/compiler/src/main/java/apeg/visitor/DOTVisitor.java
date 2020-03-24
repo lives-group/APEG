@@ -7,18 +7,118 @@ import org.stringtemplate.v4.ST;
 import org.stringtemplate.v4.STGroup;
 import org.stringtemplate.v4.STGroupFile;
 
-import apeg.util.path.*;
+import apeg.ast.Grammar;
+import apeg.ast.expr.Attribute;
+import apeg.ast.expr.AttributeGrammar;
+import apeg.ast.expr.BoolLit;
+import apeg.ast.expr.CharLit;
+import apeg.ast.expr.Expr;
+import apeg.ast.expr.FloatLit;
+import apeg.ast.expr.IntLit;
+import apeg.ast.expr.MapLit;
+import apeg.ast.expr.MetaAndPEG;
+import apeg.ast.expr.MetaAnyPEG;
+import apeg.ast.expr.MetaAttribute;
+import apeg.ast.expr.MetaBindPEG;
+import apeg.ast.expr.MetaBoolLit;
+import apeg.ast.expr.MetaCharLit;
+import apeg.ast.expr.MetaChoiceList;
+import apeg.ast.expr.MetaChoicePEG;
+import apeg.ast.expr.MetaConstraintPEG;
+import apeg.ast.expr.MetaFloatLit;
+import apeg.ast.expr.MetaIntLit;
+import apeg.ast.expr.MetaKleenePEG;
+import apeg.ast.expr.MetaLitPEG;
+import apeg.ast.expr.MetaMapLit;
+import apeg.ast.expr.MetaNonterminalPEG;
+import apeg.ast.expr.MetaNot;
+import apeg.ast.expr.MetaNotPEG;
+import apeg.ast.expr.MetaOptionalPEG;
+import apeg.ast.expr.MetaPKleene;
+import apeg.ast.expr.MetaRulePEG;
+import apeg.ast.expr.MetaSeqPEG;
+import apeg.ast.expr.MetaStrLit;
+import apeg.ast.expr.MetaTyBool;
+import apeg.ast.expr.MetaTyChar;
+import apeg.ast.expr.MetaTyFloat;
+import apeg.ast.expr.MetaTyGrammar;
+import apeg.ast.expr.MetaTyInt;
+import apeg.ast.expr.MetaTyLang;
+import apeg.ast.expr.MetaTyMap;
+import apeg.ast.expr.MetaTyMeta;
+import apeg.ast.expr.MetaTyString;
+import apeg.ast.expr.MetaUMinus;
+import apeg.ast.expr.MetaUpdatePEG;
+import apeg.ast.expr.MetaVar;
+import apeg.ast.expr.StrLit;
+import apeg.ast.expr.operators.Add;
+import apeg.ast.expr.operators.And;
+import apeg.ast.expr.operators.Compose;
+import apeg.ast.expr.operators.Concat;
+import apeg.ast.expr.operators.Div;
+import apeg.ast.expr.operators.Equals;
+import apeg.ast.expr.operators.Greater;
+import apeg.ast.expr.operators.GreaterEq;
+import apeg.ast.expr.operators.Less;
+import apeg.ast.expr.operators.LessEq;
+import apeg.ast.expr.operators.MapAcces;
+import apeg.ast.expr.operators.MapExtension;
+import apeg.ast.expr.operators.MetaAdd;
+import apeg.ast.expr.operators.MetaAnd;
+import apeg.ast.expr.operators.MetaCompose;
+import apeg.ast.expr.operators.MetaConcat;
+import apeg.ast.expr.operators.MetaDiv;
+import apeg.ast.expr.operators.MetaEquals;
+import apeg.ast.expr.operators.MetaGreater;
+import apeg.ast.expr.operators.MetaGreaterEq;
+import apeg.ast.expr.operators.MetaLess;
+import apeg.ast.expr.operators.MetaLessEq;
+import apeg.ast.expr.operators.MetaMapAcces;
+import apeg.ast.expr.operators.MetaMapExtension;
+import apeg.ast.expr.operators.MetaMod;
+import apeg.ast.expr.operators.MetaMult;
+import apeg.ast.expr.operators.MetaNotEq;
+import apeg.ast.expr.operators.MetaOr;
+import apeg.ast.expr.operators.MetaSub;
+import apeg.ast.expr.operators.Mod;
+import apeg.ast.expr.operators.Mult;
+import apeg.ast.expr.operators.Not;
+import apeg.ast.expr.operators.NotEq;
+import apeg.ast.expr.operators.Or;
+import apeg.ast.expr.operators.Sub;
+import apeg.ast.expr.operators.UMinus;
+import apeg.ast.rules.APEG;
+import apeg.ast.rules.AndPEG;
+import apeg.ast.rules.AnyPEG;
+import apeg.ast.rules.BindPEG;
+import apeg.ast.rules.ChoiceList;
+import apeg.ast.rules.ChoicePEG;
+import apeg.ast.rules.ConstraintPEG;
+import apeg.ast.rules.KleenePEG;
+import apeg.ast.rules.LambdaPEG;
+import apeg.ast.rules.LitPEG;
+import apeg.ast.rules.NonterminalPEG;
+import apeg.ast.rules.NotPEG;
+import apeg.ast.rules.OptionalPEG;
+import apeg.ast.rules.PKleene;
+import apeg.ast.rules.RulePEG;
+import apeg.ast.rules.SeqPEG;
+import apeg.ast.rules.UpdatePEG;
+import apeg.ast.types.TyBool;
+import apeg.ast.types.TyChar;
+import apeg.ast.types.TyFloat;
+import apeg.ast.types.TyGrammar;
+import apeg.ast.types.TyInt;
+import apeg.ast.types.TyLang;
+import apeg.ast.types.TyMap;
+import apeg.ast.types.TyMeta;
+import apeg.ast.types.TyString;
+import apeg.ast.types.Type;
+import apeg.util.Pair;
+import apeg.util.path.Path;
 
-import apeg.ast.*;
-import apeg.ast.expr.*;
-import apeg.ast.expr.operators.*;
-import apeg.ast.rules.*;
-import apeg.ast.types.*;
-import apeg.util.*;
-
-public class PrettyPrint extends Visitor{
-	
-	private STGroup groupTemplate;
+public class DOTVisitor extends Visitor{
+private STGroup groupTemplate;
 	
 	private ST template;
 	
@@ -26,14 +126,14 @@ public class PrettyPrint extends Visitor{
 	private ST type;
 	private ST expr, peg;
 	private List<ST> inh;
-	private List<ST>assig;
+	private ST assig;
 	
 	
-	public PrettyPrint (Path filePath) {
+	public DOTVisitor (Path filePath) {
 		
 		groupTemplate = new STGroupFile(filePath.getAbsolutePath());
 		inh = new ArrayList<ST> ();
-		assig = new ArrayList<ST>();
+		
 	}
 
 	@Override
@@ -41,10 +141,11 @@ public class PrettyPrint extends Visitor{
 		// TODO Auto-generated method stub
 		
 		// set the current expression template
-		attr = groupTemplate.getInstanceOf("attribute");
+		attr = groupTemplate.getInstanceOf("attribute_lable");
 		// set the name attribute
 		attr.add("name", n.getName());
 		expr = attr;
+		
 	}
 
 	@Override
@@ -52,7 +153,7 @@ public class PrettyPrint extends Visitor{
 		// TODO Auto-generated method stub
 		
 		//set the current expression template
-		expr = groupTemplate.getInstanceOf("attribute_grammar");
+		expr = groupTemplate.getInstanceOf("attribute_grammar_lable");
 		//set the grammar's name
 		expr.add("name", n.getName());
 		attr = expr;
@@ -64,7 +165,7 @@ public class PrettyPrint extends Visitor{
 		// TODO Auto-generated method stub
 		
 		//set the current expression template
-		expr = groupTemplate.getInstanceOf("boolean_expr");
+		expr = groupTemplate.getInstanceOf("boolean_expr_lable");
 		//set value propriety
 		expr.add("value", n.getValue());
 		
@@ -75,7 +176,7 @@ public class PrettyPrint extends Visitor{
 		// TODO Auto-generated method stub
 		
 		//set the current expression template
-		expr = groupTemplate.getInstanceOf("char_expr");
+		expr = groupTemplate.getInstanceOf("char_expr_lable");
 		//set value propriety
 		expr.add("value", n.getValue());
 	}
@@ -85,7 +186,7 @@ public class PrettyPrint extends Visitor{
 		// TODO Auto-generated method stub
 		
 		//set the current expression template
-		expr = groupTemplate.getInstanceOf("float_expr");
+		expr = groupTemplate.getInstanceOf("float_expr_lable");
 		//set value propriety
 	    expr.add("value", n.getValue());
 	    
@@ -96,7 +197,7 @@ public class PrettyPrint extends Visitor{
 		// TODO Auto-generated method stub
 		
 		//set the current expression template
-		expr = groupTemplate.getInstanceOf("int_expr");
+		expr = groupTemplate.getInstanceOf("int_expr_lable");
 		//set value propriety
 		expr.add("value", n.getValue());
 	}
@@ -112,7 +213,7 @@ public class PrettyPrint extends Visitor{
 		// TODO Auto-generated method stub
 		
 		//set the current expression template
-		expr = groupTemplate.getInstanceOf("string_expr");
+		expr = groupTemplate.getInstanceOf("string_expr_lable");
 		//set value propriety
 		expr.add("value", n.getValue());
 	}
@@ -314,17 +415,9 @@ public class PrettyPrint extends Visitor{
 		// TODO Auto-generated method stub
 		
 		//set the current expression template
-		ST aux_expr = groupTemplate.getInstanceOf("add_expr");
-		//visit left expression
+		expr = groupTemplate.getInstanceOf("add_expr_lable");
 		n.getLeft().accept(this);
-		//set the left expression attribute
-		aux_expr.add("left_expr", expr);
-		//visit the right expression
 		n.getRight().accept(this);
-		//set the right expression attribute
-		aux_expr.add("right_expr", expr);
-		//set the current expression
-		expr = aux_expr;
 	}
 
 	@Override
@@ -332,17 +425,10 @@ public class PrettyPrint extends Visitor{
 		// TODO Auto-generated method stub
 		
 		// set the current expression template
-		ST aux_expr = groupTemplate.getInstanceOf("and_expr");
-		// visit left expression
+		expr = groupTemplate.getInstanceOf("and_expr_lable");
+		
 		n.getLeft().accept(this);
-		// set the left expression attribute
-		aux_expr.add("left_expr", expr);
-		// visit right expression
 		n.getRight().accept(this);
-		// set the right expression attribute
-		aux_expr.add("right_expr", expr);
-		// set the current expression
-		expr = aux_expr;
 	}
 
 	@Override
@@ -356,107 +442,68 @@ public class PrettyPrint extends Visitor{
 		// TODO Auto-generated method stub
 		
 		//set the current expression template
-		ST aux_expr = groupTemplate.getInstanceOf("concat_expr");
-		//visit left expression attribute
-		n.getLeft().accept(this);
-		//set the left expression
-		aux_expr.add("left_expr", expr);
-		//visit right expression attribute
-		n.getRight().accept(this);
-		//set the right expression 
-		aux_expr.add("right_expr", expr);
-		//set the current expression 
-		expr = aux_expr;
+		expr = groupTemplate.getInstanceOf("concat_expr_lable");
+		
 	}
 
 	@Override
 	public void visit(Div n) {
 		// TODO Auto-generated method stub
 		
-		ST aux_expr = groupTemplate.getInstanceOf("div_expr");
+		expr = groupTemplate.getInstanceOf("div_expr_lable");
 		
 		n.getLeft().accept(this);
-		aux_expr.add("left_expr", expr);
-		
 		n.getRight().accept(this);
-		aux_expr.add("right_expr",expr);
-		
-		expr = aux_expr;
 	}
 
 	@Override
 	public void visit(Equals n) {
 		// TODO Auto-generated method stub
 		
-		ST aux_expr = groupTemplate.getInstanceOf("equals_expr");
+		expr = groupTemplate.getInstanceOf("equals_expr_lable");
 		
 		n.getLeft().accept(this);
-		aux_expr.add("left_expr", expr);
-		
 		n.getRight().accept(this);
-		aux_expr.add("right_expr",expr);
-		
-		expr = aux_expr;
 	}
 
 	@Override
 	public void visit(Greater n) {
 		// TODO Auto-generated method stub
 		
-		ST aux_expr = groupTemplate.getInstanceOf("gt_expr");
+		expr = groupTemplate.getInstanceOf("gt_expr_lable");
 		
 		n.getLeft().accept(this);
-		aux_expr.add("left_expr", expr);
-		
 		n.getRight().accept(this);
-		aux_expr.add("right_expr", expr);
-		
-		expr = aux_expr;
 	}
 
 	@Override
 	public void visit(GreaterEq n) {
 		// TODO Auto-generated method stub
 		
-		ST aux_expr = groupTemplate.getInstanceOf("ge_expr");
+		expr = groupTemplate.getInstanceOf("ge_expr_lable");
 		
 		n.getLeft().accept(this);
-		aux_expr.add("left_expr", expr);
-		
 		n.getRight().accept(this);
-		aux_expr.add("right_expr", expr);
-		
-		expr = aux_expr;
 	}
 
 	@Override
 	public void visit(Less n) {
 		// TODO Auto-generated method stub
 		
-		ST aux_expr = groupTemplate.getInstanceOf("lt_expr");
+		expr= groupTemplate.getInstanceOf("lt_expr_lable");
 		
 		n.getLeft().accept(this);
-		aux_expr.add("left_expr", expr);
-		
 		n.getRight().accept(this);
-		aux_expr.add("right_expr", expr);
-		
-		expr = aux_expr;
 	}
 
 	@Override
 	public void visit(LessEq n) {
 		// TODO Auto-generated method stub
 		
-		ST aux_expr = groupTemplate.getInstanceOf("le_expr");
+		expr = groupTemplate.getInstanceOf("le_expr_lable");
 		
 		n.getLeft().accept(this);
-		aux_expr.add("left_expr", expr);
-		
 		n.getRight().accept(this);
-		aux_expr.add("right_expr", expr);
-		
-		expr = aux_expr;
 		
 	}
 
@@ -476,15 +523,10 @@ public class PrettyPrint extends Visitor{
 	public void visit(Mod n) {
 		// TODO Auto-generated method stub
 		
-		ST aux_expr = groupTemplate.getInstanceOf("mod_expr");
+		expr = groupTemplate.getInstanceOf("mod_expr_lable");
 		
 		n.getLeft().accept(this);
-		aux_expr.add("left_expr", expr);
-		
 		n.getRight().accept(this);
-		aux_expr.add("right_expr", expr);
-		
-		expr = aux_expr;
 		
 	}
 
@@ -492,41 +534,30 @@ public class PrettyPrint extends Visitor{
 	public void visit(Mult n) {
 		// TODO Auto-generated method stub
 		
-		ST aux_expr = groupTemplate.getInstanceOf("mul_expr");
+		expr = groupTemplate.getInstanceOf("mul_expr_lable");
 		
 		n.getLeft().accept(this);
-		aux_expr.add("left_expr", expr);
-		
 		n.getRight().accept(this);
-		aux_expr.add("right_expr", expr);
-		
-		expr = aux_expr;
 	}
 
 	@Override
 	public void visit(Not n) {
 		// TODO Auto-generated method stub
 		
-		ST aux_expr = groupTemplate.getInstanceOf("not_expr");
+		expr = groupTemplate.getInstanceOf("not_expr_lable");
 		
 		n.getExpr().accept(this);
-		aux_expr.add("expr", expr);
-		expr = aux_expr;
+		
 	}
 
 	@Override
 	public void visit(NotEq n) {
 		// TODO Auto-generated method stub
 		
-		ST aux_expr = groupTemplate.getInstanceOf("no_equals_expr");
+		expr = groupTemplate.getInstanceOf("no_equals_expr_lable");
 		
 		n.getLeft().accept(this);
-		aux_expr.add("left_expr", expr);
-		
 		n.getRight().accept(this);
-		aux_expr.add("right_expr", expr);
-		
-		expr = aux_expr;
 		
 		
 	}
@@ -535,29 +566,20 @@ public class PrettyPrint extends Visitor{
 	public void visit(Or n) {
 		// TODO Auto-generated method stub
 		
-		ST aux_expr = groupTemplate.getInstanceOf("or_expr");
+		expr = groupTemplate.getInstanceOf("or_expr_lable");
 		
 		n.getLeft().accept(this);
-		aux_expr.add("left_expr", expr);
 		n.getRight().accept(this);
-		aux_expr.add("right_expr", expr);
-		
-		expr = aux_expr;
 	}
 
 	@Override
 	public void visit(Sub n) {
 		// TODO Auto-generated method stub
 		
-		ST peg_expr = groupTemplate.getInstanceOf("sub_expr");
+		expr = groupTemplate.getInstanceOf("sub_expr_lable");
 		
 		n.getLeft().accept(this);
-		peg_expr.add("left_expr",expr);
-		
 		n.getRight().accept(this);
-		peg_expr.add("right_expr",expr);
-		
-		expr = peg_expr;
 	}
 
 	@Override
@@ -684,18 +706,15 @@ public class PrettyPrint extends Visitor{
 	public void visit(AndPEG n) {
 		// TODO Auto-generated method stub
 		
-		ST aux_peg = groupTemplate.getInstanceOf("and_peg");
-		
+		peg = groupTemplate.getInstanceOf("and_peg_lable");
 		n.getPegExp().accept(this);
-		aux_peg.add("peg_expr", peg);
-		peg = aux_peg;
 	}
 
 	@Override
 	public void visit(AnyPEG n) {
 		// TODO Auto-generated method stub
 		
-		peg = groupTemplate.getInstanceOf("any_peg");
+		peg = groupTemplate.getInstanceOf("any_peg_lable");
 		
 	}
 
@@ -703,13 +722,9 @@ public class PrettyPrint extends Visitor{
 	public void visit(BindPEG n) {
 		// TODO Auto-generated method stub
 		
-		ST aux_peg = groupTemplate.getInstanceOf("bind_peg");
+		peg= groupTemplate.getInstanceOf("bind_peg_lable");
 		n.getAttribute().accept(this);
-		aux_peg.add("name", expr);
-		
 		n.getExpr().accept(this);
-		aux_peg.add("peg_expr", peg);
-		peg = aux_peg;
 	}
 	 
 
@@ -723,18 +738,9 @@ public class PrettyPrint extends Visitor{
 	public void visit(ChoicePEG n) {
 		// TODO Auto-generated method stub
 		
-		// set the current parsing expression template
-				ST aux_peg = groupTemplate.getInstanceOf("choice_peg");
-				// visit the left parsing expression
-				n.getLeftPeg().accept(this);
-				// set propriety for the left parsing expression
-				aux_peg.add("left_peg", peg);
-				// visit the right parsing expression
-				n.getRightPeg().accept(this);
-				// set propriety for the left parsing expression
-				aux_peg.add("right_peg", peg);
-				// set the current parsing expression
-				peg = aux_peg;
+		ST aux_peg = groupTemplate.getInstanceOf("node");
+		
+		aux_peg.add("node", "ChoicePEG");
 		
 		
 	}
@@ -743,12 +749,9 @@ public class PrettyPrint extends Visitor{
 	public void visit(ConstraintPEG n) {
 		// TODO Auto-generated method stub
 		
-		ST peg_expr = groupTemplate.getInstanceOf("constraint_peg");
+		peg= groupTemplate.getInstanceOf("constraint_peg_lable");
 		
 		n.getExpr().accept(this);
-		peg_expr.add("expr",expr);
-		
-		peg = peg_expr;
 		
 	}
 
@@ -756,18 +759,17 @@ public class PrettyPrint extends Visitor{
 	public void visit(KleenePEG n) {
 		// TODO Auto-generated method stub
 
-		ST aux_peg = groupTemplate.getInstanceOf("kleene");
+		peg = groupTemplate.getInstanceOf("star_peg_lable");
 		
 		n.getPegExp().accept(this);
-		aux_peg.add("peg", peg);
-		peg = aux_peg;
+		
 	}
 
 	@Override
 	public void visit(LambdaPEG n) {
 		// TODO Auto-generated method stub
 		
-		peg = groupTemplate.getInstanceOf("lambda_peg");
+		peg = groupTemplate.getInstanceOf("lambda_peg_lable");
 		
 	}
 
@@ -775,7 +777,7 @@ public class PrettyPrint extends Visitor{
 	public void visit(LitPEG n) {
 		// TODO Auto-generated method stub
 		
-		peg = groupTemplate.getInstanceOf("literal_peg");
+		peg = groupTemplate.getInstanceOf("literal_peg_lable");
 	    peg.add("value",n.getLit());
 	}
 
@@ -783,16 +785,15 @@ public class PrettyPrint extends Visitor{
 	public void visit(NonterminalPEG n) {
 		// TODO Auto-generated method stub
 		
-		peg = groupTemplate.getInstanceOf("nonterminal_peg");
+		peg = groupTemplate.getInstanceOf("nonterminal_peg_lable");
 		
 		
 		peg.add("name",n.getName());
 		
 		for(Expr e:n.getArgs()) {
+			
 			e.accept(this);
 			
-			peg.add("attrs", this.expr);
-		
 		}
 	}
 
@@ -800,21 +801,18 @@ public class PrettyPrint extends Visitor{
 	public void visit(NotPEG n) {
 		// TODO Auto-generated method stub
 		
-		ST aux_peg = groupTemplate.getInstanceOf("not_peg");
+		peg = groupTemplate.getInstanceOf("not_peg_lable");
 		
 		n.getPegExp().accept(this);
-		aux_peg.add("peg_expr", peg);
-		peg = aux_peg;
 	}
 
 	@Override
 	public void visit(OptionalPEG n) {
 		// TODO Auto-generated method stub
 		
-		ST aux_peg = groupTemplate.getInstanceOf("optional_peg");
+		peg = groupTemplate.getInstanceOf("optional_peg_lable");
 		n.getPegExp().accept(this);
-		aux_peg.add("peg_expr", peg);
-		peg = aux_peg;
+		
 		
 	}
 
@@ -822,12 +820,9 @@ public class PrettyPrint extends Visitor{
 	public void visit(PKleene n) {
 		// TODO Auto-generated method stub
 		
-		ST aux_peg = groupTemplate.getInstanceOf("plus_peg");
+		peg = groupTemplate.getInstanceOf("plus_peg_lable");
 		
 		n.getPegExp().accept(this);
-		aux_peg.add("peg_expr", peg);
-		peg = aux_peg;
-		
 	}
 
 	@Override
@@ -838,7 +833,7 @@ public class PrettyPrint extends Visitor{
 		
 		//setting rule name
 		
-		r.add("name",n.getRuleName());
+		r.add("rname",n.getRuleName());
 		
 		//setting annotation
 		switch(n.getAnno()) {
@@ -876,7 +871,9 @@ public class PrettyPrint extends Visitor{
 		n.getPeg().accept(this);
 		r.add("peg",this.peg);
 		
-		template.add("rules",r);
+		r.add("nodeName", n.getRuleName().concat("Rule"));
+		
+		template.add("rule",r);
 	
 	}
 
@@ -886,36 +883,27 @@ public class PrettyPrint extends Visitor{
 		
 		//set the current parsing expression template
 		
-		ST aux_peg = groupTemplate.getInstanceOf("sequence_peg");
+		peg = groupTemplate.getInstanceOf("sequence_peg_lable");
 		
 		for(APEG p: n.getPegs()) {
 			p.accept(this);
-			aux_peg.add("peg_exprs",this.peg);
+			
 		}
-		this.peg = aux_peg;
+		
 	}
 
 	@Override
 	public void visit(UpdatePEG n) {
 		// TODO Auto-generated method stub
-		peg = groupTemplate.getInstanceOf("update_peg");
+		peg = groupTemplate.getInstanceOf("update_peg_lable");
 		
-		ST assig;
-	
-		for(Pair<Attribute, Expr>a : n.getAssigs()) {
+		for(Pair<Attribute, Expr>assigs: n.getAssigs()) {
 			
-			this.assig = new ArrayList<ST>();
-			
-			a.getFirst().accept(this);
-			assig = groupTemplate.getInstanceOf("assig");
-			assig.add("attr", attr);
-			
-			a.getSecond().accept(this);
-			assig.add("expr", expr);
-			
-			this.assig.add(assig);
+			assigs.getFirst().accept(this);
+			assig = groupTemplate.getInstanceOf("assign_lable");
+			assig.add("var", attr);
+			assigs.getSecond().accept(this);
 		}
-		peg.add("assig", this.assig);	
 	}
 
 	@Override
@@ -1033,7 +1021,4 @@ public class PrettyPrint extends Visitor{
 		
 		System.out.println(template.render());
 	}
-
-	
-
 }

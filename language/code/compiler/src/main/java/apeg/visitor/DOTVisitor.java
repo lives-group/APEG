@@ -126,7 +126,7 @@ private STGroup groupTemplate;
 	private List<ST> inh;
 	private ST assig;
 	private String parent, nodeName;
-	private ST lable, type, attr, peg, expr;
+	private ST type;
 	
 
 	private List<ST> nodes;
@@ -1162,12 +1162,20 @@ private STGroup groupTemplate;
 		
 		String s = nodeName;
 		
+		
 		for(Pair<Attribute, Expr>a : n.getAssigs()) {
 			
+			ST aux_node = groupTemplate.getInstanceOf("node");
+			
 			parent = s;
-			a.getFirst().accept(this);
-			parent = s;
-			a.getSecond().accept(this);
+			aux_node.add("parent", parent);
+			nodeName = "assignmentNode" + c_assig++;
+			aux_node.add("node", nodeName);
+			
+			
+			aux_node.add("lable", groupTemplate.getInstanceOf("assign_lable").add("var", a.getFirst()));
+			
+			nodes.add(aux_node);
 		}
 	}
 

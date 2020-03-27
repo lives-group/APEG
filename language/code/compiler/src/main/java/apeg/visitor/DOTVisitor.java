@@ -2,6 +2,8 @@ package apeg.visitor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.io.FileWriter;
+import java.io.IOException;
 
 import org.stringtemplate.v4.ST;
 import org.stringtemplate.v4.STGroup;
@@ -119,7 +121,9 @@ import apeg.util.path.Path;
 
 public class DOTVisitor extends Visitor{
 private STGroup groupTemplate;
-	
+
+        private FileWriter out;
+    
 	private ST template;
 	
 
@@ -134,10 +138,16 @@ private STGroup groupTemplate;
 	private int c_peg=0, c_expr=0, c_assig=0;
 	
 	
-	public DOTVisitor (Path filePath) {
+    public DOTVisitor (Path filepath, Path template) {
 		
-		groupTemplate = new STGroupFile(filePath.getAbsolutePath());
+		groupTemplate = new STGroupFile(template.getAbsolutePath());
 		inh = new ArrayList<ST> ();
+
+		try{
+		    out = new FileWriter(filepath.getAbsolutePath());
+		} catch(IOException e){
+		    e.printStackTrace();
+		}
 		
 	}
 
@@ -1297,8 +1307,13 @@ private STGroup groupTemplate;
 	}
 	
 	public void render() {
-		//rendering template
-		
-		System.out.println(template.render());
+		// rendering the template
+		String saida = template.render();
+		try {
+			out.write(saida);
+			out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

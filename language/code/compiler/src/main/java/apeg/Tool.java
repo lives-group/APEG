@@ -48,7 +48,7 @@ public class Tool {
 	public Tool() {
 		// Set the default output location
 		String currentDir = System.getProperty("user.dir");
-		outputPath = new AbsolutePath(currentDir);
+		outputPath = new RelativePath(new AbsolutePath(currentDir), "output");
 
 		// Set the default target language as Java
 		targetLang = new JavaInfo();
@@ -113,9 +113,9 @@ public class Tool {
 				}
 
 				// Pretty printing the grammar. Just for testing
-				Visitor dotvisitor = new DOTVisitor(
-						new RelativePath(new AbsolutePath("."),
-								"src/main/templates/dot.stg"));
+				Visitor dotvisitor = new DOTVisitor(new RelativePath(tool.outputPath, fName + ".dot"),
+					                            new RelativePath(new AbsolutePath("."),
+							            "src/main/templates/dot.stg"));
 				g.accept(dotvisitor);
 				
 			

@@ -49,14 +49,14 @@ float_type() ::= "float"
 string_type() ::= "string"
 boolean_type() ::= "boolean"
 grammar_type() ::= "grammar"
-rule_type() ::= "rule"
+char_type() ::= "char"
 
 
 /** Template for parsing expression */
 and_peg_lable() ::= "AndPegExpr(&)"
 any_peg_lable() ::= "AnyPegExpr(.)"
 bind_peg_lable(name) ::="BindPegExpr(=):<name>"
-choice_peg_lable() ::= "ChoicePegExpr(/)"
+choice_peg_lable() ::= "ChoicePegExpr(/);"
 constraint_peg_lable() ::= "ConstraintPegExpr({?})"
 literal_peg_lable(value) ::= "'<value>'"
 lambda_peg_lable() ::= "<\u03BB>" 
@@ -75,6 +75,7 @@ assign_lable(var) ::= "Assignment:<var>"
 
 /** Template for expressions */
 attribute_expr_lable(name) ::= "<name>:var"
+attribute_grammar_lable(name) ::= "<name>:grammar_var"
 
 gt_expr_lable() ::= "\>"
 ge_expr_lable() ::= "<\u2265>"

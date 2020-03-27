@@ -122,11 +122,16 @@ private STGroup groupTemplate;
 	
 	private ST template;
 	
-	private ST attr;
-	private ST type;
-	private ST expr, peg;
+
 	private List<ST> inh;
 	private ST assig;
+	private String parent, nodeName;
+	private ST lable, type, attr, peg, expr;
+	
+
+	private List<ST> nodes;
+	
+	private int c_peg=0, c_expr=0, c_assig=0;
 	
 	
 	public DOTVisitor (Path filePath) {
@@ -140,11 +145,14 @@ private STGroup groupTemplate;
 	public void visit(Attribute n) {
 		// TODO Auto-generated method stub
 		
-		// set the current expression template
-		attr = groupTemplate.getInstanceOf("attribute_lable");
-		// set the name attribute
-		attr.add("name", n.getName());
-		expr = attr;
+		ST node = groupTemplate.getInstanceOf("node");
+		
+		node.add("parent", parent);
+		nodeName = "attributeExpr" + c_expr++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("attribute_expr_lable").add("name", n.getName()));
+		
+		nodes.add(node);
 		
 	}
 
@@ -152,11 +160,13 @@ private STGroup groupTemplate;
 	public void visit(AttributeGrammar n) {
 		// TODO Auto-generated method stub
 		
-		//set the current expression template
-		expr = groupTemplate.getInstanceOf("attribute_grammar_lable");
-		//set the grammar's name
-		expr.add("name", n.getName());
-		attr = expr;
+		ST node = groupTemplate.getInstanceOf("node");
+		node.add("parent", parent);
+		nodeName = "grammarAttributeExpr" + c_expr++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("attribute_grammar_lable").add("name", n.getName()));
+		
+		nodes.add(node);
 		
 	}
 
@@ -164,10 +174,14 @@ private STGroup groupTemplate;
 	public void visit(BoolLit n) {
 		// TODO Auto-generated method stub
 		
-		//set the current expression template
-		expr = groupTemplate.getInstanceOf("boolean_expr_lable");
-		//set value propriety
-		expr.add("value", n.getValue());
+		ST node = groupTemplate.getInstanceOf("node");
+		
+		node.add("parent", parent);
+		nodeName = "BooleanLiteralExpr" + c_expr++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("boolean_expr_lable").add("value", n.getValue()));
+		
+		nodes.add(node);
 		
 	}
 
@@ -175,31 +189,42 @@ private STGroup groupTemplate;
 	public void visit(CharLit n) {
 		// TODO Auto-generated method stub
 		
-		//set the current expression template
-		expr = groupTemplate.getInstanceOf("char_expr_lable");
-		//set value propriety
-		expr.add("value", n.getValue());
+		ST node = groupTemplate.getInstanceOf("node");
+		
+		node.add("parent", parent);
+		nodeName = "CharLiteralExpr" + c_expr++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("char_expr_lable").add("value", n.getValue()));
+		
+		nodes.add(node);
 	}
 
 	@Override
 	public void visit(FloatLit n) {
 		// TODO Auto-generated method stub
 		
-		//set the current expression template
-		expr = groupTemplate.getInstanceOf("float_expr_lable");
-		//set value propriety
-	    expr.add("value", n.getValue());
-	    
+		ST node = groupTemplate.getInstanceOf("node");
+		
+		node.add("parent", parent);
+		nodeName = "FloatLiteralExpr" + c_expr++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("float_expr_lable").add("value", n.getValue()));
+		
+		nodes.add(node);
 	}
 
 	@Override
 	public void visit(IntLit n) {
 		// TODO Auto-generated method stub
 		
-		//set the current expression template
-		expr = groupTemplate.getInstanceOf("int_expr_lable");
-		//set value propriety
-		expr.add("value", n.getValue());
+		ST node = groupTemplate.getInstanceOf("node");
+		
+		node.add("parent", parent);
+		nodeName = "IntLiteralExpr" + c_expr++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("int_expr_lable").add("value", n.getValue()));
+		
+		nodes.add(node);
 	}
 
 	@Override
@@ -212,10 +237,14 @@ private STGroup groupTemplate;
 	public void visit(StrLit n) {
 		// TODO Auto-generated method stub
 		
-		//set the current expression template
-		expr = groupTemplate.getInstanceOf("string_expr_lable");
-		//set value propriety
-		expr.add("value", n.getValue());
+		ST node = groupTemplate.getInstanceOf("node");
+		
+		node.add("parent", parent);
+		nodeName = "StringLiteralExpr" + c_expr++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("string_expr_lable").add("value", n.getValue()));
+		
+		nodes.add(node);
 	}
 
 	@Override
@@ -414,9 +443,18 @@ private STGroup groupTemplate;
 	public void visit(Add n) {
 		// TODO Auto-generated method stub
 		
-		//set the current expression template
-		expr = groupTemplate.getInstanceOf("add_expr_lable");
+		ST node = groupTemplate.getInstanceOf("node");
+		node.add("parent", parent);
+		nodeName = "AddExpr" + c_expr++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("add_expr_lable"));
+		
+		nodes.add(node);
+		
+		String s = nodeName;
+		parent = s;
 		n.getLeft().accept(this);
+		parent = s;
 		n.getRight().accept(this);
 	}
 
@@ -424,10 +462,19 @@ private STGroup groupTemplate;
 	public void visit(And n) {
 		// TODO Auto-generated method stub
 		
-		// set the current expression template
-		expr = groupTemplate.getInstanceOf("and_expr_lable");
+		ST node = groupTemplate.getInstanceOf("node");
 		
+		node.add("parent", parent);
+		nodeName = "AndExpr" + c_expr++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("and_expr_node"));
+		
+		nodes.add(node);
+		
+		String s = nodeName;
+		parent = s;
 		n.getLeft().accept(this);
+		parent = s;
 		n.getRight().accept(this);
 	}
 
@@ -441,8 +488,20 @@ private STGroup groupTemplate;
 	public void visit(Concat n) {
 		// TODO Auto-generated method stub
 		
-		//set the current expression template
-		expr = groupTemplate.getInstanceOf("concat_expr_lable");
+		ST node = groupTemplate.getInstanceOf("node");
+		
+		node.add("parent", parent);
+		nodeName = "ConcatExpr" + c_expr++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("concat_expr_lable"));
+		
+		nodes.add(node);
+		
+		String s = nodeName;
+		parent = s;
+		n.getLeft().accept(this);
+		parent = s;
+		n.getRight().accept(this);
 		
 	}
 
@@ -450,9 +509,19 @@ private STGroup groupTemplate;
 	public void visit(Div n) {
 		// TODO Auto-generated method stub
 		
-		expr = groupTemplate.getInstanceOf("div_expr_lable");
+		ST node = groupTemplate.getInstanceOf("node");
 		
+		node.add("parent", parent);
+		nodeName = "DivExpr" + c_expr++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("div_expr_lable"));
+		
+		nodes.add(node);
+		
+		String s = nodeName;
+		parent = s;
 		n.getLeft().accept(this);
+		parent = s;
 		n.getRight().accept(this);
 	}
 
@@ -460,19 +529,40 @@ private STGroup groupTemplate;
 	public void visit(Equals n) {
 		// TODO Auto-generated method stub
 		
-		expr = groupTemplate.getInstanceOf("equals_expr_lable");
+		ST node = groupTemplate.getInstanceOf("node");
 		
+		node.add("parent", parent);
+		nodeName = "EqualsExpr" + c_expr++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("equals_expr_lable"));
+		
+		nodes.add(node);
+		
+		String s = nodeName;
+		parent = s;
 		n.getLeft().accept(this);
+		parent = s;
 		n.getRight().accept(this);
+		
 	}
 
 	@Override
 	public void visit(Greater n) {
 		// TODO Auto-generated method stub
 		
-		expr = groupTemplate.getInstanceOf("gt_expr_lable");
+		ST node = groupTemplate.getInstanceOf("node");
 		
+		node.add("parent", parent);
+		nodeName = "GreaterExpr" + c_expr++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("gt_expr_lable"));
+		
+		nodes.add(node);
+		
+		String s = nodeName;
+		parent = s;
 		n.getLeft().accept(this);
+		parent = s;
 		n.getRight().accept(this);
 	}
 
@@ -480,9 +570,19 @@ private STGroup groupTemplate;
 	public void visit(GreaterEq n) {
 		// TODO Auto-generated method stub
 		
-		expr = groupTemplate.getInstanceOf("ge_expr_lable");
+		ST node = groupTemplate.getInstanceOf("node");
 		
+		node.add("parent", parent);
+		nodeName = "GreaterEqualsExpr" + c_expr++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("ge_expr_lable"));
+		
+		nodes.add(node);
+		
+		String s = nodeName;
+		parent = s;
 		n.getLeft().accept(this);
+		parent = s;
 		n.getRight().accept(this);
 	}
 
@@ -490,9 +590,19 @@ private STGroup groupTemplate;
 	public void visit(Less n) {
 		// TODO Auto-generated method stub
 		
-		expr= groupTemplate.getInstanceOf("lt_expr_lable");
+		ST node = groupTemplate.getInstanceOf("node");
 		
+		node.add("parent", parent);
+		nodeName = "LessExpr" + c_expr++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("lt_expr_lable"));
+		
+		nodes.add(node);
+		
+		String s = nodeName;
+		parent = s;
 		n.getLeft().accept(this);
+		parent = s;
 		n.getRight().accept(this);
 	}
 
@@ -500,9 +610,19 @@ private STGroup groupTemplate;
 	public void visit(LessEq n) {
 		// TODO Auto-generated method stub
 		
-		expr = groupTemplate.getInstanceOf("le_expr_lable");
+		ST node = groupTemplate.getInstanceOf("node");
 		
+		node.add("parent", parent);
+		nodeName = "LessEqualsExpr" + c_expr++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("le_expr_lable"));
+		
+		nodes.add(node);
+		
+		String s = nodeName;
+		parent = s;
 		n.getLeft().accept(this);
+		parent = s;
 		n.getRight().accept(this);
 		
 	}
@@ -523,9 +643,19 @@ private STGroup groupTemplate;
 	public void visit(Mod n) {
 		// TODO Auto-generated method stub
 		
-		expr = groupTemplate.getInstanceOf("mod_expr_lable");
+		ST node = groupTemplate.getInstanceOf("node");
 		
+		node.add("parent", parent);
+		nodeName = "ModExpr" + c_expr++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("mod_expr_lable"));
+		
+		nodes.add(node);
+		
+		String s = nodeName;
+		parent = s;
 		n.getLeft().accept(this);
+		parent = s;
 		n.getRight().accept(this);
 		
 	}
@@ -534,18 +664,35 @@ private STGroup groupTemplate;
 	public void visit(Mult n) {
 		// TODO Auto-generated method stub
 		
-		expr = groupTemplate.getInstanceOf("mul_expr_lable");
+		ST node = groupTemplate.getInstanceOf("node");
 		
+		node.add("parent", parent);
+		nodeName = "MultExpr" + c_expr++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("mult_expr_lable"));
+		
+		nodes.add(node);
+		
+		String s = nodeName;
+		parent = s;
 		n.getLeft().accept(this);
+		parent = s;
 		n.getRight().accept(this);
 	}
 
 	@Override
 	public void visit(Not n) {
 		// TODO Auto-generated method stub
+		ST node = groupTemplate.getInstanceOf("node");
 		
-		expr = groupTemplate.getInstanceOf("not_expr_lable");
+		node.add("parent", parent);
+		nodeName = "NotExpr" + c_expr++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("not_expr_lable"));
 		
+		nodes.add(node);
+		
+		parent = nodeName;
 		n.getExpr().accept(this);
 		
 	}
@@ -554,11 +701,20 @@ private STGroup groupTemplate;
 	public void visit(NotEq n) {
 		// TODO Auto-generated method stub
 		
-		expr = groupTemplate.getInstanceOf("no_equals_expr_lable");
+		ST node = groupTemplate.getInstanceOf("node");
 		
+		node.add("parent", parent);
+		nodeName = "NotEqualsExpr" + c_expr++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("no_equals_expr_lable"));
+		
+		nodes.add(node);
+		
+		String s = nodeName;
+		parent = s;
 		n.getLeft().accept(this);
+		parent = s;
 		n.getRight().accept(this);
-		
 		
 	}
 
@@ -566,9 +722,19 @@ private STGroup groupTemplate;
 	public void visit(Or n) {
 		// TODO Auto-generated method stub
 		
-		expr = groupTemplate.getInstanceOf("or_expr_lable");
+		ST node = groupTemplate.getInstanceOf("node");
 		
+		node.add("parent", parent);
+		nodeName = "OrExpr" + c_expr++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("or_expr_lable"));
+		
+		nodes.add(node);
+		
+		String s = nodeName;
+		parent = s;
 		n.getLeft().accept(this);
+		parent = s;
 		n.getRight().accept(this);
 	}
 
@@ -576,9 +742,19 @@ private STGroup groupTemplate;
 	public void visit(Sub n) {
 		// TODO Auto-generated method stub
 		
-		expr = groupTemplate.getInstanceOf("sub_expr_lable");
+		ST node = groupTemplate.getInstanceOf("node");
 		
+		node.add("parent", parent);
+		nodeName = "SubExpr" + c_expr++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("sub_expr_lable"));
+		
+		nodes.add(node);
+		
+		String s = nodeName;
+		parent = s;
 		n.getLeft().accept(this);
+		parent = s;
 		n.getRight().accept(this);
 	}
 
@@ -706,7 +882,16 @@ private STGroup groupTemplate;
 	public void visit(AndPEG n) {
 		// TODO Auto-generated method stub
 		
-		peg = groupTemplate.getInstanceOf("and_peg_lable");
+		ST node = groupTemplate.getInstanceOf("node");
+		
+		node.add("parent", parent);
+		nodeName = "AndPeg" + c_peg++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("and_peg_lable"));
+		
+		nodes.add(node);
+		
+		parent = nodeName;
 		n.getPegExp().accept(this);
 	}
 
@@ -714,17 +899,33 @@ private STGroup groupTemplate;
 	public void visit(AnyPEG n) {
 		// TODO Auto-generated method stub
 		
-		peg = groupTemplate.getInstanceOf("any_peg_lable");
+		ST node = groupTemplate.getInstanceOf("node");
+		
+		node.add("parent", parent);
+		nodeName = "AnyPeg" + c_peg++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("any_peg_lable"));
+		
+		nodes.add(node);
 		
 	}
 
 	@Override
 	public void visit(BindPEG n) {
 		// TODO Auto-generated method stub
+
+		ST node = groupTemplate.getInstanceOf("node");
 		
-		peg= groupTemplate.getInstanceOf("bind_peg_lable");
-		n.getAttribute().accept(this);
+		node.add("parent", parent);
+		nodeName = "BindPeg" + c_peg++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("bind_peg_lable"));
+		
+		nodes.add(node);
+		
+		parent = nodeName;
 		n.getExpr().accept(this);
+	
 	}
 	 
 
@@ -738,9 +939,21 @@ private STGroup groupTemplate;
 	public void visit(ChoicePEG n) {
 		// TODO Auto-generated method stub
 		
-		ST aux_peg = groupTemplate.getInstanceOf("node");
+		ST node = groupTemplate.getInstanceOf("node");
 		
-		aux_peg.add("node", "ChoicePEG");
+		node.add("parent", parent);
+		nodeName = "choicePeg" + c_peg++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("choice_peg_lable"));
+		
+		nodes.add(node);
+		
+		String s = nodeName;
+		parent = s;
+		
+		n.getLeftPeg().accept(this);
+		parent = s;
+		n.getRightPeg().accept(this);
 		
 		
 	}
@@ -749,8 +962,16 @@ private STGroup groupTemplate;
 	public void visit(ConstraintPEG n) {
 		// TODO Auto-generated method stub
 		
-		peg= groupTemplate.getInstanceOf("constraint_peg_lable");
+		ST node = groupTemplate.getInstanceOf("node");
 		
+		node.add("parent", parent);
+		nodeName = "ConstraintPeg" + c_peg++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("constraint_peg_lable"));
+		
+		nodes.add(node);
+		
+		parent = nodeName;
 		n.getExpr().accept(this);
 		
 	}
@@ -759,17 +980,31 @@ private STGroup groupTemplate;
 	public void visit(KleenePEG n) {
 		// TODO Auto-generated method stub
 
-		peg = groupTemplate.getInstanceOf("star_peg_lable");
+		ST node = groupTemplate.getInstanceOf("node");
 		
+		node.add("parent", parent);
+		nodeName = "KleenePeg" + c_peg++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("star_peg_lable"));
+		
+		nodes.add(node);
+		
+		parent = nodeName;
 		n.getPegExp().accept(this);
-		
 	}
 
 	@Override
 	public void visit(LambdaPEG n) {
 		// TODO Auto-generated method stub
 		
-		peg = groupTemplate.getInstanceOf("lambda_peg_lable");
+		ST node = groupTemplate.getInstanceOf("node");
+		
+		node.add("parent", parent);
+		nodeName = "LambdaPeg" + c_peg++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("lambda_peg_lable"));
+		
+		nodes.add(node);
 		
 	}
 
@@ -777,23 +1012,36 @@ private STGroup groupTemplate;
 	public void visit(LitPEG n) {
 		// TODO Auto-generated method stub
 		
-		peg = groupTemplate.getInstanceOf("literal_peg_lable");
-	    peg.add("value",n.getLit());
+		ST node = groupTemplate.getInstanceOf("node");
+		
+		node.add("parent", parent);
+		nodeName = "LiteralPeg" + c_peg++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("literal_peg_lable").add("value", n.getLit()));
+		
+		nodes.add(node);
+		
 	}
 
 	@Override
 	public void visit(NonterminalPEG n) {
 		// TODO Auto-generated method stub
 		
-		peg = groupTemplate.getInstanceOf("nonterminal_peg_lable");
+		ST node = groupTemplate.getInstanceOf("node");
 		
+		node.add("parent", parent);
+		nodeName = "NonterminalPeg" + c_peg++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("nonterminal_peg_lable").add("name", n.getName()));
 		
-		peg.add("name",n.getName());
+		nodes.add(node);
 		
-		for(Expr e:n.getArgs()) {
+		String s = nodeName;
+		
+		for(Expr e: n.getArgs()) {
 			
+			parent = s;
 			e.accept(this);
-			
 		}
 	}
 
@@ -801,27 +1049,49 @@ private STGroup groupTemplate;
 	public void visit(NotPEG n) {
 		// TODO Auto-generated method stub
 		
-		peg = groupTemplate.getInstanceOf("not_peg_lable");
+		ST node = groupTemplate.getInstanceOf("node");
 		
+		node.add("parent", parent);
+		nodeName = "NotPeg" + c_peg++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("not_peg_lable"));
+		
+		nodes.add(node);
+		
+		parent = nodeName;
 		n.getPegExp().accept(this);
 	}
 
 	@Override
 	public void visit(OptionalPEG n) {
 		// TODO Auto-generated method stub
+		ST node = groupTemplate.getInstanceOf("node");
 		
-		peg = groupTemplate.getInstanceOf("optional_peg_lable");
+		node.add("parent", parent);
+		nodeName = "OptionalPeg" + c_peg++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("optional_peg_lable"));
+		
+		nodes.add(node);
+		
+		parent = nodeName;
 		n.getPegExp().accept(this);
-		
-		
 	}
 
 	@Override
 	public void visit(PKleene n) {
 		// TODO Auto-generated method stub
 		
-		peg = groupTemplate.getInstanceOf("plus_peg_lable");
+		ST node = groupTemplate.getInstanceOf("node");
 		
+		node.add("parent", parent);
+		nodeName = "PlusKleenePeg" + c_peg++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("plus_peg_lable"));
+		
+		nodes.add(node);
+		
+		parent = nodeName;
 		n.getPegExp().accept(this);
 	}
 
@@ -831,11 +1101,7 @@ private STGroup groupTemplate;
 		
 		ST r = groupTemplate.getInstanceOf("rule");
 		
-		//setting rule name
-		
-		r.add("rname",n.getRuleName());
-		
-		//setting annotation
+		// setting annotation 
 		switch(n.getAnno()) {
 		case MEMOIZE:
 			r.add("annotation", "memoize");
@@ -849,60 +1115,59 @@ private STGroup groupTemplate;
 			break;
 		}
 		
-		//visit inherited attributes
-		ST inh;
-		for(Pair<Type, String>in: n.getInh()) {
-			in.getFirst().accept(this);
-			inh = groupTemplate.getInstanceOf("inh");
-			inh.add("type", this.type);
-			inh.add("name", in.getSecond());
-			this.inh.add(inh);
-		}
-		r.add("inh", this.inh);
+		r.add("rname", n.getRuleName()); // set the rule name
+		r.add("nodeName", n.getRuleName().concat("Rule")); // set the dot node name
 		
-		//visit synthesized attributes
-		for(Expr syn: n.getSyn()) {
-			syn.accept(this);
-			r.add("syn", this.attr);
-		}
+		// visit the parsing expression
+		parent = n.getRuleName().concat("Rule");
 		
-		//visit the parsing expressions
-		
+		nodes = new ArrayList<ST>();
 		n.getPeg().accept(this);
-		r.add("peg",this.peg);
-		
-		r.add("nodeName", n.getRuleName().concat("Rule"));
-		
-		template.add("rule",r);
+		r.add("peg", nodes); // setting parsing expression propriety	
 	
+		template.add("rule",r);
 	}
 
 	@Override
 	public void visit(SeqPEG n) {
 		// TODO Auto-generated method stub
-		
-		//set the current parsing expression template
-		
-		peg = groupTemplate.getInstanceOf("sequence_peg_lable");
-		
-		for(APEG p: n.getPegs()) {
+	
+		ST node = groupTemplate.getInstanceOf("node"); // get a node template
+		node.add("parent", parent); // set the attribute parent node
+		nodeName = "SequencePeg" + c_peg++; // set the current node name
+		node.add("node", nodeName); //  set current node name
+		node.add("lable", groupTemplate.getInstanceOf("sequence_peg_lable")); // set node label
+		nodes.add(node);
+
+		String s = nodeName; // save the node name
+		for(APEG p : n.getPegs()) {
+			parent = s; // set the new parent node name
+			// visit a parsing expression
 			p.accept(this);
-			
-		}
-		
+		}	
 	}
 
 	@Override
 	public void visit(UpdatePEG n) {
 		// TODO Auto-generated method stub
-		peg = groupTemplate.getInstanceOf("update_peg_lable");
 		
-		for(Pair<Attribute, Expr>assigs: n.getAssigs()) {
+		ST node = groupTemplate.getInstanceOf("node");
+		
+		node.add("parent", parent);
+		nodeName = "UpdatePeg" + c_peg++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("update_peg_lable"));
+		
+		nodes.add(node);
+		
+		String s = nodeName;
+		
+		for(Pair<Attribute, Expr>a : n.getAssigs()) {
 			
-			assigs.getFirst().accept(this);
-			assig = groupTemplate.getInstanceOf("assign_lable");
-			assig.add("var", attr);
-			assigs.getSecond().accept(this);
+			parent = s;
+			a.getFirst().accept(this);
+			parent = s;
+			a.getSecond().accept(this);
 		}
 	}
 
@@ -924,6 +1189,7 @@ private STGroup groupTemplate;
 	public void visit(TyFloat n) {
 		// TODO Auto-generated method stub
 
+	
 		this.type = groupTemplate.getInstanceOf("float_type");
 	}
 
@@ -932,6 +1198,7 @@ private STGroup groupTemplate;
 		// TODO Auto-generated method stub
 
 		this.type = groupTemplate.getInstanceOf("grammar_type");
+	
 	}
 
 	@Override
@@ -939,6 +1206,7 @@ private STGroup groupTemplate;
 		// TODO Auto-generated method stub
 
 		this.type = groupTemplate.getInstanceOf("int_type");
+		
 	}
 
 	@Override
@@ -963,6 +1231,7 @@ private STGroup groupTemplate;
 		// TODO Auto-generated method stub
 
 		this.type = groupTemplate.getInstanceOf("string_type");
+		
 	}
 
 	@Override

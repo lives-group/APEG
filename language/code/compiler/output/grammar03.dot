@@ -1,0 +1,39 @@
+Digraph expression {
+  node [shape="box"];
+  grammar [label = "Grammar[expression]"];
+
+  sRule [label = "Rule[s]"];
+  grammar -> sRule;
+  UpdatePeg0 [label = "UpdatePegExpr([<-])"];
+  sRule -> UpdatePeg0;
+  attributeExpr0 [label = "i:var"];
+  UpdatePeg0 -> attributeExpr0;
+  assignmentNode0 [label = "Assignment:i"];
+  UpdatePeg0 -> assignmentNode0;
+  testRule [label = "Rule[test]"];
+  grammar -> testRule;
+  ConstraintPeg1 [label = "ConstraintPegExpr({?})"];
+  testRule -> ConstraintPeg1;
+  AndExpr1 [label = ""];
+  ConstraintPeg1 -> AndExpr1;
+  OrExpr2 [label = "||"];
+  AndExpr1 -> OrExpr2;
+  LessExpr3 [label = "<"];
+  OrExpr2 -> LessExpr3;
+  attributeExpr4 [label = "x:var"];
+  LessExpr3 -> attributeExpr4;
+  attributeExpr5 [label = "y:var"];
+  LessExpr3 -> attributeExpr5;
+  EqualsExpr6 [label = "=="];
+  OrExpr2 -> EqualsExpr6;
+  attributeExpr7 [label = "z:var"];
+  EqualsExpr6 -> attributeExpr7;
+  IntLiteralExpr8 [label = "2:int"];
+  EqualsExpr6 -> IntLiteralExpr8;
+  GreaterExpr9 [label = "\>"];
+  AndExpr1 -> GreaterExpr9;
+  attributeExpr10 [label = "w:var"];
+  GreaterExpr9 -> attributeExpr10;
+  IntLiteralExpr11 [label = "10:int"];
+  GreaterExpr9 -> IntLiteralExpr11;
+}

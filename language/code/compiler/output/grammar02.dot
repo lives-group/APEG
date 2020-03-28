@@ -1,0 +1,25 @@
+Digraph annotation {
+  node [shape="box"];
+  grammar [label = "Grammar[annotation]"];
+
+  aRule [label = "Rule[a]"];
+  grammar -> aRule;
+  choicePeg0 [label = "ChoicePegExpr(/);"];
+  aRule -> choicePeg0;
+  SequencePeg1 [label = "SequencePegExpr(.)"];
+  choicePeg0 -> SequencePeg1;
+  NonterminalPeg2 [label = "NonterminalPegExpr:b"];
+  SequencePeg1 -> NonterminalPeg2;
+  LiteralPeg3 [label = "'1'"];
+  SequencePeg1 -> LiteralPeg3;
+  SequencePeg4 [label = "SequencePegExpr(.)"];
+  choicePeg0 -> SequencePeg4;
+  NonterminalPeg5 [label = "NonterminalPegExpr:b"];
+  SequencePeg4 -> NonterminalPeg5;
+  LiteralPeg6 [label = "'2'"];
+  SequencePeg4 -> LiteralPeg6;
+  bRule [label = "Rule[b]:memoize"];
+  grammar -> bRule;
+  LiteralPeg7 [label = "'b'"];
+  bRule -> LiteralPeg7;
+}

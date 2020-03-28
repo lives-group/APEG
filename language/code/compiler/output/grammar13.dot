@@ -1,0 +1,25 @@
+Digraph choiceback {
+  node [shape="box"];
+  grammar [label = "Grammar[choiceback]"];
+
+  aRule [label = "Rule[a]"];
+  grammar -> aRule;
+  NonterminalPeg0 [label = "NonterminalPegExpr:b"];
+  aRule -> NonterminalPeg0;
+  IntLiteralExpr0 [label = "0:int"];
+  NonterminalPeg0 -> IntLiteralExpr0;
+  attributeExpr1 [label = "k:var"];
+  NonterminalPeg0 -> attributeExpr1;
+  bRule [label = "Rule[b]"];
+  grammar -> bRule;
+  SequencePeg1 [label = "SequencePegExpr(.)"];
+  bRule -> SequencePeg1;
+  LiteralPeg2 [label = "'0'"];
+  SequencePeg1 -> LiteralPeg2;
+  UpdatePeg3 [label = "UpdatePegExpr([<-])"];
+  SequencePeg1 -> UpdatePeg3;
+  attributeExpr2 [label = "x:var"];
+  UpdatePeg3 -> attributeExpr2;
+  assignmentNode0 [label = "Assignment:x"];
+  UpdatePeg3 -> assignmentNode0;
+}

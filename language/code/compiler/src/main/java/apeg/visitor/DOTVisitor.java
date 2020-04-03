@@ -130,7 +130,7 @@ private STGroup groupTemplate;
 	private List<ST> inh;
 	private ST assig;
 	private String parent, nodeName;
-	private ST type;
+	private ST type, lable;
 	private String var;
 
 	private List<ST> nodes;
@@ -1127,6 +1127,24 @@ private STGroup groupTemplate;
 			break;
 		}
 		
+		for(Pair<Type, String>i : n.getInh()) {
+			
+			i.getFirst().accept(this);
+			i.getSecond();
+			
+		}
+		for(Expr s :n.getSyn()) {
+			
+			parent = n.getRuleName().concat("Rule");
+			
+			ST node = groupTemplate.getInstanceOf("node");
+			node.add("parent", parent);
+			node.add("node", n.getRuleName().concat("Rule") + "_"+ nodeName);
+			s.accept(this);
+			node.add("lable", groupTemplate.getInstanceOf("syn_lable").add("attr", this.var));
+			
+		}
+		
 		r.add("rname", n.getRuleName()); // set the rule name
 		r.add("nodeName", n.getRuleName().concat("Rule")); // set the dot node name
 		
@@ -1184,7 +1202,7 @@ private STGroup groupTemplate;
 			nodeName = "assignmentNode" + c_assig++;
 			aux_node.add("node", nodeName);
 			
-		
+			parent = s;
 			a.getFirst().accept(this);
 			aux_node.add("lable", groupTemplate.getInstanceOf("assign_lable").add("var", this.var));
 			

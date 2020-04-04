@@ -1110,9 +1110,13 @@ private STGroup groupTemplate;
 	@Override
 	public void visit(RulePEG n) {
 		// TODO Auto-generated method stub
-		
+		//nodes = new ArrayList<ST>();
 		ST r = groupTemplate.getInstanceOf("rule");
-		
+        r.add("rname", n.getRuleName()); // set the rule name
+		r.add("nodeName", n.getRuleName().concat("Rule")); // set the dot node name
+		nodes = new ArrayList<ST>();
+		// visit the parsing expression
+		parent = n.getRuleName().concat("Rule");
 		// setting annotation 
 		switch(n.getAnno()) {
 		case MEMOIZE:
@@ -1126,32 +1130,33 @@ private STGroup groupTemplate;
 		default:
 			break;
 		}
+		ST nodeInh = groupTemplate.getInstanceOf("nodeLabels");
+		nodeInh.add("parent",parent);
+		nodeInh.add("node","inh" + c_assig++);
 		
-		for(Pair<Type, String>i : n.getInh()) {
+		if(n.getInh().size() > 0){
+            ArrayList<ST> inhAttr = new ArrayList<ST>(); 
+            for(Pair<Type, String>i : n.getInh()) {
 			
-			i.getFirst().accept(this);
-			i.getSecond();
+                i.getFirst().accept(this);
+                inhAttr.add(groupTemplate.getInstanceOf("inh").add("attr",i.getSecond()));
 			
+            }
+            nodeInh.add("label",inhAttr);
+            nodes.add(nodeInh);
 		}
-		for(Expr s :n.getSyn()) {
-			
-			parent = n.getRuleName().concat("Rule");
-			
-			ST node = groupTemplate.getInstanceOf("node");
-			node.add("parent", parent);
-			node.add("node", n.getRuleName().concat("Rule") + "_"+ nodeName);
-			s.accept(this);
-			node.add("lable", groupTemplate.getInstanceOf("syn_lable").add("attr", this.var));
-			
-		}
+// 		for(Expr s :n.getSyn()) {
+// 			
+// 			parent = n.getRuleName().concat("Rule");
+// 			
+// 			ST node = groupTemplate.getInstanceOf("node");
+// 			node.add("parent", parent);
+// 			node.add("node", n.getRuleName().concat("Rule") + "_"+ nodeName);
+// 			s.accept(this);
+// 			node.add("lable", groupTemplate.getInstanceOf("syn_lable").add("attr", this.var));
+// 			
+// 		}
 		
-		r.add("rname", n.getRuleName()); // set the rule name
-		r.add("nodeName", n.getRuleName().concat("Rule")); // set the dot node name
-		
-		// visit the parsing expression
-		parent = n.getRuleName().concat("Rule");
-		
-		nodes = new ArrayList<ST>();
 		n.getPeg().accept(this);
 		r.add("peg", nodes); // setting parsing expression propriety	
 	
@@ -1192,10 +1197,10 @@ private STGroup groupTemplate;
 		
 		String s = nodeName;
 		
-		
+		ST aux_node;
 		for(Pair<Attribute, Expr>a : n.getAssigs()) {
 			
-			ST aux_node = groupTemplate.getInstanceOf("node");
+			aux_node = groupTemplate.getInstanceOf("node");
 			
 			parent = s;
 			aux_node.add("parent", parent);
@@ -1204,6 +1209,8 @@ private STGroup groupTemplate;
 			
 			parent = s;
 			a.getFirst().accept(this);
+			parent = s;
+			a.getSecond().accept(this);
 			aux_node.add("lable", groupTemplate.getInstanceOf("assign_lable").add("var", this.var));
 			
 			nodes.add(aux_node);

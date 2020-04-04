@@ -32,3 +32,19 @@ valuers return h:
 	'8' {h = 8;} /
 	'9' {h = 9;}
 ;
+
+val returns j:
+	'0' {j = 0;}
+	'1' {j = 1;}
+	'2' {j = 2;}
+;
+
+b[int x] returns [float x1]
+	{x = x + 1;} val {x1 = x;} /
+	{x = x + 1;} val {x1 = x;} /
+	{x = x + 1;} val {x1 = x;}
+;
+
+a returns k:
+	b<0,k>
+;

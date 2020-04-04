@@ -48,3 +48,9 @@ b[int x] returns [float x1]
 a returns k:
 	b<0,k>
 ;
+
+expr returns x:
+	val + expr /
+	val
+;
+

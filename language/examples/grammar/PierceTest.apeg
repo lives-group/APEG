@@ -20,7 +20,7 @@ boolser returns i:
 	'false' {i = false;}
 ;
 
-valuers return h:
+valuers:
 	'0' {h = 0;} /
 	'1' {h = 1;} /
 	'2' {h = 2;} /
@@ -39,7 +39,7 @@ val returns j:
 	'2' {j = 2;}
 ;
 
-b[int x] returns [float x1]
+b[int x] returns x1:
 	{x = x + 1;} val {x1 = x;} /
 	{x = x + 1;} val {x1 = x;} /
 	{x = x + 1;} val {x1 = x;}

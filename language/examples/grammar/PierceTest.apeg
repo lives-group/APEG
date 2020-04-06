@@ -2,6 +2,10 @@ apeg PierceTest;
 
 number returns n: digit<n> digit<m>;
 
+number02 returns r: 
+	digit<r> (digit<aux> {r = r * 10 + aux;})
+;
+
 digit returns m:
 	'1' {m = 1;} /
 	'2' {m = 2;}

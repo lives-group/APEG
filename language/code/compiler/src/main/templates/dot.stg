@@ -30,6 +30,14 @@ node(parent, node, lable) ::= <<
 <edge(parent, node)>
 >>
 
+/** Template for dot node and edges */
+nodeLabels(parent, node, label) ::= <<
+<node> [label = "<label; separator=",", wrap>"];
+<edge(parent, node)>
+>>
+
+
+
 edge(parent, node) ::= <<
 <parent> -> <node>;
 >>

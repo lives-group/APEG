@@ -155,6 +155,7 @@ private STGroup groupTemplate;
 	public void visit(Attribute n) {
 		// TODO Auto-generated method stub
 		
+		
 		ST node = groupTemplate.getInstanceOf("node");
 		
 		node.add("parent", parent);
@@ -178,6 +179,7 @@ private STGroup groupTemplate;
 		node.add("node", nodeName);
 		node.add("lable", groupTemplate.getInstanceOf("attribute_grammar_lable").add("name", n.getName()));
 		
+		this.var = n.getName();
 		nodes.add(node);
 		
 	}
@@ -681,7 +683,7 @@ private STGroup groupTemplate;
 		node.add("parent", parent);
 		nodeName = "MultExpr" + c_expr++;
 		node.add("node", nodeName);
-		node.add("lable", groupTemplate.getInstanceOf("mult_expr_lable"));
+		node.add("lable", groupTemplate.getInstanceOf("mul_expr_lable"));
 		
 		nodes.add(node);
 		
@@ -1130,32 +1132,44 @@ private STGroup groupTemplate;
 		default:
 			break;
 		}
+		
 		ST nodeInh = groupTemplate.getInstanceOf("nodeLabels");
 		nodeInh.add("parent",parent);
 		nodeInh.add("node","inh" + c_assig++);
 		
 		if(n.getInh().size() > 0){
+			
             ArrayList<ST> inhAttr = new ArrayList<ST>(); 
+            
             for(Pair<Type, String>i : n.getInh()) {
 			
                 i.getFirst().accept(this);
                 inhAttr.add(groupTemplate.getInstanceOf("inh").add("attr",i.getSecond()));
 			
             }
+            
             nodeInh.add("label",inhAttr);
             nodes.add(nodeInh);
 		}
-// 		for(Expr s :n.getSyn()) {
-// 			
-// 			parent = n.getRuleName().concat("Rule");
-// 			
-// 			ST node = groupTemplate.getInstanceOf("node");
-// 			node.add("parent", parent);
-// 			node.add("node", n.getRuleName().concat("Rule") + "_"+ nodeName);
-// 			s.accept(this);
-// 			node.add("lable", groupTemplate.getInstanceOf("syn_lable").add("attr", this.var));
-// 			
-// 		}
+		
+		ST nodeSyn = groupTemplate.getInstanceOf("nodeLabels");
+		nodeSyn.add("parent", parent);
+		nodeSyn.add("node","syn" + c_assig++);
+		
+		List<ST>synAtt = new ArrayList<ST>();
+		
+ 		if(n.getSyn().size() > 0) {
+ 			
+ 			
+ 			for(Expr s :n.getSyn()) {
+ 	 			
+ 				s.accept(this);
+ 				synAtt.add(groupTemplate.getInstanceOf("syn").add("attr", this.var));
+ 	
+ 	 		}
+ 			nodeSyn.add("label", synAtt);
+ 			nodes.add(nodeSyn);
+ 		}
 		
 		n.getPeg().accept(this);
 		r.add("peg", nodes); // setting parsing expression propriety	

@@ -45,7 +45,7 @@ edge(parent, node) ::= <<
 
 /** Template for parameters declaration */
 inh(attr) ::= "<\u2193><attr>"
-syn(attr) ::= "<\u2191><attr>"
+syn() ::= "<\u2191>"
 
 attribute_lable(name) ::= "<name>"
 attribute_grammar_lable(name) ::= "$<name>"
@@ -82,8 +82,8 @@ assign_lable(var) ::= "Assignment:<var>"
 
 
 /** Template for expressions */
-attribute_expr_lable(name) ::= "<name>:var"
-attribute_grammar_lable(name) ::= "<name>:grammar_var"
+attribute_expr_lable(name) ::= "<name>"
+attribute_grammar_lable(name) ::= "<name>"
 
 gt_expr_lable() ::= "\>"
 ge_expr_lable() ::= "<\u2265>"
@@ -99,11 +99,11 @@ equals_expr_lable() ::= "=="
 no_equals_expr_lable() ::= "<\u2260>"
 
 
-boolean_expr_lable(value) ::= "<value>:boolean"
-float_expr_lable(value) ::= "<value>:float"
-int_expr_lable(value) ::= "<value>:int"
-string_expr_lable(value) ::= "'<value>':string"
-char_expr_lable(value) ::= "<value>:char"
+boolean_expr_lable(value) ::= "<value>"
+float_expr_lable(value) ::= "<value>"
+int_expr_lable(value) ::= "<value>"
+string_expr_lable(value) ::= "'<value>'"
+char_expr_lable(value) ::= "<value>"
 meta_expr_lable() ::= "@[ ]"
 minus_expr_lable() ::= "-"
 not_expr_lable() ::= "<\u00AC>"

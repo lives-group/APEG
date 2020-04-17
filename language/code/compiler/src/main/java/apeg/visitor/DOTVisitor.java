@@ -481,7 +481,7 @@ private STGroup groupTemplate;
 		node.add("parent", parent);
 		nodeName = "AndExpr" + c_expr++;
 		node.add("node", nodeName);
-		node.add("lable", groupTemplate.getInstanceOf("and_expr_node"));
+		node.add("lable", groupTemplate.getInstanceOf("and_expr_lable"));
 		
 		nodes.add(node);
 		
@@ -1152,24 +1152,26 @@ private STGroup groupTemplate;
             nodes.add(nodeInh);
 		}
 		
-		ST nodeSyn = groupTemplate.getInstanceOf("nodeLabels");
-		nodeSyn.add("parent", parent);
-		nodeSyn.add("node","syn" + c_assig++);
-		
-		List<ST>synAtt = new ArrayList<ST>();
-		
- 		if(n.getSyn().size() > 0) {
- 			
- 			
- 			for(Expr s :n.getSyn()) {
- 	 			
- 				s.accept(this);
- 				synAtt.add(groupTemplate.getInstanceOf("syn").add("attr", this.var));
- 	
- 	 		}
- 			nodeSyn.add("label", synAtt);
- 			nodes.add(nodeSyn);
- 		}
+		if(n.getSyn().size() > 0) {
+			
+			ST node = groupTemplate.getInstanceOf("node");
+			
+			node.add("parent", parent);
+			nodeName = "SynAtt" + c_assig++;
+			node.add("node", nodeName);
+			node.add("lable", groupTemplate.getInstanceOf("syn"));
+			
+			String s = parent;
+			parent = nodeName;
+			
+			for(Expr syn: n.getSyn()) {
+				
+				syn.accept(this);
+			}
+			
+			parent = s;
+			nodes.add(node);
+		}
 		
 		n.getPeg().accept(this);
 		r.add("peg", nodes); // setting parsing expression propriety	

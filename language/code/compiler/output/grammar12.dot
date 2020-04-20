@@ -1,0 +1,41 @@
+Digraph kleneeTest {
+  node [shape="box"];
+  grammar [label = "Grammar[kleneeTest]"];
+
+  sRule [label = "Rule[s]"];
+  grammar -> sRule;
+  SequencePeg0 [label = "SequencePegExpr(.)"];
+  sRule -> SequencePeg0;
+  LiteralPeg1 [label = "'01'"];
+  SequencePeg0 -> LiteralPeg1;
+  NonterminalPeg2 [label = "NonterminalPegExpr:b"];
+  SequencePeg0 -> NonterminalPeg2;
+  bRule [label = "Rule[b]"];
+  grammar -> bRule;
+  SequencePeg3 [label = "SequencePegExpr(.)"];
+  bRule -> SequencePeg3;
+  KleenePeg4 [label = "StarPegExpr(*)"];
+  SequencePeg3 -> KleenePeg4;
+  SequencePeg5 [label = "SequencePegExpr(.)"];
+  KleenePeg4 -> SequencePeg5;
+  LiteralPeg6 [label = "'010'"];
+  SequencePeg5 -> LiteralPeg6;
+  LiteralPeg7 [label = "'A'"];
+  SequencePeg5 -> LiteralPeg7;
+  LiteralPeg8 [label = "'B'"];
+  SequencePeg5 -> LiteralPeg8;
+  LiteralPeg9 [label = "'11'"];
+  SequencePeg3 -> LiteralPeg9;
+  NonterminalPeg10 [label = "NonterminalPegExpr:d"];
+  SequencePeg3 -> NonterminalPeg10;
+  dRule [label = "Rule[d]"];
+  grammar -> dRule;
+  SequencePeg11 [label = "SequencePegExpr(.)"];
+  dRule -> SequencePeg11;
+  LiteralPeg12 [label = "'010'"];
+  SequencePeg11 -> LiteralPeg12;
+  LiteralPeg13 [label = "'A'"];
+  SequencePeg11 -> LiteralPeg13;
+  LiteralPeg14 [label = "':-('"];
+  SequencePeg11 -> LiteralPeg14;
+}

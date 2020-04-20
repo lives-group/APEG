@@ -1,0 +1,43 @@
+Digraph expression {
+  node [shape="box"];
+  grammar [label = "Grammar[expression]"];
+
+  sRule [label = "Rule[s]"];
+  grammar -> sRule;
+  inh0 [label = "↓x,↓y,↓z,↓w,↓i"];
+  sRule -> inh0;
+  UpdatePeg0 [label = "UpdatePegExpr([<-])"];
+  sRule -> UpdatePeg0;
+  attributeExpr0 [label = "i"];
+  UpdatePeg0 -> attributeExpr0;
+  BooleanLiteralExpr1 [label = "true"];
+  UpdatePeg0 -> BooleanLiteralExpr1;
+  assignmentNode1 [label = "Assignment:i"];
+  UpdatePeg0 -> assignmentNode1;
+  testRule [label = "Rule[test]"];
+  grammar -> testRule;
+  ConstraintPeg1 [label = "ConstraintPegExpr({?})"];
+  testRule -> ConstraintPeg1;
+  AndExpr2 [label = "&&"];
+  ConstraintPeg1 -> AndExpr2;
+  OrExpr3 [label = "||"];
+  AndExpr2 -> OrExpr3;
+  LessExpr4 [label = "<"];
+  OrExpr3 -> LessExpr4;
+  attributeExpr5 [label = "x"];
+  LessExpr4 -> attributeExpr5;
+  attributeExpr6 [label = "y"];
+  LessExpr4 -> attributeExpr6;
+  EqualsExpr7 [label = "=="];
+  OrExpr3 -> EqualsExpr7;
+  attributeExpr8 [label = "z"];
+  EqualsExpr7 -> attributeExpr8;
+  IntLiteralExpr9 [label = "2"];
+  EqualsExpr7 -> IntLiteralExpr9;
+  GreaterExpr10 [label = "\>"];
+  AndExpr2 -> GreaterExpr10;
+  attributeExpr11 [label = "w"];
+  GreaterExpr10 -> attributeExpr11;
+  IntLiteralExpr12 [label = "10"];
+  GreaterExpr10 -> IntLiteralExpr12;
+}

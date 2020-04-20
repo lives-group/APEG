@@ -1,7 +1,7 @@
 group prettyprint;
 
 /** Defining the grammar specfication template */
-apeg(name, option, header, functions, func_sources, rules) ::= <<
+apeg(name, option, rules) ::= <<
 apeg <name>;
 <if(option)>
 
@@ -10,31 +10,17 @@ options {
 }
 <endif>
 
-<if(header)>
-
-header {
- <header>
-}
-<endif>
-
-<if(func_sources)>
-
-functions <if(functions)><functions; separator=" ", wrap> <endif>from {
-  <func_sources; separator=" ", wrap>
-};
-<endif>
-
 <rules; separator="\n\n">
 >>
 
 
 /** Template for rules specification */
-rule(annotation, name, inh_attr, syn_attr, ret_attr, peg_expr) ::= <<
+rule(annotation, name, inh, syn, peg) ::= <<
 <if(annotation)>
 @<annotation> 
 <endif>
-<name><if(inh_attr)>[<inh_attr; separator=", ", wrap>]<endif><if(syn_attr)> returns[<syn_attr; separator=", ", wrap>]<endif><if(ret_attr)> locals[<ret_attr; separator=", ", wrap>]<endif>:
-  <peg_expr>
+<name><if(inh)>[<inh; separator=", ", wrap>]<endif><if(syn)> returns <syn; separator=", ", wrap><endif>:
+  <peg>
 ;
 >>
 
@@ -54,7 +40,8 @@ user_type(name) ::= "<name>"
 
 
 /** Template for expressions */
-atribute_expr(name) ::= "<name>"
+attribute(name) ::="<name>"
+attribute_grammar(name) ::="<name>"
 
 gt_expr(left_expr, right_expr) ::= "(<left_expr> > <right_expr>)"
 ge_expr(left_expr, right_expr) ::= "(<left_expr> \>= <right_expr>)"
@@ -65,11 +52,11 @@ div_expr(left_expr, right_expr) ::= "(<left_expr> / <right_expr>)"
 mod_expr(left_expr, right_expr) ::= "(<left_expr> % <right_expr>)"
 add_expr(left_expr, right_expr) ::= "(<left_expr> + <right_expr>)"
 sub_expr(left_expr, right_expr) ::= "(<left_expr> - <right_expr>)"
+concat_expr(left_expr, right_expr) ::= "(<left_expr> ++ <right_expr>)"
 
 equals_expr(left_expr, right_expr) ::= "(<left_expr> == <right_expr>)"
 no_equals_expr(left_expr, right_expr) ::= "(<left_expr> != <right_expr>)"
-
-call_expr(name, params) ::=  "<name>(<params; separator=\", \", wrap>)" 
+ 
 
 boolean_expr(value) ::= "<value>"
 float_expr(value) ::= "<value>"
@@ -86,7 +73,7 @@ and_expr(left_expr, right_expr) ::= "(<left_expr> && <right_expr>)"
 and_peg(peg_expr) ::= "&<peg_expr>"
 any_peg() ::= "."
 bind_peg(name, peg_expr) ::="<name>=<peg_expr>)"
-choice_peg(left_peg, right_peg) ::= <<
+choice_peg(left_peg, right_peg) ::=<<
  <left_peg>
 /
 <right_peg>
@@ -100,13 +87,12 @@ not_peg(peg_expr) ::= "!(<peg_expr>)"
 plus_peg(peg_expr) ::= "(<peg_expr>)+"
 optional_peg(peg_expr) ::= "(<peg_expr>)?"
 sequence_peg(peg_exprs) ::= "<peg_exprs:{x | <x>}; separator=\" \">"
-star_peg(peg_expr) ::= "(<peg_expr>)*"
-update_peg(assigns) ::= <<{<assigns; separator=" ">}>>
+kleene(peg) ::= "(<peg>)*"
+update_peg(assig) ::= "<assig>"
 
+assig(attr, expr) ::= "{<attr> = <expr>;}"
 
-/** Template for assignment from update parsing expressions */
-assign(name, expr) ::= "(<name> = <expr>);"
-
+inh(type, name) ::= "<type> <name>"
 
 /** func(f) ::= "<f>"  Not implemented yet */
 

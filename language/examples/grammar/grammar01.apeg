@@ -1,7 +1,7 @@
 apeg annotation;
 
 options {
- memoize=true;
+ memoize;
 }
 
 a:

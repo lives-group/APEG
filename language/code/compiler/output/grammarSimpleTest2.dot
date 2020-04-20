@@ -1,0 +1,15 @@
+Digraph simpleTest {
+  node [shape="box"];
+  grammar [label = "Grammar[simpleTest]"];
+
+  sRule [label = "Rule[s]"];
+  grammar -> sRule;
+  SequencePeg0 [label = "SequencePegExpr(.)"];
+  sRule -> SequencePeg0;
+  NonterminalPeg1 [label = "NonterminalPegExpr:a1"];
+  SequencePeg0 -> NonterminalPeg1;
+  NonterminalPeg2 [label = "NonterminalPegExpr:a2"];
+  SequencePeg0 -> NonterminalPeg2;
+  NonterminalPeg3 [label = "NonterminalPegExpr:a3"];
+  SequencePeg0 -> NonterminalPeg3;
+}

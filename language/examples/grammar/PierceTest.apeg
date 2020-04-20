@@ -1,0 +1,60 @@
+apeg PierceTest;
+
+number returns n: digit<n> digit<m>;
+
+number02 returns r: 
+	digit<r> (digit<aux> {r = r * 10 + aux;})
+;
+
+digit returns m:
+	'1' {m = 1;} /
+	'2' {m = 2;}
+;
+
+esp:
+	' '+
+;
+
+extension:
+	'b' esp digit
+;
+
+boolser returns i:
+	'true' {i = true;} /
+	'false' {i = false;}
+;
+
+valuers:
+	'0' {h = 0;} /
+	'1' {h = 1;} /
+	'2' {h = 2;} /
+	'3' {h = 3;} /
+	'4' {h = 4;} /
+	'5' {h = 5;} /
+	'6' {h = 6;} /
+	'7' {h = 7;} /
+	'8' {h = 8;} /
+	'9' {h = 9;}
+;
+
+val returns j:
+	'0' {j = 0;}
+	'1' {j = 1;}
+	'2' {j = 2;}
+;
+
+b[int x] returns x1:
+	{x = x + 1;} val {x1 = x;} /
+	{x = x + 1;} val {x1 = x;} /
+	{x = x + 1;} val {x1 = x;}
+;
+
+a returns k:
+	b<0,k>
+;
+
+expr returns x:
+	val + expr /
+	val
+;
+

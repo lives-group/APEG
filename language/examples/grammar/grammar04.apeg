@@ -1,20 +1,21 @@
 /*
- /*
-Tests semantics of operators without discarding changes on environments.
- */
+ *
+ * Tests semantics of operators without discarding changes on environments.
+ *
 */
 
-apeg notDiscardChanges;
+  apeg notDiscardChanges;
 
-header {
+ /*header {
   // Some unchecked code here
   void f() {
    return;
   }
-
-a returns[int k] : b<0,k>;
+*/ 
+  
+a returns k : b<0,k>;
  
-b[int x] returns[float x1] :
+b[int x] returns x1 :
   { x = x + 1; } '0' { x1 = x; } 
   /
   { x = x + 1; } '1' { x1 = x; }
@@ -23,7 +24,7 @@ b[int x] returns[float x1] :
   ;
  
 
-c returns[int x] :
+c returns x :
   { x = 0; }
   (
     { x = x + 1; }

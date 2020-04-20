@@ -1,0 +1,27 @@
+Digraph simpleTest {
+  node [shape="box"];
+  grammar [label = "Grammar[simpleTest]"];
+
+  sRule [label = "Rule[s]"];
+  grammar -> sRule;
+  SequencePeg0 [label = "SequencePegExpr(.)"];
+  sRule -> SequencePeg0;
+  LiteralPeg1 [label = "'abc'"];
+  SequencePeg0 -> LiteralPeg1;
+  NonterminalPeg2 [label = "NonterminalPegExpr:a"];
+  SequencePeg0 -> NonterminalPeg2;
+  aRule [label = "Rule[a]"];
+  grammar -> aRule;
+  SequencePeg3 [label = "SequencePegExpr(.)"];
+  aRule -> SequencePeg3;
+  KleenePeg4 [label = "StarPegExpr(*)"];
+  SequencePeg3 -> KleenePeg4;
+  SequencePeg5 [label = "SequencePegExpr(.)"];
+  KleenePeg4 -> SequencePeg5;
+  LiteralPeg6 [label = "'010'"];
+  SequencePeg5 -> LiteralPeg6;
+  LiteralPeg7 [label = "'10'"];
+  SequencePeg5 -> LiteralPeg7;
+  LiteralPeg8 [label = "'01001'"];
+  SequencePeg3 -> LiteralPeg8;
+}

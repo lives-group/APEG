@@ -7,7 +7,7 @@ public class TyMeta extends Type{
 
     
     public TyMeta(SymInfo s){
-        super(s);
+        super(s, "meta");
     }
     public boolean match(Type t){
         return t instanceof TyMeta;
@@ -15,5 +15,4 @@ public class TyMeta extends Type{
     public void accept (Visitor v) {
     	v.visit(this);
     }
-
 }

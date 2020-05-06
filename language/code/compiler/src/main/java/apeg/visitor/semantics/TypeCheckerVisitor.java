@@ -114,6 +114,7 @@ import apeg.visitor.*;
 public class TypeCheckerVisitor extends Visitor {
 	
 	private Type ty;
+	
 
 	@Override
 	public void visit(Attribute n) {
@@ -665,26 +666,24 @@ public class TypeCheckerVisitor extends Visitor {
 	public void visit(RulePEG n) {
 		// TODO Auto-generated method stub
 		
-		int s = 0;
 		
-		Type params[] = new Type[s];
+		Type params[] = new Type[n.getInh().size()];
+		n.getInh().size();
 		
+		int s=0;
 		for(Pair<Type, String>i : n.getInh()) {
 		
-            i.getFirst().accept(this);
-            s++;
-            
-            i.getSecond();
+			
+			i.getFirst().accept(this);
+            params[s++] = ty;
            
         }
-		
-		params[s] = ty;
 		
 		
 	NTType inherited = new NTType(params, new Type[0]);
 	
-		inherited.toString();
-		System.out.println(inherited);
+		System.out.println(inherited.toString());
+		
 	}
 
 	@Override
@@ -703,8 +702,8 @@ public class TypeCheckerVisitor extends Visitor {
 	public void visit(TyBool n) {
 		// TODO Auto-generated method stub
 		
-		n.accept(this);
 		ty = n;
+	
 		
 	}
 
@@ -712,8 +711,8 @@ public class TypeCheckerVisitor extends Visitor {
 	public void visit(TyChar n) {
 		// TODO Auto-generated method stub
 		
-		n.accept(this);
 		ty = n;
+		
 		
 	}
 
@@ -721,7 +720,6 @@ public class TypeCheckerVisitor extends Visitor {
 	public void visit(TyFloat n) {
 		// TODO Auto-generated method stub
 		
-		n.accept(this);
 		ty = n;
 		
 	}
@@ -730,31 +728,31 @@ public class TypeCheckerVisitor extends Visitor {
 	public void visit(TyGrammar n) {
 		// TODO Auto-generated method stub
 		
-		n.accept(this);
 		ty = n;
+		
+	
 	}
 
 	@Override
 	public void visit(TyInt n) {
 		// TODO Auto-generated method stub
 		
-		n.accept(this);
 		ty = n;
+		
 	}
 
 	@Override
 	public void visit(TyLang n) {
 		// TODO Auto-generated method stub
 		
-		n.accept(this);
 		ty = n;
+		
 	}
 
 	@Override
 	public void visit(TyMap n) {
 		// TODO Auto-generated method stub
 		
-		n.accept(this);
 		ty = n;
 	}
 
@@ -762,7 +760,6 @@ public class TypeCheckerVisitor extends Visitor {
 	public void visit(TyMeta n) {
 		// TODO Auto-generated method stub
 		
-		n.accept(this);
 		ty = n;
 	}
 
@@ -770,8 +767,8 @@ public class TypeCheckerVisitor extends Visitor {
 	public void visit(TyString n) {
 		// TODO Auto-generated method stub
 		
-		n.accept(this);
 		ty = n;
+		
 	}
 
 	@Override

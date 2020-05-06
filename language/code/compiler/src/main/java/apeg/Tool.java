@@ -24,7 +24,7 @@ import apeg.visitor.DOTVisitor;
 //import apeg.visitor.VerifyVisitor;
 //import apeg.visitor.StateFullCodeGen;
 //import apeg.visitor.Environments.OperatorTables;
-
+import apeg.visitor.semantics.TypeCheckerVisitor;
 import apeg.util.lang.LangInfo;
 import apeg.util.lang.java.JavaInfo;
 import apeg.util.path.AbsolutePath;
@@ -117,6 +117,10 @@ public class Tool {
 					                            new RelativePath(new AbsolutePath("."),
 							            "src/main/templates/dot.stg"));
 				g.accept(dotvisitor);
+				
+				Visitor typechecker = new TypeCheckerVisitor();
+				
+				g.accept(typechecker);
 				
 			
 

@@ -1,36 +1,34 @@
 package apeg.visitor.semantics;
 
-import apeg.ast.types.Type;
-
 public class NTType {
-   private Type[] types;
+   private VType[] VTypes;
    private int inherited;
    
-   public NTType(Type params[], Type returns[]){
-	   types = new Type[params.length + returns.length];
+   public NTType(VType params[], VType returns[]){
+	   VTypes = new VType[params.length + returns.length];
 	   int i = 0;
 	   inherited = params.length;
-	   for(Type n : params){
-		   types[i] = n;
+	   for(VType n : params){
+		   VTypes[i] = n;
 		   i++;
 	   }
-	   for(Type n : returns){
-		   types[i] = n;
+	   for(VType n : returns){
+		   VTypes[i] = n;
 		   i++;   
 	   }
    }
    
    public int getNumSintetized(){ 
-	   return types.length - inherited;
+	   return VTypes.length - inherited;
    }
    
    public int getNumInherited(){ 
 	   return inherited;
    }
    
-   public Type getParamAt(int i){
+   public VType getParamAt(int i){
        if(i >= inherited){ throw new ArrayIndexOutOfBoundsException("Index:  " + i);} 
-	   return types[i];
+	   return VTypes[i];
    }
    
    public boolean match(NTType n){
@@ -45,7 +43,7 @@ public class NTType {
 	   
    }
    
-   public boolean matchInherited(Type n[]){
+   public boolean matchInherited(VType n[]){
 	   boolean r = false;
 	   if(getNumInherited() == n.length){
 		   r = true;
@@ -56,7 +54,7 @@ public class NTType {
 	   return r;
    }
    
-   public boolean matchSintetized(Type n[]){
+   public boolean matchSintetized(VType n[]){
 	   boolean r = false;
 	   if(getNumSintetized() == n.length){
 		   r = true;
@@ -69,33 +67,33 @@ public class NTType {
    
    
    
-   public Type getReturnAt(int i){
+   public VType getReturnAt(int i){
        if(i > getNumSintetized()){ throw new ArrayIndexOutOfBoundsException("Index:  " + i);} 
-	   return types[inherited+i];
+	   return VTypes[inherited+i];
    }
    
    public int getNumParams(){
-	   return types.length;
+	   return VTypes.length;
    }
    
-   public Type getType(int i){
-	return types[i];
+   public VType getVType(int i){
+	return VTypes[i];
 	   
    }
      
    public String toString(){
 	  String s = "("; 
       if(inherited > 0){
-	     s += types[0].getName();
+	     s += VTypes[0].getName();
     	 for(int i =1; i< inherited; i++){
-    	    s += ", " + types[i].getName();  
+    	    s += ", " + VTypes[i].getName();  
          }
       }
       s += ") -> (";
-      if(types.length - inherited > 0){
-        s += types[inherited].getName();
- 	    for(int i =inherited+1; i< types.length; i++){
- 	       s += ", " + types[i].getName();  
+      if(VTypes.length - inherited > 0){
+        s += VTypes[inherited].getName();
+ 	    for(int i =inherited+1; i< VTypes.length; i++){
+ 	       s += ", " + VTypes[i].getName();  
         }
       }
       s += ")";

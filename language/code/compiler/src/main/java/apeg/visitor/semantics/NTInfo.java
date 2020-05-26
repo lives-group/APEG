@@ -5,10 +5,10 @@ import apeg.util.Environment;
 public class NTInfo {
 	
 	private NTType sig;
-	private Environment<String, VarType> locals;
+	private Environment<String, VType> locals;
 	
 	
-	public NTInfo(NTType sig, Environment<String, VarType> locals){
+	public NTInfo(NTType sig, Environment<String, VType> locals){
 		this.sig = sig;
 		this.locals = locals;
 	}
@@ -17,7 +17,7 @@ public class NTInfo {
 		return sig;
 	}
 
-	public Environment<String, VarType> getLocals() {
+	public Environment<String, VType> getLocals() {
 		return locals;
 	}
 	

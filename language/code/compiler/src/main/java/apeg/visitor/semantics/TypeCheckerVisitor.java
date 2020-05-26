@@ -1,13 +1,17 @@
 package apeg.visitor.semantics;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
 
+import apeg.util.Environment;
 import apeg.visitor.semantics.*;
 import apeg.ast.Grammar;
 import apeg.ast.expr.Attribute;
 import apeg.ast.expr.AttributeGrammar;
 import apeg.ast.expr.BoolLit;
 import apeg.ast.expr.CharLit;
+import apeg.ast.expr.Expr;
 import apeg.ast.expr.FloatLit;
 import apeg.ast.expr.IntLit;
 import apeg.ast.expr.MapLit;
@@ -82,6 +86,7 @@ import apeg.ast.expr.operators.NotEq;
 import apeg.ast.expr.operators.Or;
 import apeg.ast.expr.operators.Sub;
 import apeg.ast.expr.operators.UMinus;
+import apeg.ast.rules.APEG;
 import apeg.ast.rules.AndPEG;
 import apeg.ast.rules.AnyPEG;
 import apeg.ast.rules.BindPEG;
@@ -108,48 +113,99 @@ import apeg.ast.types.TyMap;
 import apeg.ast.types.TyMeta;
 import apeg.ast.types.TyString;
 import apeg.ast.types.Type;
+import apeg.util.Environment;
 import apeg.util.Pair;
 import apeg.visitor.*;
 
 public class TypeCheckerVisitor extends Visitor {
 	
-	private Type ty;
 	
-
+	private Stack<VType> s;
+	private Environment <String, VType> gamma;
+	private Environment<String, NTInfo> global;
+	private List<Pair<String, VType>>error;
+	private String errorMessage;
+	
+	public TypeCheckerVisitor() {
+		
+		s = new Stack<VType>();
+		gamma = new Environment<String, VType>();
+		global = new Environment<String, NTInfo>();
+	
+		error = new ArrayList<Pair<String, VType>>();
+	}
+	
+	public void opTyChecker() {
+		
+		
+	}
+	
 	@Override
 	public void visit(Attribute n) {
-		// TODO Auto-generated method stub
 		
+		
+		VType t = gamma.get(n.getName());
+		
+		if (t != null) {
+			s.push(t);
+		}
+		else {
+			
+			s.push(new TypeError());
+			
+			errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
+			System.out.println(errorMessage);
+			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
+			
+		}
 	}
 
 	@Override
 	public void visit(AttributeGrammar n) {
-		// TODO Auto-generated method stub
+	
 		
+		VType t = gamma.get(n.getName());
+		
+		if(t != null) {
+			s.push(t);
+		}
+		else {
+
+			s.push(new TypeError());
+			
+			errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
+			System.out.println(errorMessage);
+			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
+			
+		}
 	}
 
 	@Override
 	public void visit(BoolLit n) {
-		// TODO Auto-generated method stub
 		
+		
+		s.push(VTyBool.getInstance());
 	}
 
 	@Override
 	public void visit(CharLit n) {
-		// TODO Auto-generated method stub
+	
 		
+		s.push(VTyChar.getInstance());
 	}
 
 	@Override
 	public void visit(FloatLit n) {
-		// TODO Auto-generated method stub
+	
 		
+		s.push(VTyFloat.getInstance());
 	}
 
 	@Override
 	public void visit(IntLit n) {
-		// TODO Auto-generated method stub
+	
 		
+		s.push(VTyInt.getInstance());
 	}
 
 	@Override
@@ -160,8 +216,9 @@ public class TypeCheckerVisitor extends Visitor {
 
 	@Override
 	public void visit(StrLit n) {
-		// TODO Auto-generated method stub
 		
+		
+		s.push(VTyString.getInstance());
 	}
 
 	@Override
@@ -360,29 +417,141 @@ public class TypeCheckerVisitor extends Visitor {
 	public void visit(Add n) {
 		// TODO Auto-generated method stub
 		
+		n.getLeft().accept(this);
+		VType left = s.peek();
+		
+		n.getRight().accept(this);
+		VType right = s.peek();
+		
+		if(left.match(right) && (left.match(VTyInt.getInstance()) || left.match(VTyFloat.getInstance()))) {
+			s.push(left);
+		}
+		else {
+
+			s.push(new TypeError());
+			
+			errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
+			System.out.println(errorMessage);
+			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
+			
+		}
 	}
 
 	@Override
 	public void visit(And n) {
 		// TODO Auto-generated method stub
+
 		
+		n.getLeft().accept(this);
+		VType left = s.peek();
+		
+		n.getRight().accept(this);
+		VType right = s.peek();
+		
+		if(left.match(right) && left.match(VTyBool.getInstance())) {
+			
+			s.push(VTyBool.getInstance());
+		}
+		else {
+			
+
+			s.push(new TypeError());
+			
+			errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
+			System.out.println(errorMessage);
+			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
+			
+		}
 	}
 
 	@Override
 	public void visit(Compose n) {
-		// TODO Auto-generated method stub
+
 		
+		n.getLeft().accept(this);
+		VType left = s.peek();
+		
+		n.getRight().accept(this);
+		VType right = s.peek();
+		
+		if(left == right) {
+			s.push(left);
+		}
+		else {
+
+			s.push(new TypeError());
+			
+			errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
+			System.out.println(errorMessage);
+			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
+			
+		}
 	}
+	
 
 	@Override
 	public void visit(Concat n) {
 		// TODO Auto-generated method stub
 		
+		n.getLeft().accept(this);
+		VType left = s.peek();
+		
+		n.getRight().accept(this);
+		VType right = s.peek();
+		
+		if(left == right) {
+			s.push(left);
+		}
+		else {
+
+			s.push(new TypeError());
+			
+			errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
+			System.out.println(errorMessage);
+			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
+			
+		}
 	}
 
 	@Override
 	public void visit(Div n) {
 		// TODO Auto-generated method stub
+		
+		n.getLeft().accept(this);
+		VType left = s.peek();
+		
+		n.getRight().accept(this);
+		VType right = s.peek();
+		
+		if(left.match(right)) {
+			if(left.match(VTyInt.getInstance())) {
+				s.push(VTyInt.getInstance());
+			}
+			else {
+				if(left.match(VTyFloat.getInstance())) {
+				
+				s.push(VTyFloat.getInstance());
+				}
+				else {
+
+					s.push(new TypeError());
+					
+					errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
+					System.out.println(errorMessage);
+					error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
+					
+				}
+			}
+		}
+		else {
+
+			s.push(new TypeError());
+			
+			errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
+			System.out.println(errorMessage);
+			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
+			
+		}
 		
 	}
 
@@ -390,17 +559,121 @@ public class TypeCheckerVisitor extends Visitor {
 	public void visit(Equals n) {
 		// TODO Auto-generated method stub
 		
+		n.getLeft().accept(this);
+		VType left = s.peek();
+		
+		n.getRight().accept(this);
+		VType right = s.peek();
+		
+		if(left.match(right)) {
+			if(left.match(VTyInt.getInstance())) {
+				s.push(VTyBool.getInstance());
+			}
+			else {
+				if(left.match(VTyFloat.getInstance()) || left.match(VTyString.getInstance())) {
+					s.push(VTyBool.getInstance());
+				}
+				else {
+
+					s.push(new TypeError());
+					
+					errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
+					System.out.println(errorMessage);
+					error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
+					
+				}
+			}
+		}
+		else {
+
+			s.push(new TypeError());
+			
+			errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
+			System.out.println(errorMessage);
+			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
+			
+		}
+		
 	}
 
 	@Override
 	public void visit(Greater n) {
 		// TODO Auto-generated method stub
+	
+		n.getLeft().accept(this);
+		VType left = s.peek();
 		
+		n.getRight().accept(this);
+		VType right = s.peek();
+		
+		if(left.match(right)) {
+			if(left.match(VTyInt.getInstance())) {
+				s.push(VTyBool.getInstance());
+			}
+			else {
+				if(left.match(VTyFloat.getInstance()) || left.match(VTyString.getInstance())) {
+					s.push(VTyBool.getInstance());
+				}
+				else {
+
+					s.push(new TypeError());
+					
+					errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
+					System.out.println(errorMessage);
+					error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
+					
+				}
+			}
+		}
+		else {
+
+			s.push(new TypeError());
+			
+			errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
+			System.out.println(errorMessage);
+			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
+			
+		}
 	}
 
 	@Override
 	public void visit(GreaterEq n) {
 		// TODO Auto-generated method stub
+	
+		n.getLeft().accept(this);
+		VType left = s.peek();
+		
+		n.getRight().accept(this);
+		VType right = s.peek();
+		
+		if(left.match(right)) {
+			if(left.match(VTyInt.getInstance())) {
+				s.push(VTyBool.getInstance());
+			}
+			else {
+				if(left.match(VTyFloat.getInstance()) || left.match(VTyString.getInstance())) {
+					s.push(VTyBool.getInstance());
+				}
+				else {
+
+					s.push(new TypeError());
+					
+					errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
+					System.out.println(errorMessage);
+					error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
+					
+				}
+			}
+		}
+		else {
+
+			s.push(new TypeError());
+			
+			errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
+			System.out.println(errorMessage);
+			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
+			
+		}
 		
 	}
 
@@ -408,11 +681,81 @@ public class TypeCheckerVisitor extends Visitor {
 	public void visit(Less n) {
 		// TODO Auto-generated method stub
 		
+		n.getLeft().accept(this);
+		VType left = s.peek();
+		
+		n.getRight().accept(this);
+		VType right = s.peek();
+		
+		if(left.match(right)) {
+			if(left.match(VTyInt.getInstance())) {
+				s.push(VTyBool.getInstance());
+			}
+			else {
+				if(left.match(VTyFloat.getInstance()) || left.match(VTyString.getInstance())) {
+					s.push(VTyBool.getInstance());
+				}
+				else {
+
+					s.push(new TypeError());
+					
+					errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
+					System.out.println(errorMessage);
+					error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
+					
+				}
+			}
+		}
+		else {
+
+			s.push(new TypeError());
+			
+			errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
+			System.out.println(errorMessage);
+			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
+			
+		}
+		
 	}
 
 	@Override
 	public void visit(LessEq n) {
 		// TODO Auto-generated method stub
+		
+		n.getLeft().accept(this);
+		VType left = s.peek();
+		
+		n.getRight().accept(this);
+		VType right = s.peek();
+		
+		if(left.match(right)) {
+			if(left.match(VTyInt.getInstance())) {
+				s.push(VTyBool.getInstance());
+			}
+			else {
+				if(left.match(VTyFloat.getInstance()) || left.match(VTyString.getInstance())) {
+					s.push(VTyBool.getInstance());
+				}
+				else {
+
+					s.push(new TypeError());
+					
+					errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
+					System.out.println(errorMessage);
+					error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
+					
+				}
+			}
+		}
+		else {
+
+			s.push(new TypeError());
+			
+			errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
+			System.out.println(errorMessage);
+			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
+			
+		}
 		
 	}
 
@@ -432,11 +775,84 @@ public class TypeCheckerVisitor extends Visitor {
 	public void visit(Mod n) {
 		// TODO Auto-generated method stub
 		
+		n.getLeft().accept(this);
+		VType left = s.peek();
+		
+		n.getRight().accept(this);
+		VType right = s.peek();
+		
+		if(left.match(right)) {
+			if(left.match(VTyInt.getInstance())) {
+				s.push(VTyInt.getInstance());
+			}
+			else {
+				if(left.match(VTyFloat.getInstance())) {
+				
+				s.push(VTyFloat.getInstance());
+				}
+				else 
+
+					s.push(new TypeError());
+					
+					errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
+					System.out.println(errorMessage);
+					error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
+					
+				
+			}
+		}
+		else 
+
+			s.push(new TypeError());
+			
+			errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
+			System.out.println(errorMessage);
+			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
+			
+		
+		
 	}
 
 	@Override
 	public void visit(Mult n) {
 		// TODO Auto-generated method stub
+		
+		
+		n.getLeft().accept(this);
+		VType left = s.peek();
+		
+		n.getRight().accept(this);
+		VType right = s.peek();
+		
+		if(left.match(right)) {
+			if(left.match(VTyInt.getInstance())) {
+				s.push(VTyInt.getInstance());
+			}
+			else {
+				if(left.match(VTyFloat.getInstance())) {
+				
+				s.push(VTyFloat.getInstance());
+				}
+				else {
+
+					s.push(new TypeError());
+					
+					errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
+					System.out.println(errorMessage);
+					error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
+					
+				}
+			}
+		}
+		else {
+
+			s.push(new TypeError());
+			
+			errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
+			System.out.println(errorMessage);
+			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
+			
+		}
 		
 	}
 
@@ -444,17 +860,73 @@ public class TypeCheckerVisitor extends Visitor {
 	public void visit(Not n) {
 		// TODO Auto-generated method stub
 		
+		n.getExpr().accept(this);
+		
+		VType ty = s.peek();
+		VType i = VTyBool.getInstance();
+		
+		if(ty.match(VTyBool.getInstance())) {
+			s.push(i);
+		}
+		else {
+
+			s.push(new TypeError());
+			
+			errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
+			System.out.println(errorMessage);
+			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
+			
+		}
 	}
 
 	@Override
 	public void visit(NotEq n) {
 		// TODO Auto-generated method stub
 		
+		n.getLeft().accept(this);
+		VType left = s.peek();
+		
+		n.getRight().accept(this);
+		VType right = s.peek();
+		
+		if(left.match(right) && left.match(VTyBool.getInstance())) {
+			s.push(VTyBool.getInstance());
+		}
+		else {
+
+			s.push(new TypeError());
+			
+			errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
+			System.out.println(errorMessage);
+			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
+			
+		}
 	}
 
 	@Override
 	public void visit(Or n) {
 		// TODO Auto-generated method stub
+		
+		n.getLeft().accept(this);
+		VType left = s.peek();
+		
+		n.getRight().accept(this);
+		VType right = s.peek();
+		
+		if(left.match(right) && left.match(VTyBool.getInstance())) {
+			
+			s.push(VTyBool.getInstance());
+		}
+		else {
+			
+
+			s.push(new TypeError());
+			
+			errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
+			System.out.println(errorMessage);
+			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
+			
+		}
 		
 	}
 
@@ -462,12 +934,69 @@ public class TypeCheckerVisitor extends Visitor {
 	public void visit(Sub n) {
 		// TODO Auto-generated method stub
 		
+		
+		n.getLeft().accept(this);
+		VType left = s.peek();
+		
+		n.getRight().accept(this);
+		VType right = s.peek();
+		
+		if(left.match(right)) {
+			if(left.match(VTyInt.getInstance())) {
+				s.push(VTyInt.getInstance());
+			}
+			else {
+				if(left.match(VTyFloat.getInstance())) {
+				
+				s.push(VTyFloat.getInstance());
+				}
+				else {
+
+					s.push(new TypeError());
+					
+					errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
+					System.out.println(errorMessage);
+					error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
+					
+				}
+			}
+		}
+		else {
+
+			s.push(new TypeError());
+			
+			errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
+			System.out.println(errorMessage);
+			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
+			
+		}
 	}
+	
 
 	@Override
 	public void visit(UMinus n) {
 		// TODO Auto-generated method stub
 		
+		n.getExpr().accept(this);
+		VType expr = s.peek();
+		
+		if(expr.match(VTyInt.getInstance())) {
+			s.push(VTyInt.getInstance());
+		}
+		else {
+			if(expr.match(VTyFloat.getInstance())){
+				s.push(VTyFloat.getInstance());
+			}
+			else {
+
+				s.push(new TypeError());
+				
+				errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
+				System.out.println(errorMessage);
+				error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
+				
+			}
+		}
 	}
 
 	@Override
@@ -586,19 +1115,23 @@ public class TypeCheckerVisitor extends Visitor {
 
 	@Override
 	public void visit(AndPEG n) {
-		// TODO Auto-generated method stub
 		
+		
+		n.getPegExp().accept(this);
 	}
 
 	@Override
 	public void visit(AnyPEG n) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
 	@Override
 	public void visit(BindPEG n) {
 		// TODO Auto-generated method stub
+		
+		n.getExpr().accept(this);
+		n.getAttribute().accept(this);
 		
 	}
 
@@ -612,53 +1145,64 @@ public class TypeCheckerVisitor extends Visitor {
 	public void visit(ChoicePEG n) {
 		// TODO Auto-generated method stub
 		
-	}
-
-	@Override
-	public void visit(ConstraintPEG n) {
-		// TODO Auto-generated method stub
+		n.getLeftPeg().accept(this);
+		n.getRightPeg().accept(this);
+		
 		
 	}
 
 	@Override
+	public void visit(ConstraintPEG n) {
+		
+		n.getExpr().accept(this);
+	}
+
+	@Override
 	public void visit(KleenePEG n) {
-		// TODO Auto-generated method stub
+		
+		n.getPegExp().accept(this);
 		
 	}
 
 	@Override
 	public void visit(LambdaPEG n) {
-		// TODO Auto-generated method stub
-		
+	
 	}
 
 	@Override
 	public void visit(LitPEG n) {
-		// TODO Auto-generated method stub
 		
+	
 	}
 
 	@Override
 	public void visit(NonterminalPEG n) {
 		// TODO Auto-generated method stub
 		
+		for(Expr args: n.getArgs()) {
+			
+			args.accept(this);
+		}
+		
+		n.getName();
 	}
 
 	@Override
 	public void visit(NotPEG n) {
-		// TODO Auto-generated method stub
 		
+		n.getPegExp().accept(this);
 	}
 
 	@Override
 	public void visit(OptionalPEG n) {
-		// TODO Auto-generated method stub
 		
+		n.getPegExp().accept(this);
 	}
 
 	@Override
 	public void visit(PKleene n) {
-		// TODO Auto-generated method stub
+		
+		n.getPegExp().accept(this);
 		
 	}
 
@@ -667,85 +1211,120 @@ public class TypeCheckerVisitor extends Visitor {
 		// TODO Auto-generated method stub
 		
 		
-		Type params[] = new Type[n.getInh().size()];
-		n.getInh().size();
+		gamma = new Environment<String, VType>();
 		
-		int s=0;
-		for(Pair<Type, String>i : n.getInh()) {
 		
+		VType inhs[] = new VType[n.getInh().size()];
+		
+		int j=0;
+		for(Pair<Type, String>inh : n.getInh()) {
 			
-			i.getFirst().accept(this);
-            params[s++] = ty;
-           
-        }
+			inh.getFirst().accept(this);
+			inhs[j++] = s.peek();
+			gamma.add(inh.getSecond(), s.peek());
+		}
 		
+		n.getPeg().accept(this);
 		
-	NTType inherited = new NTType(params, new Type[0]);
-	
-		System.out.println(inherited.toString());
+		VType returns [] = new VType [n.getSyn().size()];
+		
+		int i = 0;
+		
+		for(Expr e: n.getSyn()) {
+			
+			e.accept(this);
+			returns[i++] = s.peek();
+		
+		}
+		
+		NTType rules = new NTType(inhs, returns);
+		
+		global.add(n.getRuleName(), new NTInfo(rules, gamma ));
+		
 		
 	}
 
 	@Override
 	public void visit(SeqPEG n) {
-		// TODO Auto-generated method stub
 		
+		for(APEG pegs: n.getPegs()) {
+			pegs.accept(this);
+
+		}
 	}
 
 	@Override
 	public void visit(UpdatePEG n) {
-		// TODO Auto-generated method stub
 		
+		VType vt;
+		
+		for(Pair<Attribute, Expr>assigs : n.getAssigs()) {
+			
+			String name = assigs.getFirst().getName();
+			vt = gamma.get(name);
+			
+			assigs.getSecond().accept(this);
+			
+			if(vt!= null) {
+				
+				if(! s.peek().match(vt)) {
+
+					s.push(new TypeError());
+					
+					errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
+					System.out.println(errorMessage);
+					error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
+					
+				}
+			}
+			else {
+				gamma.add(name, s.peek());
+			}
+		}
 	}
 
 	@Override
 	public void visit(TyBool n) {
-		// TODO Auto-generated method stub
 		
-		ty = n;
+		s.push(VTyBool.getInstance());
 	
 		
 	}
 
 	@Override
 	public void visit(TyChar n) {
-		// TODO Auto-generated method stub
 		
-		ty = n;
+		s.push(VTyChar.getInstance());
 		
 		
 	}
 
 	@Override
 	public void visit(TyFloat n) {
-		// TODO Auto-generated method stub
 		
-		ty = n;
+		s.push(VTyFloat.getInstance());
 		
 	}
 
 	@Override
 	public void visit(TyGrammar n) {
-		// TODO Auto-generated method stub
 		
-		ty = n;
+		s.push(VTyGrammar.getInstance());
 		
 	
 	}
 
 	@Override
 	public void visit(TyInt n) {
-		// TODO Auto-generated method stub
 		
-		ty = n;
+		s.push(VTyInt.getInstance());
 		
 	}
 
 	@Override
 	public void visit(TyLang n) {
-		// TODO Auto-generated method stub
-		
-		ty = n;
+
+		s.push(VTyLang.getInstance());
 		
 	}
 
@@ -753,33 +1332,32 @@ public class TypeCheckerVisitor extends Visitor {
 	public void visit(TyMap n) {
 		// TODO Auto-generated method stub
 		
-		ty = n;
+	
 	}
 
 	@Override
 	public void visit(TyMeta n) {
 		// TODO Auto-generated method stub
 		
-		ty = n;
 	}
 
 	@Override
 	public void visit(TyString n) {
-		// TODO Auto-generated method stub
+
 		
-		ty = n;
+		s.push(VTyString.getInstance());
 		
 	}
 
 	@Override
 	public void visit(Grammar n) {
-		// TODO Auto-generated method stub
 		
 		for(RulePEG rule: n.getRules()) {
 			
 			rule.accept(this);
 		}
 		
+		System.out.println(gamma.toString());
 	}
 
 }

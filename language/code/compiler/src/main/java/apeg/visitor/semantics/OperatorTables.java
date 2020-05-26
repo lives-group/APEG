@@ -15,35 +15,35 @@ public class OperatorTables {
 	
 	private static ArrayList<NTType> mkArithmeticTable(){
 		 ArrayList<NTType> t = new ArrayList<NTType>();
-		 t.add(new NTType(new Type[]{new TyInt(null),new TyInt(null)},new Type[]{new TyInt(null)}));
-		 t.add(new NTType(new Type[]{new TyFloat(null),new TyFloat(null)},new Type[]{new TyFloat(null)}));
+		 t.add(new NTType(new VType[]{VTyInt.getInstance(),VTyInt.getInstance()},new VType[]{VTyInt.getInstance()}));
+		 t.add(new NTType(new VType[]{VTyFloat.getInstance(),VTyFloat.getInstance()},new VType[]{VTyFloat.getInstance()}));
 		 return t;
 	}
 	
 	private static ArrayList<NTType> mkLogicTable(){
 		 ArrayList<NTType> t = new ArrayList<NTType>();
-		 t.add(new NTType(new Type[]{new TyBool(null),new TyBool(null)},new Type[]{new TyBool(null)}));
+		 t.add(new NTType(new VType[]{VTyBool.getInstance(), VTyBool.getInstance()},new VType[]{VTyBool.getInstance()}));
 		 return t;
 	}
 	
 	private static ArrayList<NTType> mkRelationalTable(){
 		 ArrayList<NTType> t = new ArrayList<NTType>();
-		 t.add(new NTType(new Type[]{new TyInt(null),new TyInt(null)},new Type[]{new TyBool(null)}));
-		 t.add(new NTType(new Type[]{new TyFloat(null),new TyFloat(null)},new Type[]{new TyBool(null)}));
-		 t.add(new NTType(new Type[]{new TyString(null),new TyString(null)},new Type[]{new TyBool(null)}));
+		 t.add(new NTType(new VType[]{VTyInt.getInstance(),VTyInt.getInstance()},new VType[]{VTyBool.getInstance()}));
+		 t.add(new NTType(new VType[]{VTyFloat.getInstance(),VTyFloat.getInstance()},new VType[]{VTyBool.getInstance()}));
+		 t.add(new NTType(new VType[]{VTyString.getInstance(),VTyString.getInstance()},new VType[]{VTyBool.getInstance()}));
 		 return t;
 	}
 	
 	private static ArrayList<NTType> mkMinus(){
 		 ArrayList<NTType> t = new ArrayList<NTType>();
-		 t.add(new NTType(new Type[]{new TyInt(null)},new Type[]{new TyInt(null)}));
-		 t.add(new NTType(new Type[]{new TyFloat(null)},new Type[]{new TyFloat(null)}));
+		 t.add(new NTType(new VType[]{VTyInt.getInstance()},new VType[]{VTyInt.getInstance()}));
+		 t.add(new NTType(new VType[]{VTyFloat.getInstance()},new VType[]{VTyFloat.getInstance()}));
 		 return t;
 	}
 	
 	private static ArrayList<NTType> mkNot(){
 		 ArrayList<NTType> t = new ArrayList<NTType>();
-		 t.add(new NTType(new Type[]{new TyBool(null)},new Type[]{new TyBool(null)}));
+		 t.add(new NTType(new VType[]{VTyBool.getInstance()},new VType[]{VTyBool.getInstance()}));
 		 return t;
 	}
 	

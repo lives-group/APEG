@@ -1,10 +1,9 @@
 package apeg.visitor.semantics;
 
-import apeg.ast.types.Type;
 
 public class VarType {
 
-	private Type type;
+	private VType type;
 	private AttrDirection atributo;
 	
 	public static enum AttrDirection{
@@ -12,7 +11,7 @@ public class VarType {
 	}
 
 	
-    public VarType(Type tipo, AttrDirection atributo){	
+    public VarType(VType tipo, AttrDirection atributo){	
 	   this.type = tipo;
 	   this.atributo = atributo;	
     }
@@ -22,7 +21,7 @@ public class VarType {
     	return s;
     }
     
-	public Type getType() {
+	public VType getType() {
 		return type;
 	}
 

@@ -74,6 +74,10 @@ public class Environment <N,V> {
 		public void extend(){ 
 		    st.push(new Hashtable<N,V>());
 		}
+
+		public void retract(){ 
+		    st.pop();
+		}
 		
 		public Set<N> getNames(){
 			//System.out.println("chave: "+ t.keySet());

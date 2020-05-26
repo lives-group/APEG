@@ -113,10 +113,10 @@ public class Tool {
 				}
 
 				// Pretty printing the grammar. Just for testing
-				Visitor dotvisitor = new DOTVisitor(new RelativePath(tool.outputPath, fName + ".dot"),
-					                            new RelativePath(new AbsolutePath("."),
-							            "src/main/templates/dot.stg"));
-				g.accept(dotvisitor);
+				//Visitor dotvisitor = new DOTVisitor(new RelativePath(tool.outputPath, fName + ".dot"),
+				//	                            new RelativePath(new AbsolutePath("."),
+				//			            "src/main/templates/dot.stg"));
+				//g.accept(dotvisitor);
 				
 				Visitor typechecker = new TypeCheckerVisitor();
 				

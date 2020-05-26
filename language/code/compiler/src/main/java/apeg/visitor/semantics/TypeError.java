@@ -12,13 +12,14 @@ import apeg.util.SymInfo;
  * @author deise
  * 06/12/2017
  */
-public class TypeError extends Type {
+public class TypeError extends VType {
      
-	  public TypeError(SymInfo s){
-	      super(s, "Error");  
+	  public TypeError(){
+	      super("Error");  
 	  }
 	  
-	  public boolean match(Type type) { return true; }
+	  public boolean match(VType type) { return true; }
 	  
 	  public void accept(Visitor v){}
+
 }

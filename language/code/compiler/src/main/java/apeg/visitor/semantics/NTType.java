@@ -1,10 +1,11 @@
 package apeg.visitor.semantics;
 
-public class NTType {
+public class NTType extends VType {
    private VType[] VTypes;
    private int inherited;
    
    public NTType(VType params[], VType returns[]){
+	   super("func");
 	   VTypes = new VType[params.length + returns.length];
 	   int i = 0;
 	   inherited = params.length;
@@ -99,4 +100,10 @@ public class NTType {
       s += ")";
       return s;
    }
+
+@Override
+public boolean match(VType t) {
+	// TODO Auto-generated method stub
+	return false;
+}
 }

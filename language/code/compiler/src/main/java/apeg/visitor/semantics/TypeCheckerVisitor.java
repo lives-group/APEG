@@ -118,1135 +118,1095 @@ import apeg.util.Pair;
 import apeg.visitor.*;
 
 public class TypeCheckerVisitor extends Visitor {
-	
-	
+
+
 	private Stack<VType> s;
 	private Environment <String, VType> gamma;
 	private Environment<String, NTInfo> global;
 	private List<Pair<String, VType>>error;
 	private String errorMessage;
-	
+	private VarPool pool;
+	private ArrayList<Constraint>cons;
+	private Environment<String,ArrayList<NTType>> opTable;
+
 	public TypeCheckerVisitor() {
-		
+
 		s = new Stack<VType>();
 		gamma = new Environment<String, VType>();
 		global = new Environment<String, NTInfo>();
-	
+		pool = VarPool.getInstance();
 		error = new ArrayList<Pair<String, VType>>();
+		cons = new ArrayList<Constraint>();
+
+		opTable = OperatorTables.mkArithmeticEnv();
 	}
-	
-	public void opTyChecker() {
-		
-		
-	}
-	
+
 	@Override
 	public void visit(Attribute n) {
-		
-		
+
+
 		VType t = gamma.get(n.getName());
-		
+
 		if (t != null) {
 			s.push(t);
 		}
 		else {
-			
+
 			s.push(new TypeError());
-			
-			errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
+
+			errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
 			System.out.println(errorMessage);
 			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
-			
+
 		}
 	}
 
 	@Override
 	public void visit(AttributeGrammar n) {
-	
-		
+
+
 		VType t = gamma.get(n.getName());
-		
+
 		if(t != null) {
 			s.push(t);
 		}
 		else {
 
 			s.push(new TypeError());
-			
-			errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
+
+			errorMessage = "Error at: " + n.getSymInfo().getLine() + "," + n.getSymInfo().getColumn();
 			System.out.println(errorMessage);
 			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
-			
+
 		}
 	}
 
 	@Override
 	public void visit(BoolLit n) {
-		
-		
+
+
 		s.push(VTyBool.getInstance());
 	}
 
 	@Override
 	public void visit(CharLit n) {
-	
-		
+
+
 		s.push(VTyChar.getInstance());
 	}
 
 	@Override
 	public void visit(FloatLit n) {
-	
-		
+
+
 		s.push(VTyFloat.getInstance());
 	}
 
 	@Override
 	public void visit(IntLit n) {
-	
-		
+
+
 		s.push(VTyInt.getInstance());
 	}
 
 	@Override
 	public void visit(MapLit n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(StrLit n) {
-		
-		
+
+
 		s.push(VTyString.getInstance());
 	}
 
 	@Override
 	public void visit(MetaAndPEG n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(MetaAnyPEG n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(MetaAttribute n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(MetaBindPEG n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(MetaBoolLit n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(MetaCharLit n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(MetaChoiceList n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(MetaChoicePEG n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(MetaConstraintPEG n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(MetaFloatLit n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(MetaIntLit n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(MetaKleenePEG n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(MetaLitPEG n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(MetaMapLit n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(MetaNonterminalPEG n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(MetaNotPEG n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(MetaOptionalPEG n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(MetaPKleene n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(MetaRulePEG n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(MetaSeqPEG n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(MetaStrLit n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(MetaTyBool n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(MetaTyChar n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(MetaTyFloat n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(MetaTyGrammar n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(MetaTyInt n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(MetaTyLang n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(MetaTyMap n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(MetaTyMeta n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(MetaTyString n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(MetaUpdatePEG n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(MetaVar n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(Add n) {
-		// TODO Auto-generated method stub
-		
+
+
+
 		n.getLeft().accept(this);
 		VType left = s.peek();
-		
+
 		n.getRight().accept(this);
 		VType right = s.peek();
-		
-		if(left.match(right) && (left.match(VTyInt.getInstance()) || left.match(VTyFloat.getInstance()))) {
-			s.push(left);
+
+		if(left instanceof VTyVar || right instanceof VTyVar) {
+
+			VTyVar r = pool.newVar();
+			cons.add(new OpConstraint("ADD", new NTType(new VType[] {left, right}, new VType[] {r})));
+			s.push(r);
 		}
 		else {
 
+			for(NTType nt : opTable.get("ADD")) {
+
+
+				if(nt.matchInherited(new VType[] {left, right}) ) {
+					s.push(nt.getReturnAt(0));
+					return;
+				}
+
+			}
+
 			s.push(new TypeError());
-			
-			errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
+
+			errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
 			System.out.println(errorMessage);
-			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
-			
+			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));	
+
+
 		}
 	}
 
 	@Override
 	public void visit(And n) {
-		// TODO Auto-generated method stub
 
-		
+
 		n.getLeft().accept(this);
 		VType left = s.peek();
-		
+
 		n.getRight().accept(this);
 		VType right = s.peek();
-		
-		if(left.match(right) && left.match(VTyBool.getInstance())) {
-			
-			s.push(VTyBool.getInstance());
+
+		if(left instanceof VTyVar || right instanceof VTyVar) {
+
+			VTyVar r = pool.newVar();
+			cons.add(new OpConstraint("AND", new NTType(new VType[] {left, right}, new VType[] {r})));
+			s.push(r);
 		}
 		else {
-			
+
+			for(NTType nt: opTable.get("AND")) {
+
+				if(nt.matchInherited(new VType[] {left, right})) {
+					s.push(nt.getReturnAt(0));
+					return;
+				}
+			}
 
 			s.push(new TypeError());
-			
-			errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
+
+			errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
 			System.out.println(errorMessage);
-			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
-			
+			error.add(new Pair<String, VType>(errorMessage, new TypeError()));
 		}
 	}
 
 	@Override
 	public void visit(Compose n) {
+		//TODO
 
-		
 		n.getLeft().accept(this);
 		VType left = s.peek();
-		
+
 		n.getRight().accept(this);
 		VType right = s.peek();
-		
-		if(left == right) {
-			s.push(left);
+
+		if(left instanceof VTyVar || right instanceof VTyVar) {
+
+			VTyVar r = pool.newVar();
+			s.push(r);
 		}
 		else {
 
-			s.push(new TypeError());
-			
-			errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
-			System.out.println(errorMessage);
-			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
-			
+			if(left == right) {
+				s.push(left);
+			}
+			else {
+
+				s.push(new TypeError());
+
+				errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
+				System.out.println(errorMessage);
+				error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
+
+			}
 		}
 	}
-	
+
 
 	@Override
 	public void visit(Concat n) {
 		// TODO Auto-generated method stub
-		
+
 		n.getLeft().accept(this);
 		VType left = s.peek();
-		
+
 		n.getRight().accept(this);
 		VType right = s.peek();
 		
+		if(left instanceof VTyVar || right instanceof VTyVar) {
+			
+		}
 		if(left == right) {
 			s.push(left);
 		}
 		else {
 
 			s.push(new TypeError());
-			
+
 			errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
 			System.out.println(errorMessage);
 			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
-			
+
 		}
 	}
 
 	@Override
 	public void visit(Div n) {
-		// TODO Auto-generated method stub
-		
+
+
 		n.getLeft().accept(this);
 		VType left = s.peek();
-		
+
 		n.getRight().accept(this);
 		VType right = s.peek();
-		
-		if(left.match(right)) {
-			if(left.match(VTyInt.getInstance())) {
-				s.push(VTyInt.getInstance());
-			}
-			else {
-				if(left.match(VTyFloat.getInstance())) {
-				
-				s.push(VTyFloat.getInstance());
-				}
-				else {
 
-					s.push(new TypeError());
-					
-					errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
-					System.out.println(errorMessage);
-					error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
-					
-				}
-			}
+		if(left instanceof VTyVar || right instanceof VTyVar) {
+
+			VTyVar r = pool.newVar();
+			cons.add(new OpConstraint("DIV", new NTType(new VType[] {left, right}, new VType[] {r})));
+			s.push(r);
 		}
 		else {
 
+			for(NTType nt: opTable.get("DIV")) {
+
+				if(nt.matchInherited(new VType[] {left, right})) {
+					s.push(nt.getReturnAt(0));
+					return;
+				}
+			}
+
 			s.push(new TypeError());
-			
-			errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
-			System.out.println(errorMessage);
-			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
-			
+			errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
+			error.add(new Pair<String, VType>(errorMessage, new TypeError()));
 		}
-		
+
 	}
 
 	@Override
 	public void visit(Equals n) {
-		// TODO Auto-generated method stub
-		
+
+
 		n.getLeft().accept(this);
 		VType left = s.peek();
-		
+
 		n.getRight().accept(this);
 		VType right = s.peek();
-		
-		if(left.match(right)) {
-			if(left.match(VTyInt.getInstance())) {
-				s.push(VTyBool.getInstance());
-			}
-			else {
-				if(left.match(VTyFloat.getInstance()) || left.match(VTyString.getInstance())) {
-					s.push(VTyBool.getInstance());
-				}
-				else {
 
-					s.push(new TypeError());
-					
-					errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
-					System.out.println(errorMessage);
-					error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
-					
-				}
-			}
+		if(left instanceof VTyVar || right instanceof VTyVar) {
+
+			VTyVar r = pool.newVar();
+			cons.add(new OpConstraint("EQ", new NTType(new VType[] {left, right}, new VType[] {r})));
+			s.push(r);
 		}
 		else {
 
+			for(NTType nt: opTable.get("EQ")) {
+
+				if(nt.matchInherited(new VType[] {left, right})) {
+					s.push(nt.getReturnAt(0));
+					return;
+				}
+			}
+
 			s.push(new TypeError());
-			
-			errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
-			System.out.println(errorMessage);
-			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
-			
+			errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
+			error.add(new Pair<String, VType>(errorMessage, new TypeError()));
 		}
-		
+
 	}
 
 	@Override
 	public void visit(Greater n) {
-		// TODO Auto-generated method stub
-	
+
+
 		n.getLeft().accept(this);
 		VType left = s.peek();
-		
+
 		n.getRight().accept(this);
 		VType right = s.peek();
-		
-		if(left.match(right)) {
-			if(left.match(VTyInt.getInstance())) {
-				s.push(VTyBool.getInstance());
-			}
-			else {
-				if(left.match(VTyFloat.getInstance()) || left.match(VTyString.getInstance())) {
-					s.push(VTyBool.getInstance());
-				}
-				else {
 
-					s.push(new TypeError());
-					
-					errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
-					System.out.println(errorMessage);
-					error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
-					
-				}
-			}
+		if(left instanceof VTyVar || right instanceof VTyVar) {
+
+			VTyVar r = pool.newVar();
+			cons.add(new OpConstraint("GT", new NTType(new VType[] {left, right}, new VType[] {r})));
+			s.push(r);
 		}
 		else {
 
+			for(NTType nt: opTable.get("GT")) {
+
+				if(nt.matchInherited(new VType[] {left, right})) {
+					s.push(nt.getReturnAt(0));
+					return;
+				}
+			}
+
 			s.push(new TypeError());
-			
-			errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
-			System.out.println(errorMessage);
-			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
-			
+			errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
+			error.add(new Pair<String, VType>(errorMessage, new TypeError()));
 		}
 	}
 
 	@Override
 	public void visit(GreaterEq n) {
-		// TODO Auto-generated method stub
-	
+
 		n.getLeft().accept(this);
 		VType left = s.peek();
-		
+
 		n.getRight().accept(this);
 		VType right = s.peek();
-		
-		if(left.match(right)) {
-			if(left.match(VTyInt.getInstance())) {
-				s.push(VTyBool.getInstance());
-			}
-			else {
-				if(left.match(VTyFloat.getInstance()) || left.match(VTyString.getInstance())) {
-					s.push(VTyBool.getInstance());
-				}
-				else {
+		if(left instanceof VTyVar || right instanceof VTyVar) {
 
-					s.push(new TypeError());
-					
-					errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
-					System.out.println(errorMessage);
-					error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
-					
-				}
-			}
+			VTyVar r = pool.newVar();
+			cons.add(new OpConstraint("GE", new NTType(new VType[] {left, right}, new VType[] {r})));
+			s.push(r);
 		}
 		else {
 
+			for(NTType nt: opTable.get("GE")) {
+
+				if(nt.matchInherited(new VType[] {left, right})) {
+					s.push(nt.getReturnAt(0));
+					return;
+				}
+			}
+
 			s.push(new TypeError());
-			
-			errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
-			System.out.println(errorMessage);
-			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
-			
+			errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
+			error.add(new Pair<String, VType>(errorMessage, new TypeError()));
 		}
-		
+
 	}
 
 	@Override
 	public void visit(Less n) {
-		// TODO Auto-generated method stub
-		
+
+
 		n.getLeft().accept(this);
 		VType left = s.peek();
-		
+
 		n.getRight().accept(this);
 		VType right = s.peek();
-		
-		if(left.match(right)) {
-			if(left.match(VTyInt.getInstance())) {
-				s.push(VTyBool.getInstance());
-			}
-			else {
-				if(left.match(VTyFloat.getInstance()) || left.match(VTyString.getInstance())) {
-					s.push(VTyBool.getInstance());
-				}
-				else {
 
-					s.push(new TypeError());
-					
-					errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
-					System.out.println(errorMessage);
-					error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
-					
-				}
-			}
+		if(left instanceof VTyVar || right instanceof VTyVar) {
+
+			VTyVar r = pool.newVar();
+			cons.add(new OpConstraint("LT", new NTType(new VType[] {left, right}, new VType[] {r})));
+			s.push(r);
 		}
 		else {
 
+			for(NTType nt: opTable.get("LT")) {
+
+				if(nt.matchInherited(new VType[] {left, right})) {
+					s.push(nt.getReturnAt(0));
+					return;
+				}
+			}
+
 			s.push(new TypeError());
-			
-			errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
-			System.out.println(errorMessage);
-			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
-			
+			errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
+			error.add(new Pair<String, VType>(errorMessage, new TypeError()));
 		}
-		
+
 	}
 
 	@Override
 	public void visit(LessEq n) {
-		// TODO Auto-generated method stub
-		
+
+
 		n.getLeft().accept(this);
 		VType left = s.peek();
-		
+
 		n.getRight().accept(this);
 		VType right = s.peek();
-		
-		if(left.match(right)) {
-			if(left.match(VTyInt.getInstance())) {
-				s.push(VTyBool.getInstance());
-			}
-			else {
-				if(left.match(VTyFloat.getInstance()) || left.match(VTyString.getInstance())) {
-					s.push(VTyBool.getInstance());
-				}
-				else {
 
-					s.push(new TypeError());
-					
-					errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
-					System.out.println(errorMessage);
-					error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
-					
-				}
-			}
+		if(left instanceof VTyVar || right instanceof VTyVar) {
+
+			VTyVar r = pool.newVar();
+			cons.add(new OpConstraint("LE", new NTType(new VType[] {left, right}, new VType[] {r})));
+			s.push(r);
 		}
 		else {
 
+			for(NTType nt: opTable.get("LE")) {
+
+				if(nt.matchInherited(new VType[] {left, right})) {
+					s.push(nt.getReturnAt(0));
+					return;
+				}
+			}
+
 			s.push(new TypeError());
-			
-			errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
-			System.out.println(errorMessage);
-			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
-			
+			errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
+			error.add(new Pair<String, VType>(errorMessage, new TypeError()));
 		}
-		
+
 	}
 
 	@Override
 	public void visit(MapAcces n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(MapExtension n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(Mod n) {
-		// TODO Auto-generated method stub
-		
+
+
 		n.getLeft().accept(this);
 		VType left = s.peek();
-		
+
 		n.getRight().accept(this);
 		VType right = s.peek();
-		
-		if(left.match(right)) {
-			if(left.match(VTyInt.getInstance())) {
-				s.push(VTyInt.getInstance());
-			}
-			else {
-				if(left.match(VTyFloat.getInstance())) {
-				
-				s.push(VTyFloat.getInstance());
-				}
-				else 
 
-					s.push(new TypeError());
-					
-					errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
-					System.out.println(errorMessage);
-					error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
-					
-				
-			}
+		if(left instanceof VTyVar || right instanceof VTyVar) {
+
+			VTyVar r = pool.newVar();
+			cons.add(new OpConstraint("MOD", new NTType(new VType[] {left, right}, new VType[] {r})));
+			s.push(r);
 		}
-		else 
+		else {
+
+			for(NTType nt: opTable.get("MOD")) {
+
+				if(nt.matchInherited(new VType[] {left, right})) {
+					s.push(nt.getReturnAt(0));
+					return;
+				}
+			}
 
 			s.push(new TypeError());
-			
-			errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
-			System.out.println(errorMessage);
-			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
-			
-		
-		
+			errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
+			error.add(new Pair<String, VType>(errorMessage, new TypeError()));
+		}
+
+
 	}
 
 	@Override
 	public void visit(Mult n) {
-		// TODO Auto-generated method stub
-		
-		
+
+
+
 		n.getLeft().accept(this);
 		VType left = s.peek();
-		
+
 		n.getRight().accept(this);
 		VType right = s.peek();
-		
-		if(left.match(right)) {
-			if(left.match(VTyInt.getInstance())) {
-				s.push(VTyInt.getInstance());
-			}
-			else {
-				if(left.match(VTyFloat.getInstance())) {
-				
-				s.push(VTyFloat.getInstance());
-				}
-				else {
+		if(left instanceof VTyVar || right instanceof VTyVar) {
 
-					s.push(new TypeError());
-					
-					errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
-					System.out.println(errorMessage);
-					error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
-					
-				}
-			}
+			VTyVar r = pool.newVar();
+			cons.add(new OpConstraint("MUL", new NTType(new VType[] {left, right}, new VType[] {r})));
+			s.push(r);
 		}
 		else {
 
+			for(NTType nt: opTable.get("MUL")) {
+
+				if(nt.matchInherited(new VType[] {left, right})) {
+					s.push(nt.getReturnAt(0));
+					return;
+				}
+			}
+
 			s.push(new TypeError());
-			
-			errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
-			System.out.println(errorMessage);
-			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
-			
+			errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
+			error.add(new Pair<String, VType>(errorMessage, new TypeError()));
 		}
-		
+
 	}
 
 	@Override
 	public void visit(Not n) {
-		// TODO Auto-generated method stub
-		
+
+
 		n.getExpr().accept(this);
-		
 		VType ty = s.peek();
-		VType i = VTyBool.getInstance();
-		
-		if(ty.match(VTyBool.getInstance())) {
-			s.push(i);
+
+		if(ty instanceof VTyVar) {
+
+			VTyVar r = pool.newVar();
+			cons.add(new OpConstraint("NOT", new NTType(new VType[] {ty}, new VType[] {r})));
+			s.push(r);
 		}
 		else {
 
+			for(NTType nt: opTable.get("NOT")) {
+
+				if(nt.matchInherited(new VType[] {ty})) {
+					s.push(nt.getReturnAt(0));
+					return;
+				}
+			}
+
 			s.push(new TypeError());
-			
-			errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
-			System.out.println(errorMessage);
-			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
-			
+			errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
+			error.add(new Pair<String, VType>(errorMessage, new TypeError()));
 		}
 	}
 
 	@Override
 	public void visit(NotEq n) {
 		// TODO Auto-generated method stub
-		
+
 		n.getLeft().accept(this);
 		VType left = s.peek();
-		
+
 		n.getRight().accept(this);
 		VType right = s.peek();
-		
-		if(left.match(right) && left.match(VTyBool.getInstance())) {
-			s.push(VTyBool.getInstance());
+
+		if(left instanceof VTyVar || right instanceof VTyVar) {
+
+			VTyVar r = pool.newVar();
+			cons.add(new OpConstraint("EQ", new NTType(new VType[] {left, right}, new VType[] {r})));
+			s.push(r);
 		}
 		else {
 
+			for(NTType nt: opTable.get("EQ")) {
+
+				if(nt.matchInherited(new VType[] {left, right})) {
+					s.push(nt.getReturnAt(0));
+					return;
+				}
+			}
+
 			s.push(new TypeError());
-			
-			errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
-			System.out.println(errorMessage);
-			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
-			
+			errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
+			error.add(new Pair<String, VType>(errorMessage, new TypeError()));
 		}
 	}
 
 	@Override
 	public void visit(Or n) {
-		// TODO Auto-generated method stub
-		
+
+
 		n.getLeft().accept(this);
 		VType left = s.peek();
-		
+
 		n.getRight().accept(this);
 		VType right = s.peek();
-		
-		if(left.match(right) && left.match(VTyBool.getInstance())) {
-			
-			s.push(VTyBool.getInstance());
+
+		if(left instanceof VTyVar || right instanceof VTyVar) {
+
+			VTyVar r = pool.newVar();
+			cons.add(new OpConstraint("OR", new NTType(new VType[] {left, right}, new VType[] {r})));
+			s.push(r);
 		}
 		else {
-			
+
+			for(NTType nt: opTable.get("OR")) {
+
+				if(nt.matchInherited(new VType[] {left, right})) {
+					s.push(nt.getReturnAt(0));
+					return;
+				}
+			}
 
 			s.push(new TypeError());
-			
-			errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
-			System.out.println(errorMessage);
-			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
-			
+			errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
+			error.add(new Pair<String, VType>(errorMessage, new TypeError()));
 		}
-		
 	}
 
 	@Override
 	public void visit(Sub n) {
-		// TODO Auto-generated method stub
-		
-		
+
+
 		n.getLeft().accept(this);
 		VType left = s.peek();
-		
+
 		n.getRight().accept(this);
 		VType right = s.peek();
-		
-		if(left.match(right)) {
-			if(left.match(VTyInt.getInstance())) {
-				s.push(VTyInt.getInstance());
-			}
-			else {
-				if(left.match(VTyFloat.getInstance())) {
-				
-				s.push(VTyFloat.getInstance());
-				}
-				else {
 
-					s.push(new TypeError());
-					
-					errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
-					System.out.println(errorMessage);
-					error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
-					
-				}
-			}
+		if(left instanceof VTyVar || right instanceof VTyVar) {
+
+			VTyVar r = pool.newVar();
+			cons.add(new OpConstraint("SUB", new NTType(new VType[] {left, right}, new VType[] {r})));
+			s.push(r);
 		}
 		else {
 
+			for(NTType nt: opTable.get("SUB")) {
+
+				if(nt.matchInherited(new VType[] {left, right})) {
+					s.push(nt.getReturnAt(0));
+					return;
+				}
+			}
+
 			s.push(new TypeError());
-			
-			errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
-			System.out.println(errorMessage);
-			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
-			
+			errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
+			error.add(new Pair<String, VType>(errorMessage, new TypeError()));
 		}
 	}
-	
+
 
 	@Override
 	public void visit(UMinus n) {
 		// TODO Auto-generated method stub
-		
+
 		n.getExpr().accept(this);
 		VType expr = s.peek();
-		
-		if(expr.match(VTyInt.getInstance())) {
-			s.push(VTyInt.getInstance());
+
+		if(expr instanceof VTyVar) {
+
+			VTyVar r = pool.newVar();
+			cons.add(new OpConstraint("MINUS", new NTType(new VType[] {expr}, new VType[] {r})));
+			s.push(r);
 		}
 		else {
-			if(expr.match(VTyFloat.getInstance())){
-				s.push(VTyFloat.getInstance());
-			}
-			else {
 
-				s.push(new TypeError());
-				
-				errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
-				System.out.println(errorMessage);
-				error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
-				
+			for(NTType nt: opTable.get("MINUS")) {
+
+				if(nt.matchInherited(new VType[] {expr})) {
+					s.push(nt.getReturnAt(0));
+					return;
+				}
 			}
+
+			s.push(new TypeError());
+			errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
+			error.add(new Pair<String, VType>(errorMessage, new TypeError()));
 		}
 	}
 
 	@Override
 	public void visit(MetaAdd n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(MetaAnd n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(MetaCompose n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(MetaConcat n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(MetaDiv n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(MetaEquals n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(MetaGreater n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(MetaGreaterEq n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(MetaLess n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(MetaLessEq n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(MetaMapAcces n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(MetaMapExtension n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(MetaMod n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(MetaMult n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(MetaNot n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(MetaNotEq n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(MetaOr n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(MetaSub n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(MetaUMinus n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(AndPEG n) {
-		
-		
+
+
 		n.getPegExp().accept(this);
 	}
 
 	@Override
 	public void visit(AnyPEG n) {
-		
-		
+
+
 	}
 
 	@Override
 	public void visit(BindPEG n) {
 		// TODO Auto-generated method stub
-		
+
 		n.getExpr().accept(this);
 		n.getAttribute().accept(this);
-		
+
 	}
 
 	@Override
 	public void visit(ChoiceList n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(ChoicePEG n) {
 		// TODO Auto-generated method stub
-		
+
 		n.getLeftPeg().accept(this);
 		n.getRightPeg().accept(this);
-		
-		
+
+
 	}
 
 	@Override
 	public void visit(ConstraintPEG n) {
-		
+
 		n.getExpr().accept(this);
 	}
 
 	@Override
 	public void visit(KleenePEG n) {
-		
+
 		n.getPegExp().accept(this);
-		
+
 	}
 
 	@Override
 	public void visit(LambdaPEG n) {
-	
+
 	}
 
 	@Override
 	public void visit(LitPEG n) {
-		
-	
+
+
 	}
 
 	@Override
 	public void visit(NonterminalPEG n) {
 		// TODO Auto-generated method stub
-		
+
 		for(Expr args: n.getArgs()) {
-			
+
 			args.accept(this);
 		}
-		
+
 		n.getName();
 	}
 
 	@Override
 	public void visit(NotPEG n) {
-		
+
 		n.getPegExp().accept(this);
 	}
 
 	@Override
 	public void visit(OptionalPEG n) {
-		
+
 		n.getPegExp().accept(this);
 	}
 
 	@Override
 	public void visit(PKleene n) {
-		
+
 		n.getPegExp().accept(this);
-		
+
 	}
 
 	@Override
-	public void visit(RulePEG n) {
-		// TODO Auto-generated method stub
-		
-		
-		gamma = new Environment<String, VType>();
-		
-		
-		VType inhs[] = new VType[n.getInh().size()];
-		
-		int j=0;
-		for(Pair<Type, String>inh : n.getInh()) {
-			
-			inh.getFirst().accept(this);
-			inhs[j++] = s.peek();
-			gamma.add(inh.getSecond(), s.peek());
-		}
-		
+	public void visit(RulePEG n) {		
+
+		gamma = global.get(n.getRuleName()).getLocals();
+
 		n.getPeg().accept(this);
-		
+
 		VType returns [] = new VType [n.getSyn().size()];
-		
+
 		int i = 0;
-		
+
 		for(Expr e: n.getSyn()) {
-			
+
 			e.accept(this);
 			returns[i++] = s.peek();
-		
-		}
-		
-		NTType rules = new NTType(inhs, returns);
-		
-		global.add(n.getRuleName(), new NTInfo(rules, gamma ));
-		
-		
+
+		}	
+
+
 	}
 
 	@Override
 	public void visit(SeqPEG n) {
-		
+
 		for(APEG pegs: n.getPegs()) {
 			pegs.accept(this);
 
@@ -1255,109 +1215,145 @@ public class TypeCheckerVisitor extends Visitor {
 
 	@Override
 	public void visit(UpdatePEG n) {
-		
+
 		VType vt;
-		
+
 		for(Pair<Attribute, Expr>assigs : n.getAssigs()) {
-			
+
 			String name = assigs.getFirst().getName();
 			vt = gamma.get(name);
-			
-			assigs.getSecond().accept(this);
-			
-			if(vt!= null) {
-				
-				if(! s.peek().match(vt)) {
 
-					s.push(new TypeError());
-					
-					errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
-					System.out.println(errorMessage);
-					error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
-					
+			assigs.getSecond().accept(this);
+
+			if(vt!= null) {
+
+				if(vt instanceof VTyVar) {
+
+					cons.add(new VarConstraint((VTyVar) vt, s.pop())); 
+
 				}
+				else
+					if(s.peek() instanceof VTyVar) {
+						cons.add(new VarConstraint((VTyVar)s.pop(), vt));
+					}else
+						if(! s.pop().match(vt)) {
+
+							s.push(new TypeError());
+
+							errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
+							System.out.println(errorMessage);
+							error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
+
+						}
 			}
 			else {
-				gamma.add(name, s.peek());
+				gamma.add(name, s.pop());
 			}
 		}
 	}
 
 	@Override
 	public void visit(TyBool n) {
-		
+
 		s.push(VTyBool.getInstance());
-	
-		
+
+
 	}
 
 	@Override
 	public void visit(TyChar n) {
-		
+
 		s.push(VTyChar.getInstance());
-		
-		
+
+
 	}
 
 	@Override
 	public void visit(TyFloat n) {
-		
+
 		s.push(VTyFloat.getInstance());
-		
+
 	}
 
 	@Override
 	public void visit(TyGrammar n) {
-		
+
 		s.push(VTyGrammar.getInstance());
-		
-	
+
+
 	}
 
 	@Override
 	public void visit(TyInt n) {
-		
+
 		s.push(VTyInt.getInstance());
-		
+
 	}
 
 	@Override
 	public void visit(TyLang n) {
 
 		s.push(VTyLang.getInstance());
-		
+
 	}
 
 	@Override
 	public void visit(TyMap n) {
 		// TODO Auto-generated method stub
-		
-	
+
+
 	}
 
 	@Override
 	public void visit(TyMeta n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(TyString n) {
 
-		
+
 		s.push(VTyString.getInstance());
-		
+
 	}
 
 	@Override
 	public void visit(Grammar n) {
-		
-		for(RulePEG rule: n.getRules()) {
-			
-			rule.accept(this);
-		}
-		
-		System.out.println(gamma.toString());
-	}
 
+
+		for(RulePEG rule: n.getRules()) {
+
+			gamma = new Environment<String, VType>();
+
+
+			VType inhs[] = new VType[rule.getInh().size()];
+
+			int j=0;
+			for(Pair<Type, String>inh : rule.getInh()) {
+
+				inh.getFirst().accept(this);
+				inhs[j++] = s.peek();
+				gamma.add(inh.getSecond(), s.peek());
+			}
+
+			VType returns [] = new VType [rule.getSyn().size()];
+
+			int i;
+
+			for(i=0; i< rule.getSyn().size(); i++) {
+
+				returns[i] = pool.newVar();				
+			}
+
+			NTType rules = new NTType(inhs, returns);
+
+			global.add(rule.getRuleName(), new NTInfo(rules, gamma));
+		}
+
+		for(RulePEG r : n.getRules()) {
+
+			r.accept(this);
+		}
+	}
 }

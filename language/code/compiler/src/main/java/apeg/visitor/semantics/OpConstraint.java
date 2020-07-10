@@ -19,4 +19,8 @@ public class OpConstraint extends Constraint {
 	public VType getType() {
 		return t;
 	}
+	
+	public String toString() {
+		return s + "=" + t.toString();
+	}
 }

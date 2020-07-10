@@ -21,4 +21,14 @@ public class VTyMap extends VType{
     public VType getTyParameter(){
         return tyParameter;
     }
+	@Override
+	public boolean matchCT(VType t, CTM ct) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	@Override
+	public boolean Unify(VType t) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

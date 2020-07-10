@@ -85,16 +85,16 @@ public class NTType extends VType {
    public String toString(){
 	  String s = "("; 
       if(inherited > 0){
-	     s += VTypes[0].getName();
+	     s += VTypes[0].toString();
     	 for(int i =1; i< inherited; i++){
-    	    s += ", " + VTypes[i].getName();  
+    	    s += ", " + VTypes[i].toString();  
          }
       }
       s += ") -> (";
       if(VTypes.length - inherited > 0){
-        s += VTypes[inherited].getName();
+        s += VTypes[inherited].toString();
  	    for(int i =inherited+1; i< VTypes.length; i++){
- 	       s += ", " + VTypes[i].getName();  
+ 	       s += ", " + VTypes[i].toString();  
         }
       }
       s += ")";
@@ -103,6 +103,18 @@ public class NTType extends VType {
 
 @Override
 public boolean match(VType t) {
+	// TODO Auto-generated method stub
+	return false;
+}
+
+@Override
+public boolean matchCT(VType t, CTM ct) {
+	// TODO Auto-generated method stub
+	return false;
+}
+
+@Override
+public boolean Unify(VType t) {
 	// TODO Auto-generated method stub
 	return false;
 }

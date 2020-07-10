@@ -1,6 +1,7 @@
 package apeg.visitor.semantics;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 
@@ -126,8 +127,11 @@ public class TypeCheckerVisitor extends Visitor {
 	private List<Pair<String, VType>>error;
 	private String errorMessage;
 	private VarPool pool;
-	private ArrayList<Constraint>cons;
 	private Environment<String,ArrayList<NTType>> opTable;
+	private CTM ct;
+	private boolean addVar;
+	
+
 
 	public TypeCheckerVisitor() {
 
@@ -136,9 +140,32 @@ public class TypeCheckerVisitor extends Visitor {
 		global = new Environment<String, NTInfo>();
 		pool = VarPool.getInstance();
 		error = new ArrayList<Pair<String, VType>>();
-		cons = new ArrayList<Constraint>();
-
+		ct = new CTM();
+		addVar = false;
 		opTable = OperatorTables.mkArithmeticEnv();
+
+		
+	}
+
+	private boolean matchBinOp(String op, VType l, VType r){
+		VTyVar t; 
+		if((l instanceof VTyVar) || (r instanceof VTyVar)){
+			t = pool.newVar();
+			ct.addConstraint(new OpConstraint(op, new NTType(new VType[] {l, r}, new VType[] {t})));
+			s.push(t);
+			return true;
+		}
+		else {
+			for(NTType nt : opTable.get(op)) {
+
+
+				if(nt.matchInherited(new VType[] {l, r}) ) {
+					s.push(nt.getReturnAt(0));
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	@Override
@@ -152,9 +179,15 @@ public class TypeCheckerVisitor extends Visitor {
 		}
 		else {
 
+			if(addVar) {
+
+
+				gamma.add(n.getName(), s.push(pool.newVar()));
+				return;
+			}
 			s.push(new TypeError());
 
-			errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
+			errorMessage = "Error06 at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
 			System.out.println(errorMessage);
 			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
 
@@ -174,7 +207,7 @@ public class TypeCheckerVisitor extends Visitor {
 
 			s.push(new TypeError());
 
-			errorMessage = "Error at: " + n.getSymInfo().getLine() + "," + n.getSymInfo().getColumn();
+			errorMessage = "Error07 at: " + n.getSymInfo().getLine() + "," + n.getSymInfo().getColumn();
 			System.out.println(errorMessage);
 			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
 
@@ -425,37 +458,20 @@ public class TypeCheckerVisitor extends Visitor {
 		n.getRight().accept(this);
 		VType right = s.peek();
 
-		if(left instanceof VTyVar || right instanceof VTyVar) {
-
-			VTyVar r = pool.newVar();
-			cons.add(new OpConstraint("ADD", new NTType(new VType[] {left, right}, new VType[] {r})));
-			s.push(r);
-		}
-		else {
-
-			for(NTType nt : opTable.get("ADD")) {
-
-
-				if(nt.matchInherited(new VType[] {left, right}) ) {
-					s.push(nt.getReturnAt(0));
-					return;
-				}
-
-			}
+		if(!matchBinOp("ADD", left, right)) {
 
 			s.push(new TypeError());
 
-			errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
+			errorMessage = "Error08 at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
 			System.out.println(errorMessage);
 			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));	
-
-
 		}
+
 	}
+
 
 	@Override
 	public void visit(And n) {
-
 
 		n.getLeft().accept(this);
 		VType left = s.peek();
@@ -463,33 +479,18 @@ public class TypeCheckerVisitor extends Visitor {
 		n.getRight().accept(this);
 		VType right = s.peek();
 
-		if(left instanceof VTyVar || right instanceof VTyVar) {
-
-			VTyVar r = pool.newVar();
-			cons.add(new OpConstraint("AND", new NTType(new VType[] {left, right}, new VType[] {r})));
-			s.push(r);
-		}
-		else {
-
-			for(NTType nt: opTable.get("AND")) {
-
-				if(nt.matchInherited(new VType[] {left, right})) {
-					s.push(nt.getReturnAt(0));
-					return;
-				}
-			}
+		if(!matchBinOp("AND", left, right)) {
 
 			s.push(new TypeError());
 
-			errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
+			errorMessage = "Error09 at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
 			System.out.println(errorMessage);
-			error.add(new Pair<String, VType>(errorMessage, new TypeError()));
+			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));	
 		}
 	}
 
 	@Override
 	public void visit(Compose n) {
-		//TODO
 
 		n.getLeft().accept(this);
 		VType left = s.peek();
@@ -511,7 +512,7 @@ public class TypeCheckerVisitor extends Visitor {
 
 				s.push(new TypeError());
 
-				errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
+				errorMessage = "Error10 at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
 				System.out.println(errorMessage);
 				error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
 
@@ -522,16 +523,16 @@ public class TypeCheckerVisitor extends Visitor {
 
 	@Override
 	public void visit(Concat n) {
-		// TODO Auto-generated method stub
+		
 
 		n.getLeft().accept(this);
 		VType left = s.peek();
 
 		n.getRight().accept(this);
 		VType right = s.peek();
-		
+
 		if(left instanceof VTyVar || right instanceof VTyVar) {
-			
+
 		}
 		if(left == right) {
 			s.push(left);
@@ -540,7 +541,7 @@ public class TypeCheckerVisitor extends Visitor {
 
 			s.push(new TypeError());
 
-			errorMessage = "Error at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
+			errorMessage = "Error11 at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
 			System.out.println(errorMessage);
 			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
 
@@ -551,64 +552,39 @@ public class TypeCheckerVisitor extends Visitor {
 	public void visit(Div n) {
 
 
+
 		n.getLeft().accept(this);
 		VType left = s.peek();
 
 		n.getRight().accept(this);
 		VType right = s.peek();
 
-		if(left instanceof VTyVar || right instanceof VTyVar) {
-
-			VTyVar r = pool.newVar();
-			cons.add(new OpConstraint("DIV", new NTType(new VType[] {left, right}, new VType[] {r})));
-			s.push(r);
-		}
-		else {
-
-			for(NTType nt: opTable.get("DIV")) {
-
-				if(nt.matchInherited(new VType[] {left, right})) {
-					s.push(nt.getReturnAt(0));
-					return;
-				}
-			}
+		if(!matchBinOp("DIV", left, right)) {
 
 			s.push(new TypeError());
-			errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
-			error.add(new Pair<String, VType>(errorMessage, new TypeError()));
-		}
 
+			errorMessage = "Error12 at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
+			System.out.println(errorMessage);
+			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));	
+		}
 	}
 
 	@Override
 	public void visit(Equals n) {
 
-
 		n.getLeft().accept(this);
 		VType left = s.peek();
 
 		n.getRight().accept(this);
 		VType right = s.peek();
 
-		if(left instanceof VTyVar || right instanceof VTyVar) {
-
-			VTyVar r = pool.newVar();
-			cons.add(new OpConstraint("EQ", new NTType(new VType[] {left, right}, new VType[] {r})));
-			s.push(r);
-		}
-		else {
-
-			for(NTType nt: opTable.get("EQ")) {
-
-				if(nt.matchInherited(new VType[] {left, right})) {
-					s.push(nt.getReturnAt(0));
-					return;
-				}
-			}
+		if(!matchBinOp("EQ", left, right)) {
 
 			s.push(new TypeError());
-			errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
-			error.add(new Pair<String, VType>(errorMessage, new TypeError()));
+
+			errorMessage = "Error13 at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
+			System.out.println(errorMessage);
+			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));	
 		}
 
 	}
@@ -623,25 +599,13 @@ public class TypeCheckerVisitor extends Visitor {
 		n.getRight().accept(this);
 		VType right = s.peek();
 
-		if(left instanceof VTyVar || right instanceof VTyVar) {
-
-			VTyVar r = pool.newVar();
-			cons.add(new OpConstraint("GT", new NTType(new VType[] {left, right}, new VType[] {r})));
-			s.push(r);
-		}
-		else {
-
-			for(NTType nt: opTable.get("GT")) {
-
-				if(nt.matchInherited(new VType[] {left, right})) {
-					s.push(nt.getReturnAt(0));
-					return;
-				}
-			}
+		if(!matchBinOp("GT", left, right)) {
 
 			s.push(new TypeError());
-			errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
-			error.add(new Pair<String, VType>(errorMessage, new TypeError()));
+
+			errorMessage = "Error14 at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
+			System.out.println(errorMessage);
+			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));	
 		}
 	}
 
@@ -653,25 +617,14 @@ public class TypeCheckerVisitor extends Visitor {
 
 		n.getRight().accept(this);
 		VType right = s.peek();
-		if(left instanceof VTyVar || right instanceof VTyVar) {
 
-			VTyVar r = pool.newVar();
-			cons.add(new OpConstraint("GE", new NTType(new VType[] {left, right}, new VType[] {r})));
-			s.push(r);
-		}
-		else {
-
-			for(NTType nt: opTable.get("GE")) {
-
-				if(nt.matchInherited(new VType[] {left, right})) {
-					s.push(nt.getReturnAt(0));
-					return;
-				}
-			}
+		if(!matchBinOp("GE", left, right)) {
 
 			s.push(new TypeError());
-			errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
-			error.add(new Pair<String, VType>(errorMessage, new TypeError()));
+
+			errorMessage = "Error15 at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
+			System.out.println(errorMessage);
+			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));	
 		}
 
 	}
@@ -686,25 +639,13 @@ public class TypeCheckerVisitor extends Visitor {
 		n.getRight().accept(this);
 		VType right = s.peek();
 
-		if(left instanceof VTyVar || right instanceof VTyVar) {
-
-			VTyVar r = pool.newVar();
-			cons.add(new OpConstraint("LT", new NTType(new VType[] {left, right}, new VType[] {r})));
-			s.push(r);
-		}
-		else {
-
-			for(NTType nt: opTable.get("LT")) {
-
-				if(nt.matchInherited(new VType[] {left, right})) {
-					s.push(nt.getReturnAt(0));
-					return;
-				}
-			}
+		if(!matchBinOp("LT", left, right)) {
 
 			s.push(new TypeError());
+
 			errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
-			error.add(new Pair<String, VType>(errorMessage, new TypeError()));
+			System.out.println(errorMessage);
+			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));	
 		}
 
 	}
@@ -719,27 +660,14 @@ public class TypeCheckerVisitor extends Visitor {
 		n.getRight().accept(this);
 		VType right = s.peek();
 
-		if(left instanceof VTyVar || right instanceof VTyVar) {
-
-			VTyVar r = pool.newVar();
-			cons.add(new OpConstraint("LE", new NTType(new VType[] {left, right}, new VType[] {r})));
-			s.push(r);
-		}
-		else {
-
-			for(NTType nt: opTable.get("LE")) {
-
-				if(nt.matchInherited(new VType[] {left, right})) {
-					s.push(nt.getReturnAt(0));
-					return;
-				}
-			}
+		if(!matchBinOp("LE", left, right)) {
 
 			s.push(new TypeError());
-			errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
-			error.add(new Pair<String, VType>(errorMessage, new TypeError()));
-		}
 
+			errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
+			System.out.println(errorMessage);
+			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));	
+		}
 	}
 
 	@Override
@@ -757,32 +685,19 @@ public class TypeCheckerVisitor extends Visitor {
 	@Override
 	public void visit(Mod n) {
 
-
 		n.getLeft().accept(this);
 		VType left = s.peek();
 
 		n.getRight().accept(this);
 		VType right = s.peek();
 
-		if(left instanceof VTyVar || right instanceof VTyVar) {
-
-			VTyVar r = pool.newVar();
-			cons.add(new OpConstraint("MOD", new NTType(new VType[] {left, right}, new VType[] {r})));
-			s.push(r);
-		}
-		else {
-
-			for(NTType nt: opTable.get("MOD")) {
-
-				if(nt.matchInherited(new VType[] {left, right})) {
-					s.push(nt.getReturnAt(0));
-					return;
-				}
-			}
+		if(!matchBinOp("MOD", left, right)) {
 
 			s.push(new TypeError());
+
 			errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
-			error.add(new Pair<String, VType>(errorMessage, new TypeError()));
+			System.out.println(errorMessage);
+			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));	
 		}
 
 
@@ -798,25 +713,14 @@ public class TypeCheckerVisitor extends Visitor {
 
 		n.getRight().accept(this);
 		VType right = s.peek();
-		if(left instanceof VTyVar || right instanceof VTyVar) {
 
-			VTyVar r = pool.newVar();
-			cons.add(new OpConstraint("MUL", new NTType(new VType[] {left, right}, new VType[] {r})));
-			s.push(r);
-		}
-		else {
-
-			for(NTType nt: opTable.get("MUL")) {
-
-				if(nt.matchInherited(new VType[] {left, right})) {
-					s.push(nt.getReturnAt(0));
-					return;
-				}
-			}
+		if(!matchBinOp("MUL", left, right)) {
 
 			s.push(new TypeError());
+
 			errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
-			error.add(new Pair<String, VType>(errorMessage, new TypeError()));
+			System.out.println(errorMessage);
+			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));	
 		}
 
 	}
@@ -826,33 +730,21 @@ public class TypeCheckerVisitor extends Visitor {
 
 
 		n.getExpr().accept(this);
-		VType ty = s.peek();
+		VType e = s.peek();
 
-		if(ty instanceof VTyVar) {
-
-			VTyVar r = pool.newVar();
-			cons.add(new OpConstraint("NOT", new NTType(new VType[] {ty}, new VType[] {r})));
-			s.push(r);
-		}
-		else {
-
-			for(NTType nt: opTable.get("NOT")) {
-
-				if(nt.matchInherited(new VType[] {ty})) {
-					s.push(nt.getReturnAt(0));
-					return;
-				}
-			}
+		if(!matchBinOp("NOT", e, null)) {
 
 			s.push(new TypeError());
+
 			errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
-			error.add(new Pair<String, VType>(errorMessage, new TypeError()));
+			System.out.println(errorMessage);
+			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));	
 		}
 	}
 
 	@Override
 	public void visit(NotEq n) {
-		// TODO Auto-generated method stub
+	
 
 		n.getLeft().accept(this);
 		VType left = s.peek();
@@ -860,25 +752,13 @@ public class TypeCheckerVisitor extends Visitor {
 		n.getRight().accept(this);
 		VType right = s.peek();
 
-		if(left instanceof VTyVar || right instanceof VTyVar) {
-
-			VTyVar r = pool.newVar();
-			cons.add(new OpConstraint("EQ", new NTType(new VType[] {left, right}, new VType[] {r})));
-			s.push(r);
-		}
-		else {
-
-			for(NTType nt: opTable.get("EQ")) {
-
-				if(nt.matchInherited(new VType[] {left, right})) {
-					s.push(nt.getReturnAt(0));
-					return;
-				}
-			}
+		if(!matchBinOp("NE", left, right)) {
 
 			s.push(new TypeError());
+
 			errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
-			error.add(new Pair<String, VType>(errorMessage, new TypeError()));
+			System.out.println(errorMessage);
+			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));	
 		}
 	}
 
@@ -892,25 +772,13 @@ public class TypeCheckerVisitor extends Visitor {
 		n.getRight().accept(this);
 		VType right = s.peek();
 
-		if(left instanceof VTyVar || right instanceof VTyVar) {
-
-			VTyVar r = pool.newVar();
-			cons.add(new OpConstraint("OR", new NTType(new VType[] {left, right}, new VType[] {r})));
-			s.push(r);
-		}
-		else {
-
-			for(NTType nt: opTable.get("OR")) {
-
-				if(nt.matchInherited(new VType[] {left, right})) {
-					s.push(nt.getReturnAt(0));
-					return;
-				}
-			}
+		if(!matchBinOp("OR", left, right)) {
 
 			s.push(new TypeError());
+
 			errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
-			error.add(new Pair<String, VType>(errorMessage, new TypeError()));
+			System.out.println(errorMessage);
+			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));	
 		}
 	}
 
@@ -924,55 +792,30 @@ public class TypeCheckerVisitor extends Visitor {
 		n.getRight().accept(this);
 		VType right = s.peek();
 
-		if(left instanceof VTyVar || right instanceof VTyVar) {
-
-			VTyVar r = pool.newVar();
-			cons.add(new OpConstraint("SUB", new NTType(new VType[] {left, right}, new VType[] {r})));
-			s.push(r);
-		}
-		else {
-
-			for(NTType nt: opTable.get("SUB")) {
-
-				if(nt.matchInherited(new VType[] {left, right})) {
-					s.push(nt.getReturnAt(0));
-					return;
-				}
-			}
+		if(!matchBinOp("SUB", left, right)) {
 
 			s.push(new TypeError());
+
 			errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
-			error.add(new Pair<String, VType>(errorMessage, new TypeError()));
+			System.out.println(errorMessage);
+			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));	
 		}
 	}
 
 
 	@Override
 	public void visit(UMinus n) {
-		// TODO Auto-generated method stub
 
 		n.getExpr().accept(this);
-		VType expr = s.peek();
+		VType e = s.peek();
 
-		if(expr instanceof VTyVar) {
-
-			VTyVar r = pool.newVar();
-			cons.add(new OpConstraint("MINUS", new NTType(new VType[] {expr}, new VType[] {r})));
-			s.push(r);
-		}
-		else {
-
-			for(NTType nt: opTable.get("MINUS")) {
-
-				if(nt.matchInherited(new VType[] {expr})) {
-					s.push(nt.getReturnAt(0));
-					return;
-				}
-			}
+		if(!matchBinOp("MINUS", e, null)) {
 
 			s.push(new TypeError());
+
 			errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
-			error.add(new Pair<String, VType>(errorMessage, new TypeError()));
+			System.out.println(errorMessage);
+			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));	
 		}
 	}
 
@@ -1105,7 +948,7 @@ public class TypeCheckerVisitor extends Visitor {
 
 	@Override
 	public void visit(BindPEG n) {
-		// TODO Auto-generated method stub
+	
 
 		n.getExpr().accept(this);
 		n.getAttribute().accept(this);
@@ -1120,7 +963,6 @@ public class TypeCheckerVisitor extends Visitor {
 
 	@Override
 	public void visit(ChoicePEG n) {
-		// TODO Auto-generated method stub
 
 		n.getLeftPeg().accept(this);
 		n.getRightPeg().accept(this);
@@ -1154,14 +996,69 @@ public class TypeCheckerVisitor extends Visitor {
 
 	@Override
 	public void visit(NonterminalPEG n) {
-		// TODO Auto-generated method stub
 
-		for(Expr args: n.getArgs()) {
+		NTInfo nt = global.get(n.getName());
 
-			args.accept(this);
+		if(nt != null) {
+
+			NTType t =  nt.getSig();
+
+			int syn, inh;
+			inh = t.getNumInherited();
+			syn = t.getNumSintetized();
+
+			List<Expr>a = n.getArgs();
+
+			int i, k=0;
+			for(i =0; i <inh && i<a.size(); i++) {
+
+				a.get(k++).accept(this);
+				if(!t.getParamAt(i).matchCT(s.pop(), ct)) {
+
+					errorMessage = "Error01 at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
+					System.out.println(errorMessage);
+					error.add(new Pair<String, VType>(errorMessage, new TypeError() ));	
+				}
+			}
+
+			addVar = true;
+			for(i = 0; i<syn && k<a.size(); i++) {
+
+
+				Expr e = a.get(k++);
+
+				e.accept(this);
+
+
+				if(!(e instanceof Attribute)) {
+
+					errorMessage = "Error02 at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
+					System.out.println(errorMessage);
+					error.add(new Pair<String, VType>(errorMessage, new TypeError() ));	
+				}
+				if(!t.getReturnAt(i).matchCT(s.pop(), ct)) {
+
+					errorMessage = "Error03 at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
+					System.out.println(errorMessage);
+					error.add(new Pair<String, VType>(errorMessage, new TypeError() ));	
+				}
+
+			}
+			addVar = false;
+			if(a.size() != inh + syn) {
+
+				errorMessage = "Error04 at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
+				System.out.println(errorMessage);
+				error.add(new Pair<String, VType>(errorMessage, new TypeError() ));	
+			}
 		}
+		else {
 
-		n.getName();
+			errorMessage = "Error05 at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
+			System.out.println(errorMessage);
+			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));	
+
+		}
 	}
 
 	@Override
@@ -1191,14 +1088,22 @@ public class TypeCheckerVisitor extends Visitor {
 		n.getPeg().accept(this);
 
 		VType returns [] = new VType [n.getSyn().size()];
-
+		NTType nt = global.get(n.getRuleName()).getSig();
+		
 		int i = 0;
 
 		for(Expr e: n.getSyn()) {
 
 			e.accept(this);
-			returns[i++] = s.peek();
-
+			
+			
+			returns[i] = s.peek();
+			if(!nt.getReturnAt(i++).matchCT(s.pop(), ct)) {
+				
+				errorMessage = "Error at : " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn() + "k";
+				System.out.println(errorMessage);
+				error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
+			}
 		}	
 
 
@@ -1227,24 +1132,13 @@ public class TypeCheckerVisitor extends Visitor {
 
 			if(vt!= null) {
 
-				if(vt instanceof VTyVar) {
+				if(!vt.matchCT(s.pop(), ct)) {
 
-					cons.add(new VarConstraint((VTyVar) vt, s.pop())); 
+					errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
+					System.out.println(errorMessage);
+					error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
 
 				}
-				else
-					if(s.peek() instanceof VTyVar) {
-						cons.add(new VarConstraint((VTyVar)s.pop(), vt));
-					}else
-						if(! s.pop().match(vt)) {
-
-							s.push(new TypeError());
-
-							errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
-							System.out.println(errorMessage);
-							error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
-
-						}
 			}
 			else {
 				gamma.add(name, s.pop());
@@ -1326,7 +1220,6 @@ public class TypeCheckerVisitor extends Visitor {
 
 			gamma = new Environment<String, VType>();
 
-
 			VType inhs[] = new VType[rule.getInh().size()];
 
 			int j=0;
@@ -1334,7 +1227,7 @@ public class TypeCheckerVisitor extends Visitor {
 
 				inh.getFirst().accept(this);
 				inhs[j++] = s.peek();
-				gamma.add(inh.getSecond(), s.peek());
+				gamma.add(inh.getSecond(), s.pop());
 			}
 
 			VType returns [] = new VType [rule.getSyn().size()];
@@ -1343,7 +1236,8 @@ public class TypeCheckerVisitor extends Visitor {
 
 			for(i=0; i< rule.getSyn().size(); i++) {
 
-				returns[i] = pool.newVar();				
+				returns[i] = pool.newVar();
+				
 			}
 
 			NTType rules = new NTType(inhs, returns);
@@ -1355,5 +1249,14 @@ public class TypeCheckerVisitor extends Visitor {
 
 			r.accept(this);
 		}
+		
+		System.out.println(global.toString());
+		error.addAll(ct.resolveUnify(opTable));
+		
+		
+	
+		System.out.println(global.toString());
+		System.out.println(ct.toString());
+
 	}
 }

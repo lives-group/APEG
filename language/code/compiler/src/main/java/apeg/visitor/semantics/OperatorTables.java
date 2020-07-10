@@ -74,6 +74,7 @@ public class OperatorTables {
 		 env.add("LE", tr); // <=
 		 
 		 env.add("EQ", tr);
+		 env.add("NE", tr);
 		 
 		 env.add("MINUS",tm);
 		 

@@ -1,0 +1,120 @@
+package apeg.visitor.semantics;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+
+import apeg.util.Environment;
+import apeg.util.Pair;
+
+public class CTM {
+
+
+	private Queue<Constraint> ct;
+	private List<Pair<String, VType>>error;
+	String errorMessage;
+
+	public CTM(){
+		ct = new LinkedList<Constraint>();
+		error = new ArrayList<Pair<String, VType>>();
+	}
+
+
+	public void addConstraint(Constraint c){ ct.add(c);}
+
+
+	private List<NTType> verifyOp( ArrayList<NTType> nt , VType t){
+
+		ArrayList<NTType>r = new ArrayList<NTType>();
+
+		for(NTType ty : nt) {
+
+			if(ty.match(t)) {
+				r.add(ty);
+			}
+		}
+
+		return r;
+	}
+
+	public List<Pair<String, VType>> resolveUnify(Environment<String,ArrayList<NTType>> opTable) {
+		//TODO
+
+		OpConstraint op;
+		VarConstraint v;
+		List<NTType>type;
+		int t1;
+		
+
+		while(!ct.isEmpty()) {
+			
+			t1 = ct.size();
+			Constraint c = ct.remove();
+			
+			if(c instanceof OpConstraint) {
+
+				op = (OpConstraint) c;
+
+
+				type = verifyOp(opTable.get(op.getOpName()), op.getType());
+				if(type.size() == 0) {
+					errorMessage = "Error: No constraints matching" ;
+					System.out.println(errorMessage);
+					error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
+				}
+				else {
+					if(type.size()>1) {
+						
+						ct.add(c);
+					}
+					else {
+						if(type.size() == 1) {
+
+							op.getType().Unify(type.get(0));
+							
+						}
+					}
+				}
+
+			}
+			else {
+
+				if(c instanceof VarConstraint) {
+
+					v = (VarConstraint) c;
+
+					if(!v.getVarName().Unify(v.getType())) {
+
+						ct.add(c);
+					}
+					
+
+				}
+			}
+			
+			if(ct.size() != t1) {
+				
+				errorMessage = "Error no solutions found";
+				System.out.println(errorMessage);
+				error.add(new Pair<String, VType>(errorMessage, new TypeError()));
+				break;
+				
+			}
+		}
+
+		return error;
+	}
+
+
+	public String toString(){
+		String s = "";
+		for(Constraint c : ct){
+			s += c.toString() + "\n";
+		}
+		return s;
+	}
+
+}
+
+

@@ -18,4 +18,7 @@ public class VarConstraint extends Constraint{
 	public VType getType() {
 		return t;
 	}
+	public String toString() {
+		return v + "=" + t.toString();
+	}
 }

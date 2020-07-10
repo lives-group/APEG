@@ -3,11 +3,11 @@ import apeg.util.Pair;
 import apeg.visitor.Visitor;
 import apeg.util.SymInfo;
 
-public class TyInt extends Type{
+public class TyInt extends Type {
 
     
     public TyInt(SymInfo s){
-        super(s);
+        super(s, "int");
     }
     public boolean match(Type t){
         return t instanceof TyInt;

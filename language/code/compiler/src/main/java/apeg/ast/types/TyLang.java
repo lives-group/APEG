@@ -7,7 +7,7 @@ public class TyLang extends Type{
 
     
     public TyLang(SymInfo s){
-        super(s);
+        super(s, "language");
     }
     public boolean match(Type t){
         return t instanceof TyLang;
@@ -15,5 +15,4 @@ public class TyLang extends Type{
     public void accept (Visitor v) {
     	v.visit(this);
     }
-
 }

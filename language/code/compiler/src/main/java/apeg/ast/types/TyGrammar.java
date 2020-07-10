@@ -7,7 +7,7 @@ public class TyGrammar extends Type{
 
     
     public TyGrammar(SymInfo s){
-        super(s);
+        super(s, "grammar");
     }
     public boolean match(Type t){
         return t instanceof TyGrammar;
@@ -15,5 +15,4 @@ public class TyGrammar extends Type{
     public void accept (Visitor v) {
     	v.visit(this);
     }
-
 }

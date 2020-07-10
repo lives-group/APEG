@@ -7,12 +7,12 @@ public class TyMap extends Type{
     private Type tyParameter;
     
     public TyMap(SymInfo s,Type tyParameter){
-        super(s);
+        super(s, "map");
         this.tyParameter = tyParameter;
     }
     public boolean match(Type t){
         if(t instanceof TyMap ){
-           return match(((TyMap)t).getTyParameter());
+           return tyParameter.match(((TyMap)t).getTyParameter());
         }
         return false;
     }

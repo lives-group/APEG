@@ -32,17 +32,32 @@ public class NTType extends VType {
 	   return VTypes[i];
    }
    
-   public boolean match(NTType n){
+@Override
+   public boolean match(VType t){
+
+        if(t instanceof NTType){
+
+        NTType n = (NTType)t;
+        System.out.println("NTType match called");
 	   boolean r = false;
 	   if(getNumInherited() == n.getNumInherited() && getNumSintetized() == n.getNumSintetized()){
 		   r = true;
 		   for(int i = 0; i < n.getNumParams(); i++){
-			  r = r && getParamAt(i).match(n.getParamAt(i)); 
+			  r = r && getPType(i).match(n.getPType(i)); 
 		   }
 	   }
 	   return r;
-	   
+	   } else{
+            return false;
+            }
    }
+
+    public VType getPType(int i){
+
+        
+        if(i >= VTypes.length){throw new ArrayIndexOutOfBoundsException("Index:  " + i);} 
+	   return VTypes[i];
+    }
    
    public boolean matchInherited(VType n[]){
 	   boolean r = false;
@@ -101,11 +116,6 @@ public class NTType extends VType {
       return s;
    }
 
-@Override
-public boolean match(VType t) {
-	// TODO Auto-generated method stub
-	return false;
-}
 
 @Override
 public boolean matchCT(VType t, CTM ct) {

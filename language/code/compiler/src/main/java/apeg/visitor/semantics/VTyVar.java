@@ -48,6 +48,7 @@ public class VTyVar extends VType {
 					return false;
 				}
 				else {
+                    	
 					((VTyVar)t).setInstance(solve());
 					return true;
 				}
@@ -56,12 +57,12 @@ public class VTyVar extends VType {
 			else {
 				
 				if(solve() == null) {
-					
+						
 					setInstance(((VTyVar)t).solve());
 					return true;
 				}
 				else {
-					
+						
 					return match(((VTyVar)t).solve());
 				}
 				
@@ -88,7 +89,9 @@ public class VTyVar extends VType {
 			 return super.toString();
 		}
 		else {
-			return t.toString();
+             
+            
+			return t.toString() + ":" + getName();
 		}
 	}
 	

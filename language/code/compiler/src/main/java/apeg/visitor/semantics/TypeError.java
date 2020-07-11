@@ -19,7 +19,11 @@ public class TypeError extends VType {
 	  }
 	  
 	  public boolean match(VType type) { return true; }
+
+       public boolean matchCT(VType type, CTM ct) { return true;}
 	  
 	  public void accept(Visitor v){}
+
+      public boolean Unify (VType t){ return true;}
 
 }

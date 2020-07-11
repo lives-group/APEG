@@ -1249,8 +1249,10 @@ public class TypeCheckerVisitor extends Visitor {
 
 			r.accept(this);
 		}
-		
+
+        		
 		System.out.println(global.toString());
+        System.out.println(ct.toString());
 		error.addAll(ct.resolveUnify(opTable));
 		
 		

@@ -11,7 +11,7 @@ import apeg.util.Pair;
 public class CTM {
 
 
-	private Queue<Constraint> ct;
+	private LinkedList<Constraint> ct;
 	private List<Pair<String, VType>>error;
 	String errorMessage;
 
@@ -44,13 +44,18 @@ public class CTM {
 		OpConstraint op;
 		VarConstraint v;
 		List<NTType>type;
-		int t1;
+		int t1 = ct.size()+1;
 		
-
-		while(!ct.isEmpty()) {
+        
+		while(!ct.isEmpty() && ct.size() < t1) {
 			
-			t1 = ct.size();
-			Constraint c = ct.remove();
+            Constraint last = ct.peekLast();
+            t1 = ct.size();
+             Constraint c;  
+            do{
+                
+             c = ct.remove();   
+			
 			
 			if(c instanceof OpConstraint) {
 
@@ -59,7 +64,7 @@ public class CTM {
 
 				type = verifyOp(opTable.get(op.getOpName()), op.getType());
 				if(type.size() == 0) {
-					errorMessage = "Error: No constraints matching" ;
+					errorMessage = "Error: No constraints matching for " + op.getOpName() ;
 					System.out.println(errorMessage);
 					error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
 				}
@@ -93,16 +98,14 @@ public class CTM {
 				}
 			}
 			
-			if(ct.size() != t1) {
-				
-				errorMessage = "Error no solutions found";
-				System.out.println(errorMessage);
-				error.add(new Pair<String, VType>(errorMessage, new TypeError()));
-				break;
-				
-			}
-		}
+        }while(c != last);
 
+		}
+        if(!ct.isEmpty()){
+                       errorMessage = "Error: impossible to solve constraints" ;
+					System.out.println(errorMessage);
+					error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
+        }
 		return error;
 	}
 

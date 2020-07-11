@@ -9,7 +9,7 @@ header {
 
 g returns b, na, nb, nc : 
    a<na> b<nb> c<nc> 
-   {b = (a==b) && (b==c);}
+   {b = (na==nb) && (nb==nc);}
 ;
  
 a returns na :

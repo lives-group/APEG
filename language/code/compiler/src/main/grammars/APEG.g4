@@ -12,6 +12,7 @@ grammar APEG;
     
     import apeg.util.SymInfo;
     import apeg.util.Pair;
+    import apeg.util.CharInterval;
     
     import java.util.List;
     import java.util.ArrayList;
@@ -24,7 +25,70 @@ grammar APEG;
 	public APEGParser(ASTFactory factory, TokenStream input) {
 		this(input);
 		this.factory = factory;
-	}	
+	}
+
+        List<CharInterval> splitRange(String s) {
+            int i = 1;
+            List<CharInterval> l = new ArrayList<CharInterval>();
+            while(i < s.length()-1) {
+              char c = s.charAt(i);
+              switch(c) {
+	        case '\\':
+		  switch(s.charAt(++i)) {
+		    case 'n':
+		      l.add(new CharInterval('\n'));
+		      break;
+		    case 'r':
+		      l.add(new CharInterval('\r'));
+		      break;
+		    case 't':
+		      l.add(new CharInterval('\t'));
+		      break;
+		    case 'b':
+		      l.add(new CharInterval('\b'));
+		      break;
+		    case 'f':
+		      l.add(new CharInterval('\f'));
+		      break;
+		    case '\"':
+		      l.add(new CharInterval('\"'));
+		      break;
+		    case '\'':
+		      l.add(new CharInterval('\''));
+		      break;
+		    case '\\':
+		      l.add(new CharInterval('\\'));
+		      break;
+		    case '-':
+		      l.add(new CharInterval('-'));
+		      break;
+		    case ']':
+		      l.add(new CharInterval(']'));
+		      break;
+		    case 'u':
+		      char[] chs = Character.toChars(Integer.valueOf(s.substring(i+1,i+5), 16));
+		      i += 4;
+		      l.add(new CharInterval(chs[0]));
+		      break;
+		  }
+		  break;
+	      	default:
+		  char aux = '+';
+		  if(i < s.length()-2)
+		    aux = s.charAt(i+1);
+		  if(aux == '-') {
+		    i++;
+		    l.add(new CharInterval(c, s.charAt(++i)));
+		  } else {
+		    l.add(new CharInterval(c));
+		  }
+		  break;
+	      }
+              ++i;
+            }
+            return l;
+        }
+
 }
 
 @lexer::header
@@ -235,7 +299,7 @@ peg_factor returns[APEG peg]:
   |
    ntcall {$peg = $ntcall.peg;}
   |
-   '[' range_pair ']' /*{$peg = factory.newGroupPeg($range_pair.text);}*/
+   range_pair /*{$peg = factory.newGroupPeg($range_pair.text);}*/
   |
    t='.' {$peg = factory.newAnyPEG(new SymInfo($t.line, $t.pos));}
   |
@@ -248,23 +312,11 @@ ntcall returns[APEG peg]:
    ID {$peg = factory.newNonterminalPEG(new SymInfo($ID.line, $ID.pos), $ID.text, new ArrayList<Expr>());}
 ;
 
-range_pair:
-  single_pair
- |
-  single_pair ('-' single_pair)+
+range_pair returns[List<CharInterval> ranges]: RANGE_LITERAL
+ {
+  $ranges = splitRange($RANGE_LITERAL.text);
+ }
 ;
-
-/*range_pair:
-   t1=LETTER '-' t2=LETTER -> ^(DOUBLE_PAIR $t1 $t2)
-  |
-   t1=DIGIT '-' t2=DIGIT -> ^(DOUBLE_PAIR $t1 $t2)
-  |
-   t1=ESC '-' t2=ESC -> ^(DOUBLE_PAIR $t1 $t2)
-  |
-   LETTER | DIGIT | ESC
-  ;*/
-
-single_pair: ID | INT_NUMBER | ESC;
 
 /***
  * Constraint and Update Expressions
@@ -487,7 +539,16 @@ OP_SUB : '-';
 OP_MUL : '*';
 OP_DIV : '/';
 OP_MOD : '%';
-STRING_LITERAL: '\'' LITERAL_CHAR* '\''
+
+RANGE_LITERAL: '[' (RANGE_CHAR | RANGE_CHAR '-' RANGE_CHAR)+ ']';
+fragment RANGE_CHAR:
+   ESC
+ | '\\]'
+ | '\\-'
+ | ~([\\\]-])
+;
+
+STRING_LITERAL: '\'' (ESC | ~([\'\\]))* '\''
  /*{
     String s = $text;
     s = s.substring(1, s.length()-1);
@@ -495,10 +556,7 @@ STRING_LITERAL: '\'' LITERAL_CHAR* '\''
     setText(s);
  }*/
 ;
-fragment LITERAL_CHAR
-  : ESC
-  | ~('\''|'\\')
-  ;
+
 ESC : '\\'
     ( 'n'
     | 'r'
@@ -509,9 +567,9 @@ ESC : '\\'
     | '\''
     | '\\'
     | 'u' XDIGIT XDIGIT XDIGIT XDIGIT
-    | . // unknown, leave as it is
     )
-  ;
+;
+
 fragment XDIGIT :
     '0' .. '9'
   | 'a' .. 'f'
@@ -530,6 +588,5 @@ REAL_NUMBER :
   ;
 fragment EXPONENT : ('e'|'E') ('+'|'-')? DIGIT+ ;
 WS : (' ' | '\t' | '\r' | '\n') { skip(); } ;
-COMMENT : '/*' .*? '*/' { skip(); } ;
-LINE_COMMENT : '//' ~('\n'|'\r')* '\r'? '\n' { skip(); } ;
-
+COMMENT : '/*' .*? ('*/' | EOF) { skip(); } ;
+LINE_COMMENT : '--' ~('\n'|'\r')* '\r'? '\n' { skip(); } ;

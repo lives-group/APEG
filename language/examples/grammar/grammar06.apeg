@@ -9,12 +9,16 @@ literal3[grammar g] :
 
 literal[grammar g] :
     number<n>
-	// { g1 = addRule(copyGrammar(g), concat(concat('strN : ', concatN('CHAR ', n)), ';')) ; } <- we must to define a concrete syntax for it
+	-- replicate<g, <| CHAR |>, n, p>  {g1 = g << {| #strN[language g] : p |};}
 	'['
 	strN<g1>
 	']'
     ;
 
+replicate[grammar g, peg p, int n] returns p:
+ {? n >0} {p1 = p;} ({?n > 0} {p1 = <| #p1# p |>; n = n-1;})*
+;
+ 
 strN[grammar g]:
     {? false }
 	;

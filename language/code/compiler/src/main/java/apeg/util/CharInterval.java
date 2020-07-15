@@ -20,5 +20,11 @@ public class CharInterval{
     
     public char getStart(){return i;}
     public char getEnd(){return f;}
-    
+
+    public String toString() {
+	if(i == f)
+	    return String.valueOf(i);
+        else
+	    return i + "-" + f;
+    }
 }

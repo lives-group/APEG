@@ -102,7 +102,7 @@ public class TestVisitor extends Visitor{
 	}
 
 	@Override
-	public void visit(MetaChoiceList n) {
+	public void visit(MetaRangePEG n) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -551,10 +551,11 @@ public class TestVisitor extends Visitor{
 	}
 
 	@Override
-	public void visit(ChoiceList n) {
-		// TODO Auto-generated method stub
-		
-		System.out.println("Intervals: " + n.getInterval().getEnd() + "  " + n.getInterval().getStart());
+	public void visit(RangePEG n) {
+	    System.out.print('[');
+	    for(CharInterval c : n.getInterval())
+		System.out.print(c);
+	    System.out.println(']');
 	}
 
 	@Override

@@ -23,8 +23,22 @@ public class CharInterval{
 
     public String toString() {
 	if(i == f)
-	    return String.valueOf(i);
+	    return char2string(i);
         else
-	    return i + "-" + f;
+	    return char2string(i) + "-" + char2string(f);
+    }
+
+    private String char2string(char ch) {
+	switch(ch) {
+	  case '\n': return "\\\\n";
+	  case '\r': return "\\\\r";
+          case '\t': return "\\\\t";
+	  case '\b': return "\\\\b";
+	  case '\f': return "\\\\f";
+	  case '\\': return "\\\\";
+	  case '\'': return "\\\'";
+	  case '\"': return "\\\"";
+	  default: return Character.toString(ch);
+	}
     }
 }

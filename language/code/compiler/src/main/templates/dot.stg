@@ -48,7 +48,6 @@ inh(attr) ::= "<\u2193><attr>"
 syn() ::= "<\u2191>"
 
 attribute_lable(name) ::= "<name>"
-attribute_grammar_lable(name) ::= "$<name>"
 
 
 /** Template for types */
@@ -75,7 +74,7 @@ optional_peg_lable() ::= "OptionalPegExpr(?)"
 sequence_peg_lable() ::= "SequencePegExpr(.)"
 star_peg_lable() ::= "StarPegExpr(*)"
 update_peg_lable() ::= "UpdatePegExpr([\<-])"
-
+range_peg_label(ranges) ::= "[<ranges>]"
 
 /** Template for assignment from update parsing expressions */
 assign_lable(var) ::= "Assignment:<var>"
@@ -83,7 +82,7 @@ assign_lable(var) ::= "Assignment:<var>"
 
 /** Template for expressions */
 attribute_expr_lable(name) ::= "<name>"
-attribute_grammar_lable(name) ::= "<name>"
+attribute_grammar_lable(name) ::= "$<name>"
 
 gt_expr_lable() ::= "\>"
 ge_expr_lable() ::= "<\u2265>"

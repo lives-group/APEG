@@ -24,7 +24,7 @@ import apeg.ast.expr.MetaAttribute;
 import apeg.ast.expr.MetaBindPEG;
 import apeg.ast.expr.MetaBoolLit;
 import apeg.ast.expr.MetaCharLit;
-import apeg.ast.expr.MetaChoiceList;
+import apeg.ast.expr.MetaRangePEG;
 import apeg.ast.expr.MetaChoicePEG;
 import apeg.ast.expr.MetaConstraintPEG;
 import apeg.ast.expr.MetaFloatLit;
@@ -93,7 +93,7 @@ import apeg.ast.rules.APEG;
 import apeg.ast.rules.AndPEG;
 import apeg.ast.rules.AnyPEG;
 import apeg.ast.rules.BindPEG;
-import apeg.ast.rules.ChoiceList;
+import apeg.ast.rules.RangePEG;
 import apeg.ast.rules.ChoicePEG;
 import apeg.ast.rules.ConstraintPEG;
 import apeg.ast.rules.KleenePEG;
@@ -116,8 +116,10 @@ import apeg.ast.types.TyMap;
 import apeg.ast.types.TyMeta;
 import apeg.ast.types.TyString;
 import apeg.ast.types.Type;
+
 import apeg.util.Pair;
 import apeg.util.path.Path;
+import apeg.util.CharInterval;
 
 public class DOTVisitor extends Visitor{
 private STGroup groupTemplate;
@@ -298,7 +300,7 @@ private STGroup groupTemplate;
 	}
 
 	@Override
-	public void visit(MetaChoiceList n) {
+	public void visit(MetaRangePEG n) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -944,15 +946,23 @@ private STGroup groupTemplate;
 	 
 
 	@Override
-	public void visit(ChoiceList n) {
-		// TODO Auto-generated method stub
-		
+	public void visit(RangePEG n) {
+	    ST node = groupTemplate.getInstanceOf("node");
+
+	    node.add("parent", parent);
+	    nodeName = "rangePeg" + c_peg++;
+	    node.add("node", nodeName);
+
+	    ST label = groupTemplate.getInstanceOf("range_peg_label");
+	    for(CharInterval c : n.getInterval())
+		label.add("ranges", c.toString());
+	    node.add("lable", label);
+
+	    nodes.add(node);
 	}
 
 	@Override
-	public void visit(ChoicePEG n) {
-		// TODO Auto-generated method stub
-		
+	public void visit(ChoicePEG n) {		
 		ST node = groupTemplate.getInstanceOf("node");
 		
 		node.add("parent", parent);

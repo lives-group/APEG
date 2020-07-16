@@ -20,3 +20,5 @@ digit:
 ws:
  [ \n\r\t]
 ;
+
+lambda: λ;

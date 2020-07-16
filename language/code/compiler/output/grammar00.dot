@@ -1,0 +1,37 @@
+Digraph range {
+  node [shape="box"];
+  grammar [label = "Grammar[range]"];
+
+  rangeRule [label = "Rule[range]"];
+  grammar -> rangeRule;
+  choicePeg0 [label = "ChoicePegExpr(/);"];
+  rangeRule -> choicePeg0;
+  NonterminalPeg1 [label = "NonterminalPegExpr:escape"];
+  choicePeg0 -> NonterminalPeg1;
+  choicePeg2 [label = "ChoicePegExpr(/);"];
+  choicePeg0 -> choicePeg2;
+  NonterminalPeg3 [label = "NonterminalPegExpr:letter"];
+  choicePeg2 -> NonterminalPeg3;
+  NonterminalPeg4 [label = "NonterminalPegExpr:digit"];
+  choicePeg2 -> NonterminalPeg4;
+  escapeRule [label = "Rule[escape]"];
+  grammar -> escapeRule;
+  rangePeg5 [label = "[\\n\\t\\f\\\\b\'\"λ-]]"];
+  escapeRule -> rangePeg5;
+  letterRule [label = "Rule[letter]"];
+  grammar -> letterRule;
+  rangePeg6 [label = "[a-zA-Z_]"];
+  letterRule -> rangePeg6;
+  digitRule [label = "Rule[digit]"];
+  grammar -> digitRule;
+  rangePeg7 [label = "[0-9]"];
+  digitRule -> rangePeg7;
+  wsRule [label = "Rule[ws]"];
+  grammar -> wsRule;
+  rangePeg8 [label = "[ \\n\\r\\t]"];
+  wsRule -> rangePeg8;
+  lambdaRule [label = "Rule[lambda]"];
+  grammar -> lambdaRule;
+  LambdaPeg9 [label = "λ"];
+  lambdaRule -> LambdaPeg9;
+}

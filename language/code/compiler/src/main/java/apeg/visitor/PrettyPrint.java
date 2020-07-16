@@ -154,7 +154,7 @@ public class PrettyPrint extends Visitor{
 	}
 
 	@Override
-	public void visit(MetaChoiceList n) {
+	public void visit(MetaRangePEG n) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -714,9 +714,10 @@ public class PrettyPrint extends Visitor{
 	 
 
 	@Override
-	public void visit(ChoiceList n) {
-		// TODO Auto-generated method stub
-		
+	public void visit(RangePEG n) {
+	    peg = groupTemplate.getInstanceOf("range_peg");
+	    for(CharInterval c : n.getInterval())
+		peg.add("ranges", c.toString());
 	}
 
 	@Override

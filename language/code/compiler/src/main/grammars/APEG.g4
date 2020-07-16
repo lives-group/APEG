@@ -244,7 +244,7 @@ peg_seq returns[APEG peg]:
   |
    peg_capturetext {$peg = $peg_capturetext.peg;}
   |
-   {$peg = factory.newLambdaPEG(new SymInfo(_ctx.start.getLine(), _ctx.start.getCharPositionInLine()));}/ // LAMBDA parsing expression
+   '\u03bb' {$peg = factory.newLambdaPEG(new SymInfo(_ctx.start.getLine(), _ctx.start.getCharPositionInLine()));}/ // LAMBDA parsing expression
 ;
 
 peg_capturetext returns[APEG peg]:
@@ -299,7 +299,7 @@ peg_factor returns[APEG peg]:
   |
    ntcall {$peg = $ntcall.peg;}
   |
-   range_pair /*{$peg = factory.newGroupPeg($range_pair.text);}*/
+   range_pair {$peg = factory.newRangePEG(new SymInfo($range_pair.line, $range_pair.pos), $range_pair.ranges);}
   |
    t='.' {$peg = factory.newAnyPEG(new SymInfo($t.line, $t.pos));}
   |
@@ -312,9 +312,11 @@ ntcall returns[APEG peg]:
    ID {$peg = factory.newNonterminalPEG(new SymInfo($ID.line, $ID.pos), $ID.text, new ArrayList<Expr>());}
 ;
 
-range_pair returns[List<CharInterval> ranges]: RANGE_LITERAL
+range_pair returns[List<CharInterval> ranges, int line, int pos]: RANGE_LITERAL
  {
   $ranges = splitRange($RANGE_LITERAL.text);
+  $line = $RANGE_LITERAL.line;
+  $pos = $RANGE_LITERAL.pos;
  }
 ;
 

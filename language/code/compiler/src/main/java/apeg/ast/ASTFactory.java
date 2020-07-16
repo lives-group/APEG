@@ -2,20 +2,12 @@ package apeg.ast;
 
 import java.util.List;
 
-/*import apeg.parse.ast.BinaryExprNode.Operator;
-import apeg.parse.ast.EqualityExprNode.EqualityOperator;
-import apeg.parse.ast.GrammarNode.GrammarOption;
-import apeg.parse.ast.RuleNode.Annotation;
-import apeg.ast.expr.operators.*;
- */
 import apeg.ast.expr.*;
 import apeg.ast.expr.operators.*;
 import apeg.ast.rules.*;
 import apeg.ast.types.*;
 import apeg.util.*;
 import apeg.ast.Grammar.GrammarOption;
-
-//import apeg.util.Pair;
 
 public interface ASTFactory {
 	
@@ -369,7 +361,7 @@ public interface ASTFactory {
 	 * @return
 	 * 			a choice list node
 	 */
-	public ChoiceList newChoiceList(SymInfo s, CharInterval i);
+	public RangePEG newRangePEG(SymInfo s, List<CharInterval> i);
 	/**
 	 * 
 	 * @param s
@@ -834,7 +826,7 @@ public interface ASTFactory {
 	 * 		a char interval
 	 * @return a meta choice list
 	 */
-	public MetaChoiceList newMetaChoiceList(SymInfo s,CharInterval i);
+	public MetaRangePEG newMetaRangePEG(SymInfo s, List<CharInterval> i);
 	/** 
 	 * 
 	 * @param s

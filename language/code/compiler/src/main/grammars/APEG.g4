@@ -471,9 +471,9 @@ actPars returns[List<Expr> list]:
 ; 
 
 equalityOp returns[boolean isequals, int line, int pos]:
-  OP_NE {$isequals = false; $line = $OP_NE.line; $line = $OP_NE.pos;}
+  OP_NE {$isequals = false; $line = $OP_NE.line; $pos = $OP_NE.pos;}
  |
-  OP_EQ {$isequals = true; $line = $OP_EQ.line; $line = $OP_EQ.pos;}
+  OP_EQ {$isequals = true; $line = $OP_EQ.line; $pos = $OP_EQ.pos;}
 ;
 
 relOp returns[int op, int line, int pos]:

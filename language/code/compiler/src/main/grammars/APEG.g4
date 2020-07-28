@@ -537,7 +537,7 @@ OP_MOD : '%';
 RANGE_LITERAL: RANGE_CHAR '..' RANGE_CHAR;
 fragment RANGE_CHAR:
    ESC
- | ~('\n' | '\r' | '\t' | '\b' | '\f' | ' ')
+ | ~('\n' | '\r' | '\t' | '\b' | '\f' | ' ' | '\\' | '\'')
 ;
 
 /*

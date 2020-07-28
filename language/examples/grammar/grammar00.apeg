@@ -5,20 +5,26 @@ range:
 ;
 
 -- Testing all escape characters of APEG
+-- [\n\t\f\\\b\'\"\u03bb\-\]]
 escape:
- [\n\t\f\\\b\'\"\u03bb\-\]]
+   \n..\t
+  /
+   \f..\b
+ /
+  \u03bb..\r
 ;
 
 letter:
- [a-zA-Z_]
+ a..z / A..Z
 ;
 
 digit:
- [0-9]
+ 0..9
 ;
 
+-- [ \n\r\t]
 ws:
- [ \n\r\t]
+ ' ' / '\n' / '\r' / '\t'
 ;
 
 lambda: λ;

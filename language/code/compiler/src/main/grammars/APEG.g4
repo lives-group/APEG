@@ -27,66 +27,42 @@ grammar APEG;
 		this.factory = factory;
 	}
 
-        List<CharInterval> splitRange(String s) {
-            int i = 1;
-            List<CharInterval> l = new ArrayList<CharInterval>();
-            while(i < s.length()-1) {
-              char c = s.charAt(i);
-              switch(c) {
-	        case '\\':
-		  switch(s.charAt(++i)) {
-		    case 'n':
-		      l.add(new CharInterval('\n'));
-		      break;
-		    case 'r':
-		      l.add(new CharInterval('\r'));
-		      break;
-		    case 't':
-		      l.add(new CharInterval('\t'));
-		      break;
-		    case 'b':
-		      l.add(new CharInterval('\b'));
-		      break;
-		    case 'f':
-		      l.add(new CharInterval('\f'));
-		      break;
-		    case '\"':
-		      l.add(new CharInterval('\"'));
-		      break;
-		    case '\'':
-		      l.add(new CharInterval('\''));
-		      break;
-		    case '\\':
-		      l.add(new CharInterval('\\'));
-		      break;
-		    case '-':
-		      l.add(new CharInterval('-'));
-		      break;
-		    case ']':
-		      l.add(new CharInterval(']'));
-		      break;
-		    case 'u':
-		      char[] chs = Character.toChars(Integer.valueOf(s.substring(i+1,i+5), 16));
-		      i += 4;
-		      l.add(new CharInterval(chs[0]));
-		      break;
-		  }
-		  break;
-	      	default:
-		  char aux = '+';
-		  if(i < s.length()-2)
-		    aux = s.charAt(i+1);
-		  if(aux == '-') {
-		    i++;
-		    l.add(new CharInterval(c, s.charAt(++i)));
-		  } else {
-		    l.add(new CharInterval(c));
-		  }
-		  break;
-	      }
-              ++i;
-            }
-            return l;
+	char getCharAt(String s, int i) {
+	     char c = s.charAt(i);
+	     switch(c) {
+	       case '\\':
+	         switch(s.charAt(++i)) {
+		   case 'n':
+		     return '\n';
+		   case 'r':
+		     return '\r';
+		   case 't':
+		     return '\t';
+		   case 'b':
+		     return '\b';
+		   case 'f':
+		     return '\f';
+		   case '\\':
+		     return '\\';
+		   case '\'':
+		     return '\'';
+		   case 'u':
+		     char[] chs = Character.toChars(Integer.valueOf(s.substring(i+1,i+5), 16));
+		     return chs[0];
+		 }
+	       default:
+	         return c;
+	     }
+	}
+
+        CharInterval splitRange(String s) {
+            int i = 0;
+	    char init = getCharAt(s,i);
+	    if(s.charAt(i) == '\\' && s.charAt(++i) == 'u') {
+	        i += 4;
+	    }
+	    i += 3;
+	    return new CharInterval(init, getCharAt(s,i));
         }
 
 }
@@ -210,8 +186,8 @@ type returns[Type tp]:
   BOOLEAN_TYPE {$tp = factory.newBooleanType(new SymInfo($BOOLEAN_TYPE.line, $BOOLEAN_TYPE.pos));}
  |
   STRING_TYPE {$tp = factory.newStringType(new SymInfo($STRING_TYPE.line, $STRING_TYPE.pos));}
- |
-  CHAR_TYPE {$tp = factory.newCharType(new SymInfo($CHAR_TYPE.line, $CHAR_TYPE.pos));}
+ /*|
+  CHAR_TYPE {$tp = factory.newCharType(new SymInfo($CHAR_TYPE.line, $CHAR_TYPE.pos));}*/
  |
   GRAMMAR_TYPE {$tp = factory.newGrammarType(new SymInfo($GRAMMAR_TYPE.line, $GRAMMAR_TYPE.pos));}
  |
@@ -283,10 +259,9 @@ peg_unary_op returns[APEG peg]:
 ;
 
 // This rule defines the other operators and basic expressions
-// ' ' (Character with precedence 5)
-// " " (Literal String with precedence 5)
+// ' ' (Literal string with precedence 5)
 // [ ] (Character class with precedence 5)
-// . (Any character with precedence 5)
+// _ (Any character with precedence 5)
 // (e) (Grouping with precedence 5)
 // A<...> (non-terminal basic expression)
 // \lambda (empty basic expression)
@@ -299,9 +274,9 @@ peg_factor returns[APEG peg]:
   |
    ntcall {$peg = $ntcall.peg;}
   |
-   range_pair {$peg = factory.newRangePEG(new SymInfo($range_pair.line, $range_pair.pos), $range_pair.ranges);}
+   range {$peg = factory.newRangePEG(new SymInfo($range.line, $range.pos), $range.ranges);}
   |
-   t='.' {$peg = factory.newAnyPEG(new SymInfo($t.line, $t.pos));}
+   t='_' {$peg = factory.newAnyPEG(new SymInfo($t.line, $t.pos));}
   |
    '(' peg_expr ')' {$peg = $peg_expr.peg;}
 ;
@@ -312,7 +287,7 @@ ntcall returns[APEG peg]:
    ID {$peg = factory.newNonterminalPEG(new SymInfo($ID.line, $ID.pos), $ID.text, new ArrayList<Expr>());}
 ;
 
-range_pair returns[List<CharInterval> ranges, int line, int pos]: RANGE_LITERAL
+range returns[CharInterval ranges, int line, int pos]: RANGE_LITERAL
  {
   $ranges = splitRange($RANGE_LITERAL.text);
   $line = $RANGE_LITERAL.line;
@@ -511,22 +486,35 @@ meta_peg returns[MetaASTNode exp]:
   /*{$exp = factory.newMetaPeg($expr.exp); }*/
 ;
 
-/***
- * Lexical
- */
 
-//APEG types
-INT_TYPE: 'int';
+/*************************************************
+ ***************** Lexical *************************
+ *************************************************/
+
+/*
+ * Types
+ */
+ 
+ /* Integers and real number */
+ INT_TYPE: 'int';
 FLOAT_TYPE: 'float';
+/* Boolean type */
 BOOLEAN_TYPE: 'boolean';
+/* String type */
 STRING_TYPE: 'string';
-CHAR_TYPE: 'char';
+//CHAR_TYPE: 'char';
+/* Grammars types */ 
 GRAMMAR_TYPE: 'grammar';
 LANGUAGE_TYPE: 'language';
+/* Type for maps */
 MAP_TYPE: 'map';
+/* Type for meta-values */
 META_TYPE: 'meta';
 
-// Operators
+/*
+ * Operators
+ */
+ 
 OP_AND : '&&';
 OP_OR : '||';
 OP_NOT : '!';
@@ -542,35 +530,27 @@ OP_MUL : '*';
 OP_DIV : '/';
 OP_MOD : '%';
 
-RANGE_LITERAL: '[' (RANGE_CHAR | RANGE_CHAR '-' RANGE_CHAR)+ ']';
+/*
+ * Lexical rule for a range (character group)
+ */
+
+RANGE_LITERAL: RANGE_CHAR '..' RANGE_CHAR;
 fragment RANGE_CHAR:
    ESC
- | '\\]'
- | '\\-'
- | ~([\\\]-])
+ | ~('\n' | '\r' | '\t' | '\b' | '\f' | ' ')
 ;
 
-STRING_LITERAL: '\'' (ESC | ~([\'\\]))* '\''
- /*{
-    String s = $text;
-    s = s.substring(1, s.length()-1);
-    s = formatString(s);
-    setText(s);
- }*/
-;
+/*
+ * Literals
+ */
 
-ESC : '\\'
-    ( 'n'
-    | 'r'
-    | 't'
-    | 'b'
-    | 'f'
-    | '"'
-    | '\''
-    | '\\'
-    | 'u' XDIGIT XDIGIT XDIGIT XDIGIT
-    )
-;
+STRING_LITERAL: '\'' (ESC | ~([\'\\]))* '\'';
+
+ESC : '\\' (SPECIAL_ESC | HEX_ESC | TOOL_ESC);
+
+fragment SPECIAL_ESC: ('n' | 'r' | 't' | 'b' | 'f');
+fragment HEX_ESC: 'u' XDIGIT XDIGIT XDIGIT XDIGIT;
+fragment TOOL_ESC: ('\'' | '\\');
 
 fragment XDIGIT :
     '0' .. '9'
@@ -589,6 +569,12 @@ REAL_NUMBER :
   '.' DIGIT+ EXPONENT?
   ;
 fragment EXPONENT : ('e'|'E') ('+'|'-')? DIGIT+ ;
-WS : (' ' | '\t' | '\r' | '\n') { skip(); } ;
-COMMENT : '/*' .*? ('*/' | EOF) { skip(); } ;
-LINE_COMMENT : '--' ~('\n'|'\r')* '\r'? '\n' { skip(); } ;
+
+/*
+ * Comments and whitespaces
+ */
+ 
+WS : (' ' | '\t' | '\r' | '\n') -> skip;
+COMMENT : '/*' .*? ('*/' | EOF) -> skip ;
+LINE_COMMENT : '--' ~('\n'|'\r')* '\r'? '\n' -> skip;
+

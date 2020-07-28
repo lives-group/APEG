@@ -954,8 +954,8 @@ private STGroup groupTemplate;
 	    node.add("node", nodeName);
 
 	    ST label = groupTemplate.getInstanceOf("range_peg_label");
-	    for(CharInterval c : n.getInterval())
-		label.add("ranges", c.toString());
+	    CharInterval c = n.getInterval();
+	    label.add("ranges", c.toString());
 	    node.add("lable", label);
 
 	    nodes.add(node);

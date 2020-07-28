@@ -25,7 +25,7 @@ public class CharInterval{
 	if(i == f)
 	    return char2string(i);
         else
-	    return char2string(i) + "-" + char2string(f);
+	    return char2string(i) + ".." + char2string(f);
     }
 
     private String char2string(char ch) {

@@ -552,10 +552,8 @@ public class TestVisitor extends Visitor{
 
 	@Override
 	public void visit(RangePEG n) {
-	    System.out.print('[');
-	    for(CharInterval c : n.getInterval())
-		System.out.print(c);
-	    System.out.println(']');
+	    CharInterval c = n.getInterval();
+	    System.out.println(c);
 	}
 
 	@Override

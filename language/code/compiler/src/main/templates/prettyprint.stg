@@ -71,7 +71,7 @@ and_expr(left_expr, right_expr) ::= "(<left_expr> && <right_expr>)"
 
 /** Template for parsing expression */
 and_peg(peg_expr) ::= "&<peg_expr>"
-any_peg() ::= "."
+any_peg() ::= "_"
 bind_peg(name, peg_expr) ::="<name>=<peg_expr>)"
 choice_peg(left_peg, right_peg) ::=<<
  <left_peg>

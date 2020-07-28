@@ -361,7 +361,7 @@ public interface ASTFactory {
 	 * @return
 	 * 			a choice list node
 	 */
-	public RangePEG newRangePEG(SymInfo s, List<CharInterval> i);
+	public RangePEG newRangePEG(SymInfo s, CharInterval i);
 	/**
 	 * 
 	 * @param s
@@ -826,7 +826,7 @@ public interface ASTFactory {
 	 * 		a char interval
 	 * @return a meta choice list
 	 */
-	public MetaRangePEG newMetaRangePEG(SymInfo s, List<CharInterval> i);
+	public MetaRangePEG newMetaRangePEG(SymInfo s, CharInterval i);
 	/** 
 	 * 
 	 * @param s

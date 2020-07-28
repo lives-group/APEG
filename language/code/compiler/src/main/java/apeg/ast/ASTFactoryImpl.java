@@ -198,7 +198,7 @@ public class ASTFactoryImpl implements ASTFactory{
     public MetaConstraintPEG newMetaConstraintPEG(SymInfo s,MetaExpr e){
         return new MetaConstraintPEG(s,e);
     }
-    public MetaRangePEG newMetaRangePEG(SymInfo s, List<CharInterval> i){
+    public MetaRangePEG newMetaRangePEG(SymInfo s, CharInterval i){
         return new MetaRangePEG(s,i);
     }
     public MetaNonterminalPEG newMetaNonterminalPEG(SymInfo s,String name,List<MetaExpr> args){
@@ -276,7 +276,7 @@ public class ASTFactoryImpl implements ASTFactory{
     public BindPEG newBindPEG(SymInfo s, Attribute attribute,APEG peg){
         return new BindPEG(s,attribute,peg);
     }
-    public RangePEG newRangePEG(SymInfo s, List<CharInterval> i){
+    public RangePEG newRangePEG(SymInfo s, CharInterval i){
         return new RangePEG(s,i);
     }
     public AnyPEG newAnyPEG(SymInfo s){

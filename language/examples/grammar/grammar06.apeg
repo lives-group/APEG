@@ -5,7 +5,7 @@ options {
 }
 
 literal3[grammar g] :
-    literal<g> literal<g> literal<g> !. ;
+    literal<g> literal<g> literal<g> !_ ;
 
 literal[grammar g] :
     number<n>
@@ -23,7 +23,7 @@ strN[grammar g]:
     {? false }
 	;
 
-CHAR : . ;
+CHAR : _ ;
 
 number returns r  :
     digit<r> ( digit<aux> { r = r * 10 + aux; } )*

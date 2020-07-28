@@ -5,6 +5,6 @@ teste[int x, int y] returns z :
   strN<z*2>
   ;
 
-strN[int n] : ( {? n > 0 } CHAR { n = n - 1; } )* {? n == 0 } !. ;
+strN[int n] : ( {? n > 0 } CHAR { n = n - 1; } )* {? n == 0 } !_ ;
 
-CHAR : . ;
+CHAR : _ ;

@@ -61,7 +61,7 @@ char_type() ::= "char"
 
 /** Template for parsing expression */
 and_peg_lable() ::= "AndPegExpr(&)"
-any_peg_lable() ::= "AnyPegExpr(.)"
+any_peg_lable() ::= "AnyPegExpr(_)"
 bind_peg_lable(name) ::="BindPegExpr(=):<name>"
 choice_peg_lable() ::= "ChoicePegExpr(/);"
 constraint_peg_lable() ::= "ConstraintPegExpr({?})"

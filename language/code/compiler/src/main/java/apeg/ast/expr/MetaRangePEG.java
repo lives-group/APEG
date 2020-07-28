@@ -11,7 +11,7 @@ public class MetaRangePEG extends MetaAPEG {
 
     private RangePEG embeedNode;
     
-    public MetaRangePEG(SymInfo s, List<CharInterval> i){
+    public MetaRangePEG(SymInfo s, CharInterval i){
         super(s);
         embeedNode = new RangePEG(s,i);
     }

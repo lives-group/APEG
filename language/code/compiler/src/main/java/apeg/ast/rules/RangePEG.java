@@ -8,13 +8,13 @@ import apeg.util.SymInfo;
 
 public class RangePEG extends APEG {
 
-    private List<CharInterval> interval;
+    private CharInterval interval;
     
-    public RangePEG(SymInfo s, List<CharInterval> i){
+    public RangePEG(SymInfo s, CharInterval i){
         super(s);
         this.interval = i;
     }
-    public List<CharInterval> getInterval(){
+    public CharInterval getInterval(){
         return interval;
     }
     public void accept(Visitor v){ v.visit(this); }

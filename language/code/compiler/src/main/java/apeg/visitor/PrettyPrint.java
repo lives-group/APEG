@@ -716,8 +716,8 @@ public class PrettyPrint extends Visitor{
 	@Override
 	public void visit(RangePEG n) {
 	    peg = groupTemplate.getInstanceOf("range_peg");
-	    for(CharInterval c : n.getInterval())
-		peg.add("ranges", c.toString());
+	    CharInterval c = n.getInterval();
+	    peg.add("ranges", c.toString());
 	}
 
 	@Override

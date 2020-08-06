@@ -15,4 +15,6 @@ public class IntLit extends Expr{
     }
     public void accept(Visitor v){ v.visit(this); }
 
+    public String toString() {return String.valueOf(value);}
+
 }

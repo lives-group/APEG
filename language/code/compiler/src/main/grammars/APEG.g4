@@ -544,7 +544,7 @@ fragment RANGE_CHAR:
  * Literals
  */
 
-STRING_LITERAL: '\'' (ESC | ~([\'\\]))* '\'';
+STRING_LITERAL: '\'' (ESC | ~('\'' | '\\'))* '\'';
 
 ESC : '\\' (SPECIAL_ESC | HEX_ESC | TOOL_ESC);
 

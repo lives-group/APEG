@@ -15,7 +15,17 @@ public class VTyGrammar extends VType{
         super("Grammar");
     }
     public boolean match(VType t){
-    	return (t instanceof VTyGrammar) || (t instanceof VTyVar);
+    	if (t instanceof VTyGrammar) {
+    		return true;
+    	}
+    	else {
+    		if(t instanceof VTyVar) {
+    			return t.match(this);
+    		}
+    		else {
+    			return false;
+    		}
+    	}
     }
     
     public boolean matchCT(VType t, CTM ct) {

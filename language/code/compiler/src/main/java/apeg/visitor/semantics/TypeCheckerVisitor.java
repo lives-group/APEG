@@ -165,6 +165,7 @@ public class TypeCheckerVisitor extends Visitor {
 				}
 			}
 		}
+		s.push(TypeError.getInstance());
 		return false;
 	}
 
@@ -185,11 +186,11 @@ public class TypeCheckerVisitor extends Visitor {
 				gamma.add(n.getName(), s.push(pool.newVar()));
 				return;
 			}
-			s.push(new TypeError());
+			s.push(TypeError.getInstance());
 
 			errorMessage = "Error06 at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
 			System.out.println(errorMessage);
-			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
+			error.add(new Pair<String, VType>(errorMessage,TypeError.getInstance() ));
 
 		}
 	}
@@ -205,11 +206,11 @@ public class TypeCheckerVisitor extends Visitor {
 		}
 		else {
 
-			s.push(new TypeError());
+			s.push(TypeError.getInstance());
 
 			errorMessage = "Error07 at: " + n.getSymInfo().getLine() + "," + n.getSymInfo().getColumn();
 			System.out.println(errorMessage);
-			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
+			error.add(new Pair<String, VType>(errorMessage,TypeError.getInstance() ));
 
 		}
 	}
@@ -460,11 +461,11 @@ public class TypeCheckerVisitor extends Visitor {
 
 		if(!matchBinOp("ADD", left, right)) {
 
-			s.push(new TypeError());
+			
 
 			errorMessage = "Error08 at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
 			System.out.println(errorMessage);
-			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));	
+			error.add(new Pair<String, VType>(errorMessage,TypeError.getInstance() ));	
 		}
 
 	}
@@ -481,11 +482,11 @@ public class TypeCheckerVisitor extends Visitor {
 
 		if(!matchBinOp("AND", left, right)) {
 
-			s.push(new TypeError());
+	
 
 			errorMessage = "Error09 at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
 			System.out.println(errorMessage);
-			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));	
+			error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance()));	
 		}
 	}
 
@@ -510,11 +511,11 @@ public class TypeCheckerVisitor extends Visitor {
 			}
 			else {
 
-				s.push(new TypeError());
+				s.push(TypeError.getInstance());
 
 				errorMessage = "Error10 at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
 				System.out.println(errorMessage);
-				error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
+				error.add(new Pair<String, VType>(errorMessage,TypeError.getInstance() ));
 
 			}
 		}
@@ -539,11 +540,11 @@ public class TypeCheckerVisitor extends Visitor {
 		}
 		else {
 
-			s.push(new TypeError());
+			s.push(TypeError.getInstance());
 
 			errorMessage = "Error11 at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
 			System.out.println(errorMessage);
-			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
+			error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance() ));
 
 		}
 	}
@@ -561,11 +562,11 @@ public class TypeCheckerVisitor extends Visitor {
 
 		if(!matchBinOp("DIV", left, right)) {
 
-			s.push(new TypeError());
+			
 
 			errorMessage = "Error12 at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
 			System.out.println(errorMessage);
-			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));	
+			error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance() ));	
 		}
 	}
 
@@ -580,11 +581,9 @@ public class TypeCheckerVisitor extends Visitor {
 
 		if(!matchBinOp("EQ", left, right)) {
 
-			s.push(new TypeError());
-
 			errorMessage = "Error13 at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
 			System.out.println(errorMessage);
-			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));	
+			error.add(new Pair<String, VType>(errorMessage,TypeError.getInstance() ));	
 		}
 
 	}
@@ -601,11 +600,11 @@ public class TypeCheckerVisitor extends Visitor {
 
 		if(!matchBinOp("GT", left, right)) {
 
-			s.push(new TypeError());
+		
 
 			errorMessage = "Error14 at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
 			System.out.println(errorMessage);
-			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));	
+			error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance() ));	
 		}
 	}
 
@@ -620,11 +619,11 @@ public class TypeCheckerVisitor extends Visitor {
 
 		if(!matchBinOp("GE", left, right)) {
 
-			s.push(new TypeError());
+		
 
 			errorMessage = "Error15 at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
 			System.out.println(errorMessage);
-			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));	
+			error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance() ));	
 		}
 
 	}
@@ -641,11 +640,11 @@ public class TypeCheckerVisitor extends Visitor {
 
 		if(!matchBinOp("LT", left, right)) {
 
-			s.push(new TypeError());
+			
 
 			errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
 			System.out.println(errorMessage);
-			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));	
+			error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance() ));	
 		}
 
 	}
@@ -662,11 +661,11 @@ public class TypeCheckerVisitor extends Visitor {
 
 		if(!matchBinOp("LE", left, right)) {
 
-			s.push(new TypeError());
+			
 
 			errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
 			System.out.println(errorMessage);
-			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));	
+			error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance()));	
 		}
 	}
 
@@ -693,11 +692,10 @@ public class TypeCheckerVisitor extends Visitor {
 
 		if(!matchBinOp("MOD", left, right)) {
 
-			s.push(new TypeError());
-
+			
 			errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
 			System.out.println(errorMessage);
-			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));	
+			error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance() ));	
 		}
 
 
@@ -716,11 +714,11 @@ public class TypeCheckerVisitor extends Visitor {
 
 		if(!matchBinOp("MUL", left, right)) {
 
-			s.push(new TypeError());
+		
 
 			errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
 			System.out.println(errorMessage);
-			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));	
+			error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance() ));	
 		}
 
 	}
@@ -734,11 +732,11 @@ public class TypeCheckerVisitor extends Visitor {
 
 		if(!matchBinOp("NOT", e, null)) {
 
-			s.push(new TypeError());
+			
 
 			errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
 			System.out.println(errorMessage);
-			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));	
+			error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance() ));	
 		}
 	}
 
@@ -754,11 +752,11 @@ public class TypeCheckerVisitor extends Visitor {
 
 		if(!matchBinOp("NE", left, right)) {
 
-			s.push(new TypeError());
+			
 
 			errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
 			System.out.println(errorMessage);
-			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));	
+			error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance() ));	
 		}
 	}
 
@@ -774,11 +772,11 @@ public class TypeCheckerVisitor extends Visitor {
 
 		if(!matchBinOp("OR", left, right)) {
 
-			s.push(new TypeError());
+		
 
 			errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
 			System.out.println(errorMessage);
-			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));	
+			error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance() ));	
 		}
 	}
 
@@ -794,11 +792,11 @@ public class TypeCheckerVisitor extends Visitor {
 
 		if(!matchBinOp("SUB", left, right)) {
 
-			s.push(new TypeError());
+			
 
 			errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
 			System.out.println(errorMessage);
-			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));	
+			error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance() ));	
 		}
 	}
 
@@ -811,11 +809,11 @@ public class TypeCheckerVisitor extends Visitor {
 
 		if(!matchBinOp("MINUS", e, null)) {
 
-			s.push(new TypeError());
+		
 
 			errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
 			System.out.println(errorMessage);
-			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));	
+			error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance() ));	
 		}
 	}
 
@@ -1017,7 +1015,7 @@ public class TypeCheckerVisitor extends Visitor {
 
 					errorMessage = "Error01 at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
 					System.out.println(errorMessage);
-					error.add(new Pair<String, VType>(errorMessage, new TypeError() ));	
+					error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance() ));	
 				}
 			}
 
@@ -1034,13 +1032,13 @@ public class TypeCheckerVisitor extends Visitor {
 
 					errorMessage = "Error02 at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
 					System.out.println(errorMessage);
-					error.add(new Pair<String, VType>(errorMessage, new TypeError() ));	
+					error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance() ));	
 				}
 				if(!t.getReturnAt(i).matchCT(s.pop(), ct)) {
 
 					errorMessage = "Error03 at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
 					System.out.println(errorMessage);
-					error.add(new Pair<String, VType>(errorMessage, new TypeError() ));	
+					error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance() ));	
 				}
 
 			}
@@ -1049,14 +1047,14 @@ public class TypeCheckerVisitor extends Visitor {
 
 				errorMessage = "Error04 at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
 				System.out.println(errorMessage);
-				error.add(new Pair<String, VType>(errorMessage, new TypeError() ));	
+				error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance() ));	
 			}
 		}
 		else {
 
 			errorMessage = "Error05 at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
 			System.out.println(errorMessage);
-			error.add(new Pair<String, VType>(errorMessage, new TypeError() ));	
+			error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance() ));	
 
 		}
 	}
@@ -1102,7 +1100,7 @@ public class TypeCheckerVisitor extends Visitor {
 				
 				errorMessage = "Error at : " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn() + "k";
 				System.out.println(errorMessage);
-				error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
+				error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance() ));
 			}
 		}	
 
@@ -1136,7 +1134,7 @@ public class TypeCheckerVisitor extends Visitor {
 
 					errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
 					System.out.println(errorMessage);
-					error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
+					error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance() ));
 
 				}
 			}

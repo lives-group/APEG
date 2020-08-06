@@ -13,7 +13,17 @@ private static VTyBool instance = new VTyBool();
         super("boolean");
     }
     public boolean match(VType t){
-    	return (t instanceof VTyBool) || (t instanceof VTyVar);
+    	if (t == instance || t == TypeError.getInstance()) {
+    		return true;
+    	}
+    	else {
+    		if(t instanceof VTyVar) {
+    			return t.match(this);
+    		}
+    		else {
+    			return false;
+    		}
+    	}
     }
     
     public boolean matchCT(VType t, CTM ct) {

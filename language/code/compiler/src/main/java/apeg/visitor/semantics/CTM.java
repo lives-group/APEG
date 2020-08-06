@@ -61,12 +61,13 @@ public class CTM {
 
 				op = (OpConstraint) c;
 
-
+					
 				type = verifyOp(opTable.get(op.getOpName()), op.getType());
+				System.out.println(op.getOpName() + " "+ type.toString());
 				if(type.size() == 0) {
 					errorMessage = "Error: No constraints matching for " + op.getOpName() ;
 					System.out.println(errorMessage);
-					error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
+					error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance() ));
 				}
 				else {
 					if(type.size()>1) {
@@ -75,8 +76,11 @@ public class CTM {
 					}
 					else {
 						if(type.size() == 1) {
-
-							op.getType().Unify(type.get(0));
+								//TODO
+							if(!op.getType().Unify(type.get(0))) {
+								
+								ct.add(c);
+							}
 							
 						}
 					}
@@ -104,7 +108,7 @@ public class CTM {
         if(!ct.isEmpty()){
                        errorMessage = "Error: impossible to solve constraints" ;
 					System.out.println(errorMessage);
-					error.add(new Pair<String, VType>(errorMessage, new TypeError() ));
+					error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance() ));
         }
 		return error;
 	}

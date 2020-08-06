@@ -14,9 +14,16 @@ import apeg.util.SymInfo;
  */
 public class TypeError extends VType {
      
-	  public TypeError(){
+	  private TypeError(){
 	      super("Error");  
 	  }
+	  
+	  private static TypeError instance = new TypeError();
+		
+		public static TypeError getInstance() {
+			
+			return instance;
+		}
 	  
 	  public boolean match(VType type) { return true; }
 

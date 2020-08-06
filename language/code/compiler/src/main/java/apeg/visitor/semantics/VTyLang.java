@@ -13,7 +13,17 @@ private static VTyLang instance = new VTyLang();
         super("language");
     }
     public boolean match(VType t){
-    	return (t instanceof VTyLang) || (t instanceof VTyVar);
+    	if (t instanceof VTyLang) {
+    		return true;
+    	}
+    	else {
+    		if(t instanceof VTyVar) {
+    			return t.match(this);
+    		}
+    		else {
+    			return false;
+    		}
+    	}
     }
 
 	@Override

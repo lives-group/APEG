@@ -12,9 +12,17 @@ public class VTyVar extends VType {
 
 	@Override
 	public boolean match(VType t) {
-
+		
+		if(this.t == null) {
+		
 		return true;
+		}
+		else {
+			
+			return this.t.match(t);
+		}
 	}
+		
 
 	@Override
 	public boolean matchCT(VType t, CTM ct) {

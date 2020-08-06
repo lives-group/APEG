@@ -13,7 +13,17 @@ public class VTyChar extends VType {
 		super("char");
 	}
 	public boolean match(VType t){
-		return (t instanceof VTyChar) || (t instanceof VTyVar);
+		if (t instanceof VTyChar) {
+    		return true;
+    	}
+    	else {
+    		if(t instanceof VTyVar) {
+    			return t.match(this);
+    		}
+    		else {
+    			return false;
+    		}
+    	}
 	}
 
 	public boolean matchCT(VType t, CTM ct) {

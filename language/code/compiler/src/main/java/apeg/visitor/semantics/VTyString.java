@@ -13,7 +13,17 @@ private static VTyString instance = new VTyString();
         super("string");
     }
     public boolean match(VType t){
-    	return (t instanceof VTyString) || (t instanceof VTyVar);
+    	if (t instanceof VTyString) {
+    		return true;
+    	}
+    	else {
+    		if(t instanceof VTyVar) {
+    			return t.match(this);
+    		}
+    		else {
+    			return false;
+    		}
+    	}
     }
     
     public boolean matchCT (VType t, CTM ct) {

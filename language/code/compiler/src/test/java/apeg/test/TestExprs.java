@@ -118,6 +118,42 @@ public class TestExprs {
 	TestContainer<Expr> test = new ExprContainer("plus00", stream);
 	Expr e = test.execute();
 	// Expected Result
-	assertEquals(e.toString(), "(+ 2 3)");	
+	assertEquals(e.toString(), "(+ 2 3)");
+    }
+
+    @Test
+    void testArithmetic01() throws IOException {
+	// Path input= new RelativePath(samples, "arithmetic00.apeg"); // the input sample
+	// Create a ANTLR CharStream from a string
+	CharStream stream = CharStreams.fromReader(new StringReader("2+3+7"));
+
+	TestContainer<Expr> test = new ExprContainer("plus01", stream);
+	Expr e = test.execute();
+	// Expected Result
+	assertEquals(e.toString(), "(+ (+ 2 3) 7)");
+    }
+
+    @Test
+    void testArithmetic02() throws IOException {
+	// Path input= new RelativePath(samples, "arithmetic00.apeg"); // the input sample
+	// Create a ANTLR CharStream from a string
+	CharStream stream = CharStreams.fromReader(new StringReader("7+3*2"));
+
+	TestContainer<Expr> test = new ExprContainer("plus01", stream);
+	Expr e = test.execute();
+	// Expected Result
+	assertEquals(e.toString(), "(+ 7 (* 3 2))");
+    }
+
+    @Test
+    void testArithmetic03() throws IOException {
+	// Path input= new RelativePath(samples, "arithmetic00.apeg"); // the input sample
+	// Create a ANTLR CharStream from a string
+	CharStream stream = CharStreams.fromReader(new StringReader("(7+3)*2"));
+
+	TestContainer<Expr> test = new ExprContainer("plus01", stream);
+	Expr e = test.execute();
+	// Expected Result
+	assertEquals(e.toString(), "(* (+ 7 3) 2)");
     }
 }

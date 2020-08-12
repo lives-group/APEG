@@ -10,5 +10,6 @@ public class Div extends BinaryOP{
         super(s,l,r);
     }
     public void accept(Visitor v){ v.visit(this); }
-
+    
+    public String toString() {return "(/ " + getLeft().toString() + " " + getRight().toString() + ")";}
 }

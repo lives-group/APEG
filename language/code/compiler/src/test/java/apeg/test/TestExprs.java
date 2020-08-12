@@ -156,4 +156,90 @@ public class TestExprs {
 	// Expected Result
 	assertEquals(e.toString(), "(* (+ 7 3) 2)");
     }
+    
+    @Test
+    void testArithmetic04() throws IOException {
+	// Path input= new RelativePath(samples, "arithmetic00.apeg"); // the input sample
+	// Create a ANTLR CharStream from a string
+	CharStream stream = CharStreams.fromReader(new StringReader("(10/8)*100"));
+
+	TestContainer<Expr> test = new ExprContainer("plus01", stream);
+	Expr e = test.execute();
+	// Expected Result
+	assertEquals(e.toString(), "(* (/ 10 8) 100)");
+    } 
+    
+    @Test
+    void testArithmeticSUb() throws IOException {
+	// Path input= new RelativePath(samples, "arithmetic00.apeg"); // the input sample
+	// Create a ANTLR CharStream from a string
+	CharStream stream = CharStreams.fromReader(new StringReader("(13 - 9)"));
+
+	TestContainer<Expr> test = new ExprContainer("plus01", stream);
+	Expr e = test.execute();
+	// Expected Result
+	assertEquals(e.toString(), "(- 13 9)");
+    }
+    
+    @Test
+    void testArithmeticMod() throws IOException {
+	// Path input= new RelativePath(samples, "arithmetic00.apeg"); // the input sample
+	// Create a ANTLR CharStream from a string
+	CharStream stream = CharStreams.fromReader(new StringReader("(27 % 7)"));
+
+	TestContainer<Expr> test = new ExprContainer("plus01", stream);
+	Expr e = test.execute();
+	// Expected Result
+	assertEquals(e.toString(), "(% 27 7)");
+    }
+    
+    @Test
+    void testArithmeticDiv() throws IOException {
+	// Path input= new RelativePath(samples, "arithmetic00.apeg"); // the input sample
+	// Create a ANTLR CharStream from a string
+	CharStream stream = CharStreams.fromReader(new StringReader("(31 / 15)"));
+
+	TestContainer<Expr> test = new ExprContainer("plus01", stream);
+	Expr e = test.execute();
+	// Expected Result
+	assertEquals(e.toString(), "(/ 31 15)");
+    }
+    
+    @Test
+    void testArithmetic05() throws IOException {
+	// Path input= new RelativePath(samples, "arithmetic00.apeg"); // the input sample
+	// Create a ANTLR CharStream from a string
+	CharStream stream = CharStreams.fromReader(new StringReader("((9 /2) % 18 * (1 - (13 + 7)))"));
+
+	TestContainer<Expr> test = new ExprContainer("plus01", stream);
+	Expr e = test.execute();
+	// Expected Result
+	assertEquals(e.toString(), "(* (% (/ 9 2) 18) (- 1 (+ 13 7)))");
+    }
+    
+    @Test
+    void testArithmetic06() throws IOException {
+	// Path input= new RelativePath(samples, "arithmetic00.apeg"); // the input sample
+	// Create a ANTLR CharStream from a string
+	CharStream stream = CharStreams.fromReader(new StringReader("(x + 2)"));
+
+	TestContainer<Expr> test = new ExprContainer("plus01", stream);
+	Expr e = test.execute();
+	// Expected Result
+	assertEquals(e.toString(), "(+ x 2)");
+    }
+    
+    @Test
+    void testArithmeticDelta() throws IOException {
+	// Path input= new RelativePath(samples, "arithmetic00.apeg"); // the input sample
+	// Create a ANTLR CharStream from a string
+	CharStream stream = CharStreams.fromReader(new StringReader("(b*b) - (4*a*c)"));
+
+	TestContainer<Expr> test = new ExprContainer("plus01", stream);
+	Expr e = test.execute();
+	// Expected Result
+	assertEquals(e.toString(), "(- (* b b) (* (* 4 a) c))");
+    }
+    
+   
 }

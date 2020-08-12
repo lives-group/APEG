@@ -14,7 +14,7 @@ public class TestMachine {
 	Result r;
 	for(TestContainer test : tests) {
 	    System.out.print("Testing " + test.getTestName() + " ..... ");
-	    r = test.execute();
+	    r = (Result)test.execute();
 	    if(r.isSucceeded())
 		System.out.println("[ OK ]");
 	    else

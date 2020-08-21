@@ -241,5 +241,174 @@ public class TestExprs {
 	assertEquals(e.toString(), "(- (* b b) (* (* 4 a) c))");
     }
     
-   
+    @Test
+    void testRelational05() throws IOException {
+	// Path input= new RelativePath(samples, "arithmetic00.apeg"); // the input sample
+	// Create a ANTLR CharStream from a string
+	CharStream stream = CharStreams.fromReader(new StringReader("true || false && false == true == a && false || true" + 
+			""));
+
+	TestContainer<Expr> test = new ExprContainer("plus01", stream);
+	Expr e = test.execute();
+	// Expected Result
+	assertEquals(e.toString(),"(|| (|| true (&& (&& false (== (== false true) a)) false)) true)");
+    }
+    
+    @Test
+    void testRelational04() throws IOException {
+	// Path input= new RelativePath(samples, "arithmetic00.apeg"); // the input sample
+	// Create a ANTLR CharStream from a string
+	CharStream stream = CharStreams.fromReader(new StringReader("1 <= -6+a*b"));
+
+	TestContainer<Expr> test = new ExprContainer("plus01", stream);
+	Expr e = test.execute();
+	// Expected Result
+	assertEquals(e.toString(), "(<= 1 (* (+ -6 a) b))");
+    }
+  
+    @Test
+    void testRelational03() throws IOException {
+	// Path input= new RelativePath(samples, "arithmetic00.apeg"); // the input sample
+	// Create a ANTLR CharStream from a string
+	CharStream stream = CharStreams.fromReader(new StringReader("1<2 == false"));
+
+	TestContainer<Expr> test = new ExprContainer("plus01", stream);
+	Expr e = test.execute();
+	// Expected Result
+	assertEquals(e.toString(), "(== (< 1 2) false)");
+    }
+    
+   /*
+    void testRelational03Failure() throws IOException {
+	// Path input= new RelativePath(samples, "arithmetic00.apeg"); // the input sample
+	// Create a ANTLR CharStream from a string
+	CharStream stream = CharStreams.fromReader(new StringReader("(1+2 3)"));
+
+	TestContainer<Expr> test = new ExprContainer("plus01", stream);
+	Expr e = test.execute();
+	// Expected Result
+	assertEquals(e.toString(), "");
+    }
+    */
+    @Test
+    void testRelational02() throws IOException {
+	// Path input= new RelativePath(samples, "arithmetic00.apeg"); // the input sample
+	// Create a ANTLR CharStream from a string
+	CharStream stream = CharStreams.fromReader(new StringReader("a*z+b-c == false"));
+
+	TestContainer<Expr> test = new ExprContainer("plus01", stream);
+	Expr e = test.execute();
+	// Expected Result
+	assertEquals(e.toString(), "(== (- (+ (* a z) b) c) false)");
+    }
+    
+    @Test
+    void testRelational01() throws IOException {
+	// Path input= new RelativePath(samples, "arithmetic00.apeg"); // the input sample
+	// Create a ANTLR CharStream from a string
+	CharStream stream = CharStreams.fromReader(new StringReader("a*2+b-c < 10"));
+
+	TestContainer<Expr> test = new ExprContainer("plus01", stream);
+	Expr e = test.execute();
+	// Expected Result
+	assertEquals(e.toString(), "(< (- (+ (* a 2) b) c) 10)");
+    }
+    
+    /**
+    void testRelational01Failure() throws IOException {
+	// Path input= new RelativePath(samples, "arithmetic00.apeg"); // the input sample
+	// Create a ANTLR CharStream from a string
+	CharStream stream = CharStreams.fromReader(new StringReader("1>2>3"));
+
+	TestContainer<Expr> test = new ExprContainer("plus01", stream);
+	Expr e = test.execute();
+	// Expected Result
+	assertEquals(e.toString(), "(> (> 1 2) 3)");
+    }
+   **/
+    
+    @Test
+    void testBoolean01() throws IOException {
+	// Path input= new RelativePath(samples, "arithmetic00.apeg"); // the input sample
+	// Create a ANTLR CharStream from a string
+	CharStream stream = CharStreams.fromReader(new StringReader("1 > 2 && b <= a && true"));
+
+	TestContainer<Expr> test = new ExprContainer("plus01", stream);
+	Expr e = test.execute();
+	// Expected Result
+	assertEquals(e.toString(), "(&& (&& (> 1 2) (<= b a)) true)");
+    }
+    
+    @Test
+    void testBoolean02() throws IOException {
+	// Path input= new RelativePath(samples, "arithmetic00.apeg"); // the input sample
+	// Create a ANTLR CharStream from a string
+	CharStream stream = CharStreams.fromReader(new StringReader("1 > 2 && b <= a || true && v"));
+
+	TestContainer<Expr> test = new ExprContainer("plus01", stream);
+	Expr e = test.execute();
+	// Expected Result
+	assertEquals(e.toString(), "(|| (&& (> 1 2) (<= b a)) (&& true v))");
+    }
+    
+    @Test
+    void testBoolean03() throws IOException {
+	// Path input= new RelativePath(samples, "arithmetic00.apeg"); // the input sample
+	// Create a ANTLR CharStream from a string
+	CharStream stream = CharStreams.fromReader(new StringReader("1 > 2 || b <= a || true || v"));
+
+	TestContainer<Expr> test = new ExprContainer("plus01", stream);
+	Expr e = test.execute();
+	// Expected Result
+	assertEquals(e.toString(), "(|| (|| (|| (> 1 2) (<= b a)) true) v)");
+    }
+    
+    @Test
+    void testBoolean04() throws IOException {
+	// Path input= new RelativePath(samples, "arithmetic00.apeg"); // the input sample
+	// Create a ANTLR CharStream from a string
+	CharStream stream = CharStreams.fromReader(new StringReader("a == 2 != false == b < c"));
+
+	TestContainer<Expr> test = new ExprContainer("plus01", stream);
+	Expr e = test.execute();
+	// Expected Result
+	assertEquals(e.toString(), "(== (!= (== a 2) false) (< b c))");
+    }
+    
+   /**
+    void testBoolean01Failure() throws IOException {
+	// Path input= new RelativePath(samples, "arithmetic00.apeg"); // the input sample
+	// Create a ANTLR CharStream from a string
+	CharStream stream = CharStreams.fromReader(new StringReader("true && || false"));
+
+	TestContainer<Expr> test = new ExprContainer("plus01", stream);
+	Expr e = test.execute();
+	// Expected Result
+	assertEquals(e.toString(), "(|| (&& true ) false)");
+    }
+    **/
+    @Test
+    void testBoolean02Failure() throws IOException {
+	// Path input= new RelativePath(samples, "arithmetic00.apeg"); // the input sample
+	// Create a ANTLR CharStream from a string
+	CharStream stream = CharStreams.fromReader(new StringReader("true && (true || false)"));
+
+	TestContainer<Expr> test = new ExprContainer("plus01", stream);
+	Expr e = test.execute();
+	// Expected Result
+	assertEquals(e.toString(), "(&& true (|| true false))");
+    }
+    
+    @Test
+    void testBoolean03Failure() throws IOException {
+	// Path input= new RelativePath(samples, "arithmetic00.apeg"); // the input sample
+	// Create a ANTLR CharStream from a string
+	CharStream stream = CharStreams.fromReader(new StringReader("true && a<b || false"));
+
+	TestContainer<Expr> test = new ExprContainer("plus01", stream);
+	Expr e = test.execute();
+	// Expected Result
+	assertEquals(e.toString(), "(|| (&& true (< a b)) false)");
+    }
+    
 }

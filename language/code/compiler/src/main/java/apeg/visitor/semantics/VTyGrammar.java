@@ -15,7 +15,7 @@ public class VTyGrammar extends VType{
         super("Grammar");
     }
     public boolean match(VType t){
-    	if (t instanceof VTyGrammar) {
+    	if (t == instance || t == TypeError.getInstance()) {
     		return true;
     	}
     	else {
@@ -47,6 +47,8 @@ public class VTyGrammar extends VType{
 			if(t instanceof VTyVar) {
 				if(((VTyVar)t).solve() == null) {
 					((VTyVar)t).setInstance(this);
+					
+					return true;
 				}
 				else {
 					return false;
@@ -56,7 +58,6 @@ public class VTyGrammar extends VType{
 				return false;
 			}
 		}
-		return false;
 
 	}
 }

@@ -13,7 +13,7 @@ private static VTyString instance = new VTyString();
         super("string");
     }
     public boolean match(VType t){
-    	if (t instanceof VTyString) {
+    	if (t == instance || t == TypeError.getInstance()) {
     		return true;
     	}
     	else {
@@ -46,6 +46,8 @@ private static VTyString instance = new VTyString();
 			if(t instanceof VTyVar) {
 				if(((VTyVar)t).solve() == null) {
 					((VTyVar)t).setInstance(this);
+					
+					return true;
 				}
 				else {
 					return false;
@@ -55,8 +57,7 @@ private static VTyString instance = new VTyString();
 				return false;
 			}
 		}
-		return false;
-
+	
 	}
 
 }

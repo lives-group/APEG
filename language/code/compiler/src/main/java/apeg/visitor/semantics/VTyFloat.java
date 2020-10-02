@@ -13,7 +13,7 @@ private static VTyFloat instance = new VTyFloat();
         super("float");
     }
     public boolean match(VType t){
-    	if (t instanceof VTyFloat) {
+    	if (t == instance || t == TypeError.getInstance()) {
     		return true;
     	}
     	else {
@@ -45,6 +45,7 @@ private static VTyFloat instance = new VTyFloat();
 			if(t instanceof VTyVar) {
 				if(((VTyVar)t).solve() == null) {
 					((VTyVar)t).setInstance(this);
+					return true;
 				}
 				else {
 					return false;
@@ -54,7 +55,7 @@ private static VTyFloat instance = new VTyFloat();
 				return false;
 			}
 		}
-		return false;
+	
 
 	}
 }

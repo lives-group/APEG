@@ -47,6 +47,7 @@ private static VTyBool instance = new VTyBool();
     		if(t instanceof VTyVar) {
     			if(((VTyVar)t).solve() == null) {
     				((VTyVar)t).setInstance(this);
+    				return true;
     			}
     			else {
     				return false;
@@ -56,7 +57,7 @@ private static VTyBool instance = new VTyBool();
     			return false;
     		}
     	}
-    	return false;
+    	
     	
     }
 }

@@ -13,7 +13,7 @@ public class VTyChar extends VType {
 		super("char");
 	}
 	public boolean match(VType t){
-		if (t instanceof VTyChar) {
+    	if (t == instance || t == TypeError.getInstance()) {
     		return true;
     	}
     	else {
@@ -24,7 +24,7 @@ public class VTyChar extends VType {
     			return false;
     		}
     	}
-	}
+    }
 
 	public boolean matchCT(VType t, CTM ct) {
 
@@ -44,6 +44,7 @@ public class VTyChar extends VType {
 			if(t instanceof VTyVar) {
 				if(((VTyVar)t).solve() == null) {
 					((VTyVar)t).setInstance(this);
+					return true;
 				}
 				else {
 					return false;
@@ -53,7 +54,7 @@ public class VTyChar extends VType {
 				return false;
 			}
 		}
-		return false;
+		
 
 	}
 

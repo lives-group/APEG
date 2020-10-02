@@ -13,7 +13,7 @@ public class VTyInt extends VType{
         super("int");
     }
     public boolean match(VType t){
-    	if (t instanceof VTyInt) {
+    	if (t == instance || t == TypeError.getInstance()) {
     		return true;
     	}
     	else {
@@ -45,6 +45,8 @@ public class VTyInt extends VType{
 			if(t instanceof VTyVar) {
 				if(((VTyVar)t).solve() == null) {
 					((VTyVar)t).setInstance(this);
+					
+					return true;
 				}
 				else {
 					return false;
@@ -54,7 +56,6 @@ public class VTyInt extends VType{
 				return false;
 			}
 		}
-		return false;
 
 	}
 }

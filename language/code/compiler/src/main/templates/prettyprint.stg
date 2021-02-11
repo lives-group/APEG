@@ -43,7 +43,7 @@ user_type(name) ::= "<name>"
 attribute(name) ::="<name>"
 attribute_grammar(name) ::="<name>"
 
-gt_expr(left_expr, right_expr) ::= "(<left_expr> > <right_expr>)"
+gt_expr(left_expr, right_expr) ::= "(<left_expr> \> <right_expr>)"
 ge_expr(left_expr, right_expr) ::= "(<left_expr> \>= <right_expr>)"
 lt_expr(left_expr, right_expr) ::= "(<left_expr> \< <right_expr>)"
 le_expr(left_expr, right_expr) ::= "(<left_expr> \<= <right_expr>)"

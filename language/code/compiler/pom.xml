@@ -13,7 +13,7 @@
   <properties>
     <antlr.version>4.7</antlr.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <grammarSamples>../../examples/grammar</grammarSamples>
+    <grammarSamples>..${file.separator}..${file.separator}examples${file.separator}grammar</grammarSamples>
     <grammar>grammar01.apeg</grammar>
   </properties>
   
@@ -101,7 +101,7 @@
                 <!--  automatically creates the classpath using all project dependencies,
                 also adding the project build directory **>
                 <argument>-classpath</argument> -->
-                <argument>${grammarSamples}/${grammar}</argument>
+                <argument>${grammarSamples}${file.separator}${grammar}</argument>
             </arguments>
         </configuration>
       </plugin>

@@ -85,8 +85,9 @@ public class Tool {
 				fName = s.substring(index+1, s.length()-5);
 			else // the string do not have a file separator
 				fName = s.substring(0, s.length()-5);
+			System.out.println(fName);
 			try {
-				System.out.println(fpath.toString());
+			    // System.out.println(fpath.toString());
 				FileReader file = new FileReader(fpath.getFile());
 				// Create an ANTLR input stream
 				ANTLRInputStream input = new ANTLRInputStream(file);

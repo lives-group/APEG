@@ -1,5 +1,7 @@
 package apeg;
 
+import apeg.util.path.Path;
+import apeg.visitor.CodeGen;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -94,17 +96,17 @@ public class Tool {
 				APEGLexer lexer = new APEGLexer(input);
 				// create a buffer of tokens pulled from the lexer
 				CommonTokenStream tokens = new CommonTokenStream(lexer);
-				
+
 				// create an AST factory
-				ASTFactory factory = new ASTFactoryImpl();				
+				ASTFactory factory = new ASTFactoryImpl();
 				// create a parser that feeds off the tokens buffer
 				APEGParser parser = new APEGParser(factory, tokens);
 				// tell ANTLR to does not automatically build an AST
 				parser.setBuildParseTree(false);
-				
+
 				// Parse phase: extract the AST from the grammar source code
 				Grammar g = parser.grammarDef().gram;
-				
+
 				// Check is there is any parse error
 				if(parser.getNumberOfSyntaxErrors() != 0 ||
 				   parser.getCurrentToken().getType() != Recognizer.EOF) {
@@ -117,23 +119,23 @@ public class Tool {
 				//	                            new RelativePath(new AbsolutePath("."),
 				//			            "src/main/templates/dot.stg"));
 				//g.accept(dotvisitor);
-				
+
 				Visitor typechecker = new TypeCheckerVisitor();
-				
+
 				g.accept(typechecker);
-				
-			
+
+
 
 			/*
 			BuildRuleEnvironmetVisitor build = new BuildRuleEnvironmetVisitor();
 			g.accept(build);
 			build.printTable();
-			*/	
+			*/
 
 			/*
      			VerifyVisitor verifica = new VerifyVisitor(build.getTable(),OperatorTables.mkArithmeticEnv());
 			g.accept(verifica);
-			if (verifica.hasErrors()){ 
+			if (verifica.hasErrors()){
 			    System.err.println("---------- Errors --------- ");
 			    for (String i : verifica.getErros()){
 				System.err.println(i);
@@ -146,27 +148,28 @@ public class Tool {
 			    }
 			}
 			*/
-			    
+
 		       /*
-		       // Generating a graphical view from AST 			
+		       // Generating a graphical view from AST
 		       DOTVisitor dot = new DOTVisitor(new RelativePath(tool.outputPath, fName + ".dot"),
 		                                       new RelativePath(new AbsolutePath("."),
 						       "src/main/templates/dot.stg"));
 		       g.accept(dot);
 		       */
-				
+
 		       /*
 		       ASTNodeVisitor codegen = new CodeGenVisitor(new RelativePath(new AbsolutePath("."),
 								   "src/main/templates/classtamplate.stg"));
 		       g.accept(codegen);
 		       */
 
-		       /*	
+		       /*
 		       ASTNodeVisitor parservisitor = new StateFullCodeGen(new RelativePath(new AbsolutePath("."),
 								           "src/main/templates/imperativeParser.stg"));;
 		       g.accept(parservisitor);
-		       */	
-	
+		       */
+					
+
 			} catch (FileNotFoundException e) {
 				System.err.println("File " + s + " do not exist");
 				continue;

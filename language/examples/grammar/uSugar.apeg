@@ -7,18 +7,22 @@ apeg uSugar;
 -- l !! int
 
 -- Sintaxe dos operadores de mapa
+-- mapeamento vazio: {: :} 
 -- literal: {: s1 -> v1, s2 -> v2, s3 -> v3 :}
+
 -- inserção: m[n -> v]
 -- acesso:  m[n]
 
--- Sinaxe para anotar de tipo de mapas: |type|
+-- Sintaxe para anotar de tipo de mapas: {type} ou : type :
 
 -- Sintaxe para gramatica
 -- Vazia: $
 -- literal: {| nome[params] returns exprs: pattern  |}
 
--- Sintaxe do APEG 
+-- Sintaxe para construir adaptable parsing expressions (APEGs)
+-- constroi a parsing referente ao padrão delimitado por <| e |>
 
+-- Operador de extensão de linguagens: <<
 
 -- Tipos de meta valor
 -- peg
@@ -27,7 +31,7 @@ apeg uSugar;
 
 prog[language g] : newSyn<g, {: :}, s>* extStmt<g,s>+;
 
-newSyn[language g, |grammar| s] return s[n -> rs]:
+newSyn[language g, {grammar} s] return s[n -> rs]:
     'define' n=id '{' {rs = $;} (rule<g,  r> {rs = rs + r;} )+ '}'
 ;
 
@@ -55,11 +59,11 @@ pfactor[language g] returns p:
  '(' pattern<g,p> ')' / ntCall<g,p> / p=literal
 ;
 
-extStmt[language g, |grammar| s]:
+extStmt[language g, {grammar} s]:
  extBlock<g, s> / stmt<g>
 ;
 
-extBlock[language g, |grammar| s]:
+extBlock[language g, {grammar} s]:
  'syntax' n=id {g1 = g << s[n];} (',' n=id {g1 = g1 << s[n];})* block<g1>+
 ;
 

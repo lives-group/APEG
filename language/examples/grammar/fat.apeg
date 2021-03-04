@@ -1,6 +1,9 @@
 apeg fat;
 
 -- 3!=6
+-- 5!=120
+-- 4!=24
+
 prog:
  number<n> '!=' number<m> fat<n,r> {? m == r }
 ;

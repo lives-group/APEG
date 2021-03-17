@@ -1,4 +1,4 @@
-package VM;
+package apeg.vm;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -73,14 +73,12 @@ public class PageStream{
 	   int pos = marks.pop();
 	   //System.out.println("desmarcou " + pos);
 	 }
-
-
-
+     
 	 public void restore(){
 	   int ant = pr;
      // somente restauro a entrada, nao mais removo a marca, apenas unmark remove
      //pr = marks.peek();
-     pr = marks.peek();
+       pr = marks.peek();
 	   //System.out.println("de " + ant + " restaurou para " + pr);
 	 }
 

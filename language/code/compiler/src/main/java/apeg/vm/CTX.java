@@ -1,17 +1,15 @@
-package VM;
+package apeg.vm;
 
-import ProjectJava.PageStream;
 import java.util.*;
 
 public class CTX{
   Object[] context;
   Hashtable<String,Integer> hashVar;
-  String nameRule;
 
-  public CTX(int tam, String name){
+
+  public CTX(int tam){
     hashVar = new Hashtable<String,Integer>();
     context = new Object[tam];
-    nameRule = name;
   }
 
   public void writeValue(String var, Object value){
@@ -28,7 +26,7 @@ public class CTX{
   }
 
   //mudei pra Integer
-  @Override
+  
   public void writeValue(Integer i, Object value){
     context[i]=value;
   }
@@ -37,27 +35,24 @@ public class CTX{
     return context[hashVar.get(var)];
   }
 
-  @Override
   public Object readValue(Integer i){
     return context[i];
   }
 
   //problema
-  public Hashtable cloneHashVar(){
-    return 	hashVar.clone();
+  public Hashtable<String,Integer> cloneHashVar(){
+    return (Hashtable<String,Integer>)(hashVar.clone());
   }
 
   //problema
-  public Object[] cloneContext(){
-    Object[] context2 = new Object[context.length];
+  public CTX cloneContext(){
+    CTX cl = new CTX(context.length);
+    cl.context = new Object[context.length];
     for(int i=0;i<context.length;i++){
-      context2[i]=context[i].clone();
+      cl.context[i] = context[i];
     }
-    return context2;
+    cl.hashVar = (Hashtable<String,Integer>)(hashVar.clone());
+    return cl;
   }
-
-
-
-
 
 }

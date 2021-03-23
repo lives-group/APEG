@@ -73,7 +73,7 @@ public class PageStream{
 	   int pos = marks.pop();
 	   //System.out.println("desmarcou " + pos);
 	 }
-     
+
 	 public void restore(){
 	   int ant = pr;
      // somente restauro a entrada, nao mais removo a marca, apenas unmark remove

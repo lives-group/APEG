@@ -11,7 +11,7 @@ fat[int n] returns m:
 number returns r  :
     digit<r> ( digit<aux> { r = r * 10 + aux; } )*
     ;
-  
+
 digit returns x1 :
   '0'  { x1 = 0; }
   / '1'  { x1 = 1; }

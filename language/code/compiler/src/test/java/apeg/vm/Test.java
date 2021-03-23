@@ -5,8 +5,8 @@ import java.io.IOException;
 
 public class Test{
    public static void main(String[] args) throws IOException {
-       ApegVM vm = new ApegVM(args[0]);       
-       CTX o = new CTX(1);
+       ApegVM vm = new ApegVM(args[0]);
+       /*CTX o = new CTX(1);
        o.writeValue("n",0);
        vm.beginRule("A", o);
        vm.beginAlt();
@@ -18,7 +18,7 @@ public class Test{
            if (vm.match("V")) {
               vm.setValue("n", "5");
               vm.endAlt();
-           }else{ 
+           }else{
               vm.retryAlt();
               if (vm.match("I")) {
                  vm.setValue("n", "1");
@@ -26,7 +26,11 @@ public class Test{
               }
            }
        }
-       
-       System.out.println(vm.getvalue("n")); 
+       System.out.println(vm.getvalue("n"));*/
+       Fat f = new Fat(vm);
+       f.prog();
+
+
+
    }
 }

@@ -2,7 +2,7 @@ package apeg.vm;
 
 import java.util.*;
 import java.io.IOException;
-//import java.io.NullPointerException;
+//import java.ih.NullPointerException;
 public class Fat{
   private ApegVM vm;
 
@@ -10,101 +10,139 @@ public class Fat{
     vm = virtual;
   }
 
-  public void prog() throws IOException{
-    CTX o = new CTX(3);
-    o.writeValue("n",0);
-    o.writeValue("m",0);
-    o.writeValue("r",0);
-    vm.beginRule("prog", o);
+  public CTX prog(CTX inh) throws IOException{
 
-    vm.beginRule("prog", o);
-    vm.setValue("n",number());
+    CTX syn = new CTX(3);
+    CTX ret;
+    // fazer o fat
+
+    vm.beginRule("number", new CTX(1));
+    ret = number(new CTX(1));
+    syn.writeValue("n",ret.readValue("r"));
+
     vm.match("!=");
-    vm.setValue("m",number());
-    vm.setValue("r",fat((Integer)vm.getvalue("n")));
 
-    if((Integer)vm.getvalue("m") == (Integer)vm.getvalue("r")){
+    vm.beginRule("number", new CTX(1));
+    ret = number(new CTX(1));
+    syn.writeValue("m",ret.readValue("r"));
+
+    CTX inhFat = new CTX(1);
+    inhFat.writeValue("n",syn.readValue("n"));
+    vm.beginRule("fat",inhFat);
+    ret = fat(inhFat);
+    syn.writeValue("r",ret.readValue("m"));
+
+    if((Integer)syn.readValue("m") == (Integer)syn.readValue("r")){
       System.out.println("m == r");
     }else{
       System.out.println("ERRO: m != r");
     }
 
     vm.endRule();
+    return syn;
   }
 
 
-  public int fat(int n){
-    CTX o = new CTX(3);
-    o.writeValue("n",n);
-    o.writeValue("m",0);
-    o.writeValue("r",0);
-    vm.beginRule("fat", o);
+  public CTX fat(CTX inh){
+
+    CTX syn = new CTX(2);
+    CTX ret;
 
     vm.beginAlt();
-    if ((Integer) vm.getvalue("n")>0) {
-      vm.setValue("r",fat((Integer)vm.getvalue("n")-1));
-      vm.setValue("m", (Integer)vm.getvalue("n") * (Integer)vm.getvalue("r"));
+    if ((Integer) inh.readValue("n")>0) {
+
+      CTX inhFat = new CTX(1);
+      inhFat.writeValue("n",(Integer)inh.readValue("n")-1);
+      vm.beginRule("fat", inhFat);
+      ret = fat(inhFat);
+      syn.writeValue("r",ret.readValue("m"));
+
+      syn.writeValue("m", (Integer)inh.readValue("n") * (Integer)ret.readValue("r"));
+
     }else{
-      vm.setValue("m",1);
+      syn.writeValue("m",1);
     }
 
-    Object i =(Integer)vm.getvalue("m");
     vm.endRule();
     vm.endAlt();
-    return (Integer)i;
+    return syn;
   }
 
 
-  public int number() throws IOException{
-    CTX o = new CTX(3);
-    o.writeValue("r",0);
-    o.writeValue("aux",0);
-    vm.beginRule("number", o);
-    vm.setValue("r",digit());
+  public CTX number(CTX inh) throws IOException{
+    
+    CTX syn = new CTX(2);
+    CTX ret;
 
-    try {
-      vm.setValue("aux",digit());
+    vm.beginRule("digit", new CTX(1));
+    ret = digit(new CTX(1));
+    syn.writeValue("r",ret.readValue("x1"));
 
-      while ((Integer)vm.getvalue("aux") != null) {
-        vm.setValue("r",((Integer)vm.getvalue("r")*10) + (Integer)vm.getvalue("aux"));
-        vm.setValue("aux",digit());
+
+    while(true) {
+
+      vm.beginRule("digit", new CTX(1));
+      ret = digit(new CTX(1));
+      if(ret!=null){
+        syn.writeValue("aux",ret.readValue("x1"));
+        syn.writeValue("r",((Integer)syn.readValue("r")*10) + (Integer)ret.readValue("aux"));
+      }else{
+        break;
       }
-
-      Object i = (Integer)vm.getvalue("r");
-      vm.endRule();
-      return (Integer)i;
-
-    }catch (IOException e) {
-
-      Object i = (Integer)vm.getvalue("r");
-      vm.endRule();
-      return (Integer)i;
-
-    }catch (NullPointerException e) {
     }
 
-    Object i = (Integer)vm.getvalue("r");
     vm.endRule();
-    return (Integer)i;
+    return syn;
   }
 
-  public Integer digit() throws IOException{
+  public CTX digit(CTX inh) throws IOException{
 
-    //chato escrever begin end pra cada um
-    //pode haver erro, ler o que nao devia
+    CTX syn = new CTX(1);
+    CTX ret;
 
     switch (vm.nextValue()) {
-      case '0': return 1;
-      case '1': return 1;
-      case '2': return 2;
-      case '3': return 3;
-      case '4': return 4;
-      case '5': return 5;
-      case '6': return 6;
-      case '7': return 7;
-      case '8': return 8;
-      case '9': return 9;
+      case '0':
+      syn.writeValue("x1",0);
+      vm.endRule();
+      return syn;
+      case '1':
+      syn.writeValue("x1",1);
+      vm.endRule();
+      return syn;
+      case '2':
+      syn.writeValue("x1",2);
+      vm.endRule();
+      return syn;
+      case '3':
+      syn.writeValue("x1",3);
+      vm.endRule();
+      return syn;
+      case '4':
+      syn.writeValue("x1",4);
+      vm.endRule();
+      return syn;
+      case '5':
+      syn.writeValue("x1",5);
+      vm.endRule();
+      return syn;
+      case '6':
+      syn.writeValue("x1",6);
+      vm.endRule();
+      return syn;
+      case '7':
+      syn.writeValue("x1",7);
+      vm.endRule();
+      return syn;
+      case '8':
+      syn.writeValue("x1",8);
+      vm.endRule();
+      return syn;
+      case '9':
+      syn.writeValue("x1",9);
+      vm.endRule();
+      return syn;
       default:
+      vm.endRule();
       return null;
     }
   }

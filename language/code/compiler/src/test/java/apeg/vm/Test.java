@@ -27,8 +27,8 @@ public class Test{
            }
        }
        System.out.println(vm.getvalue("n"));*/
-       Fat f = new Fat(vm);
-       f.prog();
+       //Fat f = new Fat(vm);
+       //f.prog();
 
 
 

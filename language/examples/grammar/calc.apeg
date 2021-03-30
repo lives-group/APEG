@@ -6,15 +6,15 @@ prog :
 	number<n> opid<o> number <m> calc < o, n, m, x>
 ;
 
-calc [string o, int n, int m]  returns x : 
+calc [string o, int n, int m]  returns x :
 
-		{? o == '-'}{x = n + m;} /
-		{? o == '+'}{x = n - m;} /
+		{? o == '+'}{x = n + m;} /
+		{? o == '-'}{x = n - m;} /
 		{? o == '*'}{x = n * m;} /
-		{? o == '/'}{? m != 0}{x = n / m; } 
-;	
+		{? o == '/'}{? m != 0}{x = n / m; }
+;
 
-  
+
 digit returns x1 :
 
   '0'  { x1 = 0; }

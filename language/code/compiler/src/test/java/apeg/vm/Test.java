@@ -6,6 +6,12 @@ import java.io.IOException;
 public class Test{
    public static void main(String[] args) throws IOException {
        ApegVM vm = new ApegVM(args[0]);
+       Binary bin = new Binary(vm);
+       CTX inh = new CTX(1);
+       inh.declareParam("x1",0,0);
+       bin.digit(inh );
+       System.out.print(inh.toString());
+       
        /*CTX o = new CTX(1);
        o.writeValue("n",0);
        vm.beginRule("A", o);
@@ -29,8 +35,5 @@ public class Test{
        System.out.println(vm.getvalue("n"));*/
        //Fat f = new Fat(vm);
        //f.prog();
-
-
-
    }
 }

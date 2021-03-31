@@ -51,7 +51,6 @@ public class ApegVM {
      page.unmark();
      ctx.pop();
      rule.pop();
-    // return r;
   }
 
 
@@ -59,12 +58,22 @@ public class ApegVM {
      page.mark();
      ctx.push(ctx.peek().cloneContext());
   }
-
-  public void endAlt(){
+  
+  private void finishAlt(){
      page.unmark();
      CTX aux = ctx.pop();
      ctx.pop();
      ctx.push(aux);
+  }
+
+  public void endAlt(){
+     finishAlt();
+     lastResult = true;
+  }
+  
+  public void failAlt(){
+     finishAlt();
+     lastResult = false;
   }
 
   public void retryAlt(){

@@ -15,16 +15,16 @@ public class Binary{
 
   public void prog(CTX c) throws IOException{
     vm.beginRule("prog",c);
-    CTX aux = new CTX(3);
-
+    CTX aux = new CTX(1);
     number(aux);
-    if (!vm.succeed()) {
+    if(!vm.succeed()){
       vm.fail();
       vm.endRule();
       return;
     }
     c.writeValue("r",aux.readValue("r"));
-
+    
+    aux = new CTX(2);
     aux.writeValue("r",c.readValue("r"));
     convert(aux);
     if (!vm.succeed()) {
@@ -33,16 +33,13 @@ public class Binary{
       return;
     }
     c.writeValue("st",aux.readValue("st"));
-
     vm.success();
     vm.endRule();
-
   }
-
 
   public void convert(CTX c){
     vm.beginRule("convert",c);
-    CTX aux = new CTX(3);
+    CTX aux = new CTX(2);
 
     c.writeValue("x",(Integer)c.readValue("r")%2);
 

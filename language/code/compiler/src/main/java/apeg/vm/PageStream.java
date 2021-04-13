@@ -75,7 +75,6 @@ public class PageStream{
 	 }
 
 	 public void restore(){
-	   int ant = pr;
      // somente restauro a entrada, nao mais removo a marca, apenas unmark remove
      //pr = marks.peek();
        pr = marks.peek();

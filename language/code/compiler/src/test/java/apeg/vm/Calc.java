@@ -6,190 +6,255 @@ import java.io.IOException;
 public class Calc{
 
   private ApegVM vm;
+  private CTX aux;
 
   public Calc(ApegVM virtual){
     vm = virtual;
   }
 
-  public CTX prog(CTX inh) throws IOException{
-
-    CTX syn = new CTX(4);
-    CTX ret;
-
-    vm.beginRule("number", new CTX(1));
-    ret = number(new CTX(1));
-    syn.writeValue("n",ret.readValue("r"));
-
-    vm.beginRule("opid", new CTX(1));
-    ret = opid(new CTX(1));
-    syn.writeValue("o",ret.readValue("r"));
-
-    vm.beginRule("number", new CTX(1));
-    ret = number(new CTX(1));
-    syn.writeValue("m",ret.readValue("r"));
-
-
-    CTX inhCalc = new CTX(3);
-    inhCalc.writeValue("o",syn.readValue("o"));
-    inhCalc.writeValue("n",syn.readValue("n"));
-    inhCalc.writeValue("m",syn.readValue("m"));
-    vm.beginRule("calc",inhCalc);
-    ret = calc(inhCalc);
-    syn.writeValue("x",ret.readValue("x"));
-
-    vm.endRule();
-    return syn;
-
-  }
-
-  public CTX calc(CTX inh){
-    CTX syn = new CTX(1);
-    CTX ret;
-
-    vm.beginAlt();
-
-    if ((Character)inh.readValue("o") == '-') {
-      syn.writeValue("x",(Integer)inh.readValue("n") + (Integer)inh.readValue("m"));
-    }else if ((Character)inh.readValue("0") == '+') {
-      syn.writeValue("x",(Integer)inh.readValue("n") - (Integer)inh.readValue("m"));
-    }else if ((Character)inh.readValue("o") == '*') {
-      syn.writeValue("x",(Integer)inh.readValue("n") * (Integer)inh.readValue("m"));
-    }else if ((Character)inh.readValue("o") == '/') {
-      if((Integer)inh.readValue("m") != 0){
-        syn.writeValue("x",(Integer)inh.readValue("n") / (Integer)inh.readValue("m"));
+  public void prog(CTX c) throws IOException{
+    vm.beginRule("prog",c);
+    aux= new CTX(1);
+    number(aux);
+    if(vm.succeed()){
+      c.writeValue("n",aux.readValue("r"));
+      aux = new CTX(1);
+      opid(aux);
+      if(vm.succeed()){
+        c.writeValue("o",aux.readValue("r"));
+        aux = new CTX(1);
+        number(aux);
+        if(vm.succeed()){
+          c.writeValue("m",aux.readValue("r"));
+          aux = new CTX(4);
+          aux.writeValue("o",c.readValue("o"));
+          aux.writeValue("n",c.readValue("n"));
+          aux.writeValue("m",c.readValue("m"));
+          calc(aux);
+          if(vm.succeed()){
+            c.writeValue("x",aux.readValue("x"));
+            vm.success();
+          }
+        }
       }
     }
-
-    vm.endAlt();
     vm.endRule();
-    return syn;
-
   }
 
-  public CTX digit(CTX inh) throws IOException{
-
-    CTX syn = new CTX(1);
-    CTX ret;
-
+  public void calc(CTX c){
+    vm.beginRule("calc",c);
     vm.beginAlt();
-
-    switch (vm.nextValue()) {
-      case '0':
-      syn.writeValue("x1",0);
-      vm.endAlt();
-      vm.endRule();
-      return syn;
-      case '1':
-      syn.writeValue("x1",1);
-      vm.endAlt();
-      vm.endRule();
-      return syn;
-      case '2':
-      syn.writeValue("x1",2);
-      vm.endAlt();
-      vm.endRule();
-      return syn;
-      case '3':
-      syn.writeValue("x1",3);
-      vm.endAlt();
-      vm.endRule();
-      return syn;
-      case '4':
-      syn.writeValue("x1",4);
-      vm.endAlt();
-      vm.endRule();
-      return syn;
-      case '5':
-      syn.writeValue("x1",5);
-      vm.endAlt();
-      vm.endRule();
-      return syn;
-      case '6':
-      syn.writeValue("x1",6);
-      vm.endAlt();
-      vm.endRule();
-      return syn;
-      case '7':
-      syn.writeValue("x1",7);
-      vm.endAlt();
-      vm.endRule();
-      return syn;
-      case '8':
-      syn.writeValue("x1",8);
-      vm.endAlt();
-      vm.endRule();
-      return syn;
-      case '9':
-      syn.writeValue("x1",9);
-      vm.endAlt();
-      vm.endRule();
-      return syn;
-      default:
-      vm.endAlt();
-      vm.endRule();
-      return null;
-    }
-  }
-
-  public CTX opid(CTX inh) throws IOException{
-
-    CTX syn = new CTX(1);
-    CTX ret;
-
-    vm.beginAlt();
-
-    switch (vm.nextValue()) {
-      case '+':
-      syn.writeValue("o",'+');
-      vm.endAlt();
-      vm.endRule();
-      return syn;
-      case '-':
-      syn.writeValue("x1",'-');
-      vm.endAlt();
-      vm.endRule();
-      return syn;
-      case '*':
-      syn.writeValue("x1",'*');
-      vm.endAlt();
-      vm.endRule();
-      return syn;
-      case '/':
-      syn.writeValue("x1",'/');
-      vm.endAlt();
-      vm.endRule();
-      return syn;
-      default:
-      vm.endAlt();
-      vm.endRule();
-      return null;
-    }
-  }
-
-
-
-  public CTX number(CTX inh)throws IOException{
-
-    CTX syn = new CTX(2);
-    CTX ret;
-
-    vm.beginRule("digit", new CTX(1));
-    ret = digit(new CTX(1));
-    syn.writeValue("r",ret.readValue("x1"));
-
-    while(true) {
-      vm.beginRule("digit", new CTX(1));
-      ret = digit(new CTX(1));
-      if(ret!=null){
-        syn.writeValue("aux",ret.readValue("x1"));
-        syn.writeValue("r",((Integer)syn.readValue("r")*10) + (Integer)ret.readValue("aux"));
-      }else{
-        break;
+    if(vm.succeed()){
+      if ((Character)c.readValue("o") == '-') {
+        c.writeValue("x",(Integer)c.readValue("n") + (Integer)c.readValue("m"));
+        vm.endAlt();
+      }
+      if(!vm.succeed()){
+        vm.failAlt();
       }
     }
-
+    if(!vm.succeed()){
+      vm.retryAlt();
+      if((Character)c.readValue("0") == '+') {
+        c.writeValue("x",(Integer)c.readValue("n") - (Integer)c.readValue("m"));
+        vm.endAlt();
+      }
+      if(!vm.succeed()){
+        vm.failAlt();
+      }
+    }
+    if(!vm.succeed()){
+      vm.retryAlt();
+      if ((Character)c.readValue("o") == '*') {
+        c.writeValue("x",(Integer)c.readValue("n") * (Integer)c.readValue("m"));
+        vm.endAlt();
+      }
+      if(!vm.succeed()){
+        vm.failAlt();
+      }
+    }if(!vm.succeed()){
+      vm.retryAlt();
+      if ((Character)c.readValue("o") == '/') {
+        if((Integer)c.readValue("m") != 0){
+          c.writeValue("x",(Integer)c.readValue("n") / (Integer)c.readValue("m"));
+          vm.endAlt();
+        }
+      }
+      if(!vm.succeed()){
+        vm.failAlt();
+      }
+    }
     vm.endRule();
-    return syn;
   }
+
+
+  public void digit(CTX c) throws IOException{
+    vm.beginRule("digit",c);
+    vm.beginAlt();
+    if(vm.succeed()){
+      if((Character)vm.nextValue() == '0') {
+        c.writeValue("x1",0);
+        vm.success();
+      }
+      if(!vm.succeed()){
+        vm.failAlt();
+      }
+    }
+    if(!vm.succeed()){
+      vm.retryAlt();
+      if((Character)vm.nextValue() == '1') {
+        c.writeValue("x1",1);
+        vm.success();
+      }
+      if(!vm.succeed()){
+        vm.failAlt();
+      }
+    }
+    if(!vm.succeed()){
+      vm.retryAlt();
+      if((Character)vm.nextValue() == '2') {
+        c.writeValue("x1",2);
+        vm.success();
+      }
+      if(!vm.succeed()){
+        vm.failAlt();
+      }
+    }
+    if(!vm.succeed()){
+      vm.retryAlt();
+      if((Character)vm.nextValue() == '3') {
+        c.writeValue("x1",3);
+        vm.success();
+      }
+      if(!vm.succeed()){
+        vm.failAlt();
+      }
+    }
+    if(!vm.succeed()){
+      vm.retryAlt();
+      if((Character)vm.nextValue() == '4') {
+        c.writeValue("x1",4);
+        vm.success();
+      }
+      if(!vm.succeed()){
+        vm.failAlt();
+      }
+    }
+    if(!vm.succeed()){
+      vm.retryAlt();
+      if((Character)vm.nextValue() == '5') {
+        c.writeValue("x1",5);
+        vm.success();
+      }
+      if(!vm.succeed()){
+        vm.failAlt();
+      }
+    }
+    if(!vm.succeed()){
+      vm.retryAlt();
+      if((Character)vm.nextValue() == '6') {
+        c.writeValue("x1",6);
+        vm.success();
+      }
+      if(!vm.succeed()){
+        vm.failAlt();
+      }
+    }
+    if(!vm.succeed()){
+      vm.retryAlt();
+      if((Character)vm.nextValue() == '7') {
+        c.writeValue("x1",7);
+        vm.success();
+      }
+      if(!vm.succeed()){
+        vm.failAlt();
+      }
+    }
+    if(!vm.succeed()){
+      vm.retryAlt();
+      if((Character)vm.nextValue() == '8') {
+        c.writeValue("x1",8);
+        vm.success();
+      }
+      if(!vm.succeed()){
+        vm.failAlt();
+      }
+    }
+    if(!vm.succeed()){
+      vm.retryAlt();
+      if((Character)vm.nextValue() == '9') {
+        c.writeValue("x1",9);
+        vm.success();
+      }
+      if(!vm.succeed()){
+        vm.failAlt();
+      }
+    }
+    vm.endRule();
+  }
+
+  public void opid(CTX c ) throws IOException{
+    vm.beginRule("digit",c);
+    vm.beginAlt();
+    if(vm.succeed()){
+      if((Character)vm.nextValue() == '+'){
+        c.writeValue("o",'+');
+        vm.endAlt();
+      }
+      if(!vm.succeed()){
+        vm.failAlt();
+      }
+    }
+    if(!vm.succeed()){
+      vm.retryAlt();
+      if((Character)vm.nextValue() == '-'){
+        c.writeValue("o",'-');
+        vm.endAlt();
+      }
+      if(!vm.succeed()){
+        vm.failAlt();
+      }
+    }if(!vm.succeed()){
+      vm.retryAlt();
+      if((Character)vm.nextValue() == '*'){
+        c.writeValue("o",'*');
+        vm.endAlt();
+      }
+      if(!vm.succeed()){
+        vm.failAlt();
+      }
+    }
+    if(!vm.succeed()){
+      vm.retryAlt();
+      if((Character)vm.nextValue() == '/'){
+        c.writeValue("o",'/');
+        vm.endAlt();
+      }
+      if(!vm.succeed()){
+        vm.failAlt();
+      }
+    }
+    vm.endRule();
+  }
+
+  public void number(CTX c)throws IOException{
+    vm.beginRule("number",c);
+    aux = new CTX(1);
+    digit(aux);
+    if (vm.succeed()) {
+      c.writeValue("r",aux.readValue("x1"));
+      while(vm.succeed()){
+        aux = new CTX(1);
+        digit(aux);
+        if (vm.succeed()) {
+          c.writeValue("aux",aux.readValue("x1"));
+          c.writeValue("r",((Integer)c.readValue("r")*10) + (Integer)c.readValue("aux"));
+          vm.success();
+        }
+      }
+    }
+    vm.endRule();
+  }
+
 
 }

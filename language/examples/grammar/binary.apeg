@@ -7,8 +7,8 @@ prog:
 
 convert [int r] returns st:
     {x = r % 2;}
-      ({? x == 0}{v= '0'; }
-       
+      ({? x == 0}{ st = '0'; }
+
       / {? x == 1 }{ st = '1'; })
     {r = r/2;}
     convert<r,s>;

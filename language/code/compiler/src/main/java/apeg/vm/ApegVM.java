@@ -58,7 +58,7 @@ public class ApegVM {
      page.mark();
      ctx.push(ctx.peek().cloneContext());
   }
-  
+
   private void finishAlt(){
      page.unmark();
      CTX aux = ctx.pop();
@@ -70,7 +70,7 @@ public class ApegVM {
      finishAlt();
      lastResult = true;
   }
-  
+
   public void failAlt(){
      finishAlt();
      lastResult = false;
@@ -97,5 +97,9 @@ public class ApegVM {
   public Object getvalue(int n){
     return ctx.peek().readValue(n);
   }
+
+  
+
+
 
 }

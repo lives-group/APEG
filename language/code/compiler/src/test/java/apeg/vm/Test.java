@@ -9,9 +9,9 @@ public class Test{
        Binary bin = new Binary(vm);
        CTX inh = new CTX(1);
        inh.declareParam("x1",0,0);
-       bin.digit(inh );
+       bin.digit(inh);
        System.out.print(inh.toString());
-       
+
        /*CTX o = new CTX(1);
        o.writeValue("n",0);
        vm.beginRule("A", o);

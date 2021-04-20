@@ -591,13 +591,13 @@ public class VMVisitor extends Visitor{
 	@Override
 	public void visit(KleenePEG n) {
 		// TODO Auto-generated method stub
-		while(vm.succeed()){
+		do{
 			vm.beginAlt();
 			n.getPegExp().accept(this);
 			if(vm.succeed()){
 				vm.endAlt();
 			}
-		}
+		}while(vm.succeed());
 		vm.failAlt();
 		vm.success();
 
@@ -605,7 +605,7 @@ public class VMVisitor extends Visitor{
 
 	@Override
 	public void visit(LambdaPEG n) {
-
+		vm.success();
 	}
 
 	@Override
@@ -662,10 +662,8 @@ public class VMVisitor extends Visitor{
 	@Override
 	public void visit(PKleene n) {
 		// TODO Auto-generated method stub
-		vm.beginAlt();
 		n.getPegExp().accept(this);
 		if(vm.succeed()){
-			vm.endAlt();
 			while(vm.succeed()){
 				vm.beginAlt();
 				n.getPegExp().accept(this);
@@ -676,7 +674,7 @@ public class VMVisitor extends Visitor{
 			vm.failAlt();
 			vm.success();
 		}else{
-			vm.failAlt();
+			vm.fail();
 		}
 
 	}
@@ -753,10 +751,7 @@ public class VMVisitor extends Visitor{
 	public void visit(SeqPEG n) {
 		// TODO Auto-generated method stub
 		int size = n.getSize();
-		for(int i = 0; i < size; i++) {
-			if(!vm.succeed()){
-				break;
-			}
+		for(int i = 0; (i < size) && vm.succeed(); i++) {
 			n.getAt(i).accept(this);
 		}
 	}

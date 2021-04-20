@@ -22,7 +22,8 @@ public class ApegVM {
   }
 
   public boolean match(String s) throws IOException{
-     return (page.match(s));
+     lastResult = (page.match(s));
+     return lastResult;
   }
 
   public boolean EPS(){
@@ -39,7 +40,14 @@ public class ApegVM {
   public void fail(){ lastResult = false;}
   public void success(){ lastResult = true;}
 
-  public boolean any(){ return true; }
+  //qualquer exetro " ou ' tem q por if != ' ou (char)34
+  public boolean any(){
+    try {
+      page.next();
+    } catch(IOException e) {
+      lastResult = false;
+    }
+  }
 
   public void beginRule(String n, CTX c){
      page.mark();
@@ -52,7 +60,6 @@ public class ApegVM {
      ctx.pop();
      rule.pop();
   }
-
 
   public void beginAlt(){
      page.mark();
@@ -72,7 +79,8 @@ public class ApegVM {
   }
 
   public void failAlt(){
-     finishAlt();
+     page.unmark();
+     ctx.pop();
      lastResult = false;
   }
 
@@ -98,7 +106,12 @@ public class ApegVM {
     return ctx.peek().readValue(n);
   }
 
-  
+  public void restore(){
+    page.restore();
+  }
+
+
+
 
 
 

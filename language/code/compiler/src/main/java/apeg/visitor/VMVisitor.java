@@ -6,10 +6,21 @@ import apeg.ast.expr.operators.*;
 import apeg.ast.rules.*;
 import apeg.ast.types.*;
 import apeg.util.*;
+import apeg.vm.*;
 
 
+public class VMVisitor extends Visitor{
 
-public class TestVisitor extends Visitor{
+	private ApegVM vm;
+
+	public VMVisitor(String path){
+		try {
+			vm = new ApegVM(path);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 
 	@Override
 	public void visit(Attribute n) {
@@ -356,7 +367,7 @@ public class TestVisitor extends Visitor{
 
 	}
 
-        @Override
+	@Override
 	public void visit(Mod n) {
 		// TODO Auto-generated method stub
 
@@ -531,23 +542,20 @@ public class TestVisitor extends Visitor{
 	@Override
 	public void visit(AndPEG n) {
 		// TODO Auto-generated method stub
-
-		System.out.println("&");
 		n.getPegExp().accept(this);
+		vm.restore();
+
 	}
 
 	@Override
 	public void visit(AnyPEG n) {
 		// TODO Auto-generated method stub
-		System.out.println(".");
-
+		vm.any();
 	}
 
 	@Override
 	public void visit(BindPEG n) {
 		// TODO Auto-generated method stub
-
-
 	}
 
 	@Override
@@ -560,11 +568,14 @@ public class TestVisitor extends Visitor{
 	@Override
 	public void visit(ChoicePEG n) {
 		// TODO Auto-generated method stub
-
-
+		vm.beginAlt();
 		n.getLeftPeg().accept(this);
-		System.out.println("/");
-		n.getRightPeg().accept(this);
+		if(vm.succeed()){
+			vm.endAlt();
+		}else{
+			vm.retryAlt();
+			n.getRightPeg().accept(this);
+		}
 	}
 
 	@Override
@@ -580,22 +591,28 @@ public class TestVisitor extends Visitor{
 	@Override
 	public void visit(KleenePEG n) {
 		// TODO Auto-generated method stub
-		System.out.println("(");
-		n.getPegExp().accept(this);
-		System.out.println(")*");
-
+		while(vm.succeed()){
+			vm.beginAlt();
+			n.getPegExp().accept(this);
+			if(vm.succeed()){
+				vm.endAlt();
+			}
+		}
+		vm.failAlt();
+		vm.success();
 
 	}
 
-       @Override
-       public void visit(LambdaPEG n) {
-	   System.out.println("λ");
-       }
+	@Override
+	public void visit(LambdaPEG n) {
+
+	}
 
 	@Override
 	public void visit(LitPEG n) {
 		// TODO Auto-generated method stub
-		System.out.println("'" + n.getLit() + "'");
+		vm.match(n);
+		//System.out.println("'" + n.getLit() + "'");
 	}
 
 	@Override
@@ -613,9 +630,9 @@ public class TestVisitor extends Visitor{
 
 			for(Expr args: n.getArgs()) {
 
-			args.accept(this);
-			System.out.println(" , ");
-			break;
+				args.accept(this);
+				System.out.println(" , ");
+				break;
 			}
 
 			System.out.println(">");
@@ -626,8 +643,13 @@ public class TestVisitor extends Visitor{
 	@Override
 	public void visit(NotPEG n) {
 		// TODO Auto-generated method stub
-		System.out.println("!");
 		n.getPegExp().accept(this);
+		vm.restore();
+		if(vm.succeed()){
+			vm.fail();
+		}else{
+			vm.success();
+		}
 	}
 
 	@Override
@@ -640,10 +662,23 @@ public class TestVisitor extends Visitor{
 	@Override
 	public void visit(PKleene n) {
 		// TODO Auto-generated method stub
-
-
+		vm.beginAlt();
 		n.getPegExp().accept(this);
-		System.out.println("+");
+		if(vm.succeed()){
+			vm.endAlt();
+			while(vm.succeed()){
+				vm.beginAlt();
+				n.getPegExp().accept(this);
+				if(vm.succeed()){
+					vm.endAlt();
+				}
+			}
+			vm.failAlt();
+			vm.success();
+		}else{
+			vm.failAlt();
+		}
+
 	}
 
 	@Override
@@ -652,21 +687,21 @@ public class TestVisitor extends Visitor{
 
 
 
-	    switch(n.getAnno()){
+		switch(n.getAnno()){
 
-		case MEMOIZE:
-				System.out.println("@memoize");
-				break;
+			case MEMOIZE:
+			System.out.println("@memoize");
+			break;
 
-		case NONE:
+			case NONE:
 			System.out.println(" ");
 			break;
 
-		case TRANSIENT:
-				System.out.println("@transient");
-				break;
+			case TRANSIENT:
+			System.out.println("@transient");
+			break;
 
-		default:
+			default:
 		};
 
 		System.out.println(n.getRuleName());
@@ -717,14 +752,13 @@ public class TestVisitor extends Visitor{
 	@Override
 	public void visit(SeqPEG n) {
 		// TODO Auto-generated method stub
-
 		int size = n.getSize();
 		for(int i = 0; i < size; i++) {
-
+			if(!vm.succeed()){
+				break;
+			}
 			n.getAt(i).accept(this);
 		}
-
-
 	}
 
 	@Override
@@ -828,7 +862,7 @@ public class TestVisitor extends Visitor{
 
 
 		for(RulePEG r: n.getRules())
-			r.accept(this);
+		r.accept(this);
 
 
 	}

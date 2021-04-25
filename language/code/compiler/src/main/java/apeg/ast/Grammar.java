@@ -13,15 +13,25 @@ public class Grammar extends ASTNode {
 	private String name;
 	private GrammarOption opts;
 	private List<RulePEG> rules;
-	
+	private Hashtable<String,RulePEG> hashRules;
+
 	public Grammar(SymInfo s, String name, GrammarOption opts, List<RulePEG> rules) {
 		super (s);
 		this.name = name;
 		this.opts = opts;
 	//	this.preamble = preamble;
 		this.rules = rules;
+
+		for(int i = 0 ; i < rules.size(); i++){
+			hashRules.put(rules.get(i).getRuleName(),rules.get(i));
+		}
+
+		for(int i = 0 ; i < carrosNovos.size(); i++){
+			rules.get(i).accept(this);
+		}
+
 	}
-	
+
 	public String getName() {
 		return name;
 	}
@@ -29,7 +39,7 @@ public class Grammar extends ASTNode {
 	public GrammarOption getOptions() {
 		return opts;
 	}
-	
+
 	public List<RulePEG> getRules() {
 		return rules;
 	}
@@ -49,5 +59,5 @@ public class Grammar extends ASTNode {
 		usual_semantics = true;
 	    }
 	}
-	
+
 }

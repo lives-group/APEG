@@ -16,20 +16,16 @@ public class Grammar extends ASTNode {
 	private Hashtable<String,RulePEG> hashRules;
 
 	public Grammar(SymInfo s, String name, GrammarOption opts, List<RulePEG> rules) {
-		super (s);
+		super(s);
 		this.name = name;
 		this.opts = opts;
-	//	this.preamble = preamble;
+		//	this.preamble = preamble;
 		this.rules = rules;
-
+		hashRules = new Hashtable<String,RulePEG>();
 		for(int i = 0 ; i < rules.size(); i++){
 			hashRules.put(rules.get(i).getRuleName(),rules.get(i));
 		}
-
-		for(int i = 0 ; i < carrosNovos.size(); i++){
-			rules.get(i).accept(this);
-		}
-
+		rules.get(0).accept(this);
 	}
 
 	public String getName() {
@@ -49,15 +45,15 @@ public class Grammar extends ASTNode {
 	}
 
 	public static class GrammarOption {
-	    public boolean adaptable; // if the grammar is adaptable or not
-	    public boolean memoize; // if it is to memoize intermediate results or not
-	    public boolean usual_semantics; // if it is to use conventional APEG choice semantics or not
+		public boolean adaptable; // if the grammar is adaptable or not
+		public boolean memoize; // if it is to memoize intermediate results or not
+		public boolean usual_semantics; // if it is to use conventional APEG choice semantics or not
 
-	    public GrammarOption() {
-		adaptable = false;
-		memoize = false;
-		usual_semantics = true;
-	    }
+		public GrammarOption() {
+			adaptable = false;
+			memoize = false;
+			usual_semantics = true;
+		}
 	}
 
 }

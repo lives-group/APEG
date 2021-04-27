@@ -8,14 +8,14 @@ public class CTX{
   private Object[] ext;
   private Hashtable<String,Integer> hashVar;
   private int p;
- 
+
   public CTX(int tam){
     hashVar = new Hashtable<String,Integer>();
     context = new Object[tam];
-    ext = new Object[0]; 
+    ext = new Object[0];
     p = 0;
   }
-  
+
   private void growContext(int k){
       Object[] newExt;
       newExt = new Object[ ext.length + k];
@@ -24,7 +24,7 @@ public class CTX{
       }
       ext = newExt;
   }
-  
+
   public void declareParam(String var, Integer i ,Object value){
     if(hashVar.get(var) != null){
       throw new RuntimeException("Redefined variable: " + var);
@@ -33,7 +33,7 @@ public class CTX{
        writeValue(i,value);
     }
   }
-  
+
   public void writeValue(String var, Object value){
 
     Integer i = hashVar.get(var);
@@ -82,7 +82,7 @@ public class CTX{
   }
 
   //problema
-  /** TODO Clonar o EXT também 
+  /** TODO Clonar o EXT também
    */
   public CTX cloneContext(){
     CTX cl = new CTX(context.length);
@@ -93,11 +93,11 @@ public class CTX{
     cl.hashVar = (Hashtable<String,Integer>)(hashVar.clone());
     return cl;
   }
-    
+
    public String toString(){
         String s = " =========== Context =========== \n";
         s += " ---- Hash table ---- \n";
-        for(Entry<String,Integer> e : hashVar.entrySet()){ 
+        for(Entry<String,Integer> e : hashVar.entrySet()){
           s += "   " + e.getKey().toString() + " : " + e.getValue().toString() + "\n";
         }
         s += " ------- x ------- \n";
@@ -110,6 +110,6 @@ public class CTX{
            s += "    "+ i + " : " + ext[i] + "\n";
         }
         s += " --x-x-x-x-x-x-x-x--\n";
-        return s; 
+        return s;
    }
 }

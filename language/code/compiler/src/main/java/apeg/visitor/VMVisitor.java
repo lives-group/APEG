@@ -633,26 +633,14 @@ public class VMVisitor extends Visitor{
 	@Override
 	public void visit(NonterminalPEG n) {
 		// TODO Auto-generated method stub
-
 		System.out.println(n.getName());
-
-		if(n.getArgs().isEmpty()) {
-
-		}
-		else {
-
-			System.out.println("<");
-
-			for(Expr args: n.getArgs()) {
-
-				args.accept(this);
-				System.out.println(" , ");
-				break;
-			}
-
-			System.out.println(">");
-		}
-
+        RulePEG b = hashRules.get(n.getName());
+        if(b==null){
+            throw new RuntimeException("Rule "+n.getName()+" not found");
+        }
+        vm.beginRule(n.getName(),new CTX(0));
+        b.getPeg().accept(this);
+        vm.endRule();
 	}
 
 	@Override

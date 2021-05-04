@@ -13,21 +13,15 @@ public class Grammar extends ASTNode {
 	private String name;
 	private GrammarOption opts;
 	private List<RulePEG> rules;
-	private Hashtable<String,RulePEG> hashRules;
-
+	
 	public Grammar(SymInfo s, String name, GrammarOption opts, List<RulePEG> rules) {
-		super(s);
+		super (s);
 		this.name = name;
 		this.opts = opts;
-		//	this.preamble = preamble;
+	//	this.preamble = preamble;
 		this.rules = rules;
-		hashRules = new Hashtable<String,RulePEG>();
-		for(int i = 0 ; i < rules.size(); i++){
-			hashRules.put(rules.get(i).getRuleName(),rules.get(i));
-		}
-		rules.get(0).accept(this);
 	}
-
+	
 	public String getName() {
 		return name;
 	}

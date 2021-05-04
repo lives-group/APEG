@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import apeg.util.SymInfo;
 import apeg.visitor.TestVisitor;
+import apeg.visitor.VMVisitor;
 import apeg.ast.expr.*;
 import apeg.ast.rules.*;
 import apeg.ast.types.*;
@@ -63,8 +64,10 @@ public class Grammar01AST {
 		
 		Grammar gram = new Grammar(new SymInfo (0,0), "Annotation", opts, rules);
 		
-		TestVisitor v = new TestVisitor();
-	    gram.accept(v);
+		//TestVisitor v = new TestVisitor();
+	    	//gram.accept(v);
+		VMVisitor vm = new VMVisitor("/home/gigi/tcc/APEG/language/code/compiler/src/main/java/apeg/vm/input.txt");
+	    	gram.accept(vm);
 
 		
 	}

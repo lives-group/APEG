@@ -1,5 +1,5 @@
 package apeg.visitor;
-
+import java.util.*;
 import apeg.ast.*;
 import apeg.ast.expr.*;
 import apeg.ast.expr.operators.*;
@@ -7,18 +7,23 @@ import apeg.ast.rules.*;
 import apeg.ast.types.*;
 import apeg.util.*;
 import apeg.vm.*;
+import java.io.*;
 
 
 public class VMVisitor extends Visitor{
 
 	private ApegVM vm;
+	private Hashtable<String,RulePEG> hashRules;
 
 	public VMVisitor(String path){
+
+
 		try {
 			vm = new ApegVM(path);
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
+
 	}
 
 
@@ -542,15 +547,19 @@ public class VMVisitor extends Visitor{
 	@Override
 	public void visit(AndPEG n) {
 		// TODO Auto-generated method stub
+		System.out.println("AndPEG");
 		n.getPegExp().accept(this);
 		vm.restore();
+
 
 	}
 
 	@Override
 	public void visit(AnyPEG n) {
 		// TODO Auto-generated method stub
+		System.out.println("AnyPEG");
 		vm.any();
+
 	}
 
 	@Override
@@ -567,6 +576,7 @@ public class VMVisitor extends Visitor{
 
 	@Override
 	public void visit(ChoicePEG n) {
+		System.out.println("ChoicePEG");
 		// TODO Auto-generated method stub
 		vm.beginAlt();
 		n.getLeftPeg().accept(this);
@@ -591,6 +601,7 @@ public class VMVisitor extends Visitor{
 	@Override
 	public void visit(KleenePEG n) {
 		// TODO Auto-generated method stub
+		System.out.println("KleenePEG");
 		do{
 			vm.beginAlt();
 			n.getPegExp().accept(this);
@@ -605,14 +616,18 @@ public class VMVisitor extends Visitor{
 
 	@Override
 	public void visit(LambdaPEG n) {
+		System.out.println("LambdaPEG");
 		vm.success();
 	}
 
 	@Override
-	public void visit(LitPEG n) {
+	public void visit(LitPEG n){
 		// TODO Auto-generated method stub
-		vm.match(n);
-		//System.out.println("'" + n.getLit() + "'");
+		System.out.println("LitPEG");
+		try{
+			vm.match(n.getLit());
+		}catch(IOException e){
+		}
 	}
 
 	@Override
@@ -643,6 +658,7 @@ public class VMVisitor extends Visitor{
 	@Override
 	public void visit(NotPEG n) {
 		// TODO Auto-generated method stub
+		System.out.println("NotPEG");
 		n.getPegExp().accept(this);
 		vm.restore();
 		if(vm.succeed()){
@@ -650,18 +666,20 @@ public class VMVisitor extends Visitor{
 		}else{
 			vm.success();
 		}
+
 	}
 
 	@Override
 	public void visit(OptionalPEG n) {
 		// TODO Auto-generated method stub
-		System.out.println("Optional Peg");
+		System.out.println("OptionalPeg");
 		n.getPegExp().accept(this);
 	}
 
 	@Override
 	public void visit(PKleene n) {
 		// TODO Auto-generated method stub
+		System.out.println("PKleene");
 		n.getPegExp().accept(this);
 		if(vm.succeed()){
 			while(vm.succeed()){
@@ -676,80 +694,22 @@ public class VMVisitor extends Visitor{
 		}else{
 			vm.fail();
 		}
-
 	}
 
 	@Override
 	public void visit(RulePEG n) {
 		// TODO Auto-generated method stub
-
-
-
-		switch(n.getAnno()){
-
-			case MEMOIZE:
-			System.out.println("@memoize");
-			break;
-
-			case NONE:
-			System.out.println(" ");
-			break;
-
-			case TRANSIENT:
-			System.out.println("@transient");
-			break;
-
-			default:
-		};
-
-		System.out.println(n.getRuleName());
-
-		if(n.getInh().isEmpty()) {
-			if(n.getSyn().isEmpty()) {
-				System.out.println(" ");
-			}
-			else {
-				System.out.println("returns[ ");
-				for(Expr syn: n.getSyn()) {
-					syn.accept(this);
-				}
-				System.out.println("]");
-			}
-		}
-		else {
-
-			System.out.println("[");
-			for(Pair<Type, String>inh: n.getInh()) {
-				inh.getFirst().accept(this);
-				System.out.println(inh.getSecond());
-			}
-			System.out.println("]");
-			if(n.getSyn().isEmpty()) {
-				System.out.println(" ");
-			}
-			else {
-				System.out.println("returns[ ");
-				for(Expr syn: n.getSyn()) {
-					syn.accept(this);
-				}
-				System.out.println("]");
-			}
-		}
-
-		System.out.println(":");
-
-
+		System.out.println("RulePEG");
+		//terminar aqui-contexto
+		vm.beginRule(n.getRuleName(),new CTX(0));
 		n.getPeg().accept(this);
-		System.out.println(";");
-
-
-
-
+		vm.endRule();
 	}
 
 	@Override
 	public void visit(SeqPEG n) {
 		// TODO Auto-generated method stub
+		System.out.println("SeqPEG");
 		int size = n.getSize();
 		for(int i = 0; (i < size) && vm.succeed(); i++) {
 			n.getAt(i).accept(this);
@@ -826,40 +786,12 @@ public class VMVisitor extends Visitor{
 	@Override
 	public void visit(Grammar n) {
 		// TODO Auto-generated method stub
-
-		System.out.println("apeg " + n.getName());
-
-		if(n.getOptions().adaptable == false) {
-			if(n.getOptions().memoize == false) {
-				if(n.getOptions().usual_semantics == true) {
-
-				}
-				else {
-					System.out.println("options {");
-					System.out.println(" usual_semantics;");
-					System.out.println("}");
-				}
-			}
-
-			else {
-				System.out.println("options {");
-				System.out.println(" memoize;");
-				System.out.println("}");
-			}
-
+		System.out.println("Grammar");
+		hashRules = new Hashtable<String,RulePEG>();
+		for(int i = 0 ; i < n.getRules().size(); i++){
+			hashRules.put(n.getRules().get(i).getRuleName(),n.getRules().get(i));
 		}
-		else {
-			System.out.println("options {");
-			System.out.println(" adaptable;");
-			System.out.println("}");
-		}
-
-
-
-		for(RulePEG r: n.getRules())
-		r.accept(this);
-
-
+		n.getRules().get(0).accept(this);
 	}
 
 }

@@ -122,6 +122,7 @@ public class Tool {
 				
 				g.accept(typechecker);
 				
+				VMVisitor vm = new VMVisitor("input.txt");
 			
 
 			/*

@@ -47,6 +47,7 @@ public class ApegVM {
     } catch(IOException e) {
       lastResult = false;
     }
+    return lastResult;
   }
 
   public void beginRule(String n, CTX c){

@@ -7,6 +7,7 @@ import apeg.ast.rules.*;
 import apeg.ast.types.*;
 import apeg.visitor.*;
 import apeg.ast.Grammar.GrammarOption;
+import apeg.visitor.VMVisitor;
 
 
 
@@ -118,6 +119,8 @@ public class Grammar10AST {
 		
 		//TestVisitor v = new TestVisitor();
 		//gram.accept(v);
+		VMVisitor vm = new VMVisitor("/home/gigi/tcc/APEG/language/code/compiler/src/main/java/apeg/vm/input.txt");
+	    	gram.accept(vm);
 	}
 
 }

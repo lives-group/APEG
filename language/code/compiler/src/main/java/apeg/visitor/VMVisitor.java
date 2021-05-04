@@ -711,9 +711,11 @@ public class VMVisitor extends Visitor{
 		// TODO Auto-generated method stub
 		System.out.println("SeqPEG");
 		int size = n.getSize();
-		for(int i = 0; (i < size) && vm.succeed(); i++) {
+		int i=0;
+		do{
 			n.getAt(i).accept(this);
-		}
+			i++;
+		}while(vm.succeed() && i< size);
 	}
 
 	@Override
@@ -794,4 +796,8 @@ public class VMVisitor extends Visitor{
 		n.getRules().get(0).accept(this);
 	}
 
+	public boolean succeed(){
+        return vm.succeed();
+	}
+	
 }

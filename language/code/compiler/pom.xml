@@ -15,6 +15,8 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <grammarSamples>../../examples/grammar</grammarSamples>
     <grammar>grammar01.apeg</grammar>
+    <inputSamples>../../examples/inputs</inputSamples>
+    <input>input01.txt</input>
   </properties>
 
   <dependencies>
@@ -87,15 +89,31 @@
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
         <version>1.6.0</version>
-        <configuration>
-            <mainClass>apeg.Tool</mainClass>
-            <arguments>
-                <!--  automatically creates the classpath using all project dependencies,
-                also adding the project build directory **>
-                <argument>-classpath</argument> -->
-                <argument>${grammarSamples}/${grammar}</argument>
-            </arguments>
-        </configuration>
+            <executions>
+                <execution>
+                    <id>inter</id>
+                    <configuration>
+                        <mainClass>apeg.Tool</mainClass>
+                        <arguments>
+                            <argument>${grammarSamples}/${grammar}</argument>
+                            <argument>-i</argument>
+                            <argument>${inputSamples}/${input}</argument>
+                        </arguments>
+                    </configuration>
+                </execution>
+                <execution>
+                    <id>gen</id>
+                    <configuration>
+                        <mainClass>apeg.Tool</mainClass>
+                        <arguments>
+                             <!--  automatically creates the classpath using all project dependencies,
+                                   also adding the project build directory **>
+                                   <argument>-classpath</argument> -->
+                             <argument>${grammarSamples}/${grammar}</argument>
+                        </arguments>
+                    </configuration>
+                </execution>
+         </executions>
       </plugin>
 
       <plugin>

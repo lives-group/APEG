@@ -43,7 +43,9 @@ public class Tool {
 	private Path extdir; // path of the external functions
 	private LangInfo targetLang; // informations about the target language and
 									// external functions
+    private String interpretInput;
 	private Stack<String> warnings;
+	
 
 	public Tool() {
 		// Set the default output location
@@ -55,6 +57,9 @@ public class Tool {
 
 		// Set the warning message stack
 		warnings = new Stack<String>();
+		
+		// Set the interpreter's input file path.
+		interpretInput = null;
 	}
 
 	public static void main(String[] args) {
@@ -122,7 +127,18 @@ public class Tool {
 				
 				g.accept(typechecker);
 				
-				VMVisitor vm = new VMVisitor("input.txt");
+				if(tool.interpretInput != null){
+				    VMVisitor vm = new VMVisitor(tool.interpretInput.toString());
+				  //  System.out.println("Path = " + tool.interpretInput);
+				    g.accept(vm);
+				    if(vm.succeed()){ 
+				       System.out.println(" accepted.");
+                    }
+                    else{ System.out.println(" rejected"); }
+				}
+				
+				
+				
 			
 
 			/*
@@ -220,5 +236,13 @@ public class Tool {
 
 	public void addWarning(String message) {
 		warnings.push(message);
+	}
+	
+	public void setInterpretSource(String s){
+	    interpretInput  = s;
+	}
+	
+	public String getInterpretSource(){
+	    return interpretInput;
 	}
 }

@@ -56,6 +56,10 @@ public class HandlerOption {
 						break;
 					}
 					break;	
+				case "interpret": // set the target language
+					String input = opt.getValue();
+					tool.setInterpretSource(input);
+					break;
 				default:
 					tool.addWarning("Invalid option " + opt.getLongOpt());
 				}
@@ -80,6 +84,7 @@ public class HandlerOption {
 				"Specific the target language for the generated code. This is also the language of the external functions.");
 		options.addOption("e", "external", true, "The path location of the external functions");
 		options.addOption("h", "help", false, "Print the help message");
+		options.addOption("i", "interpret", true, "Interpret the specified file");
 
 		return options;
 

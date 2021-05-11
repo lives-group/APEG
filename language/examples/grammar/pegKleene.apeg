@@ -1,7 +1,7 @@
 apeg pegKleene;
 
 prog:
-  ('1')*  
+  '1'*  
 ;
 
 

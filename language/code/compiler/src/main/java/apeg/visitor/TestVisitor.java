@@ -730,6 +730,7 @@ public class TestVisitor extends Visitor{
 	@Override
 	public void visit(UpdatePEG n) {
 		// TODO Auto-generated method stub
+		//pilha de obj na vm
 		for(Pair<Attribute, Expr> assigs: n.getAssigs()) {
 			assigs.getFirst().accept(this);
 			System.out.println(" = ");

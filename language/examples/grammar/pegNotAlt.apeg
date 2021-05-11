@@ -1,4 +1,8 @@
-apeg pegAlt;
+apeg pegKleene;
+
+prog:
+  !digit<a>
+;
 
 digit returns x1 :
   '0'  { x1 = 0; }

@@ -1,5 +1,5 @@
 apeg pegNot;
 
 not:
-  !'a'
+  !'a';
 ;

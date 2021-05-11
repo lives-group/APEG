@@ -1,7 +1,5 @@
-apeg Teste;
+apeg pegKleene2;
 
 prog:
-  ('a''b')*  
+  ('a''b')*
 ;
-
-

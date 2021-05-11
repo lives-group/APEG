@@ -569,8 +569,12 @@ public class VMVisitor extends Visitor{
 
 	@Override
 	public void visit(ChoiceList n) {
-		// TODO Auto-generated method stub
-
+		char c = vm.nextValue();
+		if(n.getInterval().inInterval(c)){
+			vm.success();
+		}else{
+			vm.fail();
+		}
 		System.out.println("Intervals: " + n.getInterval().getEnd() + "  " + n.getInterval().getStart());
 	}
 
@@ -787,5 +791,5 @@ public class VMVisitor extends Visitor{
 	public boolean succeed(){
         return vm.succeed();
 	}
-	
+
 }

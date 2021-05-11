@@ -1,0 +1,7 @@
+apeg Teste;
+
+prog:
+  ('a''b')*  
+;
+
+

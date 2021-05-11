@@ -1,0 +1,7 @@
+apeg pegKleene;
+
+prog:
+  ('1')*  
+;
+
+

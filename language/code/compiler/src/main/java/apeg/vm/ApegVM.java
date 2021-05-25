@@ -57,6 +57,9 @@ public class ApegVM {
   }
 
   public void endRule(/*boolean r*/){
+    System.out.println("\nRule: "+rule.peek().toString());
+    System.out.println(ctx.peek().toString());
+    
      page.unmark();
      ctx.pop();
      rule.pop();
@@ -110,7 +113,23 @@ public class ApegVM {
   public void restore(){
     page.restore();
   }
-
+  
+//   //testar clone
+//   public String toString() {
+//     Stack<CTX> c = (Stack<CTX>)ctx.clone();
+//     Stack<String> r = (Stack<String>)rule.clone();
+//     String s = "";
+//     System.out.println(c.size()+""+r.size());
+//     try{
+//     System.out.println(r+""+c);
+//     while(r != null && c != null){
+//       s+="\n\n"+r.pop().toString()+"\n"+c.pop().toString();      
+//     }
+//     }catch(Exception e){
+//         System.out.println(e);
+//     }
+//     return s;
+//   }
 
 
 

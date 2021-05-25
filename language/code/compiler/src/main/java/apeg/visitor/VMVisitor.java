@@ -10,6 +10,7 @@ import apeg.vm.*;
 import java.io.*;
 
 
+
 public class VMVisitor extends Visitor{
 
 	private ApegVM vm;
@@ -17,7 +18,7 @@ public class VMVisitor extends Visitor{
 	private Stack stk;
 
 	public VMVisitor(String path){
-
+        
 
 		try {
 			stk = new Stack();
@@ -287,7 +288,7 @@ public class VMVisitor extends Visitor{
 		n.getLeft().accept(this);
 		System.out.println(" + ");
 		n.getRight().accept(this);
-		stk.push(stk.pop() + stk.pop());
+		//stk.push((Integer)stk.pop() + (Integer)stk.pop());
 	}
 
 	@Override
@@ -297,12 +298,10 @@ public class VMVisitor extends Visitor{
 		n.getLeft().accept(this);
 		System.out.println("&&");
 		n.getRight().accept(this);
-		if(stk.pop() && stk.pop()){
-            stk.push(true);
-		}else{
-            stk.push(false);
-		}
-		
+		Object a = stk.pop(); 
+		Object b = stk.pop(); 
+		System.out.println(a);
+		//stk.push((a.getFirst())a.getSecond()&&(b.getFirst())b.getSecond());
 	}
 
 	@Override
@@ -316,7 +315,7 @@ public class VMVisitor extends Visitor{
 	@Override
 	public void visit(Concat n) {
 		// TODO Auto-generated method stub
-
+        //stk.push((String)stk.pop() + (String)stk.pop());
 	}
 
 	@Override
@@ -327,7 +326,7 @@ public class VMVisitor extends Visitor{
 		System.out.println("/");
 		n.getRight().accept(this);
 		Object aux = stk.pop(); 
-		stk.push(stk.pop() / aux);
+		//stk.push(stk.pop() / aux);
 	}
 
 	@Override
@@ -352,11 +351,8 @@ public class VMVisitor extends Visitor{
 		System.out.println(" > ");
 		n.getRight().accept(this);
 		Object aux = stk.pop(); 
-		if(stk.pop() > aux){
-            stk.push(true);
-		}else{
-            stk.push(false);
-		}
+		//stk.push(stk.pop() > aux);
+            
 	}
 
 	@Override
@@ -367,11 +363,7 @@ public class VMVisitor extends Visitor{
 		System.out.println(" >= ");
 		n.getRight().accept(this);
 		Object aux = stk.pop(); 
-		if(stk.pop() >= aux){
-            stk.push(true);
-		}else{
-            stk.push(false);
-		}
+		//stk.push(stk.pop() >= aux);
 	}
 
 	@Override
@@ -382,11 +374,7 @@ public class VMVisitor extends Visitor{
 		System.out.println(" < ");
 		n.getRight().accept(this);
 		Object aux = stk.pop(); 
-		if(stk.pop() < aux){
-            stk.push(true);
-		}else{
-            stk.push(false);
-		}
+		//stk.push(stk.pop() < aux);
 	}
 
 	@Override
@@ -398,11 +386,7 @@ public class VMVisitor extends Visitor{
 		System.out.println(" <=");
 		n.getRight().accept(this);
 		Object aux = stk.pop(); 
-		if(stk.pop() <= aux){
-            stk.push(true);
-		}else{
-            stk.push(false);
-		}
+		//stk.push(stk.pop() <= aux);
 	}
 
 	@Override
@@ -424,6 +408,9 @@ public class VMVisitor extends Visitor{
 		n.getLeft().accept(this);
 		System.out.println(" % ");
 		n.getRight().accept(this);
+		Integer a = (Integer)stk.pop();
+		stk.push((Integer)stk.pop() % a);
+		
 	}
 
 	@Override
@@ -433,7 +420,7 @@ public class VMVisitor extends Visitor{
 		n.getLeft().accept(this);
 		System.out.println("*");
 		n.getRight().accept(this);
-		stk.push(stk.pop() * stk.pop());
+		//stk.push(stk.pop() * stk.pop());
 		
 	}
 
@@ -443,7 +430,7 @@ public class VMVisitor extends Visitor{
 
 		System.out.println("!");
 		n.getExpr().accept(this);
-		stk.push(!stk.pop());
+		stk.push(!(Boolean)stk.pop());
 		
 	}
 
@@ -454,13 +441,7 @@ public class VMVisitor extends Visitor{
 		n.getLeft().accept(this);
 		System.out.println(" != ");
 		n.getRight().accept(this);
-		if(!stk.pop().equals(stk.pop)){
-            stk.push(true);
-		}else{
-            stk.push(false);
-		}
-		
-		
+		stk.push(!stk.pop().equals(stk.pop()));
 	}
 
 	@Override
@@ -469,11 +450,7 @@ public class VMVisitor extends Visitor{
 		n.getLeft().accept(this);
 		System.out.println(" || ");
 		n.getRight().accept(this);
-		if(stk.pop() || stk.pop){
-            stk.push(true);
-		}else{
-            stk.push(false);
-		}
+		stk.push((Boolean)stk.pop() || (Boolean)stk.pop());
 	}
 
 	@Override
@@ -483,13 +460,13 @@ public class VMVisitor extends Visitor{
 		n.getLeft().accept(this);
 		System.out.println(" - ");
 		n.getRight().accept(this);
-		stk.push(stk.pop() - stk.pop());
+		//stk.push(stk.pop() - stk.pop());
 	}
 
 	@Override
 	public void visit(UMinus n) {
 		// TODO Auto-generated method stub
-
+        
 	}
 
 	@Override
@@ -631,13 +608,20 @@ public class VMVisitor extends Visitor{
 
 	@Override
 	public void visit(ChoiceList n) {
-		char c = vm.nextValue();
-		if(n.getInterval().inInterval(c)){
-			vm.success();
-		}else{
-			vm.fail();
-		}
-		System.out.println("Intervals: " + n.getInterval().getEnd() + "  " + n.getInterval().getStart());
+        
+        try{
+            char c = vm.nextValue();
+            if(n.getInterval().inInterval(c)){
+                vm.success();
+            }else{
+                vm.fail();
+            }
+            System.out.println("Intervals: " + n.getInterval().getEnd() + "  " + n.getInterval().getStart());
+        }catch(IOException e){
+            e.printStackTrace();
+            System.exit(1);
+        }
+		
 	}
 
 	@Override
@@ -776,12 +760,12 @@ public class VMVisitor extends Visitor{
 	public void visit(UpdatePEG n) {
 		// TODO Auto-generated method stub
 		for(Pair<Attribute, Expr> assigs: n.getAssigs()) {
-			assigs.getFirst().accept(this);
+			//assigs.getFirst().accept(this);
 			System.out.println(" = ");
 			assigs.getSecond().accept(this);
 			//não sei descobri nome pelo assigs.getFirst()
-            vm.setValue(assigs.getFirst().getName(),vm.pop());
-            System.out.println(assigs.getFirst().getName()+" = "+vm.pop());
+            vm.setValue(assigs.getFirst().getName(),stk.pop());
+           // System.out.println(assigs.getFirst().getName()+" = "+vm.getValue(assigs.getFirst().getName().toString()));
 			break;
 		}
 		System.out.println(";");
@@ -851,6 +835,7 @@ public class VMVisitor extends Visitor{
 			hashRules.put(n.getRules().get(i).getRuleName(),n.getRules().get(i));
 		}
 		n.getRules().get(0).accept(this);
+		
 	}
 
 	public boolean succeed(){

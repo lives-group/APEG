@@ -1,0 +1,7 @@
+apeg test;
+a:
+{x = true;}b
+;
+b:
+{y = false;}
+;

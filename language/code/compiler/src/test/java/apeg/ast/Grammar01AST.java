@@ -67,13 +67,13 @@ public class Grammar01AST {
 		
 		//TestVisitor v = new TestVisitor();
         //gram.accept(v);
-		VMVisitor vm = new VMVisitor("/home/gigi/tcc/APEG/language/code/compiler/src/main/java/apeg/vm/input.txt");
-        gram.accept(vm);
-        if(vm.succeed()){
-            System.out.println("ok");
-        }else{
-            System.out.println("falha");
-        }
+// 		VMVisitor vm = new VMVisitor("/home/gigi/tcc/APEG/language/code/compiler/src/main/java/apeg/vm/input.txt");
+//         gram.accept(vm);
+//         if(vm.succeed()){
+//             System.out.println("ok");
+//         }else{
+//             System.out.println("falha");
+//         }
 		
 	}
 

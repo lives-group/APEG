@@ -146,6 +146,10 @@ public class TypeCheckerVisitor extends Visitor {
 
 		
 	}
+	
+	public Environment<String,NTInfo> getEnv(){
+        return global;
+	}
 
 	private boolean matchBinOp(String op, VType l, VType r){
 		VTyVar t; 

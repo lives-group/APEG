@@ -63,6 +63,7 @@ public class VMVisitor extends Visitor{
 	@Override
 	public void visit(MapLit n) {
 		// TODO Auto-generated method stub
+		//
 	}
 
 	@Override
@@ -467,9 +468,9 @@ public class VMVisitor extends Visitor{
 		Pair<VType,Object> a = stk.pop();
 		Pair<VType,Object> b = stk.pop();
 		if(a.getFirst().getName().equals("int")){
-			stk.push(new Pair(VTyInt.getInstance(),(Integer)a.getSecond() - (Integer)b.getSecond()));
+			stk.push(new Pair(VTyInt.getInstance(),(Integer)b.getSecond() - (Integer)a.getSecond()));
 		}else if(a.getFirst().getName().equals("float")){
-			stk.push(new Pair(VTyFloat.getInstance(),(Float)a.getSecond() - (Float)b.getSecond()));
+			stk.push(new Pair(VTyFloat.getInstance(),(Float)b.getSecond() - (Float)a.getSecond()));
 		}else{
 			throw new RuntimeException("(" + n.getSymInfo().getLine() + "," + n.getSymInfo().getColumn() + ") Imcompatible operators for <=");
 		}
@@ -739,7 +740,7 @@ public class VMVisitor extends Visitor{
 			//assigs.getFirst().accept(this);
 			assigs.getSecond().accept(this);
 			//não sei descobri nome pelo assigs.getFirst()
-			vm.setValue(assigs.getFirst().getName(),stk.pop());
+			vm.setValue(assigs.getFirst().getName(),stk.pop().getSecond());
 			break;
 		}
 	}

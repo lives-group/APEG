@@ -119,8 +119,8 @@ public class Grammar10AST {
 		
 		//TestVisitor v = new TestVisitor();
 		//gram.accept(v);
-		VMVisitor vm = new VMVisitor("/home/gigi/tcc/APEG/language/code/compiler/src/main/java/apeg/vm/input.txt");
-	    	gram.accept(vm);
+// 		VMVisitor vm = new VMVisitor("/home/gigi/tcc/APEG/language/code/compiler/src/main/java/apeg/vm/input.txt");
+// 	    	gram.accept(vm);
 	}
 
 }

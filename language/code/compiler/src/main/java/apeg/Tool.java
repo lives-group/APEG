@@ -16,6 +16,8 @@ import apeg.parse.APEGParser;
 import apeg.ast.ASTFactory;
 import apeg.ast.ASTFactoryImpl;
 import apeg.ast.Grammar;
+import apeg.util.Pair;
+import apeg.visitor.semantics.VType;
 
 //import apeg.visitor.ASTNodeVisitor;
 //import apeg.visitor.BuildRuleEnvironmetVisitor;
@@ -128,7 +130,13 @@ public class Tool {
 				g.accept(typechecker);
 
 				if(tool.interpretInput != null){
-					VMVisitor vm = new VMVisitor(tool.interpretInput.toString(), (TypeCheckerVisitor)typechecker.getEnv());
+                    if(!((TypeCheckerVisitor)typechecker).getError().isEmpty()){
+                        for(Pair<String,VType> perr:((TypeCheckerVisitor)typechecker).getError()){
+                        System.out.println(perr.toString());
+                        }
+                    System.exit(1);
+                    }
+					VMVisitor vm = new VMVisitor(tool.interpretInput.toString(),((TypeCheckerVisitor)typechecker).getEnv());
 					System.out.println("Path = " + tool.interpretInput);
 					g.accept(vm);
 					if(vm.succeed()){

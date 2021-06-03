@@ -1,0 +1,5 @@
+apeg soma;
+
+a:
+{x = false || true;}
+;

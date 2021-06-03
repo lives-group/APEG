@@ -147,6 +147,10 @@ public class TypeCheckerVisitor extends Visitor {
 		
 	}
 	
+	public List<Pair<String, VType>> getError(){
+        return error;
+	}
+	
 	public Environment<String,NTInfo> getEnv(){
         return global;
 	}

@@ -16,11 +16,13 @@ public class VMVisitor extends Visitor{
 
 	private ApegVM vm;
 	private Hashtable<String,RulePEG> hashRules;
+	private Hashtable<String,Object> map;
 	private Stack<Pair<VType,Object>> stk;
 	private Environment<String,NTInfo> env;
 
 	public VMVisitor(String path,Environment<String,NTInfo> e){
 		try {
+            
 			env = e;
 			stk = new Stack();
 			vm = new ApegVM(path);
@@ -62,10 +64,13 @@ public class VMVisitor extends Visitor{
 
 	@Override
 	public void visit(MapLit n) {
-		// TODO Auto-generated method stub
-		//
-	}
-
+     for (Pair<Expr,Expr> p : n.getAssocs()) {
+            p.getSecond().accept(this);
+            p.getFirst().accept(this);
+            map.put((String)stk.pop().getSecond(),stk.pop().getSecond());
+        }
+    }
+    
 	@Override
 	public void visit(StrLit n) {
 		stk.push(new Pair(VTyString.getInstance(),n.getValue()));
@@ -792,6 +797,7 @@ public class VMVisitor extends Visitor{
 
 	@Override
 	public void visit(Grammar n) {
+        map = new Hashtable<String,Object>();
 		hashRules = new Hashtable<String,RulePEG>();
 		for(int i = 0 ; i < n.getRules().size(); i++){
 			hashRules.put(n.getRules().get(i).getRuleName(),n.getRules().get(i));

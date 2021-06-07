@@ -1,5 +1,7 @@
 apeg soma;
 
 a:
-{x = false || true;}
+{x = 5 - 4;}
+{y = 6 - 4;}
+{z = x + y;}
 ;

@@ -134,7 +134,6 @@ public class TypeCheckerVisitor extends Visitor {
 
 
 	public TypeCheckerVisitor() {
-
 		s = new Stack<VType>();
 		gamma = new Environment<String, VType>();
 		global = new Environment<String, NTInfo>();
@@ -143,8 +142,6 @@ public class TypeCheckerVisitor extends Visitor {
 		ct = new CTM();
 		addVar = false;
 		opTable = OperatorTables.mkArithmeticEnv();
-
-		
 	}
 	
 	public List<Pair<String, VType>> getError(){
@@ -179,95 +176,96 @@ public class TypeCheckerVisitor extends Visitor {
 
 	@Override
 	public void visit(Attribute n) {
-
-
 		VType t = gamma.get(n.getName());
-
 		if (t != null) {
 			s.push(t);
 		}
 		else {
-
 			if(addVar) {
-
-
 				gamma.add(n.getName(), s.push(pool.newVar()));
 				return;
 			}
 			s.push(TypeError.getInstance());
-
 			errorMessage = "Error06 at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
 			System.out.println(errorMessage);
 			error.add(new Pair<String, VType>(errorMessage,TypeError.getInstance() ));
-
 		}
 	}
 
 	@Override
 	public void visit(AttributeGrammar n) {
-
-
 		VType t = gamma.get(n.getName());
-
 		if(t != null) {
 			s.push(t);
 		}
 		else {
-
 			s.push(TypeError.getInstance());
-
 			errorMessage = "Error07 at: " + n.getSymInfo().getLine() + "," + n.getSymInfo().getColumn();
 			System.out.println(errorMessage);
 			error.add(new Pair<String, VType>(errorMessage,TypeError.getInstance() ));
-
 		}
 	}
 
 	@Override
 	public void visit(BoolLit n) {
-
-
 		s.push(VTyBool.getInstance());
 	}
 
 	@Override
 	public void visit(CharLit n) {
-
-
 		s.push(VTyChar.getInstance());
 	}
 
 	@Override
 	public void visit(FloatLit n) {
-
-
 		s.push(VTyFloat.getInstance());
 	}
 
 	@Override
 	public void visit(IntLit n) {
-
-
 		s.push(VTyInt.getInstance());
 	}
 
 	@Override
 	public void visit(MapLit n) {
-		// TODO Auto-generated method stub
-
+	    Pair<Expr,Expr>[] assocs = n.getAssocs()
+	    VType tyidx, tyval, tyaux;
+	    if(assocs == null || assocs.length == 0 ){
+           errorMessage = "Error at: " + n.getSymInfo().getLine() + "," + n.getSymInfo().getColumn() + " Empty map literal is not allowed.";
+           System.out.println(errorMessage);
+           error.add(new Pair<String, VType>(errorMessage,TypeError.getInstance() ));
+	       s.push(VTyError.getInstance());
+	       return;
+	    }
+	    boolean b = true;
+        assocs[0].getFirst().accept(this);
+        assocs[0].getSecond().accept(this);
+	    tyval = s.pop();
+        if(! s.pop().match(VTyString.getInstance()) ){
+           errorMessage = "Error at: " + assocs[0].getFirst().getSymInfo().getLine() + "," + assocs[0].getFirst().getSymInfo().getColumn() + " Map index must be an string.";
+           System.out.println(errorMessage);
+           error.add(new Pair<String, VType>(errorMessage,TypeError.getInstance() ));
+	       s.push(VTyError.getInstance());
+        }
+	    for(Pair<Expr,Expr> p : assocs){
+	       p.getFirst().accept(this);
+	       p.getSecond().accept(this);
+	       tyval = s.pop();
+	       tyaux = s.pop();
+	       b = b && tyidx.match(VTyString.getInstance()) && (tyaux.match(tyval));
+        
+	    }
+	    
 	}
 
 	@Override
 	public void visit(StrLit n) {
-
-
 		s.push(VTyString.getInstance());
 	}
 
 	@Override
 	public void visit(MetaAndPEG n) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -458,19 +456,11 @@ public class TypeCheckerVisitor extends Visitor {
 
 	@Override
 	public void visit(Add n) {
-
-
-
-		n.getLeft().accept(this);
+	    n.getLeft().accept(this);
 		VType left = s.peek();
-
 		n.getRight().accept(this);
 		VType right = s.peek();
-
 		if(!matchBinOp("ADD", left, right)) {
-
-			
-
 			errorMessage = "Error08 at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
 			System.out.println(errorMessage);
 			error.add(new Pair<String, VType>(errorMessage,TypeError.getInstance() ));	
@@ -481,17 +471,11 @@ public class TypeCheckerVisitor extends Visitor {
 
 	@Override
 	public void visit(And n) {
-
 		n.getLeft().accept(this);
 		VType left = s.peek();
-
 		n.getRight().accept(this);
 		VType right = s.peek();
-
 		if(!matchBinOp("AND", left, right)) {
-
-	
-
 			errorMessage = "Error09 at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
 			System.out.println(errorMessage);
 			error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance()));	
@@ -559,19 +543,11 @@ public class TypeCheckerVisitor extends Visitor {
 
 	@Override
 	public void visit(Div n) {
-
-
-
 		n.getLeft().accept(this);
 		VType left = s.peek();
-
 		n.getRight().accept(this);
 		VType right = s.peek();
-
 		if(!matchBinOp("DIV", left, right)) {
-
-			
-
 			errorMessage = "Error12 at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
 			System.out.println(errorMessage);
 			error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance() ));	
@@ -580,15 +556,11 @@ public class TypeCheckerVisitor extends Visitor {
 
 	@Override
 	public void visit(Equals n) {
-
 		n.getLeft().accept(this);
 		VType left = s.peek();
-
 		n.getRight().accept(this);
 		VType right = s.peek();
-
 		if(!matchBinOp("EQ", left, right)) {
-
 			errorMessage = "Error13 at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
 			System.out.println(errorMessage);
 			error.add(new Pair<String, VType>(errorMessage,TypeError.getInstance() ));	
@@ -598,18 +570,11 @@ public class TypeCheckerVisitor extends Visitor {
 
 	@Override
 	public void visit(Greater n) {
-
-
 		n.getLeft().accept(this);
 		VType left = s.peek();
-
 		n.getRight().accept(this);
 		VType right = s.peek();
-
 		if(!matchBinOp("GT", left, right)) {
-
-		
-
 			errorMessage = "Error14 at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
 			System.out.println(errorMessage);
 			error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance() ));	
@@ -618,17 +583,11 @@ public class TypeCheckerVisitor extends Visitor {
 
 	@Override
 	public void visit(GreaterEq n) {
-
 		n.getLeft().accept(this);
 		VType left = s.peek();
-
 		n.getRight().accept(this);
 		VType right = s.peek();
-
 		if(!matchBinOp("GE", left, right)) {
-
-		
-
 			errorMessage = "Error15 at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
 			System.out.println(errorMessage);
 			error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance() ));	
@@ -699,14 +658,10 @@ public class TypeCheckerVisitor extends Visitor {
 		VType right = s.peek();
 
 		if(!matchBinOp("MOD", left, right)) {
-
-			
 			errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
 			System.out.println(errorMessage);
 			error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance() ));	
 		}
-
-
 	}
 
 	@Override
@@ -739,9 +694,6 @@ public class TypeCheckerVisitor extends Visitor {
 		VType e = s.peek();
 
 		if(!matchBinOp("NOT", e, null)) {
-
-			
-
 			errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
 			System.out.println(errorMessage);
 			error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance() ));	
@@ -759,9 +711,6 @@ public class TypeCheckerVisitor extends Visitor {
 		VType right = s.peek();
 
 		if(!matchBinOp("NE", left, right)) {
-
-			
-
 			errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
 			System.out.println(errorMessage);
 			error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance() ));	
@@ -978,15 +927,12 @@ public class TypeCheckerVisitor extends Visitor {
 
 	@Override
 	public void visit(ConstraintPEG n) {
-
 		n.getExpr().accept(this);
 	}
 
 	@Override
 	public void visit(KleenePEG n) {
-
 		n.getPegExp().accept(this);
-
 	}
 
 	@Override
@@ -1199,9 +1145,7 @@ public class TypeCheckerVisitor extends Visitor {
 
 	@Override
 	public void visit(TyMap n) {
-		// TODO Auto-generated method stub
-
-
+	    s.push(new VTyMap(s.pop()));
 	}
 
 	@Override

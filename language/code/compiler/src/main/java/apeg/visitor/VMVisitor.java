@@ -624,7 +624,6 @@ public class VMVisitor extends Visitor{
 			e.printStackTrace();
 			System.exit(1);
 		}
-
 	}
 
 	@Override
@@ -789,7 +788,6 @@ public class VMVisitor extends Visitor{
 	@Override
 	public void visit(TyString n) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -804,5 +802,4 @@ public class VMVisitor extends Visitor{
 	public boolean succeed(){
 		return vm.succeed();
 	}
-
 }

@@ -16,7 +16,6 @@ public class VMVisitor extends Visitor{
 
 	private ApegVM vm;
 	private Hashtable<String,RulePEG> hashRules;
-	private Hashtable<String,Object> map;
 	private Stack<Pair<VType,Object>> stk;
 	private Environment<String,NTInfo> env;
 
@@ -34,7 +33,8 @@ public class VMVisitor extends Visitor{
 
 	@Override
 	public void visit(Attribute n) {
-		// TODO Auto-generated method stub
+        //TODO Auto-generated method stub
+          stk.push(new Pair(VTyGrammar.getInstance(),vm.getValue(n.getName())));
 		}
 
 	@Override
@@ -64,11 +64,13 @@ public class VMVisitor extends Visitor{
 
 	@Override
 	public void visit(MapLit n) {
-     for (Pair<Expr,Expr> p : n.getAssocs()) {
-            p.getSecond().accept(this);
-            p.getFirst().accept(this);
-            map.put((String)stk.pop().getSecond(),stk.pop().getSecond());
-        }
+//         Hashtable<String,Object>  map = new Hashtable<String,Object>();
+//      for (Pair<Expr,Expr> p : n.getAssocs()) {
+//             p.getSecond().accept(this);
+//             p.getFirst().accept(this);
+//             map.put((String)stk.pop().getSecond(),stk.pop().getSecond());
+//             stk.push(new Pair(VTyMap.getInstance(),map));
+//         }
     }
     
 	@Override
@@ -410,14 +412,24 @@ public class VMVisitor extends Visitor{
 
 	@Override
 	public void visit(MapAcces n) {
-		// TODO Auto-generated method stub
-
+//         n.getIndex().accept(this);
+//         n.getMap().accept(this);
+//         Pair<VType,Object> m = stk.pop();
+// 		Pair<VType,Object> i = stk.pop();
+//         stk.push(new Pair(VTyMap.getInstance(),m.getSecond().get(i.getSecond())));
 	}
 
 	@Override
 	public void visit(MapExtension n) {
-		// TODO Auto-generated method stub
-
+      /*  n.getKey().accept(this);
+        n.getMap().accept(this);
+        n.getValue().accept(this);
+        Pair<VType,Object> v = stk.pop();
+		Pair<VType,Object> m = stk.pop();
+		Pair<VType,Object> k = stk.pop();
+		m.getSecond().put(k.getSecond(),v.getSecond());
+        stk.push(m);
+	*/	
 	}
 
 	@Override
@@ -682,6 +694,7 @@ public class VMVisitor extends Visitor{
 		if(b==null){
 			throw new RuntimeException("Rule "+n.getName()+" not found");
 		}
+		
 		vm.beginRule(n.getName(),new CTX(0));
 		b.getPeg().accept(this);
 		vm.endRule();
@@ -799,7 +812,6 @@ public class VMVisitor extends Visitor{
 
 	@Override
 	public void visit(Grammar n) {
-        map = new Hashtable<String,Object>();
 		hashRules = new Hashtable<String,RulePEG>();
 		for(int i = 0 ; i < n.getRules().size(); i++){
 			hashRules.put(n.getRules().get(i).getRuleName(),n.getRules().get(i));

@@ -102,11 +102,11 @@ public class ApegVM {
     ctx.peek().writeValue(n,v);
   }
 
-  public Object getvalue(String var){
+  public Object getValue(String var){
     return ctx.peek().readValue(var);
   }
 
-  public Object getvalue(int n){
+  public Object getValue(int n){
     return ctx.peek().readValue(n);
   }
 

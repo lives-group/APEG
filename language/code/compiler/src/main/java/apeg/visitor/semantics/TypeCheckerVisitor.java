@@ -228,13 +228,13 @@ public class TypeCheckerVisitor extends Visitor {
 
 	@Override
 	public void visit(MapLit n) {
-	    Pair<Expr,Expr>[] assocs = n.getAssocs()
+	    Pair<Expr,Expr>[] assocs = n.getAssocs();
 	    VType tyidx, tyval, tyaux;
 	    if(assocs == null || assocs.length == 0 ){
            errorMessage = "Error at: " + n.getSymInfo().getLine() + "," + n.getSymInfo().getColumn() + " Empty map literal is not allowed.";
            System.out.println(errorMessage);
            error.add(new Pair<String, VType>(errorMessage,TypeError.getInstance() ));
-	       s.push(VTyError.getInstance());
+	       s.push(TypeError.getInstance());
 	       return;
 	    }
 	    boolean b = true;
@@ -245,14 +245,14 @@ public class TypeCheckerVisitor extends Visitor {
            errorMessage = "Error at: " + assocs[0].getFirst().getSymInfo().getLine() + "," + assocs[0].getFirst().getSymInfo().getColumn() + " Map index must be an string.";
            System.out.println(errorMessage);
            error.add(new Pair<String, VType>(errorMessage,TypeError.getInstance() ));
-	       s.push(VTyError.getInstance());
+	       s.push(TypeError.getInstance());
         }
 	    for(Pair<Expr,Expr> p : assocs){
 	       p.getFirst().accept(this);
 	       p.getSecond().accept(this);
 	       tyval = s.pop();
 	       tyaux = s.pop();
-	       b = b && tyidx.match(VTyString.getInstance()) && (tyaux.match(tyval));
+	      // b = b && tyidx.match(VTyString.getInstance()) && (tyaux.match(tyval));
         
 	    }
 	    

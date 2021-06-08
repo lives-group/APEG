@@ -18,7 +18,9 @@ public class VMVisitor extends Visitor{
 	private Hashtable<String,RulePEG> hashRules;
 	private Stack<Pair<VType,Object>> stk;
 	private Environment<String,NTInfo> env;
-
+	// Criar uma variável NTInfo local;  
+   
+ 
 	public VMVisitor(String path,Environment<String,NTInfo> e){
 		try {
             
@@ -64,13 +66,18 @@ public class VMVisitor extends Visitor{
 
 	@Override
 	public void visit(MapLit n) {
-//         Hashtable<String,Object>  map = new Hashtable<String,Object>();
-//      for (Pair<Expr,Expr> p : n.getAssocs()) {
-//             p.getSecond().accept(this);
-//             p.getFirst().accept(this);
-//             map.put((String)stk.pop().getSecond(),stk.pop().getSecond());
-//             stk.push(new Pair(VTyMap.getInstance(),map));
-//         }
+       Hashtable<String,Object>  map = new Hashtable<String,Object>();
+       n.getAssocs()[0].getSecond().accept(this);
+       VType ty = stk.peek().getFirst();
+       n.getAssocs()[0].getFirst().accept(this); // Only because we dont have empty maps !
+       map.put((String)stk.pop().getSecond(),stk.pop().getSecond());
+       
+       for (int i = 1; i < n.getAssocs().length; i++) {
+             n.getAssocs()[i].getSecond().accept(this);
+             n.getAssocs()[i].getFirst().accept(this);
+             map.put((String)stk.pop().getSecond(),stk.pop().getSecond());
+       }
+       stk.push(new Pair(new VTyMap(ty),map));
     }
     
 	@Override
@@ -411,25 +418,28 @@ public class VMVisitor extends Visitor{
 	}
 
 	@Override
+	// m["s"]
 	public void visit(MapAcces n) {
-//         n.getIndex().accept(this);
-//         n.getMap().accept(this);
-//         Pair<VType,Object> m = stk.pop();
-// 		Pair<VType,Object> i = stk.pop();
-//         stk.push(new Pair(VTyMap.getInstance(),m.getSecond().get(i.getSecond())));
+         n.getIndex().accept(this);
+         n.getMap().accept(this);
+         Pair<VType,Object> m = stk.pop();
+         // String i = (String)(stk.pop().getSecond())
+         Pair<VType,Object> i = stk.pop();
+         
+         //stk.push(new Pair(VTyMap.getInstance(),m.getSecond().get(i.getSecond())));
+          stk.push(new Pair( ((VTyMap)m.getFirst()).getTyParameter(), ((Hashtable)m.getSecond()).get((String)i.getSecond())) );
 	}
 
 	@Override
 	public void visit(MapExtension n) {
-      /*  n.getKey().accept(this);
+        n.getKey().accept(this);
         n.getMap().accept(this);
         n.getValue().accept(this);
         Pair<VType,Object> v = stk.pop();
 		Pair<VType,Object> m = stk.pop();
 		Pair<VType,Object> k = stk.pop();
-		m.getSecond().put(k.getSecond(),v.getSecond());
+		((Hashtable)m.getSecond()).put((String)k.getSecond(),v.getSecond());
         stk.push(m);
-	*/	
 	}
 
 	@Override

@@ -1,12 +1,6 @@
 apeg soma;
 
 a:
-'true' b
-;
-
-b:
 {x = 3;}
 {z = x + 5;}
 ;
-
-

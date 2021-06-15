@@ -18,12 +18,13 @@ public class VMVisitor extends Visitor{
 	private Hashtable<String,RulePEG> hashRules;
 	private Stack<Pair<VType,Object>> stk;
 	private Environment<String,NTInfo> env;
-	// Criar uma variável NTInfo local;  
-   
- 
+	private NTInfo nti;
+	// Criar uma variável NTInfo local;
+
+
 	public VMVisitor(String path,Environment<String,NTInfo> e){
 		try {
-            
+
 			env = e;
 			stk = new Stack();
 			vm = new ApegVM(path);
@@ -36,7 +37,9 @@ public class VMVisitor extends Visitor{
 	@Override
 	public void visit(Attribute n) {
         //TODO Auto-generated method stub
-          stk.push(new Pair(VTyGrammar.getInstance(),vm.getValue(n.getName())));
+
+					VType vt = nti.getLocals().get(n.getName());
+          stk.push(new Pair(vt,vm.getValue(n.getName())));
 		}
 
 	@Override
@@ -71,7 +74,7 @@ public class VMVisitor extends Visitor{
        VType ty = stk.peek().getFirst();
        n.getAssocs()[0].getFirst().accept(this); // Only because we dont have empty maps !
        map.put((String)stk.pop().getSecond(),stk.pop().getSecond());
-       
+
        for (int i = 1; i < n.getAssocs().length; i++) {
              n.getAssocs()[i].getSecond().accept(this);
              n.getAssocs()[i].getFirst().accept(this);
@@ -79,7 +82,7 @@ public class VMVisitor extends Visitor{
        }
        stk.push(new Pair(new VTyMap(ty),map));
     }
-    
+
 	@Override
 	public void visit(StrLit n) {
 		stk.push(new Pair(VTyString.getInstance(),n.getValue()));
@@ -425,7 +428,7 @@ public class VMVisitor extends Visitor{
          Pair<VType,Object> m = stk.pop();
          // String i = (String)(stk.pop().getSecond())
          Pair<VType,Object> i = stk.pop();
-         
+
          //stk.push(new Pair(VTyMap.getInstance(),m.getSecond().get(i.getSecond())));
           stk.push(new Pair( ((VTyMap)m.getFirst()).getTyParameter(), ((Hashtable)m.getSecond()).get((String)i.getSecond())) );
 	}
@@ -703,7 +706,7 @@ public class VMVisitor extends Visitor{
 		if(b==null){
 			throw new RuntimeException("Rule "+n.getName()+" not found");
 		}
-		
+
 		vm.beginRule(n.getName(),new CTX(0));
 		b.getPeg().accept(this);
 		vm.endRule();
@@ -746,6 +749,7 @@ public class VMVisitor extends Visitor{
 	@Override
 	public void visit(RulePEG n) {
 		//terminar aqui-contexto
+		nti = (NTinfo)env.getLocals().get(n.getRuleName());
 		vm.beginRule(n.getRuleName(),new CTX(0));
 		n.getPeg().accept(this);
 		vm.endRule();

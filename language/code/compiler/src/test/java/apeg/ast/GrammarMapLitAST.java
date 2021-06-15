@@ -48,11 +48,9 @@ public class GrammarMapLitAST {
 
 		Grammar gram = new Grammar(new SymInfo (0,0), "Annotation", opts, rules);
 
-		//TestVisitor v = new TestVisitor();
-		//gram.accept(v);
-		TypeCheckerVisitor tcv = new TypeCheckerVisitor();
-		gram.accept(tcv);
-		VMVisitor vm = new VMVisitor("/home/gigi/tcc/APEG/language/code/compiler/src/main/java/apeg/vm/input.txt",tcv.getEnv());
+		//TypeCheckerVisitor tcv = new TypeCheckerVisitor();
+		//gram.accept(tcv);
+		VMVisitor vm = new VMVisitor("/home/gigi/tcc/APEG/language/code/compiler/src/main/java/apeg/vm/input.txt",new Environment<String,NTInfo>());
 		gram.accept(vm);
 		if(vm.succeed()){
 			System.out.println("ok");

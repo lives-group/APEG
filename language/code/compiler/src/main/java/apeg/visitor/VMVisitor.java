@@ -36,8 +36,6 @@ public class VMVisitor extends Visitor{
 
 	@Override
 	public void visit(Attribute n) {
-        //TODO Auto-generated method stub
-
 					VType vt = nti.getLocals().get(n.getName());
           stk.push(new Pair(vt,vm.getValue(n.getName())));
 		}
@@ -749,7 +747,7 @@ public class VMVisitor extends Visitor{
 	@Override
 	public void visit(RulePEG n) {
 		//terminar aqui-contexto
-		nti = (NTinfo)env.getLocals().get(n.getRuleName());
+		nti = env.get(n.getRuleName());
 		vm.beginRule(n.getRuleName(),new CTX(0));
 		n.getPeg().accept(this);
 		vm.endRule();
@@ -834,4 +832,6 @@ public class VMVisitor extends Visitor{
 	public boolean succeed(){
 		return vm.succeed();
 	}
+
+
 }

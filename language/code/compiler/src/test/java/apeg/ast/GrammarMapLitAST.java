@@ -12,9 +12,9 @@ import apeg.ast.types.*;
 import apeg.ast.Grammar;
 import apeg.ast.Grammar.GrammarOption;
 import apeg.util.*;
+import apeg.visitor.semantics.*;
 
-
-public class Grammar01AST {
+public class GrammarMapLitAST {
 
 	public static void main(String args[]){
 
@@ -24,20 +24,22 @@ public class Grammar01AST {
 		List<Pair<Type, String>>inh = new ArrayList<Pair<Type, String>>();
 		List<Expr>syn = new ArrayList<Expr>();
 
-		//Regra a
-        // A -> B(1/B2)
-		//B -> b
-		APEG peg, leftPeg, rightPeg;
-		APEG pegs[] = new APEG[2];
-		APEG pegs1[] = new APEG[2];
 
-		pegs[0] = new NonterminalPEG(new SymInfo(8,3), "b", arg);
+		Expr map,value,key,att;
 
-		leftPeg = new LitPEG(new SymInfo(8,6), "1");
+		APEG leftPeg;
+
+		value = new IntLit(new SymInfo(8,6), 1);
+		key = new StrLit(new SymInfo(0,0),"x");
 		arg = new ArrayList<Expr>();
-		peg = new MapLit(new Pair("x",leftPeg));
+		map = new MapLit(new SymInfo(0,0),new Pair[]{new Pair(key,value)});
+		att = new Attribute(new SymInfo(0,0),"map");
+		ArrayList<Pair<Attribute,Expr>> arry = new ArrayList();
+		arry.add(new Pair(att,map));
+		leftPeg = new UpdatePEG(new SymInfo(0,0),arry);
 
-		RulePEG a = new RulePEG(new SymInfo(3, 3), "a", RulePEG.Annotation.NONE, inh, syn, peg);
+
+		RulePEG a = new RulePEG(new SymInfo(3, 3), "a", RulePEG.Annotation.NONE, inh, syn, leftPeg);
 		rules.add(a);
 
 
@@ -47,14 +49,16 @@ public class Grammar01AST {
 		Grammar gram = new Grammar(new SymInfo (0,0), "Annotation", opts, rules);
 
 		//TestVisitor v = new TestVisitor();
-        //gram.accept(v);
- 		VMVisitor vm = new VMVisitor("/home/gigi/tcc/APEG/language/code/compiler/src/main/java/apeg/vm/input.txt",new Environment("TEST",new NTInfo()));
-         gram.accept(vm);
-         if(vm.succeed()){
-             System.out.println("ok");
-         }else{
-             System.out.println("falha");
-         }
+		//gram.accept(v);
+		TypeCheckerVisitor tcv = new TypeCheckerVisitor();
+		gram.accept(tcv);
+		VMVisitor vm = new VMVisitor("/home/gigi/tcc/APEG/language/code/compiler/src/main/java/apeg/vm/input.txt",tcv.getEnv());
+		gram.accept(vm);
+		if(vm.succeed()){
+			System.out.println("ok");
+		}else{
+			System.out.println("falha");
+		}
 
 	}
 

@@ -50,7 +50,7 @@ public class GrammarMapLitAST {
 
 		//TypeCheckerVisitor tcv = new TypeCheckerVisitor();
 		//gram.accept(tcv);
-		VMVisitor vm = new VMVisitor("/home/gigi/tcc/APEG/language/code/compiler/src/main/java/apeg/vm/input.txt",new Environment<String,NTInfo>());
+		VMVisitor vm = new VMVisitor("../src/main/java/apeg/vm/input.txt",new Environment<String,NTInfo>());
 		gram.accept(vm);
 		if(vm.succeed()){
 			System.out.println("ok");

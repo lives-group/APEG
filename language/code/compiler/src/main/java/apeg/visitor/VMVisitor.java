@@ -24,7 +24,6 @@ public class VMVisitor extends Visitor{
 
 	public VMVisitor(String path,Environment<String,NTInfo> e){
 		try {
-
 			env = e;
 			stk = new Stack();
 			vm = new ApegVM(path);
@@ -36,9 +35,9 @@ public class VMVisitor extends Visitor{
 
 	@Override
 	public void visit(Attribute n) {
-					VType vt = nti.getLocals().get(n.getName());
-          stk.push(new Pair(vt,vm.getValue(n.getName())));
-		}
+		VType vt = nti.getLocals().get(n.getName());
+		stk.push(new Pair(vt,vm.getValue(n.getName())));
+	}
 
 	@Override
 	public void visit(AttributeGrammar n) {
@@ -67,19 +66,19 @@ public class VMVisitor extends Visitor{
 
 	@Override
 	public void visit(MapLit n) {
-       Hashtable<String,Object>  map = new Hashtable<String,Object>();
-       n.getAssocs()[0].getSecond().accept(this);
-       VType ty = stk.peek().getFirst();
-       n.getAssocs()[0].getFirst().accept(this); // Only because we dont have empty maps !
-       map.put((String)stk.pop().getSecond(),stk.pop().getSecond());
+		Hashtable<String,Object>  map = new Hashtable<String,Object>();
+		n.getAssocs()[0].getSecond().accept(this);
+		VType ty = stk.peek().getFirst();
+		n.getAssocs()[0].getFirst().accept(this); // Only because we dont have empty maps !
+		map.put((String)stk.pop().getSecond(),stk.pop().getSecond());
 
-       for (int i = 1; i < n.getAssocs().length; i++) {
-             n.getAssocs()[i].getSecond().accept(this);
-             n.getAssocs()[i].getFirst().accept(this);
-             map.put((String)stk.pop().getSecond(),stk.pop().getSecond());
-       }
-       stk.push(new Pair(new VTyMap(ty),map));
-    }
+		for (int i = 1; i < n.getAssocs().length; i++) {
+			n.getAssocs()[i].getSecond().accept(this);
+			n.getAssocs()[i].getFirst().accept(this);
+			map.put((String)stk.pop().getSecond(),stk.pop().getSecond());
+		}
+		stk.push(new Pair(new VTyMap(ty),map));
+	}
 
 	@Override
 	public void visit(StrLit n) {
@@ -88,17 +87,16 @@ public class VMVisitor extends Visitor{
 
 	@Override
 	public void visit(MetaAndPEG n) {
-		// TODO Auto-generated method stub
 	}
 
 	@Override
 	public void visit(MetaAnyPEG n) {
-		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
 	public void visit(MetaAttribute n) {
-		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
@@ -133,7 +131,7 @@ public class VMVisitor extends Visitor{
 
 	@Override
 	public void visit(MetaFloatLit n) {
-		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
@@ -421,26 +419,26 @@ public class VMVisitor extends Visitor{
 	@Override
 	// m["s"]
 	public void visit(MapAcces n) {
-         n.getIndex().accept(this);
-         n.getMap().accept(this);
-         Pair<VType,Object> m = stk.pop();
-         // String i = (String)(stk.pop().getSecond())
-         Pair<VType,Object> i = stk.pop();
+		n.getIndex().accept(this);
+		n.getMap().accept(this);
+		Pair<VType,Object> m = stk.pop();
+		// String i = (String)(stk.pop().getSecond())
+		Pair<VType,Object> i = stk.pop();
 
-         //stk.push(new Pair(VTyMap.getInstance(),m.getSecond().get(i.getSecond())));
-          stk.push(new Pair( ((VTyMap)m.getFirst()).getTyParameter(), ((Hashtable)m.getSecond()).get((String)i.getSecond())) );
+		//stk.push(new Pair(VTyMap.getInstance(),m.getSecond().get(i.getSecond())));
+		stk.push(new Pair( ((VTyMap)m.getFirst()).getTyParameter(), ((Hashtable)m.getSecond()).get((String)i.getSecond())) );
 	}
 
 	@Override
 	public void visit(MapExtension n) {
-        n.getKey().accept(this);
-        n.getMap().accept(this);
-        n.getValue().accept(this);
-        Pair<VType,Object> v = stk.pop();
+		n.getKey().accept(this);
+		n.getMap().accept(this);
+		n.getValue().accept(this);
+		Pair<VType,Object> v = stk.pop();
 		Pair<VType,Object> m = stk.pop();
 		Pair<VType,Object> k = stk.pop();
 		((Hashtable)m.getSecond()).put((String)k.getSecond(),v.getSecond());
-        stk.push(m);
+		stk.push(m);
 	}
 
 	@Override
@@ -518,8 +516,12 @@ public class VMVisitor extends Visitor{
 
 	@Override
 	public void visit(MetaAnd n) {
-		// TODO Auto-generated method stub
-
+		n.getLeft().accept(this);
+		n.getRigth().accept(this);
+		Expr a = (Expr)(stk.pop().getSecond());
+		Expr b = (Expr)(stk.pop().getSecond());
+		And and = new And(new SymInfo(-1,-1),a,b);
+		stk.push(new Pair(TyMetaExpr.getInstance(),and));
 	}
 
 	@Override
@@ -530,97 +532,163 @@ public class VMVisitor extends Visitor{
 
 	@Override
 	public void visit(MetaConcat n) {
-		// TODO Auto-generated method stub
-
+		n.getLeft().accept(this);
+		n.getRigth().accept(this);
+		Expr a = (Expr)(stk.pop().getSecond());
+		Expr b = (Expr)(stk.pop().getSecond());
+		Concat concat = new Concat(new SymInfo(-1,-1),a,b);
+		stk.push(new Pair(TyMetaExpr.getInstance(),concat));
 	}
 
 	@Override
 	public void visit(MetaDiv n) {
-		// TODO Auto-generated method stub
-
+		n.getLeft().accept(this);
+		n.getRigth().accept(this);
+		Expr a = (Expr)(stk.pop().getSecond());
+		Expr b = (Expr)(stk.pop().getSecond());
+		Div div = new Div(new SymInfo(-1,-1),a,b);
+		stk.push(new Pair(TyMetaExpr.getInstance(),div));
 	}
 
 	@Override
 	public void visit(MetaEquals n) {
-		// TODO Auto-generated method stub
-
+		n.getLeft().accept(this);
+		n.getRigth().accept(this);
+		Expr a = (Expr)(stk.pop().getSecond());
+		Expr b = (Expr)(stk.pop().getSecond());
+		Equals equals = new Equals(new SymInfo(-1,-1),a,b);
+		stk.push(new Pair(TyMetaExpr.getInstance(),equals));
 	}
 
 	@Override
 	public void visit(MetaGreater n) {
-		// TODO Auto-generated method stub
+		n.getLeft().accept(this);
+		n.getRigth().accept(this);
+		Expr a = (Expr)(stk.pop().getSecond());
+		Expr b = (Expr)(stk.pop().getSecond());
+		Greater greater = new Greater(new SymInfo(-1,-1),a,b);
+		stk.push(new Pair(TyMetaExpr.getInstance(),greater));
 
 	}
 
 	@Override
 	public void visit(MetaGreaterEq n) {
-		// TODO Auto-generated method stub
-
+		n.getLeft().accept(this);
+		n.getRigth().accept(this);
+		Expr a = (Expr)(stk.pop().getSecond());
+		Expr b = (Expr)(stk.pop().getSecond());
+		GreaterEq greaterEq = new GreaterEq(new SymInfo(-1,-1),a,b);
+		stk.push(new Pair(TyMetaExpr.getInstance(),greaterEq));
 	}
 
 	@Override
 	public void visit(MetaLess n) {
-		// TODO Auto-generated method stub
-
+		n.getLeft().accept(this);
+		n.getRigth().accept(this);
+		Expr a = (Expr)(stk.pop().getSecond());
+		Expr b = (Expr)(stk.pop().getSecond());
+		Less less = new Less(new SymInfo(-1,-1),a,b);
+		stk.push(new Pair(TyMetaExpr.getInstance(),less));
 	}
 
 	@Override
 	public void visit(MetaLessEq n) {
-		// TODO Auto-generated method stub
-
+		n.getLeft().accept(this);
+		n.getRigth().accept(this);
+		Expr a = (Expr)(stk.pop().getSecond());
+		Expr b = (Expr)(stk.pop().getSecond());
+		LessEq lessEq = new LessEq(new SymInfo(-1,-1),a,b);
+		stk.push(new Pair(TyMetaExpr.getInstance(),lessEq));
 	}
 
 	@Override
 	public void visit(MetaMapAcces n) {
-		// TODO Auto-generated method stub
-
+		n.getMap().accept(this);
+		n.getIndex().accept(this);
+		Expr a = (Expr)(stk.pop().getSecond());
+		Expr b = (Expr)(stk.pop().getSecond());
+		MapAcces mapAcces = new MapAcces(new SymInfo(-1,-1),b,a);
+		stk.push(new Pair(TyMetaExpr.getInstance(),mapAcces));
 	}
 
 	@Override
 	public void visit(MetaMapExtension n) {
-		// TODO Auto-generated method stub
+		n.getMap().accept(this);
+		n.getIndex().accept(this);
+		Expr a = (Expr)(stk.pop().getSecond());
+		Expr b = (Expr)(stk.pop().getSecond());
+		MapExtension mapExtension = new MapExtension(new SymInfo(-1,-1),b,a);
+		stk.push(new Pair(TyMetaExpr.getInstance(),mapExtension));
 
 	}
 
 	@Override
 	public void visit(MetaMod n) {
-		// TODO Auto-generated method stub
-
+		n.getLeft().accept(this);
+		n.getRigth().accept(this);
+		Expr a = (Expr)(stk.pop().getSecond());
+		Expr b = (Expr)(stk.pop().getSecond());
+		Mod mod = new Mod(new SymInfo(-1,-1),a,b);
+		stk.push(new Pair(TyMetaExpr.getInstance(),mod));}
 	}
 
 	@Override
 	public void visit(MetaMult n) {
-		// TODO Auto-generated method stub
-
+		n.getLeft().accept(this);
+		n.getRigth().accept(this);
+		Expr a = (Expr)(stk.pop().getSecond());
+		Expr b = (Expr)(stk.pop().getSecond());
+		Mult mult = new Mult(new SymInfo(-1,-1),a,b);
+		stk.push(new Pair(TyMetaExpr.getInstance(),mult));
 	}
+	
 
 	@Override
 	public void visit(MetaNot n) {
-		// TODO Auto-generated method stub
-
+		n.getExpr().accept(this);
+		Expr a = (Expr)(stk.pop().getSecond());
+		Not mod = new Not(new SymInfo(-1,-1),a);
+		stk.push(new Pair(TyMetaExpr.getInstance(),not));
 	}
+
+	
 
 	@Override
 	public void visit(MetaNotEq n) {
-		// TODO Auto-generated method stub
-
+		n.getLeft().accept(this);
+		n.getRigth().accept(this);
+		Expr a = (Expr)(stk.pop().getSecond());
+		Expr b = (Expr)(stk.pop().getSecond());
+		NotEq notEq = new NotEq(new SymInfo(-1,-1),a,b);
+		stk.push(new Pair(TyMetaExpr.getInstance(),notEq));
 	}
 
 	@Override
 	public void visit(MetaOr n) {
-		// TODO Auto-generated method stub
-
+		n.getLeft().accept(this);
+		n.getRigth().accept(this);
+		Expr a = (Expr)(stk.pop().getSecond());
+		Expr b = (Expr)(stk.pop().getSecond());
+		Or or = new Or(new SymInfo(-1,-1),a,b);
+		stk.push(new Pair(TyMetaExpr.getInstance(),or));
 	}
 
 	@Override
 	public void visit(MetaSub n) {
-		// TODO Auto-generated method stub
-
+		n.getLeft().accept(this);
+		n.getRigth().accept(this);
+		Expr a = (Expr)(stk.pop().getSecond());
+		Expr b = (Expr)(stk.pop().getSecond());
+		Sub sub = new Sub(new SymInfo(-1,-1),a,b);
+		stk.push(new Pair(TyMetaExpr.getInstance(),sub));
 	}
 
 	@Override
 	public void visit(MetaUMinus n) {
-		// TODO Auto-generated method stub
+		n.getExpr().accept(this);
+		Expr a = (Expr)(stk.pop().getSecond());
+		UMinus uMinus = new UMinus(new SymInfo(-1,-1),a);
+		stk.push(new Pair(TyMetaExpr.getInstance(),uMinus));
 	}
 
 	@Override
@@ -766,11 +834,8 @@ public class VMVisitor extends Visitor{
 	@Override
 	public void visit(UpdatePEG n) {
 		for(Pair<Attribute, Expr> assigs: n.getAssigs()) {
-			//assigs.getFirst().accept(this);
 			assigs.getSecond().accept(this);
-			//não sei descobri nome pelo assigs.getFirst()
 			vm.setValue(assigs.getFirst().getName(),stk.pop().getSecond());
-			break;
 		}
 	}
 
@@ -787,27 +852,27 @@ public class VMVisitor extends Visitor{
 	@Override
 	public void visit(TyFloat n) {
 		// TODO Auto-generated method stub
-		}
+	}
 
 	@Override
 	public void visit(TyGrammar n) {
 		// TODO Auto-generated method stub
-		}
+	}
 
 	@Override
 	public void visit(TyInt n) {
 		// TODO Auto-generated method stub
-		}
+	}
 
 	@Override
 	public void visit(TyLang n) {
 		// TODO Auto-generated method stub
-		}
+	}
 
 	@Override
 	public void visit(TyMap n) {
 		// TODO Auto-generated method stub
-			}
+	}
 
 	@Override
 	public void visit(TyMeta n) {

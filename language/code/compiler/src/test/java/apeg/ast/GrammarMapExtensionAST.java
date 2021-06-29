@@ -36,7 +36,7 @@ public class GrammarMapExtensionAST {
 		map = new MapLit(new SymInfo(0,0),new Pair[]{new Pair(key,value)});
 
 
-    index = new StrLit(new SymInfo(0,0), "x");
+    index = new StrLit(new SymInfo(0,0), "y");
     value2 = new IntLit(new SymInfo(0,0), 15);
 		mapE = new MapExtension(new SymInfo(0,0),map,index,value2);
 

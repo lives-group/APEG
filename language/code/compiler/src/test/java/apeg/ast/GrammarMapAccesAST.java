@@ -26,21 +26,24 @@ public class GrammarMapAccesAST {
 		List<Expr>syn = new ArrayList<Expr>();
 
 
-		Expr map,mapA,value,key,att,index,s;
+		Expr map,mapA,value,key,att,att2,index;
 
 		APEG leftPeg;
 
 		value = new IntLit(new SymInfo(0,0), 1);
+
 		key = new StrLit(new SymInfo(0,0),"x");
 		arg = new ArrayList<Expr>();
 		map = new MapLit(new SymInfo(0,0),new Pair[]{new Pair(key,value)});
 
 		index = new StrLit(new SymInfo(0,0), "x");
 		mapA = new MapAcces(new SymInfo(0,0),map,index);
+		att2 = new Attribute(new SymInfo(0,0),"z");
 
 		att = new Attribute(new SymInfo(0,0),"mapA");
 		ArrayList<Pair<Attribute,Expr>> arry = new ArrayList();
-		arry.add(new Pair(att,mapA));
+		arry.add(new Pair(att,map));
+		arry.add(new Pair(att2,mapA));
 		leftPeg = new UpdatePEG(new SymInfo(0,0),arry);
 
 

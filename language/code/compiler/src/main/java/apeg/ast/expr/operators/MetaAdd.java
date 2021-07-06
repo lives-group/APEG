@@ -8,7 +8,7 @@ public class MetaAdd extends MetaBinaryOP{
 
     private Add embeedNode;
     
-    public MetaAdd(SymInfo s,MetaExpr ml,MetaExpr mr){
+    public MetaAdd(SymInfo s,Expr ml,Expr mr){
         super(s,ml,mr);
         embeedNode = new Add(s,ml.getEmbeedNode(),mr.getEmbeedNode());
     }

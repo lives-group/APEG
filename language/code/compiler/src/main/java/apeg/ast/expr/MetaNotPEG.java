@@ -4,18 +4,27 @@ import apeg.visitor.Visitor;
 import apeg.ast.rules.APEG;
 import apeg.ast.rules.NotPEG;
 import apeg.util.SymInfo;
+import apeg.ast.MetaASTNode;
 
 public class MetaNotPEG extends MetaAPEG{
 
     private NotPEG embeedNode;
+    private Expr e;
     
-    public MetaNotPEG(SymInfo s,MetaAPEG e){
+    public MetaNotPEG(SymInfo s,Expr e){
         super(s);
-        embeedNode = new NotPEG(s,e.getEmbeedNode());
+        this.e = e;
+        if(e istanceof MetaASTNode){
+            embeedNode = new NotPEG(s,e.getEmbeedNode());
+        }
     }
+    
     public NotPEG getEmbeedNode(){
         return embeedNode;
     }
+    
+    public Expr getExpr(){ return e; }
+    
     public void accept(Visitor v){ v.visit(this); }
 
 }

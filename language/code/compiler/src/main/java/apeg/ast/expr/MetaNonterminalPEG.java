@@ -9,8 +9,10 @@ import apeg.util.SymInfo;
 public class MetaNonterminalPEG extends MetaAPEG{
 
     private NonterminalPEG embeedNode;
+    private List<Expr> args
+    private Expr name
     
-    public MetaNonterminalPEG(SymInfo s,String name,List<MetaExpr> args){
+    public MetaNonterminalPEG(SymInfo s,Expr name,List<Expr> args){
         super(s);
         List<Expr> args_T2 = new LinkedList<Expr>();
         for(MetaExpr i:args){

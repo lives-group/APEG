@@ -7,11 +7,13 @@ import apeg.util.SymInfo;
 public class MetaLitPEG extends MetaAPEG{
 
     private LitPEG embeedNode;
+    private Expr e
     
-    public MetaLitPEG(SymInfo s,String lit){
+    public MetaLitPEG(SymInfo s,e){
         super(s);
         embeedNode = new LitPEG(s,lit);
     }
+    
     public LitPEG getEmbeedNode(){
         return embeedNode;
     }

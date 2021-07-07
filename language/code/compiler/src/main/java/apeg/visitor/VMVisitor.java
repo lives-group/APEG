@@ -186,6 +186,10 @@ public class VMVisitor extends Visitor{
 
 	@Override
 	public void visit(MetaStrLit n) {
+         n.getExpr().accept(this);
+         // Vair dexiar uma String no topo da pilha.
+         // Lembre-se de terminar isso ! 
+         
 		// TODO Auto-generated method stub
 	}
 
@@ -516,12 +520,12 @@ public class VMVisitor extends Visitor{
 
 	@Override
 	public void visit(MetaAnd n) {
-		n.getLeft().accept(this);
-		n.getRigth().accept(this);
-		Expr a = (Expr)(stk.pop().getSecond());
-		Expr b = (Expr)(stk.pop().getSecond());
-		And and = new And(new SymInfo(-1,-1),a,b);
-		stk.push(new Pair(TyMetaExpr.getInstance(),and));
+// 		n.getLeft().accept(this);
+// 		n.getRigth().accept(this);
+// 		Expr a = (Expr)(stk.pop().getSecond());
+// 		Expr b = (Expr)(stk.pop().getSecond());
+// 		And and = new And(new SymInfo(-1,-1),a,b);
+// 		stk.push(new Pair(TyMetaExpr.getInstance(),and));
 	}
 
 	@Override
@@ -532,163 +536,163 @@ public class VMVisitor extends Visitor{
 
 	@Override
 	public void visit(MetaConcat n) {
-		n.getLeft().accept(this);
-		n.getRigth().accept(this);
-		Expr a = (Expr)(stk.pop().getSecond());
-		Expr b = (Expr)(stk.pop().getSecond());
-		Concat concat = new Concat(new SymInfo(-1,-1),a,b);
-		stk.push(new Pair(TyMetaExpr.getInstance(),concat));
+// 		n.getLeft().accept(this);
+// 		n.getRigth().accept(this);
+// 		Expr a = (Expr)(stk.pop().getSecond());
+// 		Expr b = (Expr)(stk.pop().getSecond());
+// 		Concat concat = new Concat(new SymInfo(-1,-1),a,b);
+// 		stk.push(new Pair(TyMetaExpr.getInstance(),concat));
 	}
 
 	@Override
 	public void visit(MetaDiv n) {
-		n.getLeft().accept(this);
-		n.getRigth().accept(this);
-		Expr a = (Expr)(stk.pop().getSecond());
-		Expr b = (Expr)(stk.pop().getSecond());
-		Div div = new Div(new SymInfo(-1,-1),a,b);
-		stk.push(new Pair(TyMetaExpr.getInstance(),div));
-	}
+// 		n.getLeft().accept(this);
+// 		n.getRigth().accept(this);
+// 		Expr a = (Expr)(stk.pop().getSecond());
+// 		Expr b = (Expr)(stk.pop().getSecond());
+// 		Div div = new Div(new SymInfo(-1,-1),a,b);
+// 		stk.push(new Pair(TyMetaExpr.getInstance(),div));
+    }
 
 	@Override
 	public void visit(MetaEquals n) {
-		n.getLeft().accept(this);
-		n.getRigth().accept(this);
-		Expr a = (Expr)(stk.pop().getSecond());
-		Expr b = (Expr)(stk.pop().getSecond());
-		Equals equals = new Equals(new SymInfo(-1,-1),a,b);
-		stk.push(new Pair(TyMetaExpr.getInstance(),equals));
+// 		n.getLeft().accept(this);
+// 		n.getRigth().accept(this);
+// 		Expr a = (Expr)(stk.pop().getSecond());
+// 		Expr b = (Expr)(stk.pop().getSecond());
+// 		Equals equals = new Equals(new SymInfo(-1,-1),a,b);
+// 		stk.push(new Pair(TyMetaExpr.getInstance(),equals));
 	}
 
 	@Override
 	public void visit(MetaGreater n) {
-		n.getLeft().accept(this);
-		n.getRigth().accept(this);
-		Expr a = (Expr)(stk.pop().getSecond());
-		Expr b = (Expr)(stk.pop().getSecond());
-		Greater greater = new Greater(new SymInfo(-1,-1),a,b);
-		stk.push(new Pair(TyMetaExpr.getInstance(),greater));
+// 		n.getLeft().accept(this);
+// 		n.getRigth().accept(this);
+// 		Expr a = (Expr)(stk.pop().getSecond());
+// 		Expr b = (Expr)(stk.pop().getSecond());
+// 		Greater greater = new Greater(new SymInfo(-1,-1),a,b);
+// 		stk.push(new Pair(TyMetaExpr.getInstance(),greater));
 
 	}
 
 	@Override
 	public void visit(MetaGreaterEq n) {
-		n.getLeft().accept(this);
-		n.getRigth().accept(this);
-		Expr a = (Expr)(stk.pop().getSecond());
-		Expr b = (Expr)(stk.pop().getSecond());
-		GreaterEq greaterEq = new GreaterEq(new SymInfo(-1,-1),a,b);
-		stk.push(new Pair(TyMetaExpr.getInstance(),greaterEq));
+// 		n.getLeft().accept(this);
+// 		n.getRigth().accept(this);
+// 		Expr a = (Expr)(stk.pop().getSecond());
+// 		Expr b = (Expr)(stk.pop().getSecond());
+// 		GreaterEq greaterEq = new GreaterEq(new SymInfo(-1,-1),a,b);
+// 		stk.push(new Pair(TyMetaExpr.getInstance(),greaterEq));
 	}
 
 	@Override
 	public void visit(MetaLess n) {
-		n.getLeft().accept(this);
-		n.getRigth().accept(this);
-		Expr a = (Expr)(stk.pop().getSecond());
-		Expr b = (Expr)(stk.pop().getSecond());
-		Less less = new Less(new SymInfo(-1,-1),a,b);
-		stk.push(new Pair(TyMetaExpr.getInstance(),less));
+// 		n.getLeft().accept(this);
+// 		n.getRigth().accept(this);
+// 		Expr a = (Expr)(stk.pop().getSecond());
+// 		Expr b = (Expr)(stk.pop().getSecond());
+// 		Less less = new Less(new SymInfo(-1,-1),a,b);
+// 		stk.push(new Pair(TyMetaExpr.getInstance(),less));
 	}
 
 	@Override
 	public void visit(MetaLessEq n) {
-		n.getLeft().accept(this);
-		n.getRigth().accept(this);
-		Expr a = (Expr)(stk.pop().getSecond());
-		Expr b = (Expr)(stk.pop().getSecond());
-		LessEq lessEq = new LessEq(new SymInfo(-1,-1),a,b);
-		stk.push(new Pair(TyMetaExpr.getInstance(),lessEq));
+// 		n.getLeft().accept(this);
+// 		n.getRigth().accept(this);
+// 		Expr a = (Expr)(stk.pop().getSecond());
+// 		Expr b = (Expr)(stk.pop().getSecond());
+// 		LessEq lessEq = new LessEq(new SymInfo(-1,-1),a,b);
+// 		stk.push(new Pair(TyMetaExpr.getInstance(),lessEq));
 	}
 
 	@Override
 	public void visit(MetaMapAcces n) {
-		n.getMap().accept(this);
-		n.getIndex().accept(this);
-		Expr a = (Expr)(stk.pop().getSecond());
-		Expr b = (Expr)(stk.pop().getSecond());
-		MapAcces mapAcces = new MapAcces(new SymInfo(-1,-1),b,a);
-		stk.push(new Pair(TyMetaExpr.getInstance(),mapAcces));
+// 		n.getMap().accept(this);
+// 		n.getIndex().accept(this);
+// 		Expr a = (Expr)(stk.pop().getSecond());
+// 		Expr b = (Expr)(stk.pop().getSecond());
+// 		MapAcces mapAcces = new MapAcces(new SymInfo(-1,-1),b,a);
+// 		stk.push(new Pair(TyMetaExpr.getInstance(),mapAcces));
 	}
 
 	@Override
 	public void visit(MetaMapExtension n) {
-		n.getMap().accept(this);
-		n.getIndex().accept(this);
-		Expr a = (Expr)(stk.pop().getSecond());
-		Expr b = (Expr)(stk.pop().getSecond());
-		MapExtension mapExtension = new MapExtension(new SymInfo(-1,-1),b,a);
-		stk.push(new Pair(TyMetaExpr.getInstance(),mapExtension));
+// 		n.getMap().accept(this);
+// 		n.getIndex().accept(this);
+// 		Expr a = (Expr)(stk.pop().getSecond());
+// 		Expr b = (Expr)(stk.pop().getSecond());
+// 		MapExtension mapExtension = new MapExtension(new SymInfo(-1,-1),b,a);
+// 		stk.push(new Pair(TyMetaExpr.getInstance(),mapExtension));
 
 	}
 
 	@Override
 	public void visit(MetaMod n) {
-		n.getLeft().accept(this);
-		n.getRigth().accept(this);
-		Expr a = (Expr)(stk.pop().getSecond());
-		Expr b = (Expr)(stk.pop().getSecond());
-		Mod mod = new Mod(new SymInfo(-1,-1),a,b);
-		stk.push(new Pair(TyMetaExpr.getInstance(),mod));}
+// 		n.getLeft().accept(this);
+// 		n.getRigth().accept(this);
+// 		Expr a = (Expr)(stk.pop().getSecond());
+// 		Expr b = (Expr)(stk.pop().getSecond());
+// 		Mod mod = new Mod(new SymInfo(-1,-1),a,b);
+// 		stk.push(new Pair(TyMetaExpr.getInstance(),mod));}
 	}
 
 	@Override
 	public void visit(MetaMult n) {
-		n.getLeft().accept(this);
-		n.getRigth().accept(this);
-		Expr a = (Expr)(stk.pop().getSecond());
-		Expr b = (Expr)(stk.pop().getSecond());
-		Mult mult = new Mult(new SymInfo(-1,-1),a,b);
-		stk.push(new Pair(TyMetaExpr.getInstance(),mult));
+// 		n.getLeft().accept(this);
+// 		n.getRigth().accept(this);
+// 		Expr a = (Expr)(stk.pop().getSecond());
+// 		Expr b = (Expr)(stk.pop().getSecond());
+// 		Mult mult = new Mult(new SymInfo(-1,-1),a,b);
+// 		stk.push(new Pair(TyMetaExpr.getInstance(),mult));
 	}
 	
 
 	@Override
 	public void visit(MetaNot n) {
-		n.getExpr().accept(this);
-		Expr a = (Expr)(stk.pop().getSecond());
-		Not mod = new Not(new SymInfo(-1,-1),a);
-		stk.push(new Pair(TyMetaExpr.getInstance(),not));
+// 		n.getExpr().accept(this);
+// 		Expr a = (Expr)(stk.pop().getSecond());
+// 		Not mod = new Not(new SymInfo(-1,-1),a);
+// 		stk.push(new Pair(TyMetaExpr.getInstance(),not));
 	}
 
 	
 
 	@Override
 	public void visit(MetaNotEq n) {
-		n.getLeft().accept(this);
-		n.getRigth().accept(this);
-		Expr a = (Expr)(stk.pop().getSecond());
-		Expr b = (Expr)(stk.pop().getSecond());
-		NotEq notEq = new NotEq(new SymInfo(-1,-1),a,b);
-		stk.push(new Pair(TyMetaExpr.getInstance(),notEq));
+// 		n.getLeft().accept(this);
+// 		n.getRigth().accept(this);
+// 		Expr a = (Expr)(stk.pop().getSecond());
+// 		Expr b = (Expr)(stk.pop().getSecond());
+// 		NotEq notEq = new NotEq(new SymInfo(-1,-1),a,b);
+// 		stk.push(new Pair(TyMetaExpr.getInstance(),notEq));
 	}
 
 	@Override
 	public void visit(MetaOr n) {
-		n.getLeft().accept(this);
-		n.getRigth().accept(this);
-		Expr a = (Expr)(stk.pop().getSecond());
-		Expr b = (Expr)(stk.pop().getSecond());
-		Or or = new Or(new SymInfo(-1,-1),a,b);
-		stk.push(new Pair(TyMetaExpr.getInstance(),or));
+// 		n.getLeft().accept(this);
+// 		n.getRigth().accept(this);
+// 		Expr a = (Expr)(stk.pop().getSecond());
+// 		Expr b = (Expr)(stk.pop().getSecond());
+// 		Or or = new Or(new SymInfo(-1,-1),a,b);
+// 		stk.push(new Pair(TyMetaExpr.getInstance(),or));
 	}
 
 	@Override
 	public void visit(MetaSub n) {
-		n.getLeft().accept(this);
-		n.getRigth().accept(this);
-		Expr a = (Expr)(stk.pop().getSecond());
-		Expr b = (Expr)(stk.pop().getSecond());
-		Sub sub = new Sub(new SymInfo(-1,-1),a,b);
-		stk.push(new Pair(TyMetaExpr.getInstance(),sub));
+// 		n.getLeft().accept(this);
+// 		n.getRigth().accept(this);
+// 		Expr a = (Expr)(stk.pop().getSecond());
+// 		Expr b = (Expr)(stk.pop().getSecond());
+// 		Sub sub = new Sub(new SymInfo(-1,-1),a,b);
+// 		stk.push(new Pair(TyMetaExpr.getInstance(),sub));
 	}
 
 	@Override
 	public void visit(MetaUMinus n) {
-		n.getExpr().accept(this);
-		Expr a = (Expr)(stk.pop().getSecond());
-		UMinus uMinus = new UMinus(new SymInfo(-1,-1),a);
-		stk.push(new Pair(TyMetaExpr.getInstance(),uMinus));
+// 		n.getExpr().accept(this);
+// 		Expr a = (Expr)(stk.pop().getSecond());
+// 		UMinus uMinus = new UMinus(new SymInfo(-1,-1),a);
+// 		stk.push(new Pair(TyMetaExpr.getInstance(),uMinus));
 	}
 
 	@Override
@@ -768,14 +772,21 @@ public class VMVisitor extends Visitor{
 
 	@Override
 	public void visit(NonterminalPEG n) {
+		 // Avaliar (ou visitar) os argumentos herdados e por na pilha.
+		 // Visitar rulepeg. 
+		
 		RulePEG b = hashRules.get(n.getName());
 		if(b==null){
 			throw new RuntimeException("Rule "+n.getName()+" not found");
 		}
-
-		vm.beginRule(n.getName(),new CTX(0));
-		b.getPeg().accept(this);
-		vm.endRule();
+		
+		// vm.beginRule(n.getName(),new CTX(0)); não vamos mexer com o contexto aqui !
+		b.accept(this);
+		// Tirar do topo da pilha os valores resultantes a aossicar com as variáveis. 
+		// de retorno do nonterminal
+		
+		//vm.endRule();
+		
 	}
 
 	@Override
@@ -814,10 +825,15 @@ public class VMVisitor extends Visitor{
 
 	@Override
 	public void visit(RulePEG n) {
-		//terminar aqui-contexto
+		// Montar o contexto tirando os valores do topo da pila.
+		// Visitar o coporp do rule;
+		
 		nti = env.get(n.getRuleName());
+		
 		vm.beginRule(n.getRuleName(),new CTX(0));
 		n.getPeg().accept(this);
+		// Visitar expressões sintetizados
+		// Empilhar os resultados.
 		vm.endRule();
 	}
 
@@ -841,6 +857,18 @@ public class VMVisitor extends Visitor{
 
 	@Override
 	public void visit(TyBool n) {
+		// TODO Auto-generated method stub
+	}
+	
+    public void visit(TyMetaPeg n) {
+		// TODO Auto-generated method stub
+	}
+	
+	public void visit(TyMetaExr n) {
+		// TODO Auto-generated method stub
+	}
+	
+	public void visit(TyLan n) {
 		// TODO Auto-generated method stub
 	}
 

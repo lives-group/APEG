@@ -6,20 +6,20 @@ import apeg.util.SymInfo;
 
 public abstract class MetaBinaryOP extends MetaExpr{
 
-    private MetaExpr left;
-    private MetaExpr right;
+    private Expr left;
+    private Expr right;
     
-    public MetaBinaryOP(SymInfo s,MetaExpr ml,MetaExpr mr){
+    public MetaBinaryOP(SymInfo s,Expr ml,Expr mr){
         super(s);
         this.left = ml;
         this.right = mr;
     }
-    public MetaExpr getLeft(){
+    public Expr getLeft(){
         return left;
     }
-    public MetaExpr getRight(){
+    public Expr getRight(){
         return right;
     }
-    public abstract Expr getEmbeedNode();
+
 
 }

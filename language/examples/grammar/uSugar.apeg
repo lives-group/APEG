@@ -6,7 +6,7 @@ apeg uSugar;
 -- l1 ++ l2
 -- l !! int
 
--- Sintaxe dos operadores de mapa
+-- Sintaxe dos operadores de mapa. Tipo :: String -> Valor
 -- mapeamento vazio: {: :} 
 -- literal: {: s1 -> v1, s2 -> v2, s3 -> v3 :}
 
@@ -14,6 +14,15 @@ apeg uSugar;
 -- acesso:  m[n]
 
 -- Sintaxe para anotar de tipo de mapas: {type} ou : type :
+
+/*
+map :
+  n<{: "abc" -> 10, "xyz" -> 20 :}>;
+
+n[{int} m] :
+  s=_* {? m[s] == 10 || m[s] == 20};
+*/
+
 
 -- Sintaxe para gramatica
 -- Vazia: $

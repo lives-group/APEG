@@ -773,7 +773,7 @@ public class VMVisitor extends Visitor{
 	@Override
 	public void visit(NonterminalPEG n) {
 		// Avaliar (ou visitar) os argumentos herdados e por na pilha.
-		for(List<Expr e: n.getArgs()){
+		for(Expr e: n.getArgs()){
 			e.accept(this);
 		}
 		// Visitar rulepeg. 
@@ -827,13 +827,14 @@ public class VMVisitor extends Visitor{
 		// Montar o contexto tirando os valores do topo da pila.
 		// Visitar o coporp do rule;
 		nti = env.get(n.getRuleName());
-		//CTX ctx = new CTX();
+		CTX ctx = new CTX(nti.getSig().getNumParams()+nti.getLocals().getNames().size());
 		for (i=nti.getSig().getNumInherited();i>0;i--) {
-			vm.setValue(nti.getSig().getReturnAt(i).getName(),stk.pop().getSecond());
+			ctx.writeValue(nti.getSig().getVType(i).getName(),stk.pop().getSecond());
 		}
-
-		vm.beginRule(n.getRuleName(),new CTX(0));
-		n.getPeg().accept(this);
+		vm.beginRule(n.getRuleName(),ctx);
+		for(Expr e : n.getSyn()){
+		e.accept(this);	
+		}
 		// Visitar expressões sintetizados
 		// Empilhar os resultados.
 		vm.endRule();

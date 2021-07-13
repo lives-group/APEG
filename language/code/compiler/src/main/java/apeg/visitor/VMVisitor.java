@@ -772,21 +772,20 @@ public class VMVisitor extends Visitor{
 
 	@Override
 	public void visit(NonterminalPEG n) {
-		 // Avaliar (ou visitar) os argumentos herdados e por na pilha.
-		 // Visitar rulepeg. 
-		
+		// Avaliar (ou visitar) os argumentos herdados e por na pilha.
+		for(Expr e: n.getArgs()){
+			e.accept(this);
+		}
+		// Visitar rulepeg. 
 		RulePEG b = hashRules.get(n.getName());
 		if(b==null){
 			throw new RuntimeException("Rule "+n.getName()+" not found");
 		}
-		
-		// vm.beginRule(n.getName(),new CTX(0)); não vamos mexer com o contexto aqui !
 		b.accept(this);
-		// Tirar do topo da pilha os valores resultantes a aossicar com as variáveis. 
-		// de retorno do nonterminal
-		
-		//vm.endRule();
-		
+		//os ultimos serao os primeiros
+		for (i=nti.getSig().getNumSintetized();i>0;i--) {
+			vm.setValue(nti.getSig().getReturnAt(i).getName(),stk.pop().getSecond());
+		}
 	}
 
 	@Override
@@ -827,11 +826,15 @@ public class VMVisitor extends Visitor{
 	public void visit(RulePEG n) {
 		// Montar o contexto tirando os valores do topo da pila.
 		// Visitar o coporp do rule;
-		
 		nti = env.get(n.getRuleName());
-		
-		vm.beginRule(n.getRuleName(),new CTX(0));
-		n.getPeg().accept(this);
+		CTX ctx = new CTX(nti.getSig().getNumParams()+nti.getLocals().getNames().size());
+		for (i=nti.getSig().getNumInherited();i>0;i--) {
+			ctx.writeValue(nti.getSig().getVType(i).getName(),stk.pop().getSecond());
+		}
+		vm.beginRule(n.getRuleName(),ctx);
+		for(Expr e : n.getSyn()){
+		e.accept(this);	
+		}
 		// Visitar expressões sintetizados
 		// Empilhar os resultados.
 		vm.endRule();

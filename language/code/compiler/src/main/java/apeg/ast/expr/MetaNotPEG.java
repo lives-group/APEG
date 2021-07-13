@@ -8,19 +8,11 @@ import apeg.ast.MetaASTNode;
 
 public class MetaNotPEG extends MetaAPEG{
 
-    private NotPEG embeedNode;
     private Expr e;
     
     public MetaNotPEG(SymInfo s,Expr e){
         super(s);
         this.e = e;
-        if(e istanceof MetaASTNode){
-            embeedNode = new NotPEG(s,e.getEmbeedNode());
-        }
-    }
-    
-    public NotPEG getEmbeedNode(){
-        return embeedNode;
     }
     
     public Expr getExpr(){ return e; }

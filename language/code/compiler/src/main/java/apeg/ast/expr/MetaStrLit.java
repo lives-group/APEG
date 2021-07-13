@@ -1,7 +1,7 @@
 package apeg.ast.expr;
 import apeg.visitor.Visitor;
 import apeg.util.SymInfo;
-import apeg.ast.MetaASTNode
+import apeg.ast.MetaASTNode;
 
 public class MetaStrLit extends MetaExpr{
 

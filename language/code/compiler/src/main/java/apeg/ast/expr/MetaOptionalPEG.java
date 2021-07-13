@@ -9,16 +9,15 @@ import apeg.ast.MetaASTNode;
 public class MetaOptionalPEG extends MetaAPEG{
 
     private OptionalPEG embeedNode;
+    private Expr e;
     
     public MetaOptionalPEG(SymInfo s,Expr e){
         super(s);
-        if(e istanceof MetaASTNode){
-            embeedNode = new OptionalPEG(s,e.getEmbeedNode());
-        }
+        this.e = e;
     }
-    public OptionalPEG getEmbeedNode(){
-        return embeedNode;
-    }
+    
+    public Expr getExpr(){ return e;}
+    
     public void accept(Visitor v){ v.visit(this); }
 
 }

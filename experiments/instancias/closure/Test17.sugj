@@ -1,0 +1,8 @@
+package test;
+
+import javaclosure.Syntax;
+import javaclosure.Transformation;
+
+public class Test17 {
+	private #int (char) p = #int(char c) {return c;};
+}

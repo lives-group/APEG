@@ -1,0 +1,9 @@
+package test;
+
+import pair.Pair;
+
+public class Test20 {
+  private (String,Integer) p = ("12", 34);
+}
+
+

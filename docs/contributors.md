@@ -86,13 +86,13 @@ The tool now has two modes of execution: inter or gen. Mode Inter is the interpr
 and is used for interpreting an apeg file while mode gen is used for generating a java parser implementation.
 To interpret an apeg file use the following command: 
 
->mvn exec:java@inter -Dgrammar="grammar01.apeg" -Dinput="inputAPEGCalc1.txt"
+>mvn exec:java@inter -Dgrammar="grammar01.apeg" -Dinput="input.txt"
 
 The -Dgrammar="grammar01.apeg" paramter instruct the maven to pass the addres of the file  grammar01.apeg,
 located at _language/examples/grammar/_, as one parameter to the APEG tool. We configured maven to always look 
 at _language/examples/grammar/_ when  looking for an APEG grammar file. 
 
-The -Dinput="inputAPEGCalc1.txt" is tha name of the input file to be feed to the interpreted parser,
+The -Dinput="input.txt" is tha name of the input file to be feed to the interpreted parser,
 located at _language/examples/inputs/_. We configured maven to always look 
 at _language/examples/inputs/_ when  looking for an input file. 
 

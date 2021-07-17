@@ -594,7 +594,7 @@ public interface ASTFactory {
 	 * 			meta expression right
 	 * @return meta add node
 	 */
-	public MetaAdd newMetaAdd(SymInfo s,MetaExpr ml,MetaExpr mr);
+	public MetaAdd newMetaAdd(SymInfo s,Expr ml,Expr mr);
 	/**
 	 * 
 	 * @param s
@@ -605,7 +605,7 @@ public interface ASTFactory {
 	 * 			meta expression right
 	 * @return meta and node
 	 */
-	public MetaAnd newMetaAnd(SymInfo s,MetaExpr ml,MetaExpr mr);
+	public MetaAnd newMetaAnd(SymInfo s,Expr ml,Expr mr);
 	
 	/**
 	 * 
@@ -617,7 +617,7 @@ public interface ASTFactory {
 	 * 			meta expression right
 	 * @return meta compose node
 	 */
-	public MetaCompose newMetaCompose(SymInfo s,MetaExpr ml,MetaExpr mr);
+	public MetaCompose newMetaCompose(SymInfo s,Expr ml,Expr mr);
 	/**
 	 * 
 	 * @param s
@@ -628,7 +628,7 @@ public interface ASTFactory {
 	 * 			meta expression right
 	 * @return meta concat node
 	 */
-	public MetaConcat newMetaConcat(SymInfo s,MetaExpr ml,MetaExpr mr);
+	public MetaConcat newMetaConcat(SymInfo s,Expr ml,Expr mr);
 	/**
 	 * 
 	 * @param s
@@ -639,7 +639,7 @@ public interface ASTFactory {
 	 * 			meta expression right
 	 * @return meta div node
 	 */
-	public MetaDiv newMetaDiv(SymInfo s,MetaExpr ml,MetaExpr mr);
+	public MetaDiv newMetaDiv(SymInfo s,Expr ml,Expr mr);
 	/**
 	 * 
 	 * @param s
@@ -650,7 +650,7 @@ public interface ASTFactory {
 	 * 			meta expression right
 	 * @return meta equals node
 	 */
-	public MetaEquals newMetaEquals(SymInfo s,MetaExpr ml,MetaExpr mr);
+	public MetaEquals newMetaEquals(SymInfo s,Expr ml,Expr mr);
 	/**
 	 * 
 	 * @param s
@@ -661,7 +661,7 @@ public interface ASTFactory {
 	 * 			meta expression right
 	 * @return meta greater node
 	 */
-	public MetaGreater newMetaGreater(SymInfo s,MetaExpr ml,MetaExpr mr);
+	public MetaGreater newMetaGreater(SymInfo s,Expr ml,Expr mr);
 	/**
 	 * 
 	 * @param s
@@ -672,7 +672,7 @@ public interface ASTFactory {
 	 * 			meta expression right
 	 * @return meta greater-equals node
 	 */
-	public MetaGreaterEq newMetaGreaterEq(SymInfo s,MetaExpr ml,MetaExpr mr);
+	public MetaGreaterEq newMetaGreaterEq(SymInfo s,Expr ml,Expr mr);
 	/**
 	 * 
 	 * @param s
@@ -683,7 +683,7 @@ public interface ASTFactory {
 	 * 			meta expression right
 	 * @return meta less node
 	 */
-	public MetaLess newMetaLess(SymInfo s,MetaExpr ml,MetaExpr mr);
+	public MetaLess newMetaLess(SymInfo s,Expr ml,Expr mr);
 	/**
 	 * 
 	 * @param s
@@ -694,7 +694,7 @@ public interface ASTFactory {
 	 * 			meta expression right
 	 * @return meta less-equals node
 	 */
-	public MetaLessEq newMetaLessEq(SymInfo s,MetaExpr ml,MetaExpr mr);
+	public MetaLessEq newMetaLessEq(SymInfo s,Expr ml,Expr mr);
 	/**
 	 * 
 	 * @param s
@@ -725,7 +725,7 @@ public interface ASTFactory {
 	 * 			meta expression right
 	 * @return
 	 */
-	public MetaMod newMetaMod(SymInfo s,MetaExpr ml,MetaExpr mr);    
+	public MetaMod newMetaMod(SymInfo s,Expr ml,Expr mr);    
 
         /**
 	 * 
@@ -737,7 +737,7 @@ public interface ASTFactory {
 	 * 			meta expression right
 	 * @return
 	 */
-	public MetaMult newMetaMult(SymInfo s,MetaExpr ml,MetaExpr mr);
+	public MetaMult newMetaMult(SymInfo s,Expr ml,Expr mr);
 
 	/**
 	 * 
@@ -749,7 +749,7 @@ public interface ASTFactory {
 	 * 			meta expression right
 	 * @return meta not-equals node
 	 */
-	public MetaNotEq newMetaNotEq(SymInfo s,MetaExpr ml,MetaExpr mr);
+	public MetaNotEq newMetaNotEq(SymInfo s,Expr ml,Expr mr);
 	/**
 	 * 
 	 * @param s
@@ -760,7 +760,7 @@ public interface ASTFactory {
 	 * 			meta expression right
 	 * @return meta or node
 	 */
-	public MetaOr newMetaOr(SymInfo s,MetaExpr ml,MetaExpr mr);
+	public MetaOr newMetaOr(SymInfo s,Expr ml,Expr mr);
 	/**
 	 * 
 	 * @param s
@@ -771,7 +771,7 @@ public interface ASTFactory {
 	 * 			meta expression right
 	 * @return meta Sub node
 	 */
-	public MetaSub newMetaSub(SymInfo s,MetaExpr ml,MetaExpr mr);
+	public MetaSub newMetaSub(SymInfo s,Expr ml,Expr mr);
 
 	/**
 	 * 
@@ -781,7 +781,7 @@ public interface ASTFactory {
 	 * 			a meta parsing expression
 	 * @return meta and peg node
 	 */
-	public MetaAndPEG newMetaAndPEG(SymInfo s,MetaAPEG e);
+	public MetaAndPEG newMetaAndPEG(SymInfo s,Expr e);
 	/**
 	 * 
 	 * @param s
@@ -797,7 +797,7 @@ public interface ASTFactory {
 	 * 				attribute's name
 	 * @return meta attribute node
 	 */
-	public MetaAttribute newMetaAttribute(SymInfo s,String name);
+	public MetaAttribute newMetaAttribute(SymInfo s,Expr name);
 	/**
 	 * 
 	 * @param s
@@ -807,7 +807,7 @@ public interface ASTFactory {
 	 * 			a meta expression
 	 * @return meta bind peg node
 	 */
-	public MetaBindPEG newMetaBindPEG(SymInfo s, Attribute attribute,MetaAPEG p);
+	public MetaBindPEG newMetaBindPEG(SymInfo s, Expr attribute,Expr p);
 	/**
 	 * 
 	 * @param s
@@ -816,7 +816,7 @@ public interface ASTFactory {
 	 * 				a boolean value
 	 * @return meta boolean literal node
 	 */
-	public MetaBoolLit newMetaBoolLit(SymInfo s,boolean value);
+	public MetaBoolLit newMetaBoolLit(SymInfo s,Expr value);
 	/**
 	 * 
 	 * @param s
@@ -825,7 +825,7 @@ public interface ASTFactory {
 	 * 				 a char value
 	 * @return meta char literal node
 	 */
-	public MetaCharLit newMetaCharLit(SymInfo s,char value);
+	public MetaCharLit newMetaCharLit(SymInfo s,Expr value);
 	/** 
 	 * 
 	 * @param s
@@ -834,7 +834,7 @@ public interface ASTFactory {
 	 * 		a char interval
 	 * @return a meta choice list
 	 */
-	public MetaChoiceList newMetaChoiceList(SymInfo s,CharInterval i);
+	public MetaChoiceList newMetaChoiceList(SymInfo s,Expr i);
 	/** 
 	 * 
 	 * @param s
@@ -845,7 +845,7 @@ public interface ASTFactory {
 	 * 				right-hand side parsing expression
 	 * @return meta choice peg node
 	 */
-	public MetaChoicePEG newMetaChoicePEG(SymInfo s,MetaAPEG leftPEG,MetaAPEG rightPEG);
+	public MetaChoicePEG newMetaChoicePEG(SymInfo s,Expr leftPEG,Expr rightPEG);
 	/**
 	 * 
 	 * @param s
@@ -854,7 +854,7 @@ public interface ASTFactory {
 	 * 			a meta expression
 	 * @return a meta constraint peg node
 	 */
-	public MetaConstraintPEG newMetaConstraintPEG(SymInfo s,MetaExpr e);
+	public MetaConstraintPEG newMetaConstraintPEG(SymInfo s,Expr e);
 	/**
 	 * 
 	 * @param s
@@ -863,7 +863,7 @@ public interface ASTFactory {
 	 * 				a float value
 	 * @return meta float literal node
 	 */
-	public MetaFloatLit newMetaFloatLit(SymInfo s,float value);
+	public MetaFloatLit newMetaFloatLit(SymInfo s,Expr value);
 	/**
 	 * 
 	 * @param s
@@ -872,7 +872,7 @@ public interface ASTFactory {
 	 * 			a int value
 	 * @return meta int literal node
 	 */
-	public MetaIntLit newMetaIntLit(SymInfo s,int value);
+	public MetaIntLit newMetaIntLit(SymInfo s,Expr value);
 	/**
 	 * 
 	 * @param s
@@ -881,7 +881,7 @@ public interface ASTFactory {
 	 * 			a meta parsing expression
 	 * @return meta star klenee peg node
 	 */
-	public MetaKleenePEG newMetaKleenePEG(SymInfo s,MetaAPEG e);
+	public MetaKleenePEG newMetaKleenePEG(SymInfo s,Expr e);
 	/**
 	 * 
 	 * @param s
@@ -890,7 +890,7 @@ public interface ASTFactory {
 	 * 			
 	 * @return meta literal peg node
 	 */
-	public MetaLitPEG newMetaLitPEG(SymInfo s,String lit);
+	public MetaLitPEG newMetaLitPEG(SymInfo s,Expr lit);
 	/**
 	 * 
 	 * @param s
@@ -898,7 +898,7 @@ public interface ASTFactory {
 	 * @param assocs
 	 * @return a meta map literal node
 	 */
-	public MetaMapLit newMetaMapLit(SymInfo s,Pair<Expr,Expr>[] assocs);
+	public MetaMapLit newMetaMapLit(SymInfo s,Expr assocs);
 	/**
 	 * 
 	 * @param s
@@ -909,7 +909,7 @@ public interface ASTFactory {
 	 * 			set of nonterminal's arguments
 	 * @return meta nonterminal peg node
 	 */
-	public MetaNonterminalPEG newMetaNonterminalPEG(SymInfo s,String name,List<MetaExpr> args);
+	public MetaNonterminalPEG newMetaNonterminalPEG(SymInfo s,Expr name,Expr args);
 	/**
 	 * 
 	 * @param s
@@ -918,7 +918,7 @@ public interface ASTFactory {
 	 * 			a meta expression
 	 * @return meta not node
 	 */
-	public MetaNot newMetaNot(SymInfo s,MetaExpr e);
+	public MetaNot newMetaNot(SymInfo s,Expr e);
 	/**
 	 * 
 	 * @param s
@@ -927,7 +927,7 @@ public interface ASTFactory {
 	 * 			a meta parsing expression
 	 * @return meta not peg node
 	 */
-    public MetaNotPEG newMetaNotPEG(SymInfo s,MetaAPEG e);
+    public MetaNotPEG newMetaNotPEG(SymInfo s,Expr e);
     /**
      * 
      * @param s
@@ -936,7 +936,7 @@ public interface ASTFactory {
      * 			a meta parsing expression
      * @return meta optional peg node
      */
-    public MetaOptionalPEG newMetaOptionalPEG(SymInfo s,MetaAPEG e);
+    public MetaOptionalPEG newMetaOptionalPEG(SymInfo s,Expr e);
     /**
      * 
      * @param s
@@ -945,7 +945,7 @@ public interface ASTFactory {
      * 			a meta parsing expression
      * @return a meta plus klenee node
      */
-    public MetaPKleene newMetaPKleene(SymInfo s,MetaAPEG e);
+    public MetaPKleene newMetaPKleene(SymInfo s,Expr e);
     /**
      * 
      * @param s
@@ -962,7 +962,7 @@ public interface ASTFactory {
      * 			set of meta parsing expression
      * @return
      */
-    public MetaRulePEG newMetaRulePEG(SymInfo s,String ruleName,RulePEG.Annotation anno,List<Pair<MetaType,String>> inh,List<MetaExpr> syn,MetaAPEG peg);
+    public MetaRulePEG newMetaRulePEG(SymInfo s,Expr ruleName,Expr anno,Expr inh,Expr syn,Expr peg);
     /**
      * 
      * @param s
@@ -971,7 +971,7 @@ public interface ASTFactory {
      * 			set of meta parsing expression
      * @return meta sequence peg node
      */
-	public MetaSeqPEG newMetaSeqPEG(SymInfo s,MetaAPEG[] p);
+	public MetaSeqPEG newMetaSeqPEG(SymInfo s,Expr p);
 	/**
 	 * 
 	 * @param s
@@ -980,7 +980,7 @@ public interface ASTFactory {
 	 * 			a string value
 	 * @return meta string literal node
 	 */
-	public MetaStrLit newMetaStrLit(SymInfo s,String value);
+	public MetaStrLit newMetaStrLit(SymInfo s,Expr value);
 	/**
 	 * 
 	 * @param s
@@ -1030,7 +1030,7 @@ public interface ASTFactory {
 	 * @param tyParameter
 	 * @return meta map node
 	 */
-	public MetaTyMap newMetaTyMap(SymInfo s,MetaType tyParameter);
+	public MetaTyMap newMetaTyMap(SymInfo s,Expr tyParameter);
 	/**
 	 * 
 	 * @param s
@@ -1053,7 +1053,7 @@ public interface ASTFactory {
 	 * 			meta expression
 	 * @return meta unary minus node
 	 */
-	public MetaUMinus newMetaUMinus(SymInfo s,MetaExpr e);
+	public MetaUMinus newMetaUMinus(SymInfo s,Expr e);
 	/** 
 	 * 
 	 * @param s
@@ -1062,7 +1062,7 @@ public interface ASTFactory {
 	 * 				set of assignments
 	 * @return meta update peg node
 	 */
-	public MetaUpdatePEG newMetaUpdatePEG(SymInfo s,List<Pair<MetaAttribute,MetaExpr>> assigs);
+	public MetaUpdatePEG newMetaUpdatePEG(SymInfo s,Expr assigs);
 	/**
 	 * 
 	 * @param s
@@ -1071,7 +1071,7 @@ public interface ASTFactory {
 	 * 			meta var's name
 	 * @return meta var node
 	 */
-	public MetaVar newMetaVar(SymInfo s,String name);
+	public MetaVar newMetaVar(SymInfo s,Expr name);
 
 
 	/*------------------------------------------------------

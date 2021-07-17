@@ -6,11 +6,9 @@ import apeg.ast.expr.MetaExpr;
 
 public class MetaNotEq extends MetaBinaryOP{
 
-    
-    public MetaNotEq(SymInfo s,MetaExpr ml,MetaExpr mr){
+   public MetaNotEq(SymInfo s,Expr ml,Expr mr){
         super(s,ml,mr);
     }
-
     public void accept(Visitor v){ v.visit(this); }
 
 }

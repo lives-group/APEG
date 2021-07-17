@@ -5,14 +5,14 @@ import apeg.ast.MetaASTNode;
 
 public class MetaStrLit extends MetaExpr{
 
-    private Expr v;
+    private Expr e;
     
-    public MetaStrLit(SymInfo s,Expr value){
+    public MetaStrLit(SymInfo s,Expr e){
         super(s);
-        v = value;
+        this.e = e;
     }
     
-    public Expr getExpr(){ return v; }
+    public Expr getExpr(){ return e; }
     
     public void accept(Visitor v){ v.visit(this); }
 }

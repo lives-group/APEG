@@ -7,7 +7,6 @@ import apeg.ast.MetaASTNode;
 
 public class MetaNot extends MetaExpr{
 
-
     private Expr e;
     
     public MetaNot(SymInfo s,Expr e){

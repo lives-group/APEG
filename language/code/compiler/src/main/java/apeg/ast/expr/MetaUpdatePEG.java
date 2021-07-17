@@ -9,19 +9,15 @@ import apeg.util.SymInfo;
 
 public class MetaUpdatePEG extends MetaAPEG{
 
-    private UpdatePEG embeedNode;
+    private Expr e;
     
-    public MetaUpdatePEG(SymInfo s,List<Pair<MetaAttribute,MetaExpr>> assigs){
+    public MetaUpdatePEG(SymInfo s,Expr e){
         super(s);
-        List<Pair<Attribute,Expr>> assigs_T1 = new LinkedList<Pair<Attribute,Expr>>();
-        for(Pair<MetaAttribute,MetaExpr> i:assigs){
-            assigs_T1.add( new  Pair<Attribute,Expr>(i.getFirst().getEmbeedNode(),i.getSecond().getEmbeedNode()));
-        }
-        embeedNode = new UpdatePEG(s,assigs_T1);
+        this.e = e;
     }
-    public UpdatePEG getEmbeedNode(){
-        return embeedNode;
-    }
+    
+    public Expr getPegExpr(){ return e;}
+    
     public void accept(Visitor v){ v.visit(this); }
 
 }

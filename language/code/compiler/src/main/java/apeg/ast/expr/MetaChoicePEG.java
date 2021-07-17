@@ -7,14 +7,18 @@ import apeg.util.SymInfo;
 
 public class MetaChoicePEG extends MetaAPEG{
 
-    private ChoicePEG embeedNode;
+    private Expr leftPeg,rightPeg;
     
-    public MetaChoicePEG(SymInfo s,MetaAPEG leftPeg,MetaAPEG rightPeg){
+    public MetaChoicePEG(SymInfo s,Expr leftPeg,Expr rightPeg){
         super(s);
-        embeedNode = new ChoicePEG(s,leftPeg.getEmbeedNode(),rightPeg.getEmbeedNode());
+        this.leftPeg = leftPeg;
+        this.rightPeg = rightPeg;
     }
-    public ChoicePEG getEmbeedNode(){
-        return embeedNode;
+    public Expr getRightPeg(){
+        return rightPeg;
+    }
+    public Expr getLeftPeg(){
+        return leftPeg;
     }
     public void accept(Visitor v){ v.visit(this); }
 

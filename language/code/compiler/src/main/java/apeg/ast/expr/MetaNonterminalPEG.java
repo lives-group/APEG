@@ -8,18 +8,19 @@ import apeg.util.SymInfo;
 
 public class MetaNonterminalPEG extends MetaAPEG{
 
-    private List<Expr> args;
-    private Expr name;
+    private Expr name,args;
     
-    public MetaNonterminalPEG(SymInfo s,Expr name,List<Expr> args){
+    public MetaNonterminalPEG(SymInfo s,Expr name,Expr args){
         super(s);
-        this.args = agrs;
         this.name = name;
-       
+        this.args = args;
     }
-    
-    public List<Expr> getExprArgs(){ return args;}
-    public Expr getExprName(){ return name;}
+    public Expr getName(){
+        return name;
+    }
+    public Expr getArgs(){
+        return args;
+    }
     
     public void accept(Visitor v){ v.visit(this); }
 

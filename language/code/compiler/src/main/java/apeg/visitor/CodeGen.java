@@ -372,6 +372,10 @@ public void visit(TyLang n){}
 public void visit(TyMap n){}
     @Override
 public void visit(TyMeta n){}
+  @Override
+public void visit(TyMetaExpr n){}
+    @Override
+public void visit(TyMetaPeg n){}
     @Override
 public void visit(TyString n){}
 

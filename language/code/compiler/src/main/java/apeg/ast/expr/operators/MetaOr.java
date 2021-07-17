@@ -6,14 +6,8 @@ import apeg.ast.expr.MetaExpr;
 
 public class MetaOr extends MetaBinaryOP{
 
-    private Or embeedNode;
-    
-    public MetaOr(SymInfo s,MetaExpr ml,MetaExpr mr){
+    public MetaOr(SymInfo s,Expr ml,Expr mr){
         super(s,ml,mr);
-        embeedNode = new Or(s,ml.getEmbeedNode(),mr.getEmbeedNode());
-    }
-    public Or getEmbeedNode(){
-        return embeedNode;
     }
     public void accept(Visitor v){ v.visit(this); }
 

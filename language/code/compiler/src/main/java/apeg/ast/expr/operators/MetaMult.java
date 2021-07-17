@@ -6,14 +6,8 @@ import apeg.ast.expr.MetaExpr;
 
 public class MetaMult extends MetaBinaryOP{
 
-    private Mult embeedNode;
-    
-    public MetaMult(SymInfo s,MetaExpr ml,MetaExpr mr){
+    public MetaMult(SymInfo s,Expr ml,Expr mr){
         super(s,ml,mr);
-        embeedNode = new Mult(s,ml.getEmbeedNode(),mr.getEmbeedNode());
-    }
-    public Mult getEmbeedNode(){
-        return embeedNode;
     }
     public void accept(Visitor v){ v.visit(this); }
 

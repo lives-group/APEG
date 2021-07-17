@@ -44,7 +44,7 @@ public class CTX{
           growContext(4);
       }
       p = p +1;
-      hashVar.put(var,context.length + p);
+      hashVar.put(var,p);
       writeValue(p,value);
     }
   }
@@ -95,6 +95,7 @@ public class CTX{
   }
 
    public String toString(){
+        int j = 0;
         String s = " =========== Context =========== \n";
         s += " ---- Hash table ---- \n";
         for(Entry<String,Integer> e : hashVar.entrySet()){
@@ -102,12 +103,14 @@ public class CTX{
         }
         s += " ------- x ------- \n";
         s += " ---- CTX Param ----\n";
-        for(int i =0; i < context.length; i++){
-           s += "    "+ i + " : " + context[i] + "\n";
+        for(int i =0; i < context.length; i++){           
+           s += "    "+ j + " : " + context[i] + "\n";
+           j++;
         }
         s += " ---- CTX Ext ----\n";
         for(int i =0; i < ext.length; i++){
-           s += "    "+ i + " : " + ext[i] + "\n";
+           s += "    "+ j + " : " + ext[i] + "\n";
+           j++;
         }
         s += " --x-x-x-x-x-x-x-x--\n";
         return s;

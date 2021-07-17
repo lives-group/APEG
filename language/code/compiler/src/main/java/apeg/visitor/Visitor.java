@@ -124,8 +124,9 @@ public abstract class Visitor {
     public abstract void visit(TyLang n);
     public abstract void visit(TyMap n);
     public abstract void visit(TyMeta n);
+    public abstract void visit(TyMetaExpr n);
+    public abstract void visit(TyMetaPeg n);
     public abstract void visit(TyString n);
-
     //Others
     public abstract void visit(Grammar n);
 }

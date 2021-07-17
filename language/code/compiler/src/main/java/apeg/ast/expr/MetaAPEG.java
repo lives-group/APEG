@@ -10,6 +10,6 @@ public abstract class MetaAPEG extends MetaASTNode{
     public MetaAPEG(SymInfo s){
         super(s);
     }
-    public abstract APEG getEmbeedNode();
+    //public abstract APEG getEmbeedNode();
 
 }

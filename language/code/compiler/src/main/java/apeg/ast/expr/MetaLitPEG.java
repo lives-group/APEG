@@ -8,13 +8,13 @@ public class MetaLitPEG extends MetaAPEG{
 
     private Expr e;
     
-    public MetaLitPEG(SymInfo s, Expr e){
+    public MetaLitPEG(SymInfo s,Expr e){
         super(s);
-        this.e =e; 
+        this.e = e;
     }
-    
-    public Expr getExpr(){return e; }
-    
+    public Expr getExpr(){
+        return e;
+    }
     public void accept(Visitor v){ v.visit(this); }
 
 }

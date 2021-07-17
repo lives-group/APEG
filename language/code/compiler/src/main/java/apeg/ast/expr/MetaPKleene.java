@@ -7,15 +7,15 @@ import apeg.util.SymInfo;
 
 public class MetaPKleene extends MetaAPEG{
 
-    private PKleene embeedNode;
+    private Expr e;
     
-    public MetaPKleene(SymInfo s,MetaAPEG e){
+    public MetaPKleene(SymInfo s,Expr e){
         super(s);
-        embeedNode = new PKleene(s,e.getEmbeedNode());
+        this.e = e;
     }
-    public PKleene getEmbeedNode(){
-        return embeedNode;
-    }
+    
+    public Expr getPegExpr(){ return e;}
+
     public void accept(Visitor v){ v.visit(this); }
 
 }

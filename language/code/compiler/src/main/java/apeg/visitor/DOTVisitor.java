@@ -114,6 +114,8 @@ import apeg.ast.types.TyInt;
 import apeg.ast.types.TyLang;
 import apeg.ast.types.TyMap;
 import apeg.ast.types.TyMeta;
+import apeg.ast.types.TyMetaExpr;
+import apeg.ast.types.TyMetaPeg;
 import apeg.ast.types.TyString;
 import apeg.ast.types.Type;
 import apeg.util.Pair;
@@ -1286,6 +1288,17 @@ private STGroup groupTemplate;
 	public void visit(TyMeta n) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void visit(TyMetaExpr n) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void visit(TyMetaPeg n) {
+		// TODO Auto-generated method stub
+
 	}
 
 	@Override

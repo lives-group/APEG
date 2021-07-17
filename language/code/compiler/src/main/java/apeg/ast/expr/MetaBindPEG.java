@@ -8,14 +8,18 @@ import apeg.ast.expr.Attribute;
 
 public class MetaBindPEG extends MetaAPEG{
 
-    private BindPEG embeedNode;
+    private Expr att,p;
     
-    public MetaBindPEG(SymInfo s, Attribute attribute,MetaAPEG p){
+    public MetaBindPEG(SymInfo s,Expr att,Expr p){
         super(s);
-        embeedNode = new BindPEG(s,attribute,p.getEmbeedNode());
+        this.p = p;
+        this.att = att;
     }
-    public BindPEG getEmbeedNode(){
-        return embeedNode;
+    public Expr getExprAtt(){
+        return att;
+    }
+    public Expr getExprP(){
+        return p;
     }
     public void accept(Visitor v){ v.visit(this); }
 

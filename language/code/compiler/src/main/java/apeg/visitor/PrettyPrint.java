@@ -969,6 +969,18 @@ public class PrettyPrint extends Visitor{
 		// TODO Auto-generated method stub
 		
 	}
+	
+	@Override
+	public void visit(TyMetaExpr n) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(TyMetaPeg n) {
+		// TODO Auto-generated method stub
+		
+	}
 
 	@Override
 	public void visit(TyString n) {

@@ -13,22 +13,30 @@ import apeg.ast.*;
 
 public class MetaRulePEG extends MetaASTNode{
 
-    private RulePEG embeedNode;
+     private Expr ruleName,anno,inh,syn,peg;
     
-    public MetaRulePEG(SymInfo s,String ruleName,RulePEG.Annotation anno,List<Pair<MetaType,String>> inh,List<MetaExpr> syn,MetaAPEG peg){
+    public MetaRulePEG(SymInfo s,Expr ruleName,Expr anno,Expr inh,Expr syn,Expr peg){
         super(s);
-        List<Pair<Type,String>> inh_T3 = new LinkedList<Pair<Type,String>>();
-        for(Pair<MetaType,String> i:inh){
-            inh_T3.add( new  Pair<Type,String>(i.getFirst().getEmbeedNode(),i.getSecond()));
-        }
-        List<Expr> syn_T4 = new LinkedList<Expr>();
-        for(MetaExpr i:syn){
-            syn_T4.add(i.getEmbeedNode());
-        }
-        embeedNode = new RulePEG(s,ruleName,anno,inh_T3,syn_T4,peg.getEmbeedNode());
+        this.ruleName = ruleName;
+        this.anno = anno;
+        this.inh = inh;
+        this.syn = syn;
+        this.peg = peg;
     }
-    public RulePEG getEmbeedNode(){
-        return embeedNode;
+    public Expr getRuleName(){
+        return ruleName;
+    }
+    public Expr getAnno(){
+        return anno;
+    }
+    public Expr getInh(){
+        return inh;
+    }
+    public Expr getSyn(){
+        return syn;
+    }
+    public Expr getPeg(){
+        return peg;
     }
     public void accept(Visitor v){ v.visit(this); }
 

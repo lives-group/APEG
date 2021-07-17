@@ -6,13 +6,12 @@ import apeg.util.SymInfo;
 
 public abstract class MetaBinaryOP extends MetaExpr{
 
-    private Expr left;
-    private Expr right;
+    private Expr left,right;
     
-    public MetaBinaryOP(SymInfo s,Expr ml,Expr mr){
+    public MetaBinaryOP(SymInfo s,Expr left,Expr right){
         super(s);
-        this.left = ml;
-        this.right = mr;
+        this.left = left;
+        this.right = right;
     }
     public Expr getLeft(){
         return left;

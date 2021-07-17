@@ -6,14 +6,8 @@ import apeg.ast.expr.MetaExpr;
 
 public class MetaGreater extends MetaBinaryOP{
 
-    private Greater embeedNode;
-    
-    public MetaGreater(SymInfo s,MetaExpr ml,MetaExpr mr){
+    public MetaGreater(SymInfo s,Expr ml,Expr mr){
         super(s,ml,mr);
-        embeedNode = new Greater(s,ml.getEmbeedNode(),mr.getEmbeedNode());
-    }
-    public Greater getEmbeedNode(){
-        return embeedNode;
     }
     public void accept(Visitor v){ v.visit(this); }
 

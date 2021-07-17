@@ -788,6 +788,16 @@ public class TestVisitor extends Visitor{
 		// TODO Auto-generated method stub
 		System.out.println("Meta");
 	}
+	@Override
+	public void visit(TyMetaExpr n) {
+		// TODO Auto-generated method stub
+		System.out.println("MetaExpr");
+	}
+	@Override
+	public void visit(TyMetaPeg n) {
+		// TODO Auto-generated method stub
+		System.out.println("MetaPeg");
+	}
 
 	@Override
 	public void visit(TyString n) {

@@ -6,14 +6,8 @@ import apeg.ast.expr.MetaExpr;
 
 public class MetaEquals extends MetaBinaryOP{
 
-    private Equals embeedNode;
-    
-    public MetaEquals(SymInfo s,MetaExpr ml,MetaExpr mr){
+    public MetaEquals(SymInfo s,Expr ml,Expr mr){
         super(s,ml,mr);
-        embeedNode = new Equals(s,ml.getEmbeedNode(),mr.getEmbeedNode());
-    }
-    public Equals getEmbeedNode(){
-        return embeedNode;
     }
     public void accept(Visitor v){ v.visit(this); }
 

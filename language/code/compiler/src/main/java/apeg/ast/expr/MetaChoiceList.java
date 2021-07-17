@@ -7,14 +7,14 @@ import apeg.util.SymInfo;
 
 public class MetaChoiceList extends MetaAPEG{
 
-    private ChoiceList embeedNode;
+    private Expr e;
     
-    public MetaChoiceList(SymInfo s,CharInterval i){
+    public MetaChoiceList(SymInfo s,Expr e){
         super(s);
-        embeedNode = new ChoiceList(s,i);
+        this.e = e;
     }
-    public ChoiceList getEmbeedNode(){
-        return embeedNode;
+    public Expr getExpr(){
+        return e;
     }
     public void accept(Visitor v){ v.visit(this); }
 

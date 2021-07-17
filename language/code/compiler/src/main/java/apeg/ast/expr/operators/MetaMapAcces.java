@@ -6,14 +6,18 @@ import apeg.util.SymInfo;
 
 public class MetaMapAcces extends MetaExpr{
 
-    private MapAcces embeedNode;
+    private Expr map,index;
     
     public MetaMapAcces(SymInfo s,Expr map,Expr index){
         super(s);
-        embeedNode = new MapAcces(s,map,index);
+        this.map = map;
+        this.index = index;
     }
-    public MapAcces getEmbeedNode(){
-        return embeedNode;
+    public Expr getMap(){
+        return map;
+    }
+    public Expr getIndex(){
+        return index;
     }
     public void accept(Visitor v){ v.visit(this); }
 

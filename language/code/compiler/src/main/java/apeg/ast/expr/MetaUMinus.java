@@ -6,18 +6,15 @@ import apeg.util.SymInfo;
 
 public class MetaUMinus extends MetaExpr{
 
-    private UMinus embeedNode;
-    private MetaExpr e;
+    private Expr e;
     
-    public MetaUMinus(SymInfo s,MetaExpr e){
+    public MetaUMinus(SymInfo s,Expr e){
         super(s);
-        this.e =e;
-        
-        embeedNode = new UMinus(s,e.getEmbeedNode());
+        this.e = e;
     }
-    public UMinus getEmbeedNode(){
-        return embeedNode;
-    }
+    
+    public Expr getExpr(){ return e;}
+    
     public void accept(Visitor v){ v.visit(this); }
 
 }

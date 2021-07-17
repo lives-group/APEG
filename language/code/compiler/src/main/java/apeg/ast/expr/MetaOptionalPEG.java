@@ -8,7 +8,6 @@ import apeg.ast.MetaASTNode;
 
 public class MetaOptionalPEG extends MetaAPEG{
 
-    private OptionalPEG embeedNode;
     private Expr e;
     
     public MetaOptionalPEG(SymInfo s,Expr e){

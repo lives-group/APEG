@@ -6,15 +6,10 @@ import apeg.ast.expr.MetaExpr;
 
 public class MetaLessEq extends MetaBinaryOP{
 
-    private LessEq embeedNode;
-    
-    public MetaLessEq(SymInfo s,MetaExpr ml,MetaExpr mr){
+    public MetaLessEq(SymInfo s,Expr ml,Expr mr){
         super(s,ml,mr);
-        embeedNode = new LessEq(s,ml.getEmbeedNode(),mr.getEmbeedNode());
     }
-    public LessEq getEmbeedNode(){
-        return embeedNode;
-    }
+    
     public void accept(Visitor v){ v.visit(this); }
 
 }

@@ -1,15 +1,15 @@
 apeg rule;
 
-a:
+metodoA:
 
-c<0+1,z>
+metodoB<0+1,z>
 
 {x=z;}
 
 ;
 
 
-c[int x] returns w+1:
+metodoB[int x] returns w+1:
 
 {w = x;}
 

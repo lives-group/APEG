@@ -7,7 +7,7 @@ public class CTX{
   private Object[] context;
   private Object[] ext;
   private Hashtable<String,Integer> hashVar;
-  private int p;
+  private Integer p;
 
   public CTX(int tam){
     hashVar = new Hashtable<String,Integer>();
@@ -43,9 +43,10 @@ public class CTX{
       if( p >= ext.length){
           growContext(4);
       }
-      p = p +1;
-      hashVar.put(var,p);
-      writeValue(p,value);
+      //p = p +1;
+      hashVar.put(var,p+context.length);
+      writeValue(p+context.length,value);
+      p++;
     }
   }
 
@@ -55,7 +56,7 @@ public class CTX{
     if(i >= context.length){
         ext[i-context.length] = value;
     }else{
-        context[i]=value;
+         context[i]=value;
     }
   }
 

@@ -20,7 +20,9 @@ public class ApegVM {
       System.out.println(e);
     }
   }
-
+  public int size(){
+    return ctx.size();
+  }
   public boolean match(String s) throws IOException{
      lastResult = (page.match(s));
      return lastResult;
@@ -56,13 +58,10 @@ public class ApegVM {
      rule.push(n);
   }
 
-  public void endRule(/*boolean r*/){
-    System.out.println("\nRule: "+rule.peek().toString());
-    System.out.println(ctx.peek().toString());
-    
+  public CTX endRule(/*boolean r*/){
      page.unmark();
-     ctx.pop();
      rule.pop();
+     return ctx.pop(); 
   }
 
   public void beginAlt(){
@@ -91,7 +90,7 @@ public class ApegVM {
   public void retryAlt(){
      page.restore();
      ctx.pop();
-     ctx.push(ctx.peek().cloneContext());
+     //ctx.push(ctx.peek().cloneContext());
   }
 
   public void setValue(String n, Object v){
@@ -108,6 +107,10 @@ public class ApegVM {
 
   public Object getValue(int n){
     return ctx.peek().readValue(n);
+  }
+
+  public CTX getCTX(){
+    return ctx.peek();
   }
 
   public void restore(){
@@ -130,6 +133,10 @@ public class ApegVM {
 //     }
 //     return s;
 //   }
+
+  public void printStk(){
+    System.out.println(toString());
+  }
 
 
 

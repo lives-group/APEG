@@ -301,6 +301,9 @@ public class VMVisitor extends Visitor{
 		n.getRight().accept(this);
 		Pair<VType,Object> a = stk.pop();
 		Pair<VType,Object> b = stk.pop();
+		if(a.getFirst()==null){
+			System.out.println("\n"+stk.toString()+"\n"+n.getSymInfo().toString());
+		}
 		if(a.getFirst().getName().equals("int")){
 			stk.push(new Pair(VTyInt.getInstance(),(Integer)a.getSecond() + (Integer)b.getSecond()));
 		}else if(a.getFirst().getName().equals("float")){
@@ -827,7 +830,6 @@ public class VMVisitor extends Visitor{
 
 	@Override
 	public void visit(NonterminalPEG n) {
-		//System.out.println("cheguei no NonterminalPEG");
 		// Avaliar (ou visitar) os argumentos herdados e por na pilha.
 		NTInfo local = env.get(n.getName());
 		List<Expr> l = n.getArgs();
@@ -841,10 +843,17 @@ public class VMVisitor extends Visitor{
 		}
 		b.accept(this);
 		//os ultimos serao os primeiros
-		for (int i = local.getSig().getNumSintetized()+local.getSig().getNumInherited();i>local.getSig().getNumInherited();i--) {
-			vm.setValue(((Attribute)l.get(i-1)).getName(),stk.pop().getSecond());
-		}
+		System.out.println("Contexto atual do : "+n.getName()+"\n "+vm.getCTX().toString()+"\n"+vm.succeed());
+		System.out.println(stk.toString());
+		if(vm.succeed()){
+			for (int i = local.getSig().getNumSintetized()+local.getSig().getNumInherited();i>local.getSig().getNumInherited();i--) {
+				vm.setValue(((Attribute)l.get(i-1)).getName(),stk.pop().getSecond());
+			}		
+		}else{}
+		System.out.println("Contexto atual do : "+n.getName()+"\n "+vm.getCTX().toString()+"\n"+vm.succeed());
+		
 	}
+
 
 	@Override
 	public void visit(NotPEG n) {
@@ -882,26 +891,29 @@ public class VMVisitor extends Visitor{
 
 	@Override
 	public void visit(RulePEG n) {
+		CTX t1=null,t2;
+
 		// Montar o contexto tirando os valores do topo da pila.
 		// Visitar o coporp do rule;
-		//System.out.println("cheguei no rule");
 		nti = env.get(n.getRuleName());
-		CTX ctx = new CTX(nti.getSig().getNumParams());
-		//System.out.println(n.getRuleName()+"in \n "+ctx.toString());
-		
+		CTX ctx = new CTX(nti.getSig().getNumInherited());
 		for (int i=nti.getSig().getNumInherited();i>0;i--) {
-			ctx.writeValue(n.getInh().get(i-1).getSecond(),stk.pop().getSecond());
+			ctx.declareParam(n.getInh().get(i-1).getSecond(),i-1,stk.pop().getSecond());
 		}
-		//System.out.println(n.getRuleName()+"in \n "+ctx.toString());
+		
+		//System.out.println("Criando contexto para regra: "+n.getRuleName()+"\n  "+ctx.toString());
 		vm.beginRule(n.getRuleName(),ctx);
 		n.getPeg().accept(this);
-		for(Expr e : n.getSyn()){
-			e.accept(this);
-		}
-		//System.out.println(n.getRuleName()+"out \n "+ctx.toString());
+		if(vm.succeed()){
+			for(Expr e : n.getSyn()){
+				e.accept(this);
+			}
 		// Visitar expressões sintetizados
 		// Empilhar os resultados.
+		}else{}
 		vm.endRule();
+		
+
 	}
 
 	@Override
@@ -926,15 +938,15 @@ public class VMVisitor extends Visitor{
 	public void visit(TyBool n) {
 		// TODO Auto-generated method stub
 	}
-	
+
 	public void visit(TyMetaPeg n) {
 		// TODO Auto-generated method stub
 	}
-	
+
 	public void visit(TyMetaExpr n) {
 		// TODO Auto-generated method stub
 	}
-	
+
 	@Override
 	public void visit(TyChar n) {
 		// TODO Auto-generated method stub

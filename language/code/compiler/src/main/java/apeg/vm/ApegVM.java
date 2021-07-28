@@ -134,12 +134,6 @@ public class ApegVM {
 //     return s;
 //   }
 
-  public void printStk(){
-    System.out.println(toString());
-  }
-
-
-
-
+ 
 
 }

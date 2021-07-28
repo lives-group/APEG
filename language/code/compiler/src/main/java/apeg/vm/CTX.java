@@ -91,6 +91,11 @@ public class CTX{
     for(int i=0;i<context.length;i++){
       cl.context[i] = context[i];
     }
+    cl.ext = new Object[ext.length];
+    for(int i=0;i<ext.length;i++){
+      cl.ext[i] = ext[i];
+    }
+    cl.p = p;
     cl.hashVar = (Hashtable<String,Integer>)(hashVar.clone());
     return cl;
   }

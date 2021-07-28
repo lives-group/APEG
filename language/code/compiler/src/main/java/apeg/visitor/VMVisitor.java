@@ -301,19 +301,16 @@ public class VMVisitor extends Visitor{
 		n.getRight().accept(this);
 		Pair<VType,Object> a = stk.pop();
 		Pair<VType,Object> b = stk.pop();
-		if(a.getFirst()==null){
-			System.out.println("\n"+stk.toString()+"\n"+n.getSymInfo().toString());
-		}
-		if(a.getFirst().getName().equals("int")){
+		if(a.getFirst().match(VTyInt.getInstance())){
 			stk.push(new Pair(VTyInt.getInstance(),(Integer)a.getSecond() + (Integer)b.getSecond()));
-		}else if(a.getFirst().getName().equals("float")){
+		}else if(a.getFirst().match(VTyFloat.getInstance())){
 			stk.push(new Pair(VTyFloat.getInstance(),(Float)a.getSecond() + (Float)b.getSecond()));
-		}else if(a.getFirst().getName().equals("char")){
+		}else if(a.getFirst().match(VTyChar.getInstance())){
 			stk.push(new Pair(VTyString.getInstance(),(Character)b.getSecond() + (Character)a.getSecond()));
-		}else if(a.getFirst().getName().equals("string")){
+		}else if(a.getFirst().match(VTyString.getInstance())){
 			stk.push(new Pair(VTyString.getInstance(),(String)b.getSecond() + (String)a.getSecond()));
 		}else{
-			throw new RuntimeException("(" + n.getSymInfo().getLine() + "," + n.getSymInfo().getColumn() + ") Imcompatible operators for <=");
+			throw new RuntimeException("(" + n.getSymInfo().getLine() + "," + n.getSymInfo().getColumn() + ") Imcompatible operators for + "+a.getFirst().toString()+" , "+b.getFirst().toString());
 		}
 	}
 
@@ -339,9 +336,9 @@ public class VMVisitor extends Visitor{
 		n.getRight().accept(this);
 		Pair<VType,Object> a = stk.pop();
 		Pair<VType,Object> b = stk.pop();
-		if(a.getFirst().getName().equals("char")){
+		if(a.getFirst().match(VTyChar.getInstance())){
 			stk.push(new Pair(VTyString.getInstance(),(Character)b.getSecond() + (Character)a.getSecond()));
-		}else if(a.getFirst().getName().equals("string")){
+		}else if(a.getFirst().match(VTyString.getInstance())){
 			stk.push(new Pair(VTyString.getInstance(),(String)b.getSecond() + (String)a.getSecond()));
 		}else{
 			throw new RuntimeException("(" + n.getSymInfo().getLine() + "," + n.getSymInfo().getColumn() + ") Imcompatible operators for <=");
@@ -355,9 +352,9 @@ public class VMVisitor extends Visitor{
 		n.getRight().accept(this);
 		Pair<VType,Object> a = stk.pop();
 		Pair<VType,Object> b = stk.pop();
-		if(a.getFirst().getName().equals("int")){
+		if(a.getFirst().match(VTyInt.getInstance())){
 			stk.push(new Pair(VTyFloat.getInstance(),(Integer)b.getSecond() / (Integer)a.getSecond()));
-		}else if(a.getFirst().getName().equals("float")){
+		}else if(a.getFirst().match(VTyFloat.getInstance())){
 			stk.push(new Pair(VTyFloat.getInstance(),(Float)b.getSecond() / (Float)a.getSecond()));
 		}else{
 			throw new RuntimeException("(" + n.getSymInfo().getLine() + "," + n.getSymInfo().getColumn() + ") Imcompatible operators for <=");
@@ -371,13 +368,13 @@ public class VMVisitor extends Visitor{
 		Pair<VType,Object> a = stk.pop();
 		Pair<VType,Object> b = stk.pop();
 		Boolean bl;
-		if(a.getFirst().getName().equals("int")){
+		if(a.getFirst().match(VTyInt.getInstance())){
 			bl = (Integer)a.getSecond() == (Integer)b.getSecond();
-		}else if(a.getFirst().getName().equals("float")){
+		}else if(a.getFirst().match(VTyFloat.getInstance())){
 			bl = (Float)a.getSecond() == (Float)b.getSecond();
-		}else if(a.getFirst().getName().equals("char")){
+		}else if(a.getFirst().match(VTyChar.getInstance())){
 			bl = (Character)a.getSecond() == (Character)b.getSecond();
-		}else if(a.getFirst().getName().equals("string")){
+		}else if(a.getFirst().match(VTyString.getInstance())){
 			bl = ((String)a.getSecond()).compareTo((String)b.getSecond()) == 0;
 		}else{
 			throw new RuntimeException("(" + n.getSymInfo().getLine() + "," + n.getSymInfo().getColumn() + ") Imcompatible operators for <=");
@@ -392,13 +389,13 @@ public class VMVisitor extends Visitor{
 		Pair<VType,Object> a = stk.pop();
 		Pair<VType,Object> b = stk.pop();
 		Boolean bl;
-		if(a.getFirst().getName().equals("int")){
+		if(a.getFirst().match(VTyInt.getInstance())){
 			bl = (Integer)a.getSecond() > (Integer)b.getSecond();
-		}else if(a.getFirst().getName().equals("float")){
+		}else if(a.getFirst().match(VTyFloat.getInstance())){
 			bl = (Float)a.getSecond() > (Float)b.getSecond();
-		}else if(a.getFirst().getName().equals("char")){
+		}else if(a.getFirst().match(VTyChar.getInstance())){
 			bl = (Character)a.getSecond() > (Character)b.getSecond();
-		}else if(a.getFirst().getName().equals("string")){
+		}else if(a.getFirst().match(VTyString.getInstance())){
 			bl = ((String)a.getSecond()).compareTo((String)b.getSecond()) == 1;
 		}else{
 			throw new RuntimeException("(" + n.getSymInfo().getLine() + "," + n.getSymInfo().getColumn() + ") Imcompatible operators for <=");
@@ -413,13 +410,13 @@ public class VMVisitor extends Visitor{
 		Pair<VType,Object> a = stk.pop();
 		Pair<VType,Object> b = stk.pop();
 		Boolean bl;
-		if(a.getFirst().getName().equals("int")){
+		if(a.getFirst().match(VTyInt.getInstance())){
 			bl = (Integer)a.getSecond() >= (Integer)b.getSecond();
-		}else if(a.getFirst().getName().equals("float")){
+		}else if(a.getFirst().match(VTyFloat.getInstance())){
 			bl = (Float)a.getSecond() >= (Float)b.getSecond();
-		}else if(a.getFirst().getName().equals("char")){
+		}else if(a.getFirst().match(VTyChar.getInstance())){
 			bl = (Character)a.getSecond() >= (Character)b.getSecond();
-		}else if(a.getFirst().getName().equals("string")){
+		}else if(a.getFirst().match(VTyString.getInstance())){
 			bl = ((String)a.getSecond()).compareTo((String)b.getSecond()) == 1;
 		}else{
 			throw new RuntimeException("(" + n.getSymInfo().getLine() + "," + n.getSymInfo().getColumn() + ") Imcompatible operators for <=");
@@ -434,13 +431,13 @@ public class VMVisitor extends Visitor{
 		Pair<VType,Object> a = stk.pop();
 		Pair<VType,Object> b = stk.pop();
 		Boolean bl;
-		if(a.getFirst().getName().equals("int")){
+		if(a.getFirst().match(VTyInt.getInstance())){
 			bl = (Integer)a.getSecond() < (Integer)b.getSecond();
-		}else if(a.getFirst().getName().equals("float")){
+		}else if(a.getFirst().match(VTyFloat.getInstance())){
 			bl = (Float)a.getSecond() < (Float)b.getSecond();
-		}else if(a.getFirst().getName().equals("char")){
+		}else if(a.getFirst().match(VTyChar.getInstance())){
 			bl = (Character)a.getSecond() < (Character)b.getSecond();
-		}else if(a.getFirst().getName().equals("string")){
+		}else if(a.getFirst().match(VTyString.getInstance())){
 			bl = ((String)a.getSecond()).compareTo((String)b.getSecond()) == -1;
 		}else{
 			throw new RuntimeException("(" + n.getSymInfo().getLine() + "," + n.getSymInfo().getColumn() + ") Imcompatible operators for <=");
@@ -456,13 +453,13 @@ public class VMVisitor extends Visitor{
 		Pair<VType,Object> a = stk.pop();
 		Pair<VType,Object> b = stk.pop();
 		Boolean bl;
-		if(a.getFirst().getName().equals("int")){
+		if(a.getFirst().match(VTyInt.getInstance())){
 			bl = (Integer)a.getSecond() <= (Integer)b.getSecond();
-		}else if(a.getFirst().getName().equals("float")){
+		}else if(a.getFirst().match(VTyFloat.getInstance())){
 			bl = (Float)a.getSecond() <= (Float)b.getSecond();
-		}else if(a.getFirst().getName().equals("char")){
+		}else if(a.getFirst().match(VTyChar.getInstance())){
 			bl = (Character)a.getSecond() <= (Character)b.getSecond();
-		}else if(a.getFirst().getName().equals("string")){
+		}else if(a.getFirst().match(VTyString.getInstance())){
 			bl = ((String)a.getSecond()).compareTo((String)b.getSecond()) == -1;
 		}else{
 			throw new RuntimeException("(" + n.getSymInfo().getLine() + "," + n.getSymInfo().getColumn() + ") Imcompatible operators for <=");
@@ -510,9 +507,9 @@ public class VMVisitor extends Visitor{
 		n.getRight().accept(this);
 		Pair<VType,Object> a = stk.pop();
 		Pair<VType,Object> b = stk.pop();
-		if(a.getFirst().getName().equals("int")){
+		if(a.getFirst().match(VTyInt.getInstance())){
 			stk.push(new Pair(VTyInt.getInstance(),(Integer)a.getSecond() * (Integer)b.getSecond()));
-		}else if(a.getFirst().getName().equals("float")){
+		}else if(a.getFirst().match(VTyFloat.getInstance())){
 			stk.push(new Pair(VTyFloat.getInstance(),(Float)a.getSecond() * (Float)b.getSecond()));
 		}else{
 			throw new RuntimeException("(" + n.getSymInfo().getLine() + "," + n.getSymInfo().getColumn() + ") Imcompatible operators for <=");
@@ -547,9 +544,9 @@ public class VMVisitor extends Visitor{
 		n.getRight().accept(this);
 		Pair<VType,Object> a = stk.pop();
 		Pair<VType,Object> b = stk.pop();
-		if(a.getFirst().getName().equals("int")){
+		if(a.getFirst().match(VTyInt.getInstance())){
 			stk.push(new Pair(VTyInt.getInstance(),(Integer)b.getSecond() - (Integer)a.getSecond()));
-		}else if(a.getFirst().getName().equals("float")){
+		}else if(a.getFirst().match(VTyFloat.getInstance())){
 			stk.push(new Pair(VTyFloat.getInstance(),(Float)b.getSecond() - (Float)a.getSecond()));
 		}else{
 			throw new RuntimeException("(" + n.getSymInfo().getLine() + "," + n.getSymInfo().getColumn() + ") Imcompatible operators for <=");
@@ -800,6 +797,11 @@ public class VMVisitor extends Visitor{
 	public void visit(ConstraintPEG n) {
 		// TODO Auto-generated method stub
 		n.getExpr().accept(this);
+		if((Boolean)stk.pop().getSecond()){
+			vm.success();
+		}else{
+			vm.fail();
+		}
 	}
 
 	@Override
@@ -843,14 +845,14 @@ public class VMVisitor extends Visitor{
 		}
 		b.accept(this);
 		//os ultimos serao os primeiros
-		System.out.println("Contexto atual do : "+n.getName()+"\n "+vm.getCTX().toString()+"\n"+vm.succeed());
-		System.out.println(stk.toString());
+		//System.out.println(stk.toString());
 		if(vm.succeed()){
 			for (int i = local.getSig().getNumSintetized()+local.getSig().getNumInherited();i>local.getSig().getNumInherited();i--) {
 				vm.setValue(((Attribute)l.get(i-1)).getName(),stk.pop().getSecond());
 			}		
 		}else{}
-		System.out.println("Contexto atual do : "+n.getName()+"\n "+vm.getCTX().toString()+"\n"+vm.succeed());
+		//System.out.println(nti.toString());
+		//System.out.println("Contexto atual do : "+"\n "+vm.getCTX().toString()+"\n");
 		
 	}
 
@@ -895,13 +897,13 @@ public class VMVisitor extends Visitor{
 
 		// Montar o contexto tirando os valores do topo da pila.
 		// Visitar o coporp do rule;
+		NTInfo backupNti = nti;
 		nti = env.get(n.getRuleName());
 		CTX ctx = new CTX(nti.getSig().getNumInherited());
 		for (int i=nti.getSig().getNumInherited();i>0;i--) {
 			ctx.declareParam(n.getInh().get(i-1).getSecond(),i-1,stk.pop().getSecond());
 		}
 		
-		//System.out.println("Criando contexto para regra: "+n.getRuleName()+"\n  "+ctx.toString());
 		vm.beginRule(n.getRuleName(),ctx);
 		n.getPeg().accept(this);
 		if(vm.succeed()){
@@ -911,9 +913,9 @@ public class VMVisitor extends Visitor{
 		// Visitar expressões sintetizados
 		// Empilhar os resultados.
 		}else{}
+		System.out.println("context: "+n.getRuleName()+"\n  "+ctx.toString());
 		vm.endRule();
-		
-
+		nti = backupNti;
 	}
 
 	@Override

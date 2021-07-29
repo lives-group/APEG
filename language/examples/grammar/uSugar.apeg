@@ -35,13 +35,13 @@ n[{int} m] :
 
 -- Tipos de meta valor
 -- peg
--- expr
+-- expr  (| e |)
 -- type
 
 prog[language g] : newSyn<g, {: :}, s>* extStmt<g,s>+;
 
-newSyn[language g, {grammar} s] return s[n -> rs]:
-    'define' n=id '{' {rs = $;} (rule<g,  r> {rs = rs + r;} )+ '}'
+newSyn[language g, {grammar} s] returns s[n -> rs]:
+    'define' n=id '{' {rs = $;} (rule<g,  r> {rs = rs << r;} )+ '}'
 ;
 
 rule[language g] returns {| #nt [language g ] :  #p |}:

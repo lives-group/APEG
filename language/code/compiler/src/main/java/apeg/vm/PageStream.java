@@ -11,18 +11,34 @@ public class PageStream{
      private Stack<Integer> marks;
      private int pw;
      private int pr;
+     
+     private Stack<Integer> recStart; // para usar o Bind
+     
      private FileReader f;
 
 	 public PageStream(String path) throws IOException{
-	    blocksize = 4;
+	    blocksize = 256;
 	    f = new FileReader(path);
-	    blocks = new char[128][];
+	    blocks = new char[2048][];
 	    pw = 0;
 	    pr = 0;
 	    load(0);
 	    marks = new Stack<Integer>();
+	    recStart = new Stack<Integer>;
 	 }
-
+	 
+	 public void bufferizeFromNow(){ recStart.push(pr);}
+	 
+     public String getBuffer(){
+         byte v[] = new byte[pr - recStart +1];
+		 for(int j = recStart.peek(); j < pr; j++){
+			 v[j-recStart.peek()] = blocks[decode_page(recStart.peek()+j)][decode_pos(recStart.peek()+j)];
+		 }
+		 return new String(v);
+     }
+     
+     public void dismissBuffer(){ recStart.pop();}
+ 
 	 private int decode_page(int pos){ return pos / blocksize;}
 	 private int decode_pos(int pos){ return pos % blocksize;}
 
@@ -37,7 +53,6 @@ public class PageStream{
 	 }
 
 	 public boolean match(String s) throws IOException{
-
 		 int i = 0 ;
 		 int pi = decode_page(pr);
 		 int pf = decode_page(pr+s.length()-1);

@@ -17,27 +17,27 @@ public class PageStream{
      private FileReader f;
 
 	 public PageStream(String path) throws IOException{
-	    blocksize = 256;
+	    blocksize = 4;
 	    f = new FileReader(path);
-	    blocks = new char[2048][];
+	    blocks = new char[128][];
 	    pw = 0;
 	    pr = 0;
 	    load(0);
 	    marks = new Stack<Integer>();
-	    recStart = new Stack<Integer>;
+	    recStart = new Stack<Integer>();
 	 }
 	 
-	 public void bufferizeFromNow(){ recStart.push(pr);}
+	 public void startBuffer(){ recStart.push(pr);}
 	 
      public String getBuffer(){
-         byte v[] = new byte[pr - recStart +1];
+         char v[] = new char[pr - recStart.peek() +1];
 		 for(int j = recStart.peek(); j < pr; j++){
-			 v[j-recStart.peek()] = blocks[decode_page(recStart.peek()+j)][decode_pos(recStart.peek()+j)];
+			 v[j-recStart.peek()] = blocks[decode_page(j)][decode_pos(j)];
 		 }
 		 return new String(v);
      }
      
-     public void dismissBuffer(){ recStart.pop();}
+     public void endBuffer(){ recStart.pop();}
  
 	 private int decode_page(int pos){ return pos / blocksize;}
 	 private int decode_pos(int pos){ return pos % blocksize;}

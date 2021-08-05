@@ -12,18 +12,12 @@ public class PageStreamTest{
       }
       // Começa o S;
       p.startBuffer();
+      p.mark();
       for(int i = 0; i< 5; i++){
           p.next();
       }
-      // Começa o A;
-      p.startBuffer();
-      for(int i = 0; i< 3; i++){
-          p.next();
-      }
-      String a = p.getBuffer();
-
-      p.endBuffer();
-      // acaba o A
+      p.restore();
+ 
       for(int i = 0; i< 3; i++){
           p.next();
       }
@@ -31,7 +25,7 @@ public class PageStreamTest{
       p.endBuffer();
       // Acaba o S;
       
-      System.out.println("a = " + a + " ; s = " + s);
+      System.out.println(" ; s = " + s);
    }
 
 }

@@ -591,18 +591,11 @@ public class TypeCheckerVisitor extends Visitor {
 
     @Override
     public void visit(Less n) {
-
-
         n.getLeft().accept(this);
         VType left = s.peek();
-
         n.getRight().accept(this);
         VType right = s.peek();
-
         if(!matchBinOp("LT", left, right)) {
-
-            
-
             errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
             System.out.println(errorMessage);
             error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance() ));    

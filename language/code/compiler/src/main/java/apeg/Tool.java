@@ -20,7 +20,7 @@ import apeg.ast.Grammar;
 //import apeg.visitor.ASTNodeVisitor;
 //import apeg.visitor.BuildRuleEnvironmetVisitor;
 import apeg.visitor.DOTVisitor;
-//import apeg.visitor.PrettyPrintVisitor;
+import apeg.visitor.PrettyPrint;
 //import apeg.visitor.VerifyVisitor;
 //import apeg.visitor.StateFullCodeGen;
 //import apeg.visitor.Environments.OperatorTables;
@@ -115,10 +115,14 @@ public class Tool {
 
 				// Pretty printing the grammar. Just for testing
 				Visitor dotvisitor = new DOTVisitor(new RelativePath(tool.outputPath, fName + ".dot"),
-					                            new RelativePath(new AbsolutePath("."),
-							            "src/main/templates/dot.stg"));
+				  	                            new RelativePath(new AbsolutePath("."),
+				 			            "src/main/templates/dot.stg"));
 				g.accept(dotvisitor);
-				
+
+				// PrettyPrint ppvisitor = new PrettyPrint(new RelativePath(new AbsolutePath("."),
+				//   			            "src/main/templates/prettyprint.stg"));
+				// g.accept(ppvisitor);
+			
 			
 
 			/*

@@ -37,6 +37,7 @@ boolean_type() ::= "boolean"
 grammar_type() ::= "grammar"
 rule_type() ::= "rule"
 user_type(name) ::= "<name>"
+map_type(type) ::= "{ <type> }"
 
 
 /** Template for expressions */
@@ -67,6 +68,11 @@ minus_expr(expr) ::= "-<expr>"
 not_expr(expr) ::= "!<expr>"
 or_expr(left_expr, right_expr) ::= "(<left_expr> || <right_expr>)"
 and_expr(left_expr, right_expr) ::= "(<left_expr> && <right_expr>)"
+
+pair(left_expr, right_expr) ::= << <left_expr> -> <right_expr> >>
+mapLit(pairs) ::= << {: <pairs; separator=", ", wrap> :} >>
+mapExtension(acces, pair) ::= "<acces> [<pair>]"
+mapAcces(acces, factor, expr) ::= "<factor> [<expr>]"
 
 
 /** Template for parsing expression */

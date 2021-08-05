@@ -105,6 +105,20 @@ public class PrettyPrint extends Visitor{
 	public void visit(MapLit n) {
 		// TODO Auto-generated method stub
 		
+                ST aux_expr = groupTemplate.getInstanceOf("mapLit");
+                Pair <Expr, Expr>[] pairs = n.getAssocs();
+ 
+                for(Pair<Expr, Expr> p : pairs){
+                        ST pair = groupTemplate.getInstanceOf("pair");
+                        p.getFirst().accept(this);
+                        pair.add("left_expr", expr);
+                        p.getSecond().accept(this);
+                        pair.add("right_expr", expr);
+                        aux_expr.add("pairs", pair);
+                }
+ 
+                expr = aux_expr;
+
 	}
 
 	@Override
@@ -463,13 +477,36 @@ public class PrettyPrint extends Visitor{
 	@Override
 	public void visit(MapAcces n) {
 		// TODO Auto-generated method stub
-		
+                
+                ST aux_expr = groupTemplate.getInstanceOf("mapAcces");
+
+                n.getMap().accept(this);
+                aux_expr.add("factor", expr);  
+ 
+                n.getIndex().accept(this);
+                aux_expr.add("expr", expr);
+ 
+                expr = aux_expr;
+
 	}
 
 	@Override
 	public void visit(MapExtension n) {
 		// TODO Auto-generated method stub
 		
+                ST aux_expr = groupTemplate.getInstanceOf("mapExtension");
+
+                n.getMap().accept(this);
+                aux_expr.add("acces", expr);
+ 
+                ST pair = groupTemplate.getInstanceOf("pair");
+                n.getKey().accept(this);
+                pair.add("left_expr", expr);
+                n.getValue().accept(this);
+                pair.add("right_expr", expr);
+                aux_expr.add("pair", pair);
+ 
+                expr = aux_expr;
 	}
 
 	@Override
@@ -963,6 +1000,11 @@ public class PrettyPrint extends Visitor{
 	public void visit(TyMap n) {
 		// TODO Auto-generated method stub
 
+                ST type_aux = groupTemplate.getInstanceOf("map_type");
+                n.getTyParameter().accept(this);
+                type_aux.add("type", this.type);
+ 
+                this.type = type_aux;
 	}
 
 	@Override

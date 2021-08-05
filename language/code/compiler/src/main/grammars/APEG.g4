@@ -193,7 +193,7 @@ type returns[Type tp]:
  |
   LANGUAGE_TYPE {$tp = factory.newLangType(new SymInfo($LANGUAGE_TYPE.line, $LANGUAGE_TYPE.pos));}
  |
-  MAP_TYPE '(' type ')' {$tp = factory.newMapType(new SymInfo($MAP_TYPE.line, $MAP_TYPE.pos) , $type.tp);}
+  t='{' type '}' {$tp = factory.newMapType(new SymInfo($t.line, $t.pos), $type.tp);}
  |
   META_TYPE {$tp = factory.newMetaType(new SymInfo($META_TYPE.line, $META_TYPE.pos));}
 ;
@@ -423,7 +423,33 @@ factor returns[Expr exp]:
   |
    FALSE {$exp = factory.newBooleanExpr(new SymInfo($FALSE.line, $FALSE.pos), false);}
   |
-   meta_peg {$exp = $meta_peg.exp;}
+   meta
+  |
+   mapLit {$exp = $mapLit.exp;}
+  |
+   f=factor t='[' e=expr ']' {$exp = factory.newMapAcces(new SymInfo($t.line, $t.pos), $f.exp, $e.exp    );}
+  |
+   f=factor t='[' m=mapPair ']' {$exp = factory.newMapExtension(new SymInfo($t.line, $t.pos), $f.exp,     $m.p.getFirst(), $m.p.getSecond());}
+  |
+   '{|' factor optDecls optReturn ':' meta_peg '|}'
+  |
+   factor '<<' factor
+;
+
+mapLit returns[Expr exp]:
+   t='{:' r=mapList ':}'
+   {
+       Pair<Expr, Expr>[] s = $r.l.toArray(new Pair[$r.l.size()]);
+       $exp = factory.newMapExpr(new SymInfo($t.line, $t.pos), s);
+   }
+;
+
+mapList returns[List<Pair<Expr, Expr>> l]:
+   {$l = new ArrayList<Pair<Expr, Expr>>();} (m1=mapPair {$l.add($m1.p);})* (',' m2=mapPair {$l.add($m2.p);})* 
+;
+
+mapPair returns[Pair<Expr, Expr> p]:
+   e1=expr '->' e2=expr {$p = new Pair<Expr, Expr>($e1.exp, $e2.exp);}
 ;
 
 attribute_ref returns[Attribute exp]:
@@ -481,11 +507,17 @@ mulOp returns[int op, int line, int pos]:
  * Rules for metaprogramming
  */
 
-meta_peg returns[MetaASTNode exp]:
-'@[' expr ']'
-  /*{$exp = factory.newMetaPeg($expr.exp); }*/
+meta returns[MetaASTNode exp]:
+   '[|' meta_peg+ '|]'
+  |
+   '(|' expr '|)'
 ;
-
+ 
+meta_peg:
+   '#' expr
+  |
+   factor
+;
 
 /*************************************************
  ***************** Lexical *************************

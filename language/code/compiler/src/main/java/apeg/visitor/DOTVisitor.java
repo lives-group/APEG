@@ -247,6 +247,20 @@ private STGroup groupTemplate;
 	public void visit(MapLit n) {
 		// TODO Auto-generated method stub
 		
+                ST node = groupTemplate.getInstanceOf("node");
+                node.add("parent", parent);
+                nodeName = "mapLit" + c_expr++;
+                node.add("node", nodeName);
+                node.add("lable", groupTemplate.getInstanceOf("mapLit_expr_lable"));
+                nodes.add(node);                  
+  
+                String s = nodeName;
+                for(Pair<Expr, Expr> p : n.getAssocs()){
+                        parent = s;
+                        p.getFirst().accept(this);
+                        parent = s;
+                        p.getSecond().accept(this);
+                }
 	}
 
 	@Override
@@ -646,12 +660,40 @@ private STGroup groupTemplate;
 	@Override
 	public void visit(MapAcces n) {
 		// TODO Auto-generated method stub
+
+                ST node = groupTemplate.getInstanceOf("node");
+                node.add("parent", parent);
+                nodeName = "mapAcces" + c_expr++; 
+                node.add("node", nodeName);
+                node.add("lable", groupTemplate.getInstanceOf("mapAcces_expr_lable"));
+                nodes.add(node);
+  
+                String s = nodeName;
+                parent = s;
+                n.getMap().accept(this);
+                parent = s;
+                n.getIndex().accept(this);
 		
 	}
 
 	@Override
 	public void visit(MapExtension n) {
 		// TODO Auto-generated method stub
+
+                ST node = groupTemplate.getInstanceOf("node");
+                node.add("parent", parent);
+                nodeName = "mapAcces" + c_expr++;
+                node.add("node", nodeName);    
+                node.add("lable", groupTemplate.getInstanceOf("mapExtension_expr_lable"));
+                nodes.add(node);
+ 
+                String s = nodeName;
+                parent = s;
+                n.getMap().accept(this);
+                parent = s;
+                n.getKey().accept(this);
+                parent = s;
+                n.getValue().accept(this);
 		
 	}
 

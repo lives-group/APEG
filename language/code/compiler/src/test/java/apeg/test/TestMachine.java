@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class TestMachine {
-    private List<TestContainer> tests;
+    private List<TContainer> tests;
 
     public TestMachine(List tests) {
 	this.tests = tests;
@@ -12,7 +12,7 @@ public class TestMachine {
     
     public void runTests() {
 	Result r;
-	for(TestContainer test : tests) {
+	for(TContainer test : tests) {
 	    System.out.print("Testing " + test.getTestName() + " ..... ");
 	    r = (Result)test.execute();
 	    if(r.isSucceeded())
@@ -26,7 +26,7 @@ public class TestMachine {
 	/**
 	 * Create a set of tests
 	 */
-	List<TestContainer> tests = new ArrayList<TestContainer>();
+	List<TContainer> tests = new ArrayList<TContainer>();
 
 
 	TestMachine t = new TestMachine(tests);

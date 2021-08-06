@@ -1,9 +1,5 @@
 package apeg.test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import org.junit.jupiter.api.Test;
-
 import java.io.File;
 import java.io.StringReader;
 import java.io.IOException;
@@ -20,7 +16,8 @@ import apeg.ast.ASTFactory;
 import apeg.ast.ASTFactoryImpl;
 import apeg.util.SymInfo;
 
-
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
 
 public class TestExprs {
 
@@ -28,23 +25,22 @@ public class TestExprs {
     private ASTFactory factory;
 
     public TestExprs() {
-	samples = new AbsolutePath(System.getProperty("user.dir")
+	   samples = new AbsolutePath(System.getProperty("user.dir")
 						   + File.separator + "examples"
 						   + File.separator + "expr");
-	factory = new ASTFactoryImpl();
+	   factory = new ASTFactoryImpl();
     }
     /**
      * Test literals
      */
     @Test
     void testLiteralInt() throws IOException {
-	// Create a ANTLR CharStream from a string
-	CharStream stream = CharStreams.fromReader(new StringReader("1"));
-
-	TestContainer<Expr> test = new ExprContainer("literalInt", stream);
-	IntLit e = (IntLit) test.execute();
-	// Expected Result
-	assertEquals(e.getValue(), 1);	
+	    // Create a ANTLR CharStream from a string
+	    CharStream stream = CharStreams.fromReader(new StringReader("1"));
+	    TContainer<Expr> test = new ExprContainer("literalInt", stream);
+	    IntLit e = (IntLit) test.execute();
+	   // Expected Result
+	    assertEquals(e.getValue(), 1);	
     }
 
     @Test
@@ -52,7 +48,7 @@ public class TestExprs {
 	// Create a ANTLR CharStream from a string
 	CharStream stream = CharStreams.fromReader(new StringReader("true"));
 
-	TestContainer<Expr> test = new ExprContainer("literalTrue", stream);
+	TContainer<Expr> test = new ExprContainer("literalTrue", stream);
 	BoolLit e = (BoolLit) test.execute();
 	// Expected Result
 	assertEquals(e.getValue(), true);	
@@ -63,7 +59,7 @@ public class TestExprs {
 	// Create a ANTLR CharStream from a string
 	CharStream stream = CharStreams.fromReader(new StringReader("false"));
 
-	TestContainer<Expr> test = new ExprContainer("literalFalse", stream);
+	TContainer<Expr> test = new ExprContainer("literalFalse", stream);
 	BoolLit e = (BoolLit) test.execute();
 	// Expected Result
 	assertEquals(e.getValue(), false);	
@@ -74,7 +70,7 @@ public class TestExprs {
 	// Create a ANTLR CharStream from a string
 	CharStream stream = CharStreams.fromReader(new StringReader("0."));
 
-	TestContainer<Expr> test = new ExprContainer("literalFloat00", stream);
+	TContainer<Expr> test = new ExprContainer("literalFloat00", stream);
 	FloatLit e = (FloatLit) test.execute();
 	// Expected Result
 	assertEquals(e.getValue(), 0.0);	
@@ -85,7 +81,7 @@ public class TestExprs {
 	// Create a ANTLR CharStream from a string
 	CharStream stream = CharStreams.fromReader(new StringReader("0.1"));
 
-	TestContainer<Expr> test = new ExprContainer("literalFloat01", stream);
+	TContainer<Expr> test = new ExprContainer("literalFloat01", stream);
 	FloatLit e = (FloatLit) test.execute();
 	// Expected Result
 	assertEquals(e.getValue(), 0.1F);	
@@ -96,7 +92,7 @@ public class TestExprs {
 	// Create a ANTLR CharStream from a string
 	CharStream stream = CharStreams.fromReader(new StringReader(".1"));
 
-	TestContainer<Expr> test = new ExprContainer("literalFloat02", stream);
+	TContainer<Expr> test = new ExprContainer("literalFloat02", stream);
 	FloatLit e = (FloatLit) test.execute();
 	// Expected Result
 	assertEquals(e.getValue(), 0.1F);	
@@ -107,7 +103,7 @@ public class TestExprs {
 	// Create a ANTLR CharStream from a string
 	CharStream stream = CharStreams.fromReader(new StringReader(".1e-2"));
 
-	TestContainer<Expr> test = new ExprContainer("literalFloat03", stream);
+	TContainer<Expr> test = new ExprContainer("literalFloat03", stream);
 	FloatLit e = (FloatLit) test.execute();
 	// Expected Result
 	assertEquals(e.getValue(), 0.1e-2F);	
@@ -122,7 +118,7 @@ public class TestExprs {
 	// Create a ANTLR CharStream from a string
 	CharStream stream = CharStreams.fromReader(new StringReader("2+3"));
 
-	TestContainer<Expr> test = new ExprContainer("plus00", stream);
+	TContainer<Expr> test = new ExprContainer("plus00", stream);
 	Expr e = test.execute();
 	// Expected Result
 	assertEquals(e.toString(), "(+ 2 3)");
@@ -134,7 +130,7 @@ public class TestExprs {
 	// Create a ANTLR CharStream from a string
 	CharStream stream = CharStreams.fromReader(new StringReader("2+3+7"));
 
-	TestContainer<Expr> test = new ExprContainer("plus01", stream);
+	TContainer<Expr> test = new ExprContainer("plus01", stream);
 	Expr e = test.execute();
 	// Expected Result
 	assertEquals(e.toString(), "(+ (+ 2 3) 7)");
@@ -146,7 +142,7 @@ public class TestExprs {
 	// Create a ANTLR CharStream from a string
 	CharStream stream = CharStreams.fromReader(new StringReader("7+3*2"));
 
-	TestContainer<Expr> test = new ExprContainer("plus01", stream);
+	TContainer<Expr> test = new ExprContainer("plus01", stream);
 	Expr e = test.execute();
 	// Expected Result
 	assertEquals(e.toString(), "(+ 7 (* 3 2))");
@@ -158,7 +154,7 @@ public class TestExprs {
 	// Create a ANTLR CharStream from a string
 	CharStream stream = CharStreams.fromReader(new StringReader("(7+3)*2"));
 
-	TestContainer<Expr> test = new ExprContainer("plus01", stream);
+	TContainer<Expr> test = new ExprContainer("plus01", stream);
 	Expr e = test.execute();
 	// Expected Result
 	assertEquals(e.toString(), "(* (+ 7 3) 2)");
@@ -170,7 +166,7 @@ public class TestExprs {
 	// Create a ANTLR CharStream from a string
 	CharStream stream = CharStreams.fromReader(new StringReader("(10/8)*100"));
 
-	TestContainer<Expr> test = new ExprContainer("plus01", stream);
+	TContainer<Expr> test = new ExprContainer("plus01", stream);
 	Expr e = test.execute();
 	// Expected Result
 	assertEquals(e.toString(), "(* (/ 10 8) 100)");
@@ -182,7 +178,7 @@ public class TestExprs {
 	// Create a ANTLR CharStream from a string
 	CharStream stream = CharStreams.fromReader(new StringReader("(13 - 9)"));
 
-	TestContainer<Expr> test = new ExprContainer("plus01", stream);
+	TContainer<Expr> test = new ExprContainer("plus01", stream);
 	Expr e = test.execute();
 	// Expected Result
 	assertEquals(e.toString(), "(- 13 9)");
@@ -194,7 +190,7 @@ public class TestExprs {
 	// Create a ANTLR CharStream from a string
 	CharStream stream = CharStreams.fromReader(new StringReader("(27 % 7)"));
 
-	TestContainer<Expr> test = new ExprContainer("plus01", stream);
+	TContainer<Expr> test = new ExprContainer("plus01", stream);
 	Expr e = test.execute();
 	// Expected Result
 	assertEquals(e.toString(), "(% 27 7)");
@@ -206,7 +202,7 @@ public class TestExprs {
 	// Create a ANTLR CharStream from a string
 	CharStream stream = CharStreams.fromReader(new StringReader("(31 / 15)"));
 
-	TestContainer<Expr> test = new ExprContainer("plus01", stream);
+	TContainer<Expr> test = new ExprContainer("plus01", stream);
 	Expr e = test.execute();
 	// Expected Result
 	assertEquals(e.toString(), "(/ 31 15)");
@@ -218,7 +214,7 @@ public class TestExprs {
 	// Create a ANTLR CharStream from a string
 	CharStream stream = CharStreams.fromReader(new StringReader("((9 /2) % 18 * (1 - (13 + 7)))"));
 
-	TestContainer<Expr> test = new ExprContainer("plus01", stream);
+	TContainer<Expr> test = new ExprContainer("plus01", stream);
 	Expr e = test.execute();
 	// Expected Result
 	assertEquals(e.toString(), "(* (% (/ 9 2) 18) (- 1 (+ 13 7)))");
@@ -230,7 +226,7 @@ public class TestExprs {
 	// Create a ANTLR CharStream from a string
 	CharStream stream = CharStreams.fromReader(new StringReader("(x + 2)"));
 
-	TestContainer<Expr> test = new ExprContainer("plus01", stream);
+	TContainer<Expr> test = new ExprContainer("plus01", stream);
 	Expr e = test.execute();
 	// Expected Result
 	assertEquals(e.toString(), "(+ x 2)");
@@ -242,7 +238,7 @@ public class TestExprs {
 	// Create a ANTLR CharStream from a string
 	CharStream stream = CharStreams.fromReader(new StringReader("(b*b) - (4*a*c)"));
 
-	TestContainer<Expr> test = new ExprContainer("plus01", stream);
+	TContainer<Expr> test = new ExprContainer("plus01", stream);
 	Expr e = test.execute();
 	// Expected Result
 	assertEquals(e.toString(), "(- (* b b) (* (* 4 a) c))");
@@ -255,7 +251,7 @@ public class TestExprs {
 	CharStream stream = CharStreams.fromReader(new StringReader("true || false && false == true == a && false || true" + 
 			""));
 
-	TestContainer<Expr> test = new ExprContainer("plus01", stream);
+	TContainer<Expr> test = new ExprContainer("plus01", stream);
 	Expr e = test.execute();
 	// Expected Result
 	assertEquals(e.toString(),"(|| (|| true (&& (&& false (== (== false true) a)) false)) true)");
@@ -267,7 +263,7 @@ public class TestExprs {
 	// Create a ANTLR CharStream from a string
 	CharStream stream = CharStreams.fromReader(new StringReader("1 <= -6+a*b"));
 
-	TestContainer<Expr> test = new ExprContainer("plus01", stream);
+	TContainer<Expr> test = new ExprContainer("plus01", stream);
 	Expr e = test.execute();
 	// Expected Result
 	assertEquals(e.toString(), "(<= 1 (+ -6 (* a b)))");
@@ -279,7 +275,7 @@ public class TestExprs {
 	// Create a ANTLR CharStream from a string
 	CharStream stream = CharStreams.fromReader(new StringReader("1<2 == false"));
 
-	TestContainer<Expr> test = new ExprContainer("plus01", stream);
+	TContainer<Expr> test = new ExprContainer("plus01", stream);
 	Expr e = test.execute();
 	// Expected Result
 	assertEquals(e.toString(), "(== (< 1 2) false)");
@@ -291,7 +287,7 @@ public class TestExprs {
 	// Create a ANTLR CharStream from a string
 	CharStream stream = CharStreams.fromReader(new StringReader("(1+2 3)"));
 
-	TestContainer<Expr> test = new ExprContainer("plus01", stream);
+	TContainer<Expr> test = new ExprContainer("plus01", stream);
 	Expr e = test.execute();
 	// Expected Result
 	assertEquals(null,e );
@@ -303,7 +299,7 @@ public class TestExprs {
 	// Create a ANTLR CharStream from a string
 	CharStream stream = CharStreams.fromReader(new StringReader("a*z+b-c == false"));
 
-	TestContainer<Expr> test = new ExprContainer("plus01", stream);
+	TContainer<Expr> test = new ExprContainer("plus01", stream);
 	Expr e = test.execute();
 	// Expected Result
 	assertEquals(e.toString(), "(== (- (+ (* a z) b) c) false)");
@@ -315,7 +311,7 @@ public class TestExprs {
 	// Create a ANTLR CharStream from a string
 	CharStream stream = CharStreams.fromReader(new StringReader("a*2+b-c < 10"));
 
-	TestContainer<Expr> test = new ExprContainer("plus01", stream);
+	TContainer<Expr> test = new ExprContainer("plus01", stream);
 	Expr e = test.execute();
 	// Expected Result
 	assertEquals(e.toString(), "(< (- (+ (* a 2) b) c) 10)");
@@ -327,7 +323,7 @@ public class TestExprs {
 	// Create a ANTLR CharStream from a string
 	CharStream stream = CharStreams.fromReader(new StringReader("1>2>3"));
 
-	TestContainer<Expr> test = new ExprContainer("plus01", stream);
+	TContainer<Expr> test = new ExprContainer("plus01", stream);
 	Expr e = test.execute();
 	// Expected Result
 	assertEquals(null, e);
@@ -340,7 +336,7 @@ public class TestExprs {
 	// Create a ANTLR CharStream from a string
 	CharStream stream = CharStreams.fromReader(new StringReader("1 > 2 && b <= a && true"));
 
-	TestContainer<Expr> test = new ExprContainer("plus01", stream);
+	TContainer<Expr> test = new ExprContainer("plus01", stream);
 	Expr e = test.execute();
 	// Expected Result
 	assertEquals(e.toString(), "(&& (&& (> 1 2) (<= b a)) true)");
@@ -352,7 +348,7 @@ public class TestExprs {
 	// Create a ANTLR CharStream from a string
 	CharStream stream = CharStreams.fromReader(new StringReader("1 > 2 && b <= a || true && v"));
 
-	TestContainer<Expr> test = new ExprContainer("plus01", stream);
+	TContainer<Expr> test = new ExprContainer("plus01", stream);
 	Expr e = test.execute();
 	// Expected Result
 	assertEquals(e.toString(), "(|| (&& (> 1 2) (<= b a)) (&& true v))");
@@ -364,7 +360,7 @@ public class TestExprs {
 	// Create a ANTLR CharStream from a string
 	CharStream stream = CharStreams.fromReader(new StringReader("1 > 2 || b <= a || true || v"));
 
-	TestContainer<Expr> test = new ExprContainer("plus01", stream);
+	TContainer<Expr> test = new ExprContainer("plus01", stream);
 	Expr e = test.execute();
 	// Expected Result
 	assertEquals(e.toString(), "(|| (|| (|| (> 1 2) (<= b a)) true) v)");
@@ -376,7 +372,7 @@ public class TestExprs {
 	// Create a ANTLR CharStream from a string
 	CharStream stream = CharStreams.fromReader(new StringReader("a == 2 != false == b < c"));
 
-	TestContainer<Expr> test = new ExprContainer("plus01", stream);
+	TContainer<Expr> test = new ExprContainer("plus01", stream);
 	Expr e = test.execute();
 	// Expected Result
 	assertEquals(e.toString(), "(== (!= (== a 2) false) (< b c))");
@@ -388,7 +384,7 @@ public class TestExprs {
 	// Create a ANTLR CharStream from a string
 	CharStream stream = CharStreams.fromReader(new StringReader("true && || false"));
 
-	TestContainer<Expr> test = new ExprContainer("plus01", stream);
+	TContainer<Expr> test = new ExprContainer("plus01", stream);
 	Expr e = test.execute();
 	// Expected Result
 	assertEquals(null , e);
@@ -400,7 +396,7 @@ public class TestExprs {
 	// Create a ANTLR CharStream from a string
 	CharStream stream = CharStreams.fromReader(new StringReader("(true && (true || false)"));
 
-	TestContainer<Expr> test = new ExprContainer("plus01", stream);
+	TContainer<Expr> test = new ExprContainer("plus01", stream);
 	Expr e = test.execute();
 	// Expected Result
 	assertEquals(null, e );
@@ -412,7 +408,7 @@ public class TestExprs {
 	// Create a ANTLR CharStream from a string
 	CharStream stream = CharStreams.fromReader(new StringReader("true && a<b || false"));
 
-	TestContainer<Expr> test = new ExprContainer("plus01", stream);
+	TContainer<Expr> test = new ExprContainer("plus01", stream);
 	Expr e = test.execute();
 	// Expected Result
 	

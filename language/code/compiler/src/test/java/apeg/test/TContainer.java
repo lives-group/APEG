@@ -4,13 +4,13 @@ package apeg.test;
  * An interface for defining a test for each compiler phase
  * It represents an individual sample test
  */
-public abstract class TestContainer<E> {
+public abstract class TContainer<E> {
     protected E resultValue;
     protected String name;
 
 
-    public TestContainer(String name) {
-	this.name = name;
+    public TContainer(String name) {
+	    this.name = name;
     }
     
     /**
@@ -22,7 +22,7 @@ public abstract class TestContainer<E> {
      * Get the test name
      */
     public String getTestName() {
-	return name;
+	   return name;
     }
 }
 

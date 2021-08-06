@@ -13,9 +13,9 @@ import apeg.ast.expr.Expr;
 
 import apeg.util.path.Path;
 
-import apeg.test.TestContainer;
+import apeg.test.TContainer;
 
-public class ExprContainer extends TestContainer<Expr> {
+public class ExprContainer extends TContainer<Expr> {
 
     private CharStream stream;
 

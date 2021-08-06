@@ -1,0 +1,29 @@
+Digraph uSugar {
+  node [shape="box"];
+  grammar [label = "Grammar[uSugar]"];
+
+  progRule [label = "Rule[prog]"];
+  grammar -> progRule;
+  inh0 [label = "↓g"];
+  progRule -> inh0;
+  SequencePeg0 [label = "SequencePegExpr(.)"];
+  progRule -> SequencePeg0;
+  KleenePeg1 [label = "StarPegExpr(*)"];
+  SequencePeg0 -> KleenePeg1;
+  NonterminalPeg2 [label = "NonterminalPegExpr:newSyn"];
+  KleenePeg1 -> NonterminalPeg2;
+  attributeExpr0 [label = "g"];
+  NonterminalPeg2 -> attributeExpr0;
+  attributeExpr1 [label = "s"];
+  NonterminalPeg2 -> attributeExpr1;
+  attributeExpr2 [label = "s"];
+  NonterminalPeg2 -> attributeExpr2;
+  PlusKleenePeg3 [label = "PlusPegExpr(+)"];
+  SequencePeg0 -> PlusKleenePeg3;
+  NonterminalPeg4 [label = "NonterminalPegExpr:extStmt"];
+  PlusKleenePeg3 -> NonterminalPeg4;
+  attributeExpr3 [label = "g"];
+  NonterminalPeg4 -> attributeExpr3;
+  attributeExpr4 [label = "s"];
+  NonterminalPeg4 -> attributeExpr4;
+}

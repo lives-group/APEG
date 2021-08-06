@@ -1,0 +1,32 @@
+apeg range;
+
+range:
+  escape / letter / digit
+;
+
+-- Testing all escape characters of APEG
+-- [\n\t\f\\\b\'\"\u03bb\-\]]
+escape:
+   \n..\t
+  /
+   \f..\b
+ /
+  \\..\'
+ /
+  \u03bb..\r
+;
+
+letter:
+ a..z / A..Z
+;
+
+digit:
+ 0..9
+;
+
+-- [ \n\r\t]
+ws:
+ ' ' / '\n' / '\r' / '\t'
+;
+
+lambda: λ;

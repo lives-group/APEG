@@ -16,4 +16,6 @@ public class UMinus extends Expr{
     }
     public void accept(Visitor v){ v.visit(this); }
 
+    public String toString() {return "-" + getExpr().toString();}
+
 }

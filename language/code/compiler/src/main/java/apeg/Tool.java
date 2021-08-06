@@ -20,7 +20,7 @@ import apeg.ast.Grammar;
 //import apeg.visitor.ASTNodeVisitor;
 //import apeg.visitor.BuildRuleEnvironmetVisitor;
 import apeg.visitor.DOTVisitor;
-//import apeg.visitor.PrettyPrintVisitor;
+import apeg.visitor.PrettyPrint;
 //import apeg.visitor.VerifyVisitor;
 //import apeg.visitor.StateFullCodeGen;
 //import apeg.visitor.Environments.OperatorTables;
@@ -85,8 +85,9 @@ public class Tool {
 				fName = s.substring(index+1, s.length()-5);
 			else // the string do not have a file separator
 				fName = s.substring(0, s.length()-5);
+			System.out.println(fName);
 			try {
-				System.out.println(fpath.toString());
+			    // System.out.println(fpath.toString());
 				FileReader file = new FileReader(fpath.getFile());
 				// Create an ANTLR input stream
 				ANTLRInputStream input = new ANTLRInputStream(file);
@@ -113,15 +114,17 @@ public class Tool {
 				}
 
 				// Pretty printing the grammar. Just for testing
-				//Visitor dotvisitor = new DOTVisitor(new RelativePath(tool.outputPath, fName + ".dot"),
-				//	                            new RelativePath(new AbsolutePath("."),
-				//			            "src/main/templates/dot.stg"));
-				//g.accept(dotvisitor);
-				
-				Visitor typechecker = new TypeCheckerVisitor();
-				
-				g.accept(typechecker);
-				
+
+			Visitor dotvisitor = new DOTVisitor(new RelativePath(tool.outputPath, fName + ".dot"),
+				  	                            new RelativePath(new AbsolutePath("."),
+				 			            "src/main/templates/dot.stg"));
+			g.accept(dotvisitor);
+      Visitor typechecker = new TypeCheckerVisitor();
+      g.accept(typechecker);
+			// PrettyPrint ppvisitor = new PrettyPrint(new RelativePath(new AbsolutePath("."),
+			//   			            "src/main/templates/prettyprint.stg"));
+			// g.accept(ppvisitor);
+	
 			
 
 			/*

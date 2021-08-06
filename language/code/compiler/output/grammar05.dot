@@ -74,10 +74,10 @@ Digraph testfunction {
   EqualsExpr15 -> IntLiteralExpr17;
   NotPeg10 [label = "NotPegExpr(!)"];
   SequencePeg3 -> NotPeg10;
-  AnyPeg11 [label = "AnyPegExpr(.)"];
+  AnyPeg11 [label = "AnyPegExpr(_)"];
   NotPeg10 -> AnyPeg11;
   CHARRule [label = "Rule[CHAR]"];
   grammar -> CHARRule;
-  AnyPeg12 [label = "AnyPegExpr(.)"];
+  AnyPeg12 [label = "AnyPegExpr(_)"];
   CHARRule -> AnyPeg12;
 }

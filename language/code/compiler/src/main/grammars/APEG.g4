@@ -12,6 +12,7 @@ grammar APEG;
     
     import apeg.util.SymInfo;
     import apeg.util.Pair;
+    import apeg.util.CharInterval;
     
     import java.util.List;
     import java.util.ArrayList;
@@ -24,7 +25,46 @@ grammar APEG;
 	public APEGParser(ASTFactory factory, TokenStream input) {
 		this(input);
 		this.factory = factory;
-	}	
+	}
+
+	char getCharAt(String s, int i) {
+	     char c = s.charAt(i);
+	     switch(c) {
+	       case '\\':
+	         switch(s.charAt(++i)) {
+		   case 'n':
+		     return '\n';
+		   case 'r':
+		     return '\r';
+		   case 't':
+		     return '\t';
+		   case 'b':
+		     return '\b';
+		   case 'f':
+		     return '\f';
+		   case '\\':
+		     return '\\';
+		   case '\'':
+		     return '\'';
+		   case 'u':
+		     char[] chs = Character.toChars(Integer.valueOf(s.substring(i+1,i+5), 16));
+		     return chs[0];
+		 }
+	       default:
+	         return c;
+	     }
+	}
+
+        CharInterval splitRange(String s) {
+            int i = 0;
+	    char init = getCharAt(s,i);
+	    if(s.charAt(i) == '\\' && s.charAt(++i) == 'u') {
+	        i += 4;
+	    }
+	    i += 3;
+	    return new CharInterval(init, getCharAt(s,i));
+        }
+
 }
 
 @lexer::header
@@ -146,14 +186,14 @@ type returns[Type tp]:
   BOOLEAN_TYPE {$tp = factory.newBooleanType(new SymInfo($BOOLEAN_TYPE.line, $BOOLEAN_TYPE.pos));}
  |
   STRING_TYPE {$tp = factory.newStringType(new SymInfo($STRING_TYPE.line, $STRING_TYPE.pos));}
- |
-  CHAR_TYPE {$tp = factory.newCharType(new SymInfo($CHAR_TYPE.line, $CHAR_TYPE.pos));}
+ /*|
+  CHAR_TYPE {$tp = factory.newCharType(new SymInfo($CHAR_TYPE.line, $CHAR_TYPE.pos));}*/
  |
   GRAMMAR_TYPE {$tp = factory.newGrammarType(new SymInfo($GRAMMAR_TYPE.line, $GRAMMAR_TYPE.pos));}
  |
   LANGUAGE_TYPE {$tp = factory.newLangType(new SymInfo($LANGUAGE_TYPE.line, $LANGUAGE_TYPE.pos));}
  |
-  MAP_TYPE '(' type ')' {$tp = factory.newMapType(new SymInfo($MAP_TYPE.line, $MAP_TYPE.pos) , $type.tp);}
+  t='{' type '}' {$tp = factory.newMapType(new SymInfo($t.line, $t.pos), $type.tp);}
  |
   META_TYPE {$tp = factory.newMetaType(new SymInfo($META_TYPE.line, $META_TYPE.pos));}
 ;
@@ -180,7 +220,7 @@ peg_seq returns[APEG peg]:
   |
    peg_capturetext {$peg = $peg_capturetext.peg;}
   |
-   {$peg = factory.newLambdaPEG(new SymInfo(_ctx.start.getLine(), _ctx.start.getCharPositionInLine()));}/ // LAMBDA parsing expression
+   '\u03bb' {$peg = factory.newLambdaPEG(new SymInfo(_ctx.start.getLine(), _ctx.start.getCharPositionInLine()));}/ // LAMBDA parsing expression
 ;
 
 peg_capturetext returns[APEG peg]:
@@ -219,10 +259,9 @@ peg_unary_op returns[APEG peg]:
 ;
 
 // This rule defines the other operators and basic expressions
-// ' ' (Character with precedence 5)
-// " " (Literal String with precedence 5)
+// ' ' (Literal string with precedence 5)
 // [ ] (Character class with precedence 5)
-// . (Any character with precedence 5)
+// _ (Any character with precedence 5)
 // (e) (Grouping with precedence 5)
 // A<...> (non-terminal basic expression)
 // \lambda (empty basic expression)
@@ -235,9 +274,9 @@ peg_factor returns[APEG peg]:
   |
    ntcall {$peg = $ntcall.peg;}
   |
-   '[' range_pair ']' /*{$peg = factory.newGroupPeg($range_pair.text);}*/
+   range {$peg = factory.newRangePEG(new SymInfo($range.line, $range.pos), $range.ranges);}
   |
-   t='.' {$peg = factory.newAnyPEG(new SymInfo($t.line, $t.pos));}
+   t='_' {$peg = factory.newAnyPEG(new SymInfo($t.line, $t.pos));}
   |
    '(' peg_expr ')' {$peg = $peg_expr.peg;}
 ;
@@ -248,23 +287,13 @@ ntcall returns[APEG peg]:
    ID {$peg = factory.newNonterminalPEG(new SymInfo($ID.line, $ID.pos), $ID.text, new ArrayList<Expr>());}
 ;
 
-range_pair:
-  single_pair
- |
-  single_pair ('-' single_pair)+
+range returns[CharInterval ranges, int line, int pos]: RANGE_LITERAL
+ {
+  $ranges = splitRange($RANGE_LITERAL.text);
+  $line = $RANGE_LITERAL.line;
+  $pos = $RANGE_LITERAL.pos;
+ }
 ;
-
-/*range_pair:
-   t1=LETTER '-' t2=LETTER -> ^(DOUBLE_PAIR $t1 $t2)
-  |
-   t1=DIGIT '-' t2=DIGIT -> ^(DOUBLE_PAIR $t1 $t2)
-  |
-   t1=ESC '-' t2=ESC -> ^(DOUBLE_PAIR $t1 $t2)
-  |
-   LETTER | DIGIT | ESC
-  ;*/
-
-single_pair: ID | INT_NUMBER | ESC;
 
 /***
  * Constraint and Update Expressions
@@ -278,33 +307,27 @@ assign returns[Pair<Attribute, Expr> stm]:
 expr returns[Expr exp]: or_cond {$exp = $or_cond.exp;};
 
 or_cond returns[Expr exp]:
-   and_cond {$exp = $and_cond.exp;}
-  |
    {List<Expr> list = new ArrayList<Expr>(); List<BinOPFactory> funcs = new ArrayList<BinOPFactory>();}
    e1=and_cond {list.add($e1.exp);} (OP_OR e2=and_cond
    {list.add($e2.exp);
      funcs.add((Expr ex1, Expr ex2) -> factory.newOrExpr(new SymInfo($OP_OR.line, $OP_OR.pos), ex1, ex2));
    }
-   )+
+   )*
    {$exp = factory.newLeftAssocBinOpList(list, funcs);}
 ;
 
 and_cond returns[Expr exp]:
-  condExpr {$exp = $condExpr.exp;}    
- |
   {List<Expr> list = new ArrayList<Expr>(); List<BinOPFactory> funcs = new ArrayList<BinOPFactory>();}
   e1=condExpr {list.add($e1.exp);} (OP_AND e2=condExpr
   {
   list.add($e2.exp);
   funcs.add((Expr ex1, Expr ex2) -> factory.newAndExpr(new SymInfo($OP_AND.line, $OP_AND.pos), ex1, ex2));
   }
-  )+
+  )*
   {$exp = factory.newLeftAssocBinOpList(list, funcs);} 
 ;
 
 condExpr returns[Expr exp]:
-   bool_expr {$exp = $bool_expr.exp;}
- |
    {List<Expr> list = new ArrayList<Expr>(); List<BinOPFactory> funcs = new ArrayList<BinOPFactory>();}
    e1=bool_expr {list.add($e1.exp);} (op=equalityOp e2=bool_expr
    	 {
@@ -314,31 +337,30 @@ condExpr returns[Expr exp]:
       else // the operator is not equals
        funcs.add((Expr ex1, Expr ex2) -> factory.newNotEqExpr(new SymInfo($op.line, $op.pos), ex1, ex2));
    	 }
-   )+
+   )*
    {$exp = factory.newLeftAssocBinOpList(list, funcs);}
 ;
 
 bool_expr returns[Expr exp]:  
-   aexpr {$exp = $aexpr.exp;}
- |
-  e1=aexpr relOp e2=aexpr
-  {
-  if($relOp.op == 1) // LT
-    $exp = factory.newLessExpr(new SymInfo($relOp.line, $relOp.pos), $e1.exp, $e2.exp);
-  else if ($relOp.op == 2) // GT
-    $exp = factory.newGreaterExpr(new SymInfo($relOp.line, $relOp.pos), $e1.exp, $e2.exp);
-  else if ($relOp.op == 3) // LE
-    $exp = factory.newLessEqExpr(new SymInfo($relOp.line, $relOp.pos), $e1.exp, $e2.exp);
-  else if ($relOp.op == 4) // GE
-    $exp = factory.newGreaterEqExpr(new SymInfo($relOp.line, $relOp.pos), $e1.exp, $e2.exp);
-  }
+  e1=aexpr {$exp = $aexpr.exp;}
+  ( relOp e2=aexpr
+     {
+       if($relOp.op == 1) // LT
+          $exp = factory.newLessExpr(new SymInfo($relOp.line, $relOp.pos), $e1.exp, $e2.exp);
+       else if ($relOp.op == 2) // GT
+          $exp = factory.newGreaterExpr(new SymInfo($relOp.line, $relOp.pos), $e1.exp, $e2.exp);
+       else if ($relOp.op == 3) // LE
+          $exp = factory.newLessEqExpr(new SymInfo($relOp.line, $relOp.pos), $e1.exp, $e2.exp);
+       else if ($relOp.op == 4) // GE
+          $exp = factory.newGreaterEqExpr(new SymInfo($relOp.line, $relOp.pos), $e1.exp, $e2.exp);
+     }
+   )?
+ 
 ;
 
 aexpr returns[Expr exp]:
-    termOptUnary {$exp = $termOptUnary.exp;}
-  |
     {List<Expr> list = new ArrayList<Expr>(); List<BinOPFactory> funcs = new ArrayList<BinOPFactory>();}
-    e1=termOptUnary {list.add($e1.exp);} (addOp e2=term
+    e1=term {list.add($e1.exp);} (addOp e2=term
     {
     list.add($e2.exp);
     if($addOp.op) // it is an add
@@ -346,19 +368,11 @@ aexpr returns[Expr exp]:
     else // it is a SUB
         funcs.add((Expr ex1, Expr ex2) -> factory.newSubExpr(new SymInfo($addOp.line, $addOp.pos), ex1, ex2));
     }
-    )+
+    )*
     {$exp = factory.newLeftAssocBinOpList(list, funcs);} 
 ;
 
-termOptUnary returns[Expr exp]:
-   OP_SUB term {$exp = factory.newUMinusExpr(new SymInfo($OP_SUB.line, $OP_SUB.pos), $term.exp);}
-  |
-   term {$exp = $term.exp;}
-;
- 
 term returns[Expr exp]:
-   factor {$exp = $factor.exp;}
-  |
    {List<Expr> list = new ArrayList<Expr>(); List<BinOPFactory> funcs = new ArrayList<BinOPFactory>();}
    e1=factor {list.add($e1.exp);} (mulOp e2=factor
    {
@@ -370,11 +384,19 @@ term returns[Expr exp]:
    else if($mulOp.op == 3) // it is a mod operator
      funcs.add((Expr ex1, Expr ex2) -> factory.newModExpr(new SymInfo($mulOp.line, $mulOp.pos), ex1, ex2));
    }
-   )+
+   )*
    {$exp = factory.newLeftAssocBinOpList(list, funcs);} 
 ;
 
-factor returns[Expr exp]:
+
+factor returns[Expr exp]: 
+   OP_SUB primary { $exp = factory.newUMinusExpr(new SymInfo($OP_SUB.line, $OP_SUB.pos), $primary.exp); }
+  |
+   t='!' f=primary {$exp = factory.newNotExpr(new SymInfo($t.line, $t.pos), $f.exp);}
+  | primary {$exp = $primary.exp;}
+ ;
+
+primary returns[Expr exp]:
    attribute_ref {$exp = $attribute_ref.exp;}
   |
    number {$exp = $number.exp;}
@@ -388,13 +410,78 @@ factor returns[Expr exp]:
   |
    '(' expr ')' {$exp = $expr.exp;}
   |
+   TRUE {$exp = factory.newBooleanExpr(new SymInfo($TRUE.line, $TRUE.pos), true);}
+  |
+   FALSE {$exp = factory.newBooleanExpr(new SymInfo($FALSE.line, $FALSE.pos), false);}
+  |
+   meta
+  |
+   mapLit {$exp = $mapLit.exp;}
+  |
+   f=primary t='[' e=expr ']' {$exp = factory.newMapAcces(new SymInfo($t.line, $t.pos), $f.exp, $e.exp    );}
+  |
+   f=primary t='[' m=mapPair ']' {$exp = factory.newMapExtension(new SymInfo($t.line, $t.pos), $f.exp,     $m.p.getFirst(), $m.p.getSecond());}
+  |
+   '{|' primary optDecls optReturn ':' meta_peg '|}'
+
+/*|
+   primary '<<' primary 
+   Isso definitivamente não devia ficar assim ou aqui ! :-(
+*/ 
+;
+
+
+/*
+factor returns[Expr exp]:
+   attribute_ref {$exp = $attribute_ref.exp;}
+  |
+   number {$exp = $number.exp;}
+  |
+   STRING_LITERAL
+    { 
+      String s = $STRING_LITERAL.text;
+      s = s.substring(1, s.length()-1);
+      $exp = factory.newStringExpr(new SymInfo($STRING_LITERAL.line, $STRING_LITERAL.pos), s);
+    }
+  |
+   OP_SUB factor { $exp = factory.newUMinusExpr(new SymInfo($OP_SUB.line, $OP_SUB.pos), $factor.exp); }
+  |
+   '(' expr ')' {$exp = $expr.exp;}
+  |
    t='!' f=factor {$exp = factory.newNotExpr(new SymInfo($t.line, $t.pos), $f.exp);}
   |
    TRUE {$exp = factory.newBooleanExpr(new SymInfo($TRUE.line, $TRUE.pos), true);}
   |
    FALSE {$exp = factory.newBooleanExpr(new SymInfo($FALSE.line, $FALSE.pos), false);}
   |
-   meta_peg {$exp = $meta_peg.exp;}
+   meta
+  |
+   mapLit {$exp = $mapLit.exp;}
+  |
+   f=factor t='[' e=expr ']' {$exp = factory.newMapAcces(new SymInfo($t.line, $t.pos), $f.exp, $e.exp    );}
+  |
+   f=factor t='[' m=mapPair ']' {$exp = factory.newMapExtension(new SymInfo($t.line, $t.pos), $f.exp,     $m.p.getFirst(), $m.p.getSecond());}
+  8|
+   '{|' factor optDecls optReturn ':' meta_peg '|}'
+  |
+   factor '<<' factor
+;
+*/
+
+mapLit returns[Expr exp]:
+   t='{:' r=mapList ':}'
+   {
+       Pair<Expr, Expr>[] s = $r.l.toArray(new Pair[$r.l.size()]);
+       $exp = factory.newMapExpr(new SymInfo($t.line, $t.pos), s);
+   }
+;
+
+mapList returns[List<Pair<Expr, Expr>> l]:
+   {$l = new ArrayList<Pair<Expr, Expr>>();} (m1=mapPair {$l.add($m1.p);})* (',' m2=mapPair {$l.add($m2.p);})* 
+;
+
+mapPair returns[Pair<Expr, Expr> p]:
+   e1=expr '->' e2=expr {$p = new Pair<Expr, Expr>($e1.exp, $e2.exp);}
 ;
 
 attribute_ref returns[Attribute exp]:
@@ -417,9 +504,9 @@ actPars returns[List<Expr> list]:
 ; 
 
 equalityOp returns[boolean isequals, int line, int pos]:
-  OP_NE {$isequals = false; $line = $OP_NE.line; $line = $OP_NE.pos;}
+  OP_NE {$isequals = false; $line = $OP_NE.line; $pos = $OP_NE.pos;}
  |
-  OP_EQ {$isequals = true; $line = $OP_EQ.line; $line = $OP_EQ.pos;}
+  OP_EQ {$isequals = true; $line = $OP_EQ.line; $pos = $OP_EQ.pos;}
 ;
 
 relOp returns[int op, int line, int pos]:
@@ -452,27 +539,46 @@ mulOp returns[int op, int line, int pos]:
  * Rules for metaprogramming
  */
 
-meta_peg returns[MetaASTNode exp]:
-'@[' expr ']'
-  /*{$exp = factory.newMetaPeg($expr.exp); }*/
+meta returns[MetaASTNode exp]:
+   '[|' meta_peg+ '|]'
+  |
+   '(|' expr '|)'
+;
+ 
+meta_peg:
+   '#' expr
+  |
+   factor
 ;
 
-/***
- * Lexical
- */
+/*************************************************
+ ***************** Lexical *************************
+ *************************************************/
 
-//APEG types
-INT_TYPE: 'int';
+/*
+ * Types
+ */
+ 
+ /* Integers and real number */
+ INT_TYPE: 'int';
 FLOAT_TYPE: 'float';
+/* Boolean type */
 BOOLEAN_TYPE: 'boolean';
+/* String type */
 STRING_TYPE: 'string';
-CHAR_TYPE: 'char';
+//CHAR_TYPE: 'char';
+/* Grammars types */ 
 GRAMMAR_TYPE: 'grammar';
 LANGUAGE_TYPE: 'language';
+/* Type for maps */
 MAP_TYPE: 'map';
+/* Type for meta-values */
 META_TYPE: 'meta';
 
-// Operators
+/*
+ * Operators
+ */
+ 
 OP_AND : '&&';
 OP_OR : '||';
 OP_NOT : '!';
@@ -487,31 +593,29 @@ OP_SUB : '-';
 OP_MUL : '*';
 OP_DIV : '/';
 OP_MOD : '%';
-STRING_LITERAL: '\'' LITERAL_CHAR* '\''
- /*{
-    String s = $text;
-    s = s.substring(1, s.length()-1);
-    s = formatString(s);
-    setText(s);
- }*/
+
+/*
+ * Lexical rule for a range (character group)
+ */
+
+RANGE_LITERAL: RANGE_CHAR '..' RANGE_CHAR;
+fragment RANGE_CHAR:
+   ESC
+ | ~('\n' | '\r' | '\t' | '\b' | '\f' | ' ' | '\\' | '\'')
 ;
-fragment LITERAL_CHAR
-  : ESC
-  | ~('\''|'\\')
-  ;
-ESC : '\\'
-    ( 'n'
-    | 'r'
-    | 't'
-    | 'b'
-    | 'f'
-    | '"'
-    | '\''
-    | '\\'
-    | 'u' XDIGIT XDIGIT XDIGIT XDIGIT
-    | . // unknown, leave as it is
-    )
-  ;
+
+/*
+ * Literals
+ */
+
+STRING_LITERAL: '\'' (ESC | ~('\'' | '\\'))* '\'';
+
+ESC : '\\' (SPECIAL_ESC | HEX_ESC | TOOL_ESC);
+
+fragment SPECIAL_ESC: ('n' | 'r' | 't' | 'b' | 'f');
+fragment HEX_ESC: 'u' XDIGIT XDIGIT XDIGIT XDIGIT;
+fragment TOOL_ESC: ('\'' | '\\');
+
 fragment XDIGIT :
     '0' .. '9'
   | 'a' .. 'f'
@@ -529,7 +633,12 @@ REAL_NUMBER :
   '.' DIGIT+ EXPONENT?
   ;
 fragment EXPONENT : ('e'|'E') ('+'|'-')? DIGIT+ ;
-WS : (' ' | '\t' | '\r' | '\n') { skip(); } ;
-COMMENT : '/*' .*? '*/' { skip(); } ;
-LINE_COMMENT : '//' ~('\n'|'\r')* '\r'? '\n' { skip(); } ;
+
+/*
+ * Comments and whitespaces
+ */
+ 
+WS : (' ' | '\t' | '\r' | '\n') -> skip;
+COMMENT : '/*' .*? ('*/' | EOF) -> skip ;
+LINE_COMMENT : '--' ~('\n'|'\r')* '\r'? '\n' -> skip;
 

@@ -307,33 +307,27 @@ assign returns[Pair<Attribute, Expr> stm]:
 expr returns[Expr exp]: or_cond {$exp = $or_cond.exp;};
 
 or_cond returns[Expr exp]:
-   and_cond {$exp = $and_cond.exp;}
-  |
    {List<Expr> list = new ArrayList<Expr>(); List<BinOPFactory> funcs = new ArrayList<BinOPFactory>();}
    e1=and_cond {list.add($e1.exp);} (OP_OR e2=and_cond
    {list.add($e2.exp);
      funcs.add((Expr ex1, Expr ex2) -> factory.newOrExpr(new SymInfo($OP_OR.line, $OP_OR.pos), ex1, ex2));
    }
-   )+
+   )*
    {$exp = factory.newLeftAssocBinOpList(list, funcs);}
 ;
 
 and_cond returns[Expr exp]:
-  condExpr {$exp = $condExpr.exp;}    
- |
   {List<Expr> list = new ArrayList<Expr>(); List<BinOPFactory> funcs = new ArrayList<BinOPFactory>();}
   e1=condExpr {list.add($e1.exp);} (OP_AND e2=condExpr
   {
   list.add($e2.exp);
   funcs.add((Expr ex1, Expr ex2) -> factory.newAndExpr(new SymInfo($OP_AND.line, $OP_AND.pos), ex1, ex2));
   }
-  )+
+  )*
   {$exp = factory.newLeftAssocBinOpList(list, funcs);} 
 ;
 
 condExpr returns[Expr exp]:
-   bool_expr {$exp = $bool_expr.exp;}
- |
    {List<Expr> list = new ArrayList<Expr>(); List<BinOPFactory> funcs = new ArrayList<BinOPFactory>();}
    e1=bool_expr {list.add($e1.exp);} (op=equalityOp e2=bool_expr
    	 {
@@ -343,31 +337,30 @@ condExpr returns[Expr exp]:
       else // the operator is not equals
        funcs.add((Expr ex1, Expr ex2) -> factory.newNotEqExpr(new SymInfo($op.line, $op.pos), ex1, ex2));
    	 }
-   )+
+   )*
    {$exp = factory.newLeftAssocBinOpList(list, funcs);}
 ;
 
 bool_expr returns[Expr exp]:  
-   aexpr {$exp = $aexpr.exp;}
- |
-  e1=aexpr relOp e2=aexpr
-  {
-  if($relOp.op == 1) // LT
-    $exp = factory.newLessExpr(new SymInfo($relOp.line, $relOp.pos), $e1.exp, $e2.exp);
-  else if ($relOp.op == 2) // GT
-    $exp = factory.newGreaterExpr(new SymInfo($relOp.line, $relOp.pos), $e1.exp, $e2.exp);
-  else if ($relOp.op == 3) // LE
-    $exp = factory.newLessEqExpr(new SymInfo($relOp.line, $relOp.pos), $e1.exp, $e2.exp);
-  else if ($relOp.op == 4) // GE
-    $exp = factory.newGreaterEqExpr(new SymInfo($relOp.line, $relOp.pos), $e1.exp, $e2.exp);
-  }
+  e1=aexpr {$exp = $aexpr.exp;}
+  ( relOp e2=aexpr
+     {
+       if($relOp.op == 1) // LT
+          $exp = factory.newLessExpr(new SymInfo($relOp.line, $relOp.pos), $e1.exp, $e2.exp);
+       else if ($relOp.op == 2) // GT
+          $exp = factory.newGreaterExpr(new SymInfo($relOp.line, $relOp.pos), $e1.exp, $e2.exp);
+       else if ($relOp.op == 3) // LE
+          $exp = factory.newLessEqExpr(new SymInfo($relOp.line, $relOp.pos), $e1.exp, $e2.exp);
+       else if ($relOp.op == 4) // GE
+          $exp = factory.newGreaterEqExpr(new SymInfo($relOp.line, $relOp.pos), $e1.exp, $e2.exp);
+     }
+   )?
+ 
 ;
 
 aexpr returns[Expr exp]:
-    termOptUnary {$exp = $termOptUnary.exp;}
-  |
     {List<Expr> list = new ArrayList<Expr>(); List<BinOPFactory> funcs = new ArrayList<BinOPFactory>();}
-    e1=termOptUnary {list.add($e1.exp);} (addOp e2=term
+    e1=term {list.add($e1.exp);} (addOp e2=term
     {
     list.add($e2.exp);
     if($addOp.op) // it is an add
@@ -375,19 +368,11 @@ aexpr returns[Expr exp]:
     else // it is a SUB
         funcs.add((Expr ex1, Expr ex2) -> factory.newSubExpr(new SymInfo($addOp.line, $addOp.pos), ex1, ex2));
     }
-    )+
+    )*
     {$exp = factory.newLeftAssocBinOpList(list, funcs);} 
 ;
 
-termOptUnary returns[Expr exp]:
-   OP_SUB term {$exp = factory.newUMinusExpr(new SymInfo($OP_SUB.line, $OP_SUB.pos), $term.exp);}
-  |
-   term {$exp = $term.exp;}
-;
- 
 term returns[Expr exp]:
-   factor {$exp = $factor.exp;}
-  |
    {List<Expr> list = new ArrayList<Expr>(); List<BinOPFactory> funcs = new ArrayList<BinOPFactory>();}
    e1=factor {list.add($e1.exp);} (mulOp e2=factor
    {
@@ -399,10 +384,54 @@ term returns[Expr exp]:
    else if($mulOp.op == 3) // it is a mod operator
      funcs.add((Expr ex1, Expr ex2) -> factory.newModExpr(new SymInfo($mulOp.line, $mulOp.pos), ex1, ex2));
    }
-   )+
+   )*
    {$exp = factory.newLeftAssocBinOpList(list, funcs);} 
 ;
 
+
+factor returns[Expr exp]: 
+   OP_SUB primary { $exp = factory.newUMinusExpr(new SymInfo($OP_SUB.line, $OP_SUB.pos), $primary.exp); }
+  |
+   t='!' f=primary {$exp = factory.newNotExpr(new SymInfo($t.line, $t.pos), $f.exp);}
+  | primary {$exp = $primary.exp;}
+ ;
+
+primary returns[Expr exp]:
+   attribute_ref {$exp = $attribute_ref.exp;}
+  |
+   number {$exp = $number.exp;}
+  |
+   STRING_LITERAL
+    { 
+      String s = $STRING_LITERAL.text;
+      s = s.substring(1, s.length()-1);
+      $exp = factory.newStringExpr(new SymInfo($STRING_LITERAL.line, $STRING_LITERAL.pos), s);
+    }
+  |
+   '(' expr ')' {$exp = $expr.exp;}
+  |
+   TRUE {$exp = factory.newBooleanExpr(new SymInfo($TRUE.line, $TRUE.pos), true);}
+  |
+   FALSE {$exp = factory.newBooleanExpr(new SymInfo($FALSE.line, $FALSE.pos), false);}
+  |
+   meta
+  |
+   mapLit {$exp = $mapLit.exp;}
+  |
+   f=primary t='[' e=expr ']' {$exp = factory.newMapAcces(new SymInfo($t.line, $t.pos), $f.exp, $e.exp    );}
+  |
+   f=primary t='[' m=mapPair ']' {$exp = factory.newMapExtension(new SymInfo($t.line, $t.pos), $f.exp,     $m.p.getFirst(), $m.p.getSecond());}
+  |
+   '{|' primary optDecls optReturn ':' meta_peg '|}'
+
+/*|
+   primary '<<' primary 
+   Isso definitivamente não devia ficar assim ou aqui ! :-(
+*/ 
+;
+
+
+/*
 factor returns[Expr exp]:
    attribute_ref {$exp = $attribute_ref.exp;}
   |
@@ -414,6 +443,8 @@ factor returns[Expr exp]:
       s = s.substring(1, s.length()-1);
       $exp = factory.newStringExpr(new SymInfo($STRING_LITERAL.line, $STRING_LITERAL.pos), s);
     }
+  |
+   OP_SUB factor { $exp = factory.newUMinusExpr(new SymInfo($OP_SUB.line, $OP_SUB.pos), $factor.exp); }
   |
    '(' expr ')' {$exp = $expr.exp;}
   |
@@ -430,11 +461,12 @@ factor returns[Expr exp]:
    f=factor t='[' e=expr ']' {$exp = factory.newMapAcces(new SymInfo($t.line, $t.pos), $f.exp, $e.exp    );}
   |
    f=factor t='[' m=mapPair ']' {$exp = factory.newMapExtension(new SymInfo($t.line, $t.pos), $f.exp,     $m.p.getFirst(), $m.p.getSecond());}
-  |
+  8|
    '{|' factor optDecls optReturn ':' meta_peg '|}'
   |
    factor '<<' factor
 ;
+*/
 
 mapLit returns[Expr exp]:
    t='{:' r=mapList ':}'

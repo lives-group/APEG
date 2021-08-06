@@ -2,6 +2,7 @@ package apeg.test.expr;
 
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.Recognizer;
 
 import apeg.parse.APEGLexer;
 import apeg.parse.APEGParser;
@@ -39,6 +40,10 @@ public class ExprContainer extends TestContainer<Expr> {
 				
 	 // Parse phase: extract the AST from the grammar source code
 	 Expr e = parser.expr().exp;
+	 if(parser.getNumberOfSyntaxErrors() != 0 ||
+        parser.getCurrentToken().getType() != Recognizer.EOF) {
+        return null;
+     }
 	 return e;
     }
 }

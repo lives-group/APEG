@@ -278,7 +278,7 @@ public class TestExprs {
 	assertEquals(e.toString(), "(== (< 1 2) false)");
     }
     
-   /*
+    @Test
     void testRelational03Failure() throws IOException {
 	// Path input= new RelativePath(samples, "arithmetic00.apeg"); // the input sample
 	// Create a ANTLR CharStream from a string
@@ -287,9 +287,9 @@ public class TestExprs {
 	TestContainer<Expr> test = new ExprContainer("plus01", stream);
 	Expr e = test.execute();
 	// Expected Result
-	assertEquals(e.toString(), "");
+	assertEquals(null,e );
     }
-    */
+    
     @Test
     void testRelational02() throws IOException {
 	// Path input= new RelativePath(samples, "arithmetic00.apeg"); // the input sample
@@ -313,8 +313,8 @@ public class TestExprs {
 	// Expected Result
 	assertEquals(e.toString(), "(< (- (+ (* a 2) b) c) 10)");
     }
-    
-    /**
+     
+    @Test
     void testRelational01Failure() throws IOException {
 	// Path input= new RelativePath(samples, "arithmetic00.apeg"); // the input sample
 	// Create a ANTLR CharStream from a string
@@ -323,9 +323,9 @@ public class TestExprs {
 	TestContainer<Expr> test = new ExprContainer("plus01", stream);
 	Expr e = test.execute();
 	// Expected Result
-	assertEquals(e.toString(), "(> (> 1 2) 3)");
+	assertEquals(null, e);
     }
-   **/
+   
     
     @Test
     void testBoolean01() throws IOException {
@@ -375,7 +375,7 @@ public class TestExprs {
 	assertEquals(e.toString(), "(== (!= (== a 2) false) (< b c))");
     }
     
-   /**
+    @Test
     void testBoolean01Failure() throws IOException {
 	// Path input= new RelativePath(samples, "arithmetic00.apeg"); // the input sample
 	// Create a ANTLR CharStream from a string
@@ -384,9 +384,9 @@ public class TestExprs {
 	TestContainer<Expr> test = new ExprContainer("plus01", stream);
 	Expr e = test.execute();
 	// Expected Result
-	assertEquals(e.toString(), "(|| (&& true ) false)");
+	assertEquals(null , e);
     }
-    **/
+   
     @Test
     void testBoolean02Failure() throws IOException {
 	// Path input= new RelativePath(samples, "arithmetic00.apeg"); // the input sample
@@ -396,14 +396,14 @@ public class TestExprs {
 	TestContainer<Expr> test = new ExprContainer("plus01", stream);
 	Expr e = test.execute();
 	// Expected Result
-	assertEquals(e, null );
+	assertEquals(null, e );
     }
     
     @Test
     void testBoolean05() throws IOException {
 	// Path input= new RelativePath(samples, "arithmetic00.apeg"); // the input sample
 	// Create a ANTLR CharStream from a string
-	CharStream stream = CharStreams.fromReader(new StringReader("true && a<b || false))"));
+	CharStream stream = CharStreams.fromReader(new StringReader("true && a<b || false"));
 
 	TestContainer<Expr> test = new ExprContainer("plus01", stream);
 	Expr e = test.execute();

@@ -4,8 +4,8 @@ Tests semantics of choice operator, discarding changes on environments
 
 apeg choiceback;
 
-a returns k : b<0,k> ;
+a returns k : b<0.0,k> ;
 
 b[float x] returns x1 :
-'0' { x = x1 * 3.0 * x / 2.0; }
+'0' { x1= x * 3.0 * x / 2.0; }
 ;

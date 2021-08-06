@@ -7,7 +7,7 @@ public class TyChar extends Type{
 
     
     public TyChar(SymInfo s){
-        super(s);
+        super(s, "char");
     }
     public boolean match(Type t){
         return t instanceof TyChar;
@@ -15,5 +15,4 @@ public class TyChar extends Type{
     public void accept (Visitor v) {
     	v.visit(this);
     }
-
 }

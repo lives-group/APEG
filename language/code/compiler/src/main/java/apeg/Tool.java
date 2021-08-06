@@ -24,7 +24,7 @@ import apeg.visitor.PrettyPrint;
 //import apeg.visitor.VerifyVisitor;
 //import apeg.visitor.StateFullCodeGen;
 //import apeg.visitor.Environments.OperatorTables;
-
+import apeg.visitor.semantics.TypeCheckerVisitor;
 import apeg.util.lang.LangInfo;
 import apeg.util.lang.java.JavaInfo;
 import apeg.util.path.AbsolutePath;
@@ -114,15 +114,17 @@ public class Tool {
 				}
 
 				// Pretty printing the grammar. Just for testing
-				Visitor dotvisitor = new DOTVisitor(new RelativePath(tool.outputPath, fName + ".dot"),
+
+			Visitor dotvisitor = new DOTVisitor(new RelativePath(tool.outputPath, fName + ".dot"),
 				  	                            new RelativePath(new AbsolutePath("."),
 				 			            "src/main/templates/dot.stg"));
-				g.accept(dotvisitor);
-
-				// PrettyPrint ppvisitor = new PrettyPrint(new RelativePath(new AbsolutePath("."),
-				//   			            "src/main/templates/prettyprint.stg"));
-				// g.accept(ppvisitor);
-			
+			g.accept(dotvisitor);
+      Visitor typechecker = new TypeCheckerVisitor();
+      g.accept(typechecker);
+			// PrettyPrint ppvisitor = new PrettyPrint(new RelativePath(new AbsolutePath("."),
+			//   			            "src/main/templates/prettyprint.stg"));
+			// g.accept(ppvisitor);
+	
 			
 
 			/*

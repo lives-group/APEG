@@ -7,7 +7,7 @@ public class TyString extends Type{
 
     
     public TyString(SymInfo s){
-        super(s);
+        super(s, "string");
     }
     public boolean match(Type t){
         return t instanceof TyString;
@@ -15,5 +15,4 @@ public class TyString extends Type{
     public void accept (Visitor v) {
     	v.visit(this);
     }
-
 }

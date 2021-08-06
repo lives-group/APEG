@@ -1,0 +1,1320 @@
+
+//===========================================================================
+
+//   
+//This is a specification of Java extended with Pairs.
+
+//  The grammar is a adaptation version of the Java grammar specification for Mouse.
+
+//  The original source can be found in http://www.romanredz.se/freesoft.htm 
+
+//
+
+//  Parsing Expression Grammar for Java 1.6 for Mouse 1.1 - 1.6.
+
+//  Based on Chapters 3 and 18 of Java Language Specification, Third Edition,
+
+//  at http://java.sun.com/docs/books/jls/third_edition/html/j3TOC.html.
+
+//===========================================================================
+
+
+module parsers.rats.pair.pair;
+
+
+//-------------------------------------------------------------------------
+
+//  Compilation Unit
+
+//-------------------------------------------------------------------------
+
+
+public void compilation_unit = ws package_declaration? (import_declaration)* (type_declaration)* EOT;
+
+void package_declaration = annotation* PACKAGE qualified_id SEMI;
+
+void import_declaration =
+  IMPORT STATIC? qualified_id (DOT STAR)? SEMI;
+
+
+void type_declaration = modifier* (class_declaration
+                         /  enum_declaration
+                        / interface_declaration
+                       / annotation_type_declaration)
+                     / SEMI;   
+
+//-------------------------------------------------------------------------
+
+//  Class Declaration
+
+//-------------------------------------------------------------------------
+
+
+void class_declaration =
+  CLASS Identifier type_parameters? (EXTENDS class_type)? (IMPLEMENTS class_type_list)? class_body;
+
+
+void class_body =  LWING class_body_declaration* RWING;
+
+
+void class_body_declaration =
+   SEMI
+ / 
+                                STATIC? block /                                 
+// Static or Instance Initializer
+ 
+                                modifier* member_decl ;                           
+// ClassMemberDeclaration
+   
+void member_decl  =
+   type_parameters generic_method_or_constructor_rest / 
+// Generic Method or Constructor
+  
+                      type Identifier method_declarator_rest /            
+// Method
+  
+                     type variable_declarators SEMI /                 
+// Field
+ 
+                     VOID Identifier void_method_declarator_rest /     
+// Void method
+ 
+                     Identifier constructor_declarator_rest /             
+// Constructor
+ 
+                     interface_declaration /                           
+// Interface
+ 
+                     class_declaration  /                               
+// Class
+ 
+                     enum_declaration /                                 
+// Enum
+ 
+                     annotation_type_declaration;                       
+// Annotation
+   
+
+void generic_method_or_constructor_rest =
+   (type / VOID) Identifier method_declarator_rest
+ / 
+                                                    Identifier constructor_declarator_rest;
+
+void 
+method_declarator_rest =    formal_parameters dim* (THROWS class_type_list)? (method_body / SEMI);
+
+void 
+void_method_declarator_rest =
+   formal_parameters (THROWS class_type_list)? (method_body / SEMI);
+
+void 
+constructor_declarator_rest =  formal_parameters (THROWS class_type_list)? method_body;
+
+
+void method_body =   block;
+
+
+
+//-------------------------------------------------------------------------
+
+//  Interface Declaration
+
+//-------------------------------------------------------------------------
+
+
+void interface_declaration =
+   INTERFACE Identifier type_parameters? (EXTENDS class_type_list)? interface_body;
+
+
+void interface_body =
+   LWING interface_body_declaration* RWING;
+
+void 
+interface_body_declaration =
+   modifier* interface_member_decl
+ /
+                               SEMI;
+
+
+void interface_member_decl =  interface_method_or_field_decl
+ / 
+                         interface_generic_method_decl
+ / 
+                         VOID Identifier void_interface_method_declarator_rest
+ / 
+                         interface_declaration
+ / 
+                         annotation_type_declaration
+ / 
+                         class_declaration
+ / 
+                         enum_declaration;
+
+
+void interface_method_or_field_decl =  type Identifier interface_method_or_field_rest;
+
+
+void interface_method_or_field_rest =   constant_declarators_rest SEMI
+ / 
+                                  interface_method_declarator_rest;
+
+void 
+interface_method_declarator_rest =  formal_parameters dim* (THROWS class_type_list)? SEMI;
+
+
+void interface_generic_method_decl =
+   type_parameters (type / VOID) Identifier interface_method_declarator_rest;
+
+
+void void_interface_method_declarator_rest =
+   formal_parameters (THROWS class_type_list)? SEMI;
+
+
+void constant_declarators_rest =
+   constant_declarator_rest (COMMA constant_declarator)*;
+
+
+void constant_declarator =  Identifier constant_declarator_rest;
+
+
+void constant_declarator_rest =  dim* EQU variable_initializer;
+
+
+//-------------------------------------------------------------------------
+
+//  Enum Declaration
+
+//-------------------------------------------------------------------------
+
+
+void enum_declaration =   ENUM Identifier (IMPLEMENTS class_type_list)? enum_body;
+
+
+void enum_body =   LWING enum_constants? COMMA? enum_body_declarations? RWING;
+
+
+void enum_constants =  enum_constant (COMMA enum_constant)*;
+
+
+void enum_constant =
+   annotation* Identifier arguments? class_body?;
+
+
+void enum_body_declarations =
+   SEMI class_body_declaration*;
+
+
+//-------------------------------------------------------------------------
+
+//  Variable Declarations
+
+//-------------------------------------------------------------------------
+
+
+void local_variable_declaration_statement =   (FINAL / annotation)* type variable_declarators SEMI;
+
+void 
+variable_declarators =
+   variable_declarator (COMMA variable_declarator)*;
+
+
+void variable_declarator =   Identifier dim* (EQU variable_initializer)?;
+
+
+//-------------------------------------------------------------------------
+
+//  Formal Parameters
+
+//-------------------------------------------------------------------------
+
+
+void formal_parameters =   LPAR formal_parameter_list? RPAR;
+
+void 
+formal_parameter =  (FINAL / annotation)* type variable_declarator_id;
+
+
+void last_formal_parameter =   (FINAL / annotation)* type ELLIPSIS variable_declarator_id;
+
+
+void formal_parameter_list =   formal_parameter (COMMA formal_parameter)* (COMMA last_formal_parameter)?
+ / 
+                               last_formal_parameter;
+
+void 
+variable_declarator_id =   Identifier dim*;
+
+
+//-------------------------------------------------------------------------
+
+//  Statements
+
+//-------------------------------------------------------------------------
+
+
+void block =
+   LWING block_statements RWING;
+
+
+void block_statements =
+   block_statement*;
+
+
+void block_statement =
+   local_variable_declaration_statement
+ / 
+                         modifier*
+   ( class_declaration
+   / enum_declaration
+   )
+ / 
+                         statement;
+
+void 
+statement =  block
+ / 
+                  ASSERT expression (COLON expression)? SEMI
+ / 
+                  IF par_expression statement (ELSE statement)?
+ / 
+                  FOR LPAR for_init? SEMI expression? SEMI for_update? RPAR statement
+ / 
+                  FOR LPAR formal_parameter COLON expression RPAR statement
+ / 
+                  WHILE par_expression statement
+ / 
+                  DO statement WHILE par_expression SEMI
+ / 
+                  TRY block (catch+ finally? / 
+                  finally)
+ / 
+                  SWITCH par_expression LWING switch_block_statement_groups RWING
+ / 
+                  SYNCHRONIZED par_expression block
+ / 
+                  RETURN expression? SEMI
+ / 
+                  THROW expression SEMI
+ / 
+                  BREAK Identifier? SEMI
+ / 
+                  CONTINUE Identifier? SEMI
+ / 
+                  SEMI
+ / 
+                  statement_expression SEMI
+ / 
+                  Identifier COLON statement;
+
+void 
+catch =
+   CATCH LPAR formal_parameter RPAR block;
+
+
+void finally =   FINALLY block;
+
+
+void switch_block_statement_groups =
+   switch_block_statement_group*;
+
+
+void switch_block_statement_group =
+   switch_label block_statements;
+
+
+void switch_label =  CASE constant_expression COLON
+ / 
+                     CASE enum_constant_name COLON
+ / 
+                     DEFAULT COLON;
+
+
+void for_init =  (FINAL / annotation)* type variable_declarators
+ / 
+                 statement_expression (COMMA statement_expression)*;
+
+
+void for_update =
+   statement_expression (COMMA statement_expression)*;
+
+
+void enum_constant_name =
+   Identifier;
+
+
+
+//-------------------------------------------------------------------------
+
+//  Expressions
+
+//-------------------------------------------------------------------------
+
+
+void statement_expression =   expression;
+
+    
+// This is more generous than definition in section 14.8, which allows only
+    
+// specific forms of Expression.
+
+
+void constant_expression =
+   expression;
+
+
+void expression =
+   conditional_expression (assignment_operator conditional_expression)*;
+
+    
+// This definition is part of the modification in JLS Chapter 18
+    
+// to minimize look ahead. In JLS Chapter 15.27, Expression is defined
+    
+// as AssignmentExpression, which is effectively defined as
+    
+// (LeftHandSide AssignmentOperator)* ConditionalExpression.
+    
+// The above is obtained by allowing ANY ConditionalExpression
+    
+// as LeftHandSide, which results in accepting statements like 5 = a.
+
+
+
+void assignment_operator =
+   EQU
+ / 
+                             PLUSEQU
+ / 
+                             MINUSEQU
+ / 
+                             STAREQU
+ / 
+                             DIVEQU
+ / 
+                             ANDEQU
+ / 
+                             OREQU
+ / 
+                             HATEQU
+ / 
+                             MODEQU
+ / 
+                             SLEQU
+ / 
+                             SREQU
+ / 
+                             BSREQU;
+
+void 
+conditional_expression =  conditional_or_expression (QUERY expression COLON conditional_or_expression)*;
+
+
+void conditional_or_expression =  conditional_and_expression (OROR conditional_and_expression)*;
+
+
+void conditional_and_expression =   inclusive_or_expression (ANDAND inclusive_or_expression)*;
+
+
+void inclusive_or_expression =   exclusive_or_expression (OR exclusive_or_expression)*;
+
+
+void exclusive_or_expression =   and_expression (HAT and_expression)*;
+
+
+void and_expression =  equality_expression (AND equality_expression)*;
+
+
+void equality_expression =
+   relational_expression ((EQUAL /  NOTEQUAL) relational_expression)*;
+
+
+void relational_expression =
+   shift_expression ((LE / GE / LT / GT) shift_expression / 
+                               INSTANCEOF reference_type)*;
+
+void 
+shift_expression =
+   additive_expression ((SL / SR / BSR) additive_expression)*;
+
+
+void additive_expression =
+   multiplicative_expression ((PLUS / MINUS) multiplicative_expression)*;
+
+void 
+multiplicative_expression =   unary_expression ((STAR / DIV / MOD) unary_expression)*;
+
+void 
+unary_expression =   prefix_op unary_expression
+ / 
+                    LPAR type RPAR unary_expression
+ / 
+                    primary (selector)* (postfix_op)*;
+
+void 
+primary =   par_expression
+ / 
+                 non_wildcard_type_arguments (explicit_generic_invocation_suffix / 
+                 THIS arguments)
+ / 
+                 THIS arguments?
+ / 
+                 SUPER super_suffix
+ / 
+                 Literal
+/
+                 pair_expression
+
+/               list_expression
+ 
+ / 
+                 NEW creator
+ / 
+                 qualified_identifier identifier_suffix?
+ / 
+                 basic_type dim* DOT CLASS
+ / VOID DOT CLASS;
+
+void pair_expression = LPAR expression COMMA expression  RPAR ;
+
+void list_expression = "new" "ArrayList" LPAR RPAR;
+
+void identifier_suffix =
+   LBRK ( RBRK dim* DOT CLASS / expression RBRK)
+ / 
+                          arguments
+ / 
+                          DOT
+   ( CLASS
+ / explicit_generic_invocation
+   / THIS
+   / SUPER arguments
+   / NEW non_wildcard_type_arguments? inner_creator
+   );
+
+
+void explicit_generic_invocation =
+   non_wildcard_type_arguments explicit_generic_invocation_suffix;
+
+
+void non_wildcard_type_arguments =
+   LPOINT reference_type (COMMA reference_type)* RPOINT;
+
+
+void explicit_generic_invocation_suffix =
+   SUPER super_suffix
+ / 
+                                            Identifier arguments;
+
+
+void prefix_op =
+   INC
+ / 
+                   DEC
+ / 
+                   BANG
+ / 
+                   TILDA
+ / 
+                   PLUS
+ / 
+                   MINUS;
+
+
+
+void postfix_op =
+   INC
+ / 
+                    DEC;
+
+
+
+void selector =   DOT Identifier arguments?
+ / 
+                  DOT explicit_generic_invocation
+ / 
+                  DOT THIS
+ / 
+                  DOT SUPER super_suffix
+ / 
+                  DOT NEW non_wildcard_type_arguments? inner_creator
+ / 
+                  dim_expr;
+
+
+void super_suffix =  arguments
+ / 
+                     DOT non_wildcard_type_arguments? Identifier arguments?;
+
+
+void basic_type =
+   ("byte" 
+/ "short"
+ / "char"
+ / "int" / "long"
+ / "float"
+ / "double"
+ / "boolean"
+) !(Letter_Or_Digit) ws;
+
+
+void arguments =
+   LPAR (expression (COMMA expression)*)? RPAR;
+
+
+void creator =
+   non_wildcard_type_arguments? created_name class_creator_rest
+ / 
+                 non_wildcard_type_arguments? (class_type / basic_type) array_creator_rest;
+
+
+void created_name =  Identifier non_wildcard_type_arguments? (DOT Identifier non_wildcard_type_arguments?)*;
+
+
+void inner_creator =
+   Identifier class_creator_rest;
+
+
+void array_creator_rest =   LBRK ( RBRK dim* array_initializer / expression RBRK dim_expr* dim* );
+
+    
+// This is more generous than JLS 15.10. According to that definition,
+    
+// basic_type must be followed by at least one dim_expr or by array_initializer.
+
+
+void 
+class_creator_rest =
+   arguments class_body?;
+
+
+void array_initializer =
+   LWING (variable_initializer (COMMA variable_initializer)*)? COMMA?  RWING;
+
+
+void variable_initializer =   array_initializer
+ / 
+                              expression;
+
+
+void par_expression =   LPAR expression RPAR;
+
+
+void qualified_identifier =  Identifier (DOT Identifier)*;
+
+void 
+qualified_id =               
+// This version of a qualified identifier there are not spaces
+   
+Id (DOT Id)*;           
+// between an identifier and a void dot
+
+void dim =   LBRK RBRK;
+
+
+void dim_expr =
+   LBRK expression RBRK;
+
+
+//-------------------------------------------------------------------------
+
+//  Types and Modifiers
+
+//-------------------------------------------------------------------------
+
+
+void type =
+   (basic_type / class_type / pair_type / list_type) dim*;
+
+// Declaration of a pair type   
+
+void pair_type =
+ LPAR type COMMA type RPAR;
+
+ void list_type =
+  "List" LPOINT type RPOINT;
+
+
+void 
+reference_type =   basic_type dim+
+ / 
+                        class_type dim*;
+
+void 
+class_type =   Identifier type_arguments? (DOT Identifier type_arguments?)*;
+
+
+void class_type_list =   class_type (COMMA class_type)*;
+
+
+void type_arguments =   LPOINT type_argument (COMMA type_argument)* RPOINT;
+
+
+void type_argument =
+   reference_type
+ / 
+                       QUERY ((EXTENDS / SUPER) reference_type)?;
+
+
+void type_parameters =   LPOINT type_parameter (COMMA type_parameter)* RPOINT;
+
+
+void type_parameter =   Identifier (EXTENDS bound)?;
+
+void 
+bound =
+   class_type (AND class_type)*;
+
+void modifier = annotation
+   / ( "public"
+   / "protected"
+   / "private"
+   / "static"
+   / "abstract"
+   / "final"
+   / "native"
+   / "synchronized"
+   / "transient"
+   / "volatile"
+   / "strictfp") !(Letter_Or_Digit) ws;
+
+   
+// This common definition of Modifier is part of the modification
+    
+// in JLS Chapter 18 to minimize look ahead. The main body of JLS has
+    
+// different lists of modifiers for different language elements.
+
+
+
+//-------------------------------------------------------------------------
+
+//  Annotations
+
+//-------------------------------------------------------------------------
+
+
+void annotation_type_declaration =
+   AT INTERFACE Identifier annotation_type_body;
+
+
+void annotation_type_body =  LWING annotation_type_element_declaration* RWING;
+
+
+void annotation_type_element_declaration =   modifier* annotation_type_element_rest
+ / 
+                                             SEMI;
+
+
+void annotation_type_element_rest =   type annotation_method_or_constant_rest SEMI
+ / 
+                                      class_declaration
+ / 
+                                      enum_declaration
+ / 
+                                      interface_declaration
+ / 
+                                      annotation_type_declaration;
+
+
+void annotation_method_or_constant_rest = annotation_method_rest
+                                         /annotation_constant_rest;
+
+void 
+annotation_method_rest =
+   Identifier LPAR RPAR default_value?;
+
+void 
+annotation_constant_rest =
+   variable_declarators;
+
+
+void default_value =  DEFAULT element_value;
+
+void 
+annotation =  normal_annotation
+ / 
+                   single_element_annotation
+ / 
+                   marker_annotation;
+
+
+void normal_annotation =   AT qualified_identifier LPAR element_value_pairs? RPAR;
+
+
+void single_element_annotation =
+   AT qualified_identifier LPAR element_value RPAR;
+
+void 
+marker_annotation =   AT qualified_identifier;
+
+
+void element_value_pairs =  element_value_pair (COMMA element_value_pair)*;
+
+
+void element_value_pair =  Identifier EQU element_value;
+
+
+void element_value =  conditional_expression
+ / 
+                      annotation
+ / 
+                      element_value_array_initializer;
+
+
+void element_value_array_initializer =
+   LWING element_values? COMMA? RWING;
+
+void 
+element_values =   element_value (COMMA element_value)*;
+
+
+
+//=========================================================================
+
+//  Lexical Structure
+
+//=========================================================================
+
+
+//-------------------------------------------------------------------------
+
+//  JLS 3.8  Identifiers
+
+//-------------------------------------------------------------------------
+
+
+void Identifier =   Id ws;
+
+
+// This is an identifier without spaces
+void Id =  !Keyword (Letter / '_') Letter_Or_Digit* ;
+
+
+void Letter =  [a-zA-Z];
+
+void 
+Letter_Or_Digit =   Letter
+ / Digit
+ / '_'
+ / '$';
+
+
+void RANGE =
+    Char '-' Char 
+  / !']' Char
+  ;
+
+
+//-------------------------------------------------------------------------
+
+//  JLS 3.9  Keywords
+
+//  More precisely: reserved words. According to JLS, "true", "false",
+
+//  and "null" are technically not keywords - but still must not appear
+
+//  as identifiers. Keywords "const" and "goto" are not used; JLS explains
+
+//  the reason.
+
+//-------------------------------------------------------------------------
+
+
+void Keyword =   ( "abstract"
+   / "assert"
+   / "boolean"
+   / "break"
+   / "byte"
+   / "case"
+   / "catch"
+   / "char"
+   / "class"
+   / "const"
+   / "continue"
+   / "default"
+   / "double"
+   / "do"
+   / "else"
+   / "enum"
+   / "extends"
+   / "false"
+   / "finally"
+   / "final"
+   / "float"
+   / "for"
+   / "goto"
+   / "if"
+   / "implements"
+   / "import"
+   / "interface"
+   / "int"
+   / "instanceof"
+   / "long"
+   / "native"
+   / "new"
+   / "null"
+   / "package"
+   / "private"
+   / "protected"
+   / "public"
+   / "return"   / "short"
+   / "static"
+   / "strictfp"
+   / "super"
+   / "switch"
+   / "synchronized"
+   / "this"
+   / "throws"
+   / "throw"
+   / "transient"   / "true"   / "try"   / "void"
+   / "volatile"
+   / "while"
+   / "context-free syntax"
+) !Letter_Or_Digit;
+
+
+void ASSERT =  "assert" !(Letter_Or_Digit) ws;
+   
+
+void BREAK =  "break" !Letter_Or_Digit ws;
+   
+
+void CASE =  "case" !Letter_Or_Digit ws;
+  
+
+void CATCH =
+   "catch" !Letter_Or_Digit ws;
+   
+
+void CLASS =
+   "class" !Letter_Or_Digit ws;
+  
+
+void CONTINUE =   "continue" !Letter_Or_Digit ws;
+   
+
+void DEFAULT =  "default" !Letter_Or_Digit ws;
+   
+
+void DO =   "do" !Letter_Or_Digit ws;
+   
+
+void ELSE =  "else" !Letter_Or_Digit ws;
+   
+
+void ENUM =  "enum" !Letter_Or_Digit ws;
+   
+
+void EXTENDS =   "extends" !Letter_Or_Digit ws;
+   
+
+void FINALLY =   "finally" !Letter_Or_Digit ws;
+   
+
+void FINAL =  "final" !Letter_Or_Digit ws;
+   
+
+void FOR =  "for" !Letter_Or_Digit ws;
+   
+
+void IF	=
+   "if" !Letter_Or_Digit ws;
+   
+
+void IMPLEMENTS =   "implements" !Letter_Or_Digit ws;
+   
+
+void IMPORT =  "import" !Letter_Or_Digit ws;
+
+
+void INTERFACE =
+   "interface" !Letter_Or_Digit ws;
+   
+
+void INSTANCEOF =   "instanceof" !Letter_Or_Digit ws;
+
+void 
+NEW = "new" !Letter_Or_Digit ws;
+   
+
+void PACKAGE =  "package" !Letter_Or_Digit ws;
+
+
+void RETURN =  "return" !Letter_Or_Digit ws;
+   
+
+void STATIC =   "static" !Letter_Or_Digit ws;
+   
+
+void SUPER =   "super" !Letter_Or_Digit ws;
+   
+
+void SWITCH =
+   "switch" !Letter_Or_Digit ws;
+   
+
+void SYNCHRONIZED =  "synchronized" !Letter_Or_Digit ws;
+   
+
+void THIS =  "this" !Letter_Or_Digit ws;
+   
+
+void THROWS =
+   "throws" !Letter_Or_Digit ws;
+   
+
+void THROW =  "throw" !Letter_Or_Digit ws;
+   
+
+void TRY =  "try" !Letter_Or_Digit ws;
+   
+
+void VOID =
+   "void" !Letter_Or_Digit ws;
+   
+
+void WHILE =  "while" !Letter_Or_Digit ws;
+
+
+void CONTEXT_FREE_SYNTAX =
+   "context-free syntax" ws;
+   
+
+//-------------------------------------------------------------------------
+
+//  JLS 3.10  Literals
+
+//-------------------------------------------------------------------------
+
+
+void Literal =   ( Float_Literal
+   / Integer_Literal /          
+// May be a prefix of 
+Float_Literal
+   / Char_Literal
+   / String_Literal
+   / "true"  !Letter_Or_Digit
+   / "false" !Letter_Or_Digit
+   / "null" !Letter_Or_Digit
+   ) ws;
+
+
+
+
+void Integer_Literal =  ( Hex_Numeral
+   / Octal_Numeral /      
+// May be a prefix of 
+Hex_Numeral
+   / Decimal_Numeral          
+// May be a prefix of OctalNumeral
+   
+) ('l' / 'L')?;
+
+
+void Decimal_Numeral =   '0'
+ / [1-9][0-9]*;
+
+void 
+Hex_Numeral =
+   ("0x" / "0X") Hex_Digit+;
+
+void 
+Hex_Digit =   [a-fA-F0-9];
+
+
+void Octal_Numeral =
+   '0' [0-7]+;
+
+
+void Float_Literal =   Hex_Float
+ / Decimal_Float;
+
+void 
+Decimal_Float =   Digit+ '.' Digit*  Exponent? ('f' / 'F' / 'd' / 'D')?
+ / 
+                       '.' Digit+ Exponent? ('f' / 'F' / 'd' / 'D')?
+ / 
+                       Digit+ Exponent ('f' / 'F' / 'd' / 'D')?
+ / 
+                       Digit+ Exponent? ('f' / 'F' / 'd' / 'D');
+
+
+void Exponent =
+   ('e' / 'E') ('+' / '-')? Digit+;
+
+void 
+Digit =   [0-9];
+
+
+void Hex_Float =
+   Hex_Significand Binary_Exponent ('f' / 'F' / 'd' / 'D')?;
+
+void 
+Hex_Significand =  ("0x" / "0X") Hex_Digit* '.' Hex_Digit+
+ / 
+                        Hex_Numeral '.'? ;                         
+// May be a prefix of above
+    
+void Binary_Exponent =   ('p' / 'P') ('+' / '-')? Digit+;
+
+
+void Char =   Escape
+  /  ! '\\' _ ;
+
+void Escape =  '\\' ('n' / 'r' / 't' / 'b' / 'f' / '"' / '\'' / '\\' )
+ / OctalEscape
+ / UnicodeEscape;
+
+void 
+OctalEscape =
+   '\\' [0-3][0-7][0-7]
+ / '\\' [0-7][0-7]
+ / '\\' [0-7];
+
+void 
+UnicodeEscape =   '\\' 'u'+ Hex_Digit Hex_Digit Hex_Digit Hex_Digit;
+
+void 
+Char_Literal =  '\'' Char '\'';
+
+
+void String_Literal =  '"' (!'"' Char)* '"';
+
+
+void PEG_Literal = '\'' (!'\'' Char)+ '\''
+  ;
+
+
+//-------------------------------------------------------------------------
+
+//  JLS 3.11-12  Separators, Operators
+
+//-------------------------------------------------------------------------
+
+
+void AT =   '@' ws;
+   
+
+void AND =
+   '&' !('&' / '=') ws;
+   
+
+void ANDAND =
+   "&&" ws;
+   
+
+void ANDEQU =   "&=" ws;
+   
+
+void BANG =  '!' !'=' ws;
+   
+
+void BSR =
+   ">>>" !'=' ws;
+   
+
+void BSREQU =  ">>>=" ws;
+   
+
+void COLON =   ':' ws;
+   
+
+void COMMA =
+   ',' ws;
+   
+
+void DEC =   "--" ws;
+   
+
+void DIV =
+   '/' !'=' ws;
+   
+
+void DIVEQU =   "/=" ws;
+   
+
+void DOT =  '.' ws;
+   
+
+void ELLIPSIS =   "..." ws;
+   
+
+void EQU =
+   '=' !'=' ws;
+   
+
+void EQUAL =   "==" ws;
+   
+
+void GE =
+   ">=" ws;
+   
+
+void GT =
+   '>' !('=' / '>') ws;
+   
+
+void HAT =
+   '^' !'=' ws;
+   
+
+void HATEQU =
+   "^=" ws;
+   
+
+void INC =  "++" ws;
+   
+
+void LBRK =
+   '[' ws;
+   
+
+void LE =   "<=" ws;
+   
+
+void LPAR =   '(' ws;
+   
+
+void LPOINT =
+   '<' ws;
+   
+
+void LT =   '<' !('=' / '<') ws;
+   
+
+void LWING =
+   '{' ws;
+   
+
+void MINUS =
+   '-' !('=' / '-') ws;
+   
+
+void MINUSEQU =   "-=" ws;
+   
+
+void MOD =
+   '%' !'=' ws;
+   
+
+void MODEQU =
+   "%=" ws ;
+   
+
+void NOTEQUAL =   "!=" ws;
+   
+
+void OR =   '|' !('=' / '|') ws;
+   
+
+void OREQU =
+   "|=" ws;
+   
+
+void OROR =
+   "||" ws;
+   
+
+void PLUS =
+   '+' !('=' / '+') ws;
+   
+
+void PLUSEQU =   "+=" ws;
+   
+
+void QUERY =  '?' ws;
+   
+
+void RBRK =   ']' ws;
+   
+
+void RPAR =   ')' ws;
+   
+
+void RPOINT =  '>' ws;
+   
+
+void RWING =   '}' ws;
+   
+
+void SEMI =   ws ';' ws;
+   
+
+void SL =
+   "<<" !'=' ws;
+   
+
+void SLEQU =   "<<=" ws;
+   
+
+void SR =  ">>" !('=' / '>') ws;
+   
+
+void SREQU =   ">>=" ws;
+   
+
+void STAR =
+   '*' !'=' ws;
+   
+
+void STAREQU =  "*=" ws;
+   
+
+void TILDA = '~' ws;
+void EOT =  !_ ;
+
+
+
+//------------------
+
+//  PEG Operators
+
+//------------------
+
+void 
+ANY =
+   '.' ws;
+
+void 
+ARROW =
+   "->" ws;
+
+void 
+CHOICE =   '/' ws;
+   
+
+void REPEAT =
+   '*' ws;
+
+
+void ONE_OR_MORE =
+   '+' ws;
+
+
+void OPTIONAL =
+   '?' ws;   
+
+
+//-------------------------------------------------------------------------
+
+//  White space and comments
+
+//-------------------------------------------------------------------------
+
+void 
+ws =
+  (space / comment)*;
+
+
+void space =
+  ' ' / '\t' / '\u000C' / endOfLine / '\n';
+
+
+void endOfLine =
+  "\r\n" / "\r" / "\n"; 
+
+
+void comment =   "//" (!endOfLine _)* endOfLine
+  /
+                 "/*" (!"*/"_)* "*/" ;
+

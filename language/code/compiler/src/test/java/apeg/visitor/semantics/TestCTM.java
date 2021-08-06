@@ -1,14 +1,14 @@
 package apeg.visitor.semantics;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Test;
+
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.junit.Test;
 import apeg.util.Environment;
 import apeg.util.Pair;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestCTM {
 	

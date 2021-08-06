@@ -16,6 +16,8 @@ import apeg.parse.APEGParser;
 import apeg.ast.ASTFactory;
 import apeg.ast.ASTFactoryImpl;
 import apeg.ast.Grammar;
+import apeg.util.Pair;
+import apeg.visitor.semantics.VType;
 
 //import apeg.visitor.ASTNodeVisitor;
 //import apeg.visitor.BuildRuleEnvironmetVisitor;
@@ -36,14 +38,16 @@ import apeg.visitor.*;
 public class Tool {
 
 	/**
-	 * Fields for the compiler options
-	 * */
+	* Fields for the compiler options
+	* */
 	private Path outputPath; // the output directory
 	private String namespace; // the package/namespace of the generated code
 	private Path extdir; // path of the external functions
 	private LangInfo targetLang; // informations about the target language and
-									// external functions
+	// external functions
+	private String interpretInput;
 	private Stack<String> warnings;
+
 
 	public Tool() {
 		// Set the default output location
@@ -55,16 +59,19 @@ public class Tool {
 
 		// Set the warning message stack
 		warnings = new Stack<String>();
+
+		// Set the interpreter's input file path.
+		interpretInput = null;
 	}
 
 	public static void main(String[] args) {
 		/**
-		 * Handling the command lines args
-		 */
+		* Handling the command lines args
+		*/
 		Tool tool = new Tool();
 		String[] grammars = HandlerOption.handle(args, tool);
 		for (String s : tool.getWarningMessage())
-			System.out.println(s); // print option arguments warnings
+		System.out.println(s); // print option arguments warnings
 
 		for (String s : grammars) {
 			// Check if the file ends with the correct extension: apeg
@@ -76,16 +83,16 @@ public class Tool {
 			Path fpath;
 			String fName;
 			if (AbsolutePath.isAbsolute(s))
-				fpath = new AbsolutePath(s);
+			fpath = new AbsolutePath(s);
 			else
-				fpath = new RelativePath(new AbsolutePath(
-						System.getProperty("user.dir")), s);
+			fpath = new RelativePath(new AbsolutePath(
+			System.getProperty("user.dir")), s);
 			int index = s.lastIndexOf(File.separatorChar, s.length()-5);
 			if(index != -1) // the string has a file separator
-				fName = s.substring(index+1, s.length()-5);
+			fName = s.substring(index+1, s.length()-5);
 			else // the string do not have a file separator
-				fName = s.substring(0, s.length()-5);
-			System.out.println(fName);
+			fName = s.substring(0, s.length()-5);
+
 			try {
 			    // System.out.println(fpath.toString());
 				FileReader file = new FileReader(fpath.getFile());
@@ -95,132 +102,109 @@ public class Tool {
 				APEGLexer lexer = new APEGLexer(input);
 				// create a buffer of tokens pulled from the lexer
 				CommonTokenStream tokens = new CommonTokenStream(lexer);
-				
+
 				// create an AST factory
-				ASTFactory factory = new ASTFactoryImpl();				
+				ASTFactory factory = new ASTFactoryImpl();
 				// create a parser that feeds off the tokens buffer
 				APEGParser parser = new APEGParser(factory, tokens);
 				// tell ANTLR to does not automatically build an AST
 				parser.setBuildParseTree(false);
-				
+
 				// Parse phase: extract the AST from the grammar source code
 				Grammar g = parser.grammarDef().gram;
-				
+
 				// Check is there is any parse error
 				if(parser.getNumberOfSyntaxErrors() != 0 ||
-				   parser.getCurrentToken().getType() != Recognizer.EOF) {
+				parser.getCurrentToken().getType() != Recognizer.EOF) {
 					// ARTLR has already printed error messages, thus we stop
 					continue;
 				}
 
 				// Pretty printing the grammar. Just for testing
 
-			Visitor dotvisitor = new DOTVisitor(new RelativePath(tool.outputPath, fName + ".dot"),
-				  	                            new RelativePath(new AbsolutePath("."),
-				 			            "src/main/templates/dot.stg"));
-			g.accept(dotvisitor);
-      Visitor typechecker = new TypeCheckerVisitor();
-      g.accept(typechecker);
-			// PrettyPrint ppvisitor = new PrettyPrint(new RelativePath(new AbsolutePath("."),
-			//   			            "src/main/templates/prettyprint.stg"));
-			// g.accept(ppvisitor);
-	
-			
+				//Visitor dotvisitor = new DOTVisitor(new RelativePath(tool.outputPath, fName + ".dot"),
+				//	                            new RelativePath(new AbsolutePath("."),
+				//			            "src/main/templates/dot.stg"));
+				//g.accept(dotvisitor);
 
-			/*
-			BuildRuleEnvironmetVisitor build = new BuildRuleEnvironmetVisitor();
-			g.accept(build);
-			build.printTable();
-			*/	
+				Visitor typechecker = new TypeCheckerVisitor();
 
-			/*
-     			VerifyVisitor verifica = new VerifyVisitor(build.getTable(),OperatorTables.mkArithmeticEnv());
-			g.accept(verifica);
-			if (verifica.hasErrors()){ 
-			    System.err.println("---------- Errors --------- ");
-			    for (String i : verifica.getErros()){
-				System.err.println(i);
-			    }
-			}
-			if(verifica.hasWarnings()){
-			    System.err.println("---------- Warnings --------- ");
-			    for (String i : verifica.getWarnings()){
-				System.err.println(i);
-			    }
-			}
-			*/
-			    
-		       /*
-		       // Generating a graphical view from AST 			
-		       DOTVisitor dot = new DOTVisitor(new RelativePath(tool.outputPath, fName + ".dot"),
-		                                       new RelativePath(new AbsolutePath("."),
-						       "src/main/templates/dot.stg"));
-		       g.accept(dot);
-		       */
-				
-		       /*
-		       ASTNodeVisitor codegen = new CodeGenVisitor(new RelativePath(new AbsolutePath("."),
-								   "src/main/templates/classtamplate.stg"));
-		       g.accept(codegen);
-		       */
+				g.accept(typechecker);
 
-		       /*	
-		       ASTNodeVisitor parservisitor = new StateFullCodeGen(new RelativePath(new AbsolutePath("."),
-								           "src/main/templates/imperativeParser.stg"));;
-		       g.accept(parservisitor);
-		       */	
-	
-			} catch (FileNotFoundException e) {
-				System.err.println("File " + s + " do not exist");
-				continue;
-			} catch (IOException e) {
-				System.err.println(e.getMessage());
-				continue;
-			}
-		}
+				if(tool.interpretInput != null){
+                    if(!((TypeCheckerVisitor)typechecker).getError().isEmpty()){
+                        for(Pair<String,VType> perr:((TypeCheckerVisitor)typechecker).getError()){
+                            System.out.println(perr.toString());
+                        }
+                    System.exit(1);
+                    }
+					VMVisitor vm = new VMVisitor(tool.interpretInput.toString(),((TypeCheckerVisitor)typechecker).getEnv());
+					System.out.println("Path = " + tool.interpretInput);
+					g.accept(vm);
+					if(vm.succeed()){
+						System.out.println(" accepted.");
+					}
+					else{ System.out.println(" rejected"); }
+				}
+            }catch (FileNotFoundException e) {
+                System.err.println("File " + s + " do not exist");
+	            continue;
+            }catch (IOException e) {
+	            System.err.println(e.getMessage());
+	            continue;
+            }
+       }
 
-	}
+   }
 
-	/**
-	 * ***************** Functions for Fields Accesses **********************
-	 */
-	public Path getOutput() {
-		return outputPath;
-	}
+/**
+* ***************** Functions for Fields Accesses **********************
+*/
+   public Path getOutput() {
+	   return outputPath;
+   }  
 
-	public void setOutput(Path output) {
-		this.outputPath = output;
-	}
+public void setOutput(Path output) {
+	this.outputPath = output;
+}
 
-	public String getNamespace() {
-		return namespace;
-	}
+public String getNamespace() {
+	return namespace;
+}
 
-	public void setNamespace(String namespace) {
-		this.namespace = namespace;
-	}
+public void setNamespace(String namespace) {
+	this.namespace = namespace;
+}
 
-	public LangInfo getTargetLang() {
-		return targetLang;
-	}
+public LangInfo getTargetLang() {
+	return targetLang;
+}
 
-	public void setTargetLang(LangInfo target) {
-		this.targetLang = target;
-	}
+public void setTargetLang(LangInfo target) {
+	this.targetLang = target;
+}
 
-	public Path getExternalDir() {
-		return extdir;
-	}
+public Path getExternalDir() {
+	return extdir;
+}
 
-	public void setExternalDir(Path path) {
-		this.extdir = path;
-	}
+public void setExternalDir(Path path) {
+	this.extdir = path;
+}
 
-	public Iterable<String> getWarningMessage() {
-		return warnings;
-	}
+public Iterable<String> getWarningMessage() {
+	return warnings;
+}
 
-	public void addWarning(String message) {
-		warnings.push(message);
-	}
+public void addWarning(String message) {
+	warnings.push(message);
+}
+
+public void setInterpretSource(String s){
+	interpretInput  = s;
+}
+
+public String getInterpretSource(){
+	return interpretInput;
+}
 }

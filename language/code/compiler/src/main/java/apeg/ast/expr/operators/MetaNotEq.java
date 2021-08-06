@@ -6,14 +6,8 @@ import apeg.ast.expr.MetaExpr;
 
 public class MetaNotEq extends MetaBinaryOP{
 
-    private NotEq embeedNode;
-    
-    public MetaNotEq(SymInfo s,MetaExpr ml,MetaExpr mr){
+   public MetaNotEq(SymInfo s,Expr ml,Expr mr){
         super(s,ml,mr);
-        embeedNode = new NotEq(s,ml.getEmbeedNode(),mr.getEmbeedNode());
-    }
-    public NotEq getEmbeedNode(){
-        return embeedNode;
     }
     public void accept(Visitor v){ v.visit(this); }
 

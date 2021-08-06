@@ -1,0 +1,5 @@
+apeg pegSeq;
+
+prog:
+  '1''2''3'
+;

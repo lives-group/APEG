@@ -6,16 +6,16 @@ import apeg.ast.types.TyMap;
 import apeg.util.SymInfo;
 
 public class MetaTyMap extends MetaType{
-
-    private TyMap embeedNode;
+   
+    private Expr e;
     
-    public MetaTyMap(SymInfo s,MetaType tyParameter){
+    public MetaTyMap(SymInfo s,Expr e){
         super(s);
-        embeedNode = new TyMap(s,tyParameter.getEmbeedNode());
+        this.e = e;
     }
-    public TyMap getEmbeedNode(){
-        return embeedNode;
-    }
+    
+    public Expr getExpr(){ return e;}
+
     public void accept(Visitor v){ v.visit(this); }
 
 }

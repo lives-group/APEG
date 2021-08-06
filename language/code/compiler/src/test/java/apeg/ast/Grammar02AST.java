@@ -2,7 +2,7 @@ package apeg.ast;
 
 import java.util.List;
 import java.util.ArrayList;
-
+import apeg.visitor.VMVisitor;
 import apeg.util.SymInfo;
 import apeg.visitor.TestVisitor;
 import apeg.ast.rules.*;
@@ -59,7 +59,13 @@ public class Grammar02AST {
 	
 		//TestVisitor v = new TestVisitor();
 		//gram.accept(v);
-
+// 		VMVisitor vm = new VMVisitor("/home/gigi/tcc/APEG/language/code/compiler/src/main/java/apeg/vm/input.txt");
+//         gram.accept(vm);
+//         if(vm.succeed()){
+//             System.out.println("ok");
+//         }else{
+//             System.out.println("falha");
+//         }
 	}
 
 }

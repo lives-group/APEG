@@ -6,14 +6,14 @@ import apeg.util.SymInfo;
 
 public class MetaConstraintPEG extends MetaAPEG{
 
-    private ConstraintPEG embeedNode;
+    private Expr e;
     
-    public MetaConstraintPEG(SymInfo s,MetaExpr e){
+    public MetaConstraintPEG(SymInfo s,Expr e){
         super(s);
-        embeedNode = new ConstraintPEG(s,e.getEmbeedNode());
+        this.e = e;
     }
-    public ConstraintPEG getEmbeedNode(){
-        return embeedNode;
+    public Expr getExpr(){
+        return e;
     }
     public void accept(Visitor v){ v.visit(this); }
 

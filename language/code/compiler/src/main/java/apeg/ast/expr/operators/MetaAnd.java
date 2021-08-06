@@ -6,14 +6,8 @@ import apeg.ast.expr.MetaExpr;
 
 public class MetaAnd extends MetaBinaryOP{
 
-    private And embeedNode;
-    
-    public MetaAnd(SymInfo s,MetaExpr ml,MetaExpr mr){
+    public MetaAnd(SymInfo s,Expr ml,Expr mr){
         super(s,ml,mr);
-        embeedNode = new And(s,ml.getEmbeedNode(),mr.getEmbeedNode());
-    }
-    public And getEmbeedNode(){
-        return embeedNode;
     }
     public void accept(Visitor v){ v.visit(this); }
 

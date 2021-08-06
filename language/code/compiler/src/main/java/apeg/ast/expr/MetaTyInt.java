@@ -7,15 +7,10 @@ import apeg.util.SymInfo;
 
 public class MetaTyInt extends MetaType{
 
-    private TyInt embeedNode;
-    
-    public MetaTyInt(SymInfo s){
+     public MetaTyInt(SymInfo s){
         super(s);
-        embeedNode = new TyInt(s);
     }
-    public TyInt getEmbeedNode(){
-        return embeedNode;
-    }
+    
     public void accept(Visitor v){ v.visit(this); }
 
 }

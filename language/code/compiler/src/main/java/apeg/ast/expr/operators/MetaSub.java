@@ -6,15 +6,10 @@ import apeg.ast.expr.MetaExpr;
 
 public class MetaSub extends MetaBinaryOP{
 
-    private Sub embeedNode;
-    
-    public MetaSub(SymInfo s,MetaExpr ml,MetaExpr mr){
+   public MetaSub(SymInfo s,Expr ml,Expr mr){
         super(s,ml,mr);
-        embeedNode = new Sub(s,ml.getEmbeedNode(),mr.getEmbeedNode());
     }
-    public Sub getEmbeedNode(){
-        return embeedNode;
-    }
+    
     public void accept(Visitor v){ v.visit(this); }
 
 }

@@ -10,5 +10,9 @@ public class SymInfo {
     
     public int getLine(){return line;}
     public int getColumn(){return col;}
+
+    public String toString(){
+      return "( "+ line +" , "+col+" )";
+    }
     
 }

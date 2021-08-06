@@ -1,17 +1,18 @@
 apeg fat;
 
 prog:
+
  number<n> '!=' number<m> fat<n,r> {? m == r }
 ;
 
 fat[int n] returns m:
-   {? n > 0} fat<n-1, r> {m = n*r;} / {m = 1;}
+   {? n > 0} fat<n-1, r> {m = n*r;} /{? n == 0} {m = 1;}
 ;
 
 number returns r  :
     digit<r> ( digit<aux> { r = r * 10 + aux; } )*
     ;
-  
+
 digit returns x1 :
   '0'  { x1 = 0; }
   / '1'  { x1 = 1; }

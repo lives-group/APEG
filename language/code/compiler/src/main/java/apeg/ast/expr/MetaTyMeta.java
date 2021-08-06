@@ -7,15 +7,11 @@ import apeg.util.SymInfo;
 
 public class MetaTyMeta extends MetaType{
 
-    private TyMeta embeedNode;
-    
+  
     public MetaTyMeta(SymInfo s){
         super(s);
-        embeedNode = new TyMeta(s);
     }
-    public TyMeta getEmbeedNode(){
-        return embeedNode;
-    }
+    
     public void accept(Visitor v){ v.visit(this); }
 
 }

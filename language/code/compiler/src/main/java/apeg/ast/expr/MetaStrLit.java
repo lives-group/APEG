@@ -1,18 +1,18 @@
 package apeg.ast.expr;
 import apeg.visitor.Visitor;
 import apeg.util.SymInfo;
+import apeg.ast.MetaASTNode;
 
 public class MetaStrLit extends MetaExpr{
 
-    private StrLit embeedNode;
+    private Expr e;
     
-    public MetaStrLit(SymInfo s,String value){
+    public MetaStrLit(SymInfo s,Expr e){
         super(s);
-        embeedNode = new StrLit(s,value);
+        this.e = e;
     }
-    public StrLit getEmbeedNode(){
-        return embeedNode;
-    }
+    
+    public Expr getExpr(){ return e; }
+    
     public void accept(Visitor v){ v.visit(this); }
-
 }

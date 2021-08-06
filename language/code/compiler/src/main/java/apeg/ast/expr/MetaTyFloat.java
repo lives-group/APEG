@@ -7,15 +7,10 @@ import apeg.util.SymInfo;
 
 public class MetaTyFloat extends MetaType{
 
-    private TyFloat embeedNode;
-    
     public MetaTyFloat(SymInfo s){
         super(s);
-        embeedNode = new TyFloat(s);
     }
-    public TyFloat getEmbeedNode(){
-        return embeedNode;
-    }
+        
     public void accept(Visitor v){ v.visit(this); }
 
 }

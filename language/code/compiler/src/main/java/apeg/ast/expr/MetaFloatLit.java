@@ -4,14 +4,14 @@ import apeg.util.SymInfo;
 
 public class MetaFloatLit extends MetaExpr{
 
-    private FloatLit embeedNode;
+    private Expr e;
     
-    public MetaFloatLit(SymInfo s,float value){
+    public MetaFloatLit(SymInfo s,Expr e){
         super(s);
-        embeedNode = new FloatLit(s,value);
+        this.e = e;
     }
-    public FloatLit getEmbeedNode(){
-        return embeedNode;
+    public Expr getExpr(){
+        return e;
     }
     public void accept(Visitor v){ v.visit(this); }
 

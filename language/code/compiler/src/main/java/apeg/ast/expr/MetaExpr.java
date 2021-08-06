@@ -8,6 +8,6 @@ public abstract class MetaExpr extends Expr{
     public MetaExpr(SymInfo s){
         super(s);
     }
-    public abstract Expr getEmbeedNode();
+    //public abstract Expr getEmbeedNode();
 
 }

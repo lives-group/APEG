@@ -7,14 +7,14 @@ import apeg.util.SymInfo;
 
 public class MetaKleenePEG extends MetaAPEG{
 
-    private KleenePEG embeedNode;
+    private Expr e;
     
-    public MetaKleenePEG(SymInfo s,MetaAPEG e){
+    public MetaKleenePEG(SymInfo s,Expr e){
         super(s);
-        embeedNode = new KleenePEG(s,e.getEmbeedNode());
+        this.e = e;
     }
-    public KleenePEG getEmbeedNode(){
-        return embeedNode;
+    public Expr getExpr(){
+        return e;
     }
     public void accept(Visitor v){ v.visit(this); }
 

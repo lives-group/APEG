@@ -8,19 +8,20 @@ import apeg.util.SymInfo;
 
 public class MetaNonterminalPEG extends MetaAPEG{
 
-    private NonterminalPEG embeedNode;
+    private Expr name,args;
     
-    public MetaNonterminalPEG(SymInfo s,String name,List<MetaExpr> args){
+    public MetaNonterminalPEG(SymInfo s,Expr name,Expr args){
         super(s);
-        List<Expr> args_T2 = new LinkedList<Expr>();
-        for(MetaExpr i:args){
-            args_T2.add(i.getEmbeedNode());
-        }
-        embeedNode = new NonterminalPEG(s,name,args_T2);
+        this.name = name;
+        this.args = args;
     }
-    public NonterminalPEG getEmbeedNode(){
-        return embeedNode;
+    public Expr getName(){
+        return name;
     }
+    public Expr getArgs(){
+        return args;
+    }
+    
     public void accept(Visitor v){ v.visit(this); }
 
 }

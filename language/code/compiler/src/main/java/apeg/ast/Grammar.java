@@ -29,7 +29,7 @@ public class Grammar extends ASTNode {
 	public GrammarOption getOptions() {
 		return opts;
 	}
-	
+
 	public List<RulePEG> getRules() {
 		return rules;
 	}
@@ -39,15 +39,15 @@ public class Grammar extends ASTNode {
 	}
 
 	public static class GrammarOption {
-	    public boolean adaptable; // if the grammar is adaptable or not
-	    public boolean memoize; // if it is to memoize intermediate results or not
-	    public boolean usual_semantics; // if it is to use conventional APEG choice semantics or not
+		public boolean adaptable; // if the grammar is adaptable or not
+		public boolean memoize; // if it is to memoize intermediate results or not
+		public boolean usual_semantics; // if it is to use conventional APEG choice semantics or not
 
-	    public GrammarOption() {
-		adaptable = false;
-		memoize = false;
-		usual_semantics = true;
-	    }
+		public GrammarOption() {
+			adaptable = false;
+			memoize = false;
+			usual_semantics = true;
+		}
 	}
-	
+
 }

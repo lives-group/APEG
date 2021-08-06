@@ -10,6 +10,6 @@ public abstract class MetaASTNode extends Expr{
     public MetaASTNode(SymInfo s){
         super(s);
     }
-    public abstract ASTNode getEmbeedNode();
+   // public abstract ASTNode getEmbeedNode();
 
 }

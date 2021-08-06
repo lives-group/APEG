@@ -104,6 +104,8 @@ import apeg.ast.types.TyInt;
 import apeg.ast.types.TyLang;
 import apeg.ast.types.TyMap;
 import apeg.ast.types.TyMeta;
+import apeg.ast.types.TyMetaExpr;
+import apeg.ast.types.TyMetaPeg;
 import apeg.ast.types.TyString;
 
 
@@ -725,7 +727,17 @@ public class RuleCounterVisitor extends Visitor {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	@Override
+	public void visit(TyMetaExpr n) {
+		// TODO Auto-generated method stub
+	}
 
+	@Override
+	public void visit(TyMetaPeg n) {
+		// TODO Auto-generated method stub
+
+	}
 	@Override
 	public void visit(TyString n) {
 		// TODO Auto-generated method stub

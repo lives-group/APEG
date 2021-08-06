@@ -6,14 +6,8 @@ import apeg.ast.expr.MetaExpr;
 
 public class MetaConcat extends MetaBinaryOP{
 
-    private Concat embeedNode;
-    
-    public MetaConcat(SymInfo s,MetaExpr ml,MetaExpr mr){
+    public MetaConcat(SymInfo s,Expr ml,Expr mr){
         super(s,ml,mr);
-        embeedNode = new Concat(s,ml.getEmbeedNode(),mr.getEmbeedNode());
-    }
-    public Concat getEmbeedNode(){
-        return embeedNode;
     }
     public void accept(Visitor v){ v.visit(this); }
 

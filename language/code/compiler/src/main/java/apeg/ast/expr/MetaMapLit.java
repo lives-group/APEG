@@ -5,18 +5,14 @@ import apeg.util.SymInfo;
 
 public class MetaMapLit extends MetaExpr{
 
-    private MapLit embeedNode;
-    private Pair<Expr,Expr>[] assocs;
+    private Expr e;
     
-    public MetaMapLit(SymInfo s,Pair<Expr,Expr>[] assocs){
+    public MetaMapLit(SymInfo s,Expr e){
         super(s);
-        embeedNode = new MapLit(s,assocs);
+        this.e = e;
     }
-    public MapLit getEmbeedNode(){
-        return embeedNode;
-    }
-    public Pair<Expr,Expr>[] getAssocs(){
-        return assocs;
+    public Expr getExpr(){
+        return e;
     }
     public void accept(Visitor v){ v.visit(this); }
 

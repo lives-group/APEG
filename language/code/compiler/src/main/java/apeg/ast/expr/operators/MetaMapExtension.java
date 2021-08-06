@@ -6,14 +6,22 @@ import apeg.util.SymInfo;
 
 public class MetaMapExtension extends MetaExpr{
 
-    private MapExtension embeedNode;
+    private Expr map,key,value;
     
     public MetaMapExtension(SymInfo s,Expr map,Expr key,Expr value){
         super(s);
-        embeedNode = new MapExtension(s,map,key,value);
+        this.map = map;
+        this.key = key;
+        this.value = value;
     }
-    public MapExtension getEmbeedNode(){
-        return embeedNode;
+    public Expr getMap(){
+        return map;
+    }
+    public Expr getKey(){
+        return key;
+    }
+    public Expr getValue(){
+        return value;
     }
     public void accept(Visitor v){ v.visit(this); }
 

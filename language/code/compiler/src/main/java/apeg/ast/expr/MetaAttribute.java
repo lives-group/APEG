@@ -4,14 +4,14 @@ import apeg.util.SymInfo;
 
 public class MetaAttribute extends MetaExpr{
 
-    private Attribute embeedNode;
+    private Expr e;
     
-    public MetaAttribute(SymInfo s,String name){
+    public MetaAttribute(SymInfo s,Expr e){
         super(s);
-        embeedNode = new Attribute(s,name);
+        this.e = e;
     }
-    public Attribute getEmbeedNode(){
-        return embeedNode;
+    public Expr getExpr(){
+        return e;
     }
     public void accept(Visitor v){ v.visit(this); }
 

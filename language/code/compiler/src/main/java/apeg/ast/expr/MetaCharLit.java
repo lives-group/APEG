@@ -4,14 +4,14 @@ import apeg.util.SymInfo;
 
 public class MetaCharLit extends MetaExpr{
 
-    private CharLit embeedNode;
+    private Expr e;
     
-    public MetaCharLit(SymInfo s,char value){
+    public MetaCharLit(SymInfo s,Expr e){
         super(s);
-        embeedNode = new CharLit(s,value);
+        this.e = e;
     }
-    public CharLit getEmbeedNode(){
-        return embeedNode;
+    public Expr getExpr(){
+        return e;
     }
     public void accept(Visitor v){ v.visit(this); }
 

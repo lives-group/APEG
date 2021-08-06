@@ -1,19 +1,26 @@
 package apeg.test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.Test;
-import apeg.test.expr.ExprContainer;
+
 import java.io.File;
+import java.io.StringReader;
+import java.io.IOException;
+
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CharStreams;
+
 import apeg.util.path.*;
+
+import apeg.test.expr.ExprContainer;
+
 import apeg.ast.expr.*;
 import apeg.ast.ASTFactory;
 import apeg.ast.ASTFactoryImpl;
 import apeg.util.SymInfo;
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.CharStreams;
-import java.io.StringReader;
-import java.io.IOException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+
 
 public class TestExprs {
 

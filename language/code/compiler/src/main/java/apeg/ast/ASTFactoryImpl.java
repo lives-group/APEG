@@ -57,10 +57,10 @@ public class ASTFactoryImpl implements ASTFactory{
     public Compose newComposeExpr(SymInfo s,Expr l,Expr r){
         return new Compose(s,l,r);
     }
-    public MetaNot newMetaNot(SymInfo s, MetaExpr e){
+    public MetaNot newMetaNot(SymInfo s, Expr e){
         return new MetaNot(s, e);
     }
-    public MetaUMinus newMetaUMinus(SymInfo s,MetaExpr e){
+    public MetaUMinus newMetaUMinus(SymInfo s,Expr e){
         return new MetaUMinus(s, e);
     }
     public MapAcces newMapAcces(SymInfo s,Expr map,Expr index){
@@ -99,49 +99,49 @@ public class ASTFactoryImpl implements ASTFactory{
     public MapLit newMapExpr(SymInfo s,Pair<Expr,Expr>[] assocs){
         return new MapLit(s,assocs);
     }
-    public MetaAdd newMetaAdd(SymInfo s,MetaExpr ml,MetaExpr mr){
+    public MetaAdd newMetaAdd(SymInfo s,Expr ml,Expr mr){
         return new MetaAdd(s,ml,mr);
     }
-    public MetaSub newMetaSub(SymInfo s,MetaExpr ml,MetaExpr mr){
+    public MetaSub newMetaSub(SymInfo s,Expr ml,Expr mr){
         return new MetaSub(s,ml,mr);
     }
-    public MetaMod newMetaMod(SymInfo s,MetaExpr ml,MetaExpr mr){
+    public MetaMod newMetaMod(SymInfo s,Expr ml,Expr mr){
         return new MetaMod(s,ml,mr);
     }
-    public MetaMult newMetaMult(SymInfo s,MetaExpr ml,MetaExpr mr){
+    public MetaMult newMetaMult(SymInfo s,Expr ml,Expr mr){
         return new MetaMult(s,ml,mr);
     }
-    public MetaDiv newMetaDiv(SymInfo s,MetaExpr ml,MetaExpr mr){
+    public MetaDiv newMetaDiv(SymInfo s,Expr ml,Expr mr){
         return new MetaDiv(s,ml,mr);
     }
-    public MetaAnd newMetaAnd(SymInfo s,MetaExpr ml,MetaExpr mr){
+    public MetaAnd newMetaAnd(SymInfo s,Expr ml,Expr mr){
         return new MetaAnd(s,ml,mr);
     }
-    public MetaOr newMetaOr(SymInfo s,MetaExpr ml,MetaExpr mr){
+    public MetaOr newMetaOr(SymInfo s,Expr ml,Expr mr){
         return new MetaOr(s,ml,mr);
     }
-    public MetaLess newMetaLess(SymInfo s,MetaExpr ml,MetaExpr mr){
+    public MetaLess newMetaLess(SymInfo s,Expr ml,Expr mr){
         return new MetaLess(s,ml,mr);
     }
-    public MetaEquals newMetaEquals(SymInfo s,MetaExpr ml,MetaExpr mr){
+    public MetaEquals newMetaEquals(SymInfo s,Expr ml,Expr mr){
         return new MetaEquals(s,ml,mr);
     }
-    public MetaGreater newMetaGreater(SymInfo s,MetaExpr ml,MetaExpr mr){
+    public MetaGreater newMetaGreater(SymInfo s,Expr ml,Expr mr){
         return new MetaGreater(s,ml,mr);
     }
-    public MetaLessEq newMetaLessEq(SymInfo s,MetaExpr ml,MetaExpr mr){
+    public MetaLessEq newMetaLessEq(SymInfo s,Expr ml,Expr mr){
         return new MetaLessEq(s,ml,mr);
     }
-    public MetaGreaterEq newMetaGreaterEq(SymInfo s,MetaExpr ml,MetaExpr mr){
+    public MetaGreaterEq newMetaGreaterEq(SymInfo s,Expr ml,Expr mr){
         return new MetaGreaterEq(s,ml,mr);
     }
-    public MetaNotEq newMetaNotEq(SymInfo s,MetaExpr ml,MetaExpr mr){
+    public MetaNotEq newMetaNotEq(SymInfo s,Expr ml,Expr mr){
         return new MetaNotEq(s,ml,mr);
     }
-    public MetaConcat newMetaConcat(SymInfo s,MetaExpr ml,MetaExpr mr){
+    public MetaConcat newMetaConcat(SymInfo s,Expr ml,Expr mr){
         return new MetaConcat(s,ml,mr);
     }
-    public MetaCompose newMetaCompose(SymInfo s,MetaExpr ml,MetaExpr mr){
+    public MetaCompose newMetaCompose(SymInfo s,Expr ml,Expr mr){
         return new MetaCompose(s,ml,mr);
     }
     public MetaMapAcces newMetaMapAcces(SymInfo s,Expr map,Expr index){
@@ -150,76 +150,76 @@ public class ASTFactoryImpl implements ASTFactory{
     public MetaMapExtension newMetaMapExtension(SymInfo s,Expr map,Expr key,Expr value){
         return new MetaMapExtension(s,map,key,value);
     }
-    public MetaAttribute newMetaAttribute(SymInfo s,String name){
+    public MetaAttribute newMetaAttribute(SymInfo s,Expr name){
         return new MetaAttribute(s,name);
     }
-    public MetaIntLit newMetaIntLit(SymInfo s,int value){
+    public MetaIntLit newMetaIntLit(SymInfo s,Expr value){
         return new MetaIntLit(s,value);
     }
-    public MetaFloatLit newMetaFloatLit(SymInfo s,float value){
+    public MetaFloatLit newMetaFloatLit(SymInfo s,Expr value){
         return new MetaFloatLit(s,value);
     }
-    public MetaCharLit newMetaCharLit(SymInfo s,char value){
+    public MetaCharLit newMetaCharLit(SymInfo s,Expr value){
         return new MetaCharLit(s,value);
     }
-    public MetaBoolLit newMetaBoolLit(SymInfo s,boolean value){
+    public MetaBoolLit newMetaBoolLit(SymInfo s,Expr value){
         return new MetaBoolLit(s,value);
     }
-    public MetaStrLit newMetaStrLit(SymInfo s,String value){
+    public MetaStrLit newMetaStrLit(SymInfo s,Expr value){
         return new MetaStrLit(s,value);
     }
-    public MetaMapLit newMetaMapLit(SymInfo s,Pair<Expr,Expr>[] assocs){
+    public MetaMapLit newMetaMapLit(SymInfo s,Expr assocs){
         return new MetaMapLit(s,assocs);
     }
-    public MetaVar newMetaVar(SymInfo s,String name){
+    public MetaVar newMetaVar(SymInfo s,Expr name){
         return new MetaVar(s,name);
     }
-    public MetaAndPEG newMetaAndPEG(SymInfo s,MetaAPEG e){
+    public MetaAndPEG newMetaAndPEG(SymInfo s,Expr e){
         return new MetaAndPEG(s,e);
     }
-    public MetaNotPEG newMetaNotPEG(SymInfo s,MetaAPEG e){
+    public MetaNotPEG newMetaNotPEG(SymInfo s,Expr e){
         return new MetaNotPEG(s,e);
     }
-    public MetaKleenePEG newMetaKleenePEG(SymInfo s,MetaAPEG e){
+    public MetaKleenePEG newMetaKleenePEG(SymInfo s,Expr e){
         return new MetaKleenePEG(s,e);
     }
-    public MetaOptionalPEG newMetaOptionalPEG(SymInfo s,MetaAPEG e){
+    public MetaOptionalPEG newMetaOptionalPEG(SymInfo s,Expr e){
         return new MetaOptionalPEG(s,e);
     }
-    public MetaPKleene newMetaPKleene(SymInfo s,MetaAPEG e){
+    public MetaPKleene newMetaPKleene(SymInfo s,Expr e){
         return new MetaPKleene(s,e);
     }
     public MetaAnyPEG newMetaAnyPEG(SymInfo s){
         return new MetaAnyPEG(s);
     }
-    public MetaLitPEG newMetaLitPEG(SymInfo s,String lit){
+    public MetaLitPEG newMetaLitPEG(SymInfo s,Expr lit){
         return new MetaLitPEG(s,lit);
     }
-    public MetaConstraintPEG newMetaConstraintPEG(SymInfo s,MetaExpr e){
+    public MetaConstraintPEG newMetaConstraintPEG(SymInfo s,Expr e){
         return new MetaConstraintPEG(s,e);
     }
     public MetaRangePEG newMetaRangePEG(SymInfo s, CharInterval i){
         return new MetaRangePEG(s,i);
     }
-    public MetaNonterminalPEG newMetaNonterminalPEG(SymInfo s,String name,List<MetaExpr> args){
+    public MetaNonterminalPEG newMetaNonterminalPEG(SymInfo s,Expr name,Expr args){
         return new MetaNonterminalPEG(s,name,args);
     }
-    public MetaChoicePEG newMetaChoicePEG(SymInfo s,MetaAPEG leftPeg,MetaAPEG rightPeg){
+    public MetaChoicePEG newMetaChoicePEG(SymInfo s,Expr leftPeg,Expr rightPeg){
         return new MetaChoicePEG(s,leftPeg,rightPeg);
     }
-    public MetaSeqPEG newMetaSeqPEG(SymInfo s,MetaAPEG[] p){
+    public MetaSeqPEG newMetaSeqPEG(SymInfo s,Expr p){
         return new MetaSeqPEG(s,p);
     }
-    public MetaRulePEG newMetaRulePEG(SymInfo s,String ruleName,RulePEG.Annotation anno,List<Pair<MetaType,String>> inh,List<MetaExpr> syn,MetaAPEG peg){
+    public MetaRulePEG newMetaRulePEG(SymInfo s,Expr ruleName,Expr anno,Expr inh,Expr syn,Expr peg){
         return new MetaRulePEG(s,ruleName,anno,inh,syn,peg);
     }
-    public MetaUpdatePEG newMetaUpdatePEG(SymInfo s,List<Pair<MetaAttribute,MetaExpr>> assigs){
+    public MetaUpdatePEG newMetaUpdatePEG(SymInfo s,Expr assigs){
         return new MetaUpdatePEG(s,assigs);
     }
-    public MetaBindPEG newMetaBindPEG(SymInfo s, Attribute attribute,MetaAPEG p){
+    public MetaBindPEG newMetaBindPEG(SymInfo s, Expr attribute,Expr p){
         return new MetaBindPEG(s,attribute,p);
     }
-    public MetaTyMap newMetaTyMap(SymInfo s,MetaType tyParameter){
+    public MetaTyMap newMetaTyMap(SymInfo s,Expr tyParameter){
         return new MetaTyMap(s,tyParameter);
     }
     public MetaTyInt newMetaTyInt(SymInfo s){
@@ -320,6 +320,12 @@ public class ASTFactoryImpl implements ASTFactory{
     }
     public TyMeta newMetaType(SymInfo s){
         return new TyMeta(s);
+    }
+    public TyMetaExpr newMetaTypeExpr(SymInfo s){
+        return new TyMetaExpr(s);
+    }
+    public TyMetaPeg newMetaTypePeg(SymInfo s){
+        return new TyMetaPeg(s);
     }
     public Grammar newGrammar(SymInfo s, String name, GrammarOption opts, List<RulePEG> rules) {
     	return new Grammar(s, name, opts, rules);

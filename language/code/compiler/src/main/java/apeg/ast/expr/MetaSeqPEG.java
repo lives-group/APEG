@@ -7,19 +7,15 @@ import apeg.util.SymInfo;
 
 public class MetaSeqPEG extends MetaAPEG{
 
-    private SeqPEG embeedNode;
+    private Expr e;
     
-    public MetaSeqPEG(SymInfo s,MetaAPEG[] p){
+    public MetaSeqPEG(SymInfo s,Expr e){
         super(s);
-        APEG[] p_T1 = new APEG[p.length];
-        for(int i = 0;i < p_T1.length;i++){
-            p_T1[i] = p[i].getEmbeedNode();
-        }
-        embeedNode = new SeqPEG(s,p_T1);
+        this.e = e;
     }
-    public SeqPEG getEmbeedNode(){
-        return embeedNode;
-    }
+    
+    public Expr getExpr(){ return e;}
+
     public void accept(Visitor v){ v.visit(this); }
 
 }

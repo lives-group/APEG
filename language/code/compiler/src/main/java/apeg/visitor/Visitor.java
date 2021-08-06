@@ -13,7 +13,7 @@ public abstract class Visitor {
      */
     // Expressions
     public abstract void visit(Attribute n);
-    public abstract void visit(AttributeGrammar n);    
+    public abstract void visit(AttributeGrammar n);
     public abstract void visit(BoolLit n);
     public abstract void visit(CharLit n);
     public abstract void visit(FloatLit n);
@@ -68,7 +68,7 @@ public abstract class Visitor {
     public abstract void visit(LessEq n);
     public abstract void visit(MapAcces n);
     public abstract void visit(MapExtension n);
-    public abstract void visit(Mod n);    
+    public abstract void visit(Mod n);
     public abstract void visit(Mult n);
     public abstract void visit(Not n);
     public abstract void visit(NotEq n);
@@ -89,13 +89,13 @@ public abstract class Visitor {
     public abstract void visit(MetaLessEq n);
     public abstract void visit(MetaMapAcces n);
     public abstract void visit(MetaMapExtension n);
-    public abstract void visit(MetaMod n);    
+    public abstract void visit(MetaMod n);
     public abstract void visit(MetaMult n);
     public abstract void visit(MetaNot n);
     public abstract void visit(MetaNotEq n);
     public abstract void visit(MetaOr n);
     public abstract void visit(MetaSub n);
-    public abstract void visit(MetaUMinus n);    
+    public abstract void visit(MetaUMinus n);
 
     // PEG Expressions
     public abstract void visit(AndPEG n);
@@ -114,7 +114,7 @@ public abstract class Visitor {
     public abstract void visit(RulePEG n);
     public abstract void visit(SeqPEG n);
     public abstract void visit(UpdatePEG n);
-        
+
     // Types
     public abstract void visit(TyBool n);
     public abstract void visit(TyChar n);
@@ -124,8 +124,9 @@ public abstract class Visitor {
     public abstract void visit(TyLang n);
     public abstract void visit(TyMap n);
     public abstract void visit(TyMeta n);
+    public abstract void visit(TyMetaExpr n);
+    public abstract void visit(TyMetaPeg n);
     public abstract void visit(TyString n);
-    
     //Others
     public abstract void visit(Grammar n);
 }

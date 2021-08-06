@@ -1,0 +1,16 @@
+apeg rule;
+
+metodoA:
+
+metodoB<0+1,z>
+
+{x=z;}
+
+;
+
+
+metodoB[int x] returns w+1:
+
+{w = x;}
+
+;

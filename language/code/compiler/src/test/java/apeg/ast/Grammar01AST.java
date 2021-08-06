@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import apeg.util.SymInfo;
 import apeg.visitor.TestVisitor;
+import apeg.visitor.VMVisitor;
 import apeg.ast.expr.*;
 import apeg.ast.rules.*;
 import apeg.ast.types.*;
@@ -24,7 +25,8 @@ public class Grammar01AST {
 		List<Expr>syn = new ArrayList<Expr>();
 		
 		//Regra a
-
+        // A -> B(1/B2)
+		//B -> b
 		APEG peg, leftPeg, rightPeg;
 		APEG pegs[] = new APEG[2];
 		APEG pegs1[] = new APEG[2];
@@ -63,9 +65,15 @@ public class Grammar01AST {
 		
 		Grammar gram = new Grammar(new SymInfo (0,0), "Annotation", opts, rules);
 		
-		TestVisitor v = new TestVisitor();
-	    gram.accept(v);
-
+		//TestVisitor v = new TestVisitor();
+        //gram.accept(v);
+// 		VMVisitor vm = new VMVisitor("/home/gigi/tcc/APEG/language/code/compiler/src/main/java/apeg/vm/input.txt");
+//         gram.accept(vm);
+//         if(vm.succeed()){
+//             System.out.println("ok");
+//         }else{
+//             System.out.println("falha");
+//         }
 		
 	}
 

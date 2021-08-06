@@ -1,0 +1,5 @@
+apeg pegNot;
+
+not:
+  !'a'
+;

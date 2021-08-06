@@ -4,22 +4,19 @@ import apeg.util.SymInfo;
 
 public class MetaVar extends MetaExpr{
 
-    private String name;
-    private Expr embeedNode;
+    private Expr e;
     
-    public MetaVar(SymInfo s,String name){
+    public MetaVar(SymInfo s,Expr e){
         super(s);
-        this.name = name;
+        this.e = e;
     }
-    public String getName(){
-        return name;
-    }
-    public Expr getEmbeedNode(){
-        return embeedNode;
-    }
+    
+    public Expr getExpr(){ return e;}
+
     public void accept(Visitor v){ v.visit(this); }
-    public void setEmbeedNode(Expr embeedNode){
-        this.embeedNode = embeedNode;
+    
+    public void setE(Expr e){
+        this.e = e;
     }
 
 }

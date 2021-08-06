@@ -10,6 +10,6 @@ public abstract class MetaType extends Expr{
     public MetaType(SymInfo s){
         super(s);
     }
-    public abstract Type getEmbeedNode();
+    //public abstract Type getEmbeedNode();
 
 }

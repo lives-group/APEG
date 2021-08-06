@@ -9,14 +9,16 @@
   <version>1.0-SNAPSHOT</version>
   <name>Adaptable Parsing Expression Grammars</name>
   <url>http://github.com/lives-group/APEG</url>
-  
+
   <properties>
     <antlr.version>4.7</antlr.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <grammarSamples>..${file.separator}..${file.separator}examples${file.separator}grammar</grammarSamples>
     <grammar>grammar01.apeg</grammar>
+    <inputSamples>../../examples/inputs</inputSamples>
+    <input>input01.txt</input>
   </properties>
-  
+
   <dependencies>
     <dependency>
     <groupId>org.junit.jupiter</groupId>
@@ -46,13 +48,14 @@
       <version>1.2</version>
     </dependency>
   </dependencies>
-  
+
   <build>
     <outputDirectory>bin</outputDirectory>
     <testOutputDirectory>bin</testOutputDirectory>
     <directory>bin</directory>
-    
+
     <plugins>
+    
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>2.3.2</version>
@@ -90,22 +93,37 @@
           </execution>
         </executions>
       </plugin>
-     
+
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
         <version>1.6.0</version>
-        <configuration>
-            <mainClass>apeg.Tool</mainClass>
-            <arguments>
-                <!--  automatically creates the classpath using all project dependencies,
-                also adding the project build directory **>
-                <argument>-classpath</argument> -->
-                <argument>${grammarSamples}${file.separator}${grammar}</argument>
-            </arguments>
-        </configuration>
+            <executions>
+                <execution>
+                    <id>inter</id>
+                    <configuration>
+                        <mainClass>apeg.Tool</mainClass>
+                        <arguments>
+                            <argument>${grammarSamples}/${grammar}</argument>
+                            <argument>-i</argument>
+                            <argument>${inputSamples}/${input}</argument>
+                        </arguments>
+                    </configuration>
+                </execution>
+                <execution>
+                    <id>gen</id>
+                    <configuration>
+                        <mainClass>apeg.Tool</mainClass>
+                        <arguments>
+                             <!--  automatically creates the classpath using all project dependencies,
+                                   also adding the project build directory **>
+                                   <argument>-classpath</argument> -->
+                             <argument>${grammarSamples}/${grammar}</argument>
+                        </arguments>
+                    </configuration>
+                </execution>
+         </executions>
       </plugin>
-      
       <plugin>
         <groupId>org.antlr</groupId>
         <artifactId>antlr4-maven-plugin</artifactId>

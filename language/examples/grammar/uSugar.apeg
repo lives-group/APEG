@@ -1,0 +1,82 @@
+apeg uSugar;
+
+-- Sintaxe de listas
+-- [e1, e2, e3]
+-- v : l
+-- l1 ++ l2
+-- l !! int
+
+-- Sintaxe dos operadores de mapa. Tipo :: String -> Valor
+-- mapeamento vazio: {: :} 
+-- literal: {: s1 -> v1, s2 -> v2, s3 -> v3 :}
+
+-- inserção: m[n -> v]
+-- acesso:  m[n]
+
+-- Sintaxe para anotar de tipo de mapas: {type} ou : type :
+
+/*
+map :
+  n<{: "abc" -> 10, "xyz" -> 20 :}>;
+
+n[{int} m] :
+  s=_* {? m[s] == 10 || m[s] == 20};
+*/
+
+
+-- Sintaxe para gramatica
+-- Vazia: $
+-- literal: {| nome[params] returns exprs: pattern  |}
+
+-- Sintaxe para construir adaptable parsing expressions (APEGs)
+-- constroi a parsing referente ao padrão delimitado por <| e |>
+
+-- Operador de extensão de linguagens: <<
+
+-- Tipos de meta valor
+-- peg
+-- expr  (| e |)
+-- type
+
+prog[language g] : newSyn<g, {: :}, s>* extStmt<g,s>+;
+
+newSyn[language g, {grammar} s] returns s[n -> rs]:
+    'define' n=id '{' {rs = $;} (rule<g,  r> {rs = rs << r;} )+ '}'
+;
+
+rule[language g] returns {| #nt [language g ] :  #p |}:
+   nt=id  '->' pattern<g, p> ';'
+;
+
+pattern[language g] returns p:
+  pseq<g,p> ('/' pseq<g, p1> {p = <| #p /  #p1 |>;} )*
+;
+
+pseq[language g] returns p:
+ prefix<g, p> (prefix<g, p1> {p = <| #p #p1 |>;)*
+;
+
+prefix[language g] returns p:
+ '!' pterm<g,p> {p = <| ! #p |>;} / pterm<g,p>
+;
+
+pterm[language g] returns p:
+ pfactor<g,p> '*' {p = <| #p* |>;} / pfactor<g,p>
+;
+
+pfactor[language g] returns p:
+ '(' pattern<g,p> ')' / ntCall<g,p> / p=literal
+;
+
+extStmt[language g, {grammar} s]:
+ extBlock<g, s> / stmt<g>
+;
+
+extBlock[language g, {grammar} s]:
+ 'syntax' n=id {g1 = g << s[n];} (',' n=id {g1 = g1 << s[n];})* block<g1>+
+;
+
+ntCall[language g] returns p:
+ n=id '<' expr<g, e> {args = [e];} (',' expr<g,e> {args = args ++ [e];})*  '>'
+ {p = <|  #n<#args>  |>;
+};

@@ -198,8 +198,8 @@ public class ASTFactoryImpl implements ASTFactory{
     public MetaConstraintPEG newMetaConstraintPEG(SymInfo s,Expr e){
         return new MetaConstraintPEG(s,e);
     }
-    public MetaChoiceList newMetaChoiceList(SymInfo s,Expr i){
-        return new MetaChoiceList(s,i);
+    public MetaRangePEG newMetaRangePEG(SymInfo s, CharInterval i){
+        return new MetaRangePEG(s,i);
     }
     public MetaNonterminalPEG newMetaNonterminalPEG(SymInfo s,Expr name,Expr args){
         return new MetaNonterminalPEG(s,name,args);
@@ -276,8 +276,8 @@ public class ASTFactoryImpl implements ASTFactory{
     public BindPEG newBindPEG(SymInfo s, Attribute attribute,APEG peg){
         return new BindPEG(s,attribute,peg);
     }
-    public ChoiceList newChoiceList(SymInfo s,CharInterval i){
-        return new ChoiceList(s,i);
+    public RangePEG newRangePEG(SymInfo s, CharInterval i){
+        return new RangePEG(s,i);
     }
     public AnyPEG newAnyPEG(SymInfo s){
         return new AnyPEG(s);
@@ -331,16 +331,18 @@ public class ASTFactoryImpl implements ASTFactory{
     	return new Grammar(s, name, opts, rules);
     }
     
-    public BinaryOP newLeftAssocBinOpList(List<Expr> l, List<BinOPFactory> funcs){
-	BinaryOP root = null;
-	if(l.size() >= 2) {
-	    BinOPFactory f = funcs.remove(0);
-	    root = f.newOP(l.remove(0), l.remove(0));
-	    for(Expr e : l){
-		f = funcs.remove(0);
-		root = f.newOP(root,e);
+    public Expr newLeftAssocBinOpList(List<Expr> l, List<BinOPFactory> funcs){
+	    BinaryOP root = null;
+	    if(l.size() >= 2) {
+	        BinOPFactory f = funcs.remove(0);
+	        root = f.newOP(l.remove(0), l.remove(0));
+	        for(Expr e : l){
+		        f = funcs.remove(0);
+		        root = f.newOP(root,e);
+	        }
+	    }else if(l.size() == 1){
+	       return l.remove(0);
 	    }
-	}
         return root;
     }
 

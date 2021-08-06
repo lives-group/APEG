@@ -1,13 +1,16 @@
 package apeg.ast.rules;
+
+import java.util.List;
+
 import apeg.visitor.Visitor;
 import apeg.util.CharInterval;
 import apeg.util.SymInfo;
 
-public class ChoiceList extends APEG{
+public class RangePEG extends APEG {
 
     private CharInterval interval;
     
-    public ChoiceList(SymInfo s,CharInterval i){
+    public RangePEG(SymInfo s, CharInterval i){
         super(s);
         this.interval = i;
     }

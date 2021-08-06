@@ -131,7 +131,7 @@ public class VMVisitor extends Visitor{
 	}
 
 	@Override
-	public void visit(MetaChoiceList n) {
+	public void visit(MetaRangePEG n) {
 		//n.getExpr().accept(this);
 		//ChoiceList z = new ChoiceList(new SymInfo(-1,-1),(CharInterval)stk.pop().getSecond());
 		//stk.push(new Pair(VTyMetaPeg.getInstance(),z));
@@ -767,7 +767,7 @@ public class VMVisitor extends Visitor{
 	}
 
 	@Override
-	public void visit(ChoiceList n) {
+	public void visit(RangePEG n) {
 		try{
 			char c = vm.nextValue();
 			if(n.getInterval().inInterval(c)){

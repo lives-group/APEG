@@ -83,7 +83,7 @@ public void visit(MetaBoolLit n){}
     @Override
 public void visit(MetaCharLit n){}
     @Override
-public void visit(MetaChoiceList n){}
+public void visit(MetaRangePEG n){}
     @Override
 public void visit(MetaChoicePEG n){}
     @Override
@@ -244,7 +244,7 @@ public void visit(BindPEG n){
 
 }
     @Override
-public void visit(ChoiceList n){}
+public void visit(RangePEG n){}
     @Override
 public void visit(ChoicePEG n){
   ST aux_peg = groupTemplate.getInstanceOf("choice_peg");

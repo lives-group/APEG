@@ -37,13 +37,14 @@ boolean_type() ::= "boolean"
 grammar_type() ::= "grammar"
 rule_type() ::= "rule"
 user_type(name) ::= "<name>"
+map_type(type) ::= "{ <type> }"
 
 
 /** Template for expressions */
 attribute(name) ::="<name>"
 attribute_grammar(name) ::="<name>"
 
-gt_expr(left_expr, right_expr) ::= "(<left_expr> > <right_expr>)"
+gt_expr(left_expr, right_expr) ::= "(<left_expr> \> <right_expr>)"
 ge_expr(left_expr, right_expr) ::= "(<left_expr> \>= <right_expr>)"
 lt_expr(left_expr, right_expr) ::= "(<left_expr> \< <right_expr>)"
 le_expr(left_expr, right_expr) ::= "(<left_expr> \<= <right_expr>)"
@@ -68,10 +69,15 @@ not_expr(expr) ::= "!<expr>"
 or_expr(left_expr, right_expr) ::= "(<left_expr> || <right_expr>)"
 and_expr(left_expr, right_expr) ::= "(<left_expr> && <right_expr>)"
 
+pair(left_expr, right_expr) ::= << <left_expr> -> <right_expr> >>
+mapLit(pairs) ::= << {: <pairs; separator=", ", wrap> :} >>
+mapExtension(acces, pair) ::= "<acces> [<pair>]"
+mapAcces(acces, factor, expr) ::= "<factor> [<expr>]"
+
 
 /** Template for parsing expression */
 and_peg(peg_expr) ::= "&<peg_expr>"
-any_peg() ::= "."
+any_peg() ::= "_"
 bind_peg(name, peg_expr) ::="<name>=<peg_expr>)"
 choice_peg(left_peg, right_peg) ::=<<
  <left_peg>

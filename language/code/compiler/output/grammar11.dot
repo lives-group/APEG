@@ -62,13 +62,13 @@ Digraph notDiscardChanges {
   b0Rule -> SequencePeg25;
   LiteralPeg26 [label = "'('"];
   SequencePeg25 -> LiteralPeg26;
-  AnyPeg27 [label = "AnyPegExpr(.)"];
+  AnyPeg27 [label = "AnyPegExpr(_)"];
   SequencePeg25 -> AnyPeg27;
   LiteralPeg28 [label = "')'"];
   SequencePeg25 -> LiteralPeg28;
   b2Rule [label = "Rule[b2]"];
   grammar -> b2Rule;
-  AnyPeg29 [label = "AnyPegExpr(.)"];
+  AnyPeg29 [label = "AnyPegExpr(_)"];
   b2Rule -> AnyPeg29;
   b1Rule [label = "Rule[b1]"];
   grammar -> b1Rule;

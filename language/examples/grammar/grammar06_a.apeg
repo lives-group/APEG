@@ -1,0 +1,20 @@
+apeg adapdatadependent;
+
+options {
+  isAdaptable;
+}
+
+-- Exemplo de entrada: 3[abc]
+
+prog[language g] :
+	{g1 = g << {| strN[language g] : CHAR<g> CHAR<g> CHAR<g> |};}
+	'['
+	strN<g1>
+	']'
+    ;
+
+strN[language g]:
+    {? false }
+	;
+
+CHAR[language g] : _ ;

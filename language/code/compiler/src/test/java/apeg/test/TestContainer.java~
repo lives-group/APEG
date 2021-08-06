@@ -1,0 +1,34 @@
+package apeg.test;
+
+/***
+ * An interface for defining a test for each compiler phase
+ * It represents an individual sample test
+ */
+public abstract class TestContainer<E> {
+    protected E expectedResult, resultValue;
+    protected String name;
+
+
+    public TestContainer(String name, E expectedResult) {
+	this.name = name;
+	this.expectedResult = expectedResult;
+    }
+    
+    /**
+     *This function encapsulates the test
+     */
+    public abstract Result execute();
+
+    /**
+     * Checks if the resulted is as expected
+     */ 
+    protected abstract boolean checkResult();
+
+    /**
+     * Get the test name
+     */
+    public String getTestName() {
+	return name;
+    }
+}
+

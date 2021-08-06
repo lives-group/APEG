@@ -1,0 +1,98 @@
+module parsers.rats.xml.xml;
+
+
+public void Document = Prologue Element Epilogue;
+
+ 		void Element = "<" ElemName (spacing Attribute)* spacing? "/>" / "<" ElemName (spacing Attribute)* spacing? ">" Content* "</" ElemName spacing? ">" ;
+    
+     
+void Content =  (Element / Comment / PI / Ref / CDataSection / CharData);
+
+		void ElemName = QName;
+
+		void  CharData = (!('&' / '<')_)+;
+
+		void CDataSection = "<![CDATA[" CData "]]>";
+		void CData = (!"]]>" _)*;
+
+		void Ref = CharRef / EntityRef;
+		void CharRef = "&#x" [0-9a-fA-F]+ ';' / "&#" [0-9]+ ';';
+		void EntityRef ='&' NCName ';';
+
+/*
+  XML Attributes
+*/
+
+		void Attribute = AttrName spacing? '=' spacing? AttValue;
+
+		void AttrName = QName;
+
+		void AttValue ='\"' DoubleQuotedPart* '\"' / "\'" SingleQuotedPart* "\'";
+
+		void DoubleQuotedPart = (!('&' / '\"' / '<') _)+ / Ref;
+
+		void SingleQuotedPart = (!('&' / '\'' / '<') _)+ / Ref;
+
+/*
+   XML names
+*/
+
+		void QName = Qualifier? NCName;
+		void Qualifier = '{' spacing? NamespaceURI spacing? '}' / NCName ':';
+
+		void NCName = ([A-Za-z] / '_') ([A-Za-z0-9] / '.' / '-' / '_')* ;
+   		void NamespaceURI = ([a-zA-Z0-9] / '_' / '-' / ':' / '/' / '.')+;
+
+/*
+  XML Processing Instructions
+*/
+
+		void PI = "<?" PITarget (spacing PIChars)? "?>";
+		void PITarget = !Nxml NCName ;
+		void PIChars = (!"?>" _ )*;
+		void Nxml = ('X' / 'x') ('M' / 'm') ('L' / 'l') !NCName;
+/*
+  XML Comments and spacing
+*/
+
+		void Comment = "<!--" (!"--" _)* "-->";
+
+		void spacing = (' ' / "\n\t"/ "\n\r" / '\n' / '\t'/ '\r')+;
+
+
+/*
+  XML Prologue
+*/
+
+		void Prologue = XMLDecl? Misc* DocTypePrologue?;
+		void Epilogue = Misc*;
+		void Misc = Comment / PI / spacing;
+
+		void XMLDecl = "<?xml" VersionInfo EncodingDecl? StandaloneDecl? spacing? "?>" ;
+
+  		void StandaloneDecl = spacing "standalone" spacing? '=' spacing? StandaloneValue;
+    	void VersionInfo = spacing "version" spacing? '=' spacing? ('\"' VersionNum '\"' / '\'' VersionNum '\'');
+    	void EncodingDecl = spacing "encoding" spacing? '=' spacing? ('\"' EncodingName '\"' / "\'" EncodingName "\'");
+
+		void StandaloneValue = '\"' YesNo '\"' / "\'" YesNo "\'";
+		void YesNo = "yes" / "no";
+
+		void EncodingName = [A-Za-z] ([A-Za-z0-9] / '.' / '_' / '-')*;
+
+		void VersionNum = ([a-zA-Z0-9] / '.' / '_' / ':' / '-')+;
+
+		void DocTypePrologue = DocTypeDecl Misc*;
+		void DocTypeDecl = "<!DOCTYPE" spacing QName spacing ExternalID '>';
+
+/*
+  XML External Entity Declaration
+*/
+
+		void ExternalID = "SYSTEM" spacing SystemLit / "PUBLIC" spacing PublicLit spacing SystemLit;
+
+		void SystemLit = '\"' (!'\"' _)* '\"' / "\'" (!"\'" _)* "\'" ;
+		void PublicLit = '\"' PubIDChar* '\"' / "\'" (!"\'" PubIDChar)* "\'";
+
+		void PubIDChar = [a-zA-Z0-9] / ' ' / "\n\t" / '\t' / '-' / "\'" / '(' / ')' / '+' / ',' / '.' / '/' / ':' 
+    / '=' / '?' / ';' / '!' / '*' / '#' / '@' / '_' / '$' / '%';
+

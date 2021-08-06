@@ -24,7 +24,7 @@ import apeg.ast.expr.MetaAttribute;
 import apeg.ast.expr.MetaBindPEG;
 import apeg.ast.expr.MetaBoolLit;
 import apeg.ast.expr.MetaCharLit;
-import apeg.ast.expr.MetaChoiceList;
+import apeg.ast.expr.MetaRangePEG;
 import apeg.ast.expr.MetaChoicePEG;
 import apeg.ast.expr.MetaConstraintPEG;
 import apeg.ast.expr.MetaFloatLit;
@@ -93,7 +93,7 @@ import apeg.ast.rules.APEG;
 import apeg.ast.rules.AndPEG;
 import apeg.ast.rules.AnyPEG;
 import apeg.ast.rules.BindPEG;
-import apeg.ast.rules.ChoiceList;
+import apeg.ast.rules.RangePEG;
 import apeg.ast.rules.ChoicePEG;
 import apeg.ast.rules.ConstraintPEG;
 import apeg.ast.rules.KleenePEG;
@@ -118,8 +118,10 @@ import apeg.ast.types.TyMetaExpr;
 import apeg.ast.types.TyMetaPeg;
 import apeg.ast.types.TyString;
 import apeg.ast.types.Type;
+
 import apeg.util.Pair;
 import apeg.util.path.Path;
+import apeg.util.CharInterval;
 
 public class DOTVisitor extends Visitor{
 private STGroup groupTemplate;
@@ -247,6 +249,20 @@ private STGroup groupTemplate;
 	public void visit(MapLit n) {
 		// TODO Auto-generated method stub
 		
+                ST node = groupTemplate.getInstanceOf("node");
+                node.add("parent", parent);
+                nodeName = "mapLit" + c_expr++;
+                node.add("node", nodeName);
+                node.add("lable", groupTemplate.getInstanceOf("mapLit_expr_lable"));
+                nodes.add(node);                  
+  
+                String s = nodeName;
+                for(Pair<Expr, Expr> p : n.getAssocs()){
+                        parent = s;
+                        p.getFirst().accept(this);
+                        parent = s;
+                        p.getSecond().accept(this);
+                }
 	}
 
 	@Override
@@ -300,7 +316,7 @@ private STGroup groupTemplate;
 	}
 
 	@Override
-	public void visit(MetaChoiceList n) {
+	public void visit(MetaRangePEG n) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -646,12 +662,40 @@ private STGroup groupTemplate;
 	@Override
 	public void visit(MapAcces n) {
 		// TODO Auto-generated method stub
+
+                ST node = groupTemplate.getInstanceOf("node");
+                node.add("parent", parent);
+                nodeName = "mapAcces" + c_expr++; 
+                node.add("node", nodeName);
+                node.add("lable", groupTemplate.getInstanceOf("mapAcces_expr_lable"));
+                nodes.add(node);
+  
+                String s = nodeName;
+                parent = s;
+                n.getMap().accept(this);
+                parent = s;
+                n.getIndex().accept(this);
 		
 	}
 
 	@Override
 	public void visit(MapExtension n) {
 		// TODO Auto-generated method stub
+
+                ST node = groupTemplate.getInstanceOf("node");
+                node.add("parent", parent);
+                nodeName = "mapAcces" + c_expr++;
+                node.add("node", nodeName);    
+                node.add("lable", groupTemplate.getInstanceOf("mapExtension_expr_lable"));
+                nodes.add(node);
+ 
+                String s = nodeName;
+                parent = s;
+                n.getMap().accept(this);
+                parent = s;
+                n.getKey().accept(this);
+                parent = s;
+                n.getValue().accept(this);
 		
 	}
 
@@ -946,15 +990,23 @@ private STGroup groupTemplate;
 	 
 
 	@Override
-	public void visit(ChoiceList n) {
-		// TODO Auto-generated method stub
-		
+	public void visit(RangePEG n) {
+	    ST node = groupTemplate.getInstanceOf("node");
+
+	    node.add("parent", parent);
+	    nodeName = "rangePeg" + c_peg++;
+	    node.add("node", nodeName);
+
+	    ST label = groupTemplate.getInstanceOf("range_peg_label");
+	    CharInterval c = n.getInterval();
+	    label.add("ranges", c.toString());
+	    node.add("lable", label);
+
+	    nodes.add(node);
 	}
 
 	@Override
-	public void visit(ChoicePEG n) {
-		// TODO Auto-generated method stub
-		
+	public void visit(ChoicePEG n) {		
 		ST node = groupTemplate.getInstanceOf("node");
 		
 		node.add("parent", parent);

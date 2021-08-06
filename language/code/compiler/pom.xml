@@ -11,9 +11,9 @@
   <url>http://github.com/lives-group/APEG</url>
 
   <properties>
-    <antlr.version>4.3</antlr.version>
+    <antlr.version>4.7</antlr.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <grammarSamples>../../examples/grammar</grammarSamples>
+    <grammarSamples>..${file.separator}..${file.separator}examples${file.separator}grammar</grammarSamples>
     <grammar>grammar01.apeg</grammar>
     <inputSamples>../../examples/inputs</inputSamples>
     <input>input01.txt</input>
@@ -21,11 +21,10 @@
 
   <dependencies>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.11</version>
-      <scope>test</scope>
-    </dependency>
+    <groupId>org.junit.jupiter</groupId>
+    <artifactId>junit-jupiter-engine</artifactId>
+    <version>5.5.2</version>
+      </dependency>
     <dependency>
       <groupId>org.antlr</groupId>
       <artifactId>antlr4</artifactId>
@@ -65,6 +64,16 @@
           <target>1.8</target>
         </configuration>
       </plugin>
+     <plugin>
+       <groupId>org.apache.maven.plugins</groupId>
+       <artifactId>maven-surefire-plugin</artifactId>
+       <version>2.22.0</version>
+     </plugin>
+     <plugin>
+       <groupId>org.apache.maven.plugins</groupId>
+       <artifactId>maven-failsafe-plugin</artifactId>
+       <version>2.22.0</version>
+     </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>

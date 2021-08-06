@@ -22,7 +22,7 @@ import apeg.visitor.semantics.VType;
 //import apeg.visitor.ASTNodeVisitor;
 //import apeg.visitor.BuildRuleEnvironmetVisitor;
 import apeg.visitor.DOTVisitor;
-//import apeg.visitor.PrettyPrintVisitor;
+import apeg.visitor.PrettyPrint;
 //import apeg.visitor.VerifyVisitor;
 //import apeg.visitor.StateFullCodeGen;
 //import apeg.visitor.Environments.OperatorTables;
@@ -92,8 +92,9 @@ public class Tool {
 			fName = s.substring(index+1, s.length()-5);
 			else // the string do not have a file separator
 			fName = s.substring(0, s.length()-5);
+
 			try {
-				System.out.println(fpath.toString());
+			    // System.out.println(fpath.toString());
 				FileReader file = new FileReader(fpath.getFile());
 				// Create an ANTLR input stream
 				ANTLRInputStream input = new ANTLRInputStream(file);
@@ -120,6 +121,7 @@ public class Tool {
 				}
 
 				// Pretty printing the grammar. Just for testing
+
 				//Visitor dotvisitor = new DOTVisitor(new RelativePath(tool.outputPath, fName + ".dot"),
 				//	                            new RelativePath(new AbsolutePath("."),
 				//			            "src/main/templates/dot.stg"));
@@ -132,7 +134,7 @@ public class Tool {
 				if(tool.interpretInput != null){
                     if(!((TypeCheckerVisitor)typechecker).getError().isEmpty()){
                         for(Pair<String,VType> perr:((TypeCheckerVisitor)typechecker).getError()){
-                        System.out.println(perr.toString());
+                            System.out.println(perr.toString());
                         }
                     System.exit(1);
                     }
@@ -144,71 +146,23 @@ public class Tool {
 					}
 					else{ System.out.println(" rejected"); }
 				}
+            }catch (FileNotFoundException e) {
+                System.err.println("File " + s + " do not exist");
+	            continue;
+            }catch (IOException e) {
+	            System.err.println(e.getMessage());
+	            continue;
+            }
+       }
 
-
-
-
-
-				/*
-				BuildRuleEnvironmetVisitor build = new BuildRuleEnvironmetVisitor();
-				g.accept(build);
-				build.printTable();
-				*/
-
-				/*
-				VerifyVisitor verifica = new VerifyVisitor(build.getTable(),OperatorTables.mkArithmeticEnv());
-				g.accept(verifica);
-				if (verifica.hasErrors()){
-				System.err.println("---------- Errors --------- ");
-				for (String i : verifica.getErros()){
-				System.err.println(i);
-			}
-		}
-		if(verifica.hasWarnings()){
-		System.err.println("---------- Warnings --------- ");
-		for (String i : verifica.getWarnings()){
-		System.err.println(i);
-	}
-}
-*/
-
-/*
-// Generating a graphical view from AST
-DOTVisitor dot = new DOTVisitor(new RelativePath(tool.outputPath, fName + ".dot"),
-new RelativePath(new AbsolutePath("."),
-"src/main/templates/dot.stg"));
-g.accept(dot);
-*/
-
-/*
-ASTNodeVisitor codegen = new CodeGenVisitor(new RelativePath(new AbsolutePath("."),
-"src/main/templates/classtamplate.stg"));
-g.accept(codegen);
-*/
-
-/*
-ASTNodeVisitor parservisitor = new StateFullCodeGen(new RelativePath(new AbsolutePath("."),
-"src/main/templates/imperativeParser.stg"));;
-g.accept(parservisitor);
-*/
-
-} catch (FileNotFoundException e) {
-	System.err.println("File " + s + " do not exist");
-	continue;
-} catch (IOException e) {
-	System.err.println(e.getMessage());
-	continue;
-}
-}
-
-}
+   }
 
 /**
 * ***************** Functions for Fields Accesses **********************
 */
-public Path getOutput() {
-	return outputPath;
-}
+   public Path getOutput() {
+	   return outputPath;
+   }  
 
 public void setOutput(Path output) {
 	this.outputPath = output;

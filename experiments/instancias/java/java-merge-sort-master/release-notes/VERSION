@@ -1,0 +1,49 @@
+Project: java-merge-sort
+License: Apache License 2.0
+Version:
+Release date:
+
+- Update `oss-parent` to 41 (for junit 4.13.1)
+
+------------------------------------------------------------------------
+=== History: ===
+------------------------------------------------------------------------
+
+1.0.2 (2019-09-18)
+
+#16: Temp files that result from two-phase merge are not deleted
+ (reported, fix contributed by John L)
+- Add `Automatic-Module-Name` of "com.fasterxml.sort"
+
+1.0.1 (2017-02-14)
+
+#14: Long lines are corrupted when read by `RawTextLineReader._readNextSlow()`
+ (reported by Mathias H, hbs@github)
+
+1.0.0 (04-Jun-2014)
+
+The first official non-beta release. No changes since 0.9.1.
+
+0.9.1 (12-Oct-2013)
+
+#11: Change more constructors to be public
+ (contributed by Nathan W)
+#12: Fix an issue with implementation of #11
+ (contributed by Nathan W)
+#10: Add Iterator-based (pull-style) sorter as an alternative
+ (contributed by Nathan W)
+
+0.8.1 (07-Aug-2013)
+
+#8: Sorter._merge() not closing streams correctly
+ (reported by tjoneslo@github)
+#6: Incorrect handling of '\r'
+ (reported, patch contributed by ndikan@github.bom)
+
+0.7.1 (29-May-2012)
+
+#5: Unnecessary object retention, leading to too high memory usage
+ (reported by Paul Smith)
+
+
+

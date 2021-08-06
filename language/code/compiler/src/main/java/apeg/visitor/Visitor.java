@@ -28,7 +28,7 @@ public abstract class Visitor {
     public abstract void visit(MetaBindPEG n);
     public abstract void visit(MetaBoolLit n);
     public abstract void visit(MetaCharLit n);
-    public abstract void visit(MetaChoiceList n);
+    public abstract void visit(MetaRangePEG n);
     public abstract void visit(MetaChoicePEG n);
     public abstract void visit(MetaConstraintPEG n);
     public abstract void visit(MetaFloatLit n);
@@ -101,7 +101,7 @@ public abstract class Visitor {
     public abstract void visit(AndPEG n);
     public abstract void visit(AnyPEG n);
     public abstract void visit(BindPEG n);
-    public abstract void visit(ChoiceList n);
+    public abstract void visit(RangePEG n);
     public abstract void visit(ChoicePEG n);
     public abstract void visit(ConstraintPEG n);
     public abstract void visit(KleenePEG n);

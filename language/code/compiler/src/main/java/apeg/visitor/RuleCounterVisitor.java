@@ -15,7 +15,7 @@ import apeg.ast.expr.MetaAttribute;
 import apeg.ast.expr.MetaBindPEG;
 import apeg.ast.expr.MetaBoolLit;
 import apeg.ast.expr.MetaCharLit;
-import apeg.ast.expr.MetaChoiceList;
+import apeg.ast.expr.MetaRangePEG;
 import apeg.ast.expr.MetaChoicePEG;
 import apeg.ast.expr.MetaConstraintPEG;
 import apeg.ast.expr.MetaFloatLit;
@@ -83,7 +83,7 @@ import apeg.ast.expr.operators.UMinus;
 import apeg.ast.rules.AndPEG;
 import apeg.ast.rules.AnyPEG;
 import apeg.ast.rules.BindPEG;
-import apeg.ast.rules.ChoiceList;
+import apeg.ast.rules.RangePEG;
 import apeg.ast.rules.ChoicePEG;
 import apeg.ast.rules.ConstraintPEG;
 import apeg.ast.rules.KleenePEG;
@@ -202,7 +202,7 @@ public class RuleCounterVisitor extends Visitor {
 	}
 
 	@Override
-	public void visit(MetaChoiceList n) {
+	public void visit(MetaRangePEG n) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -604,7 +604,7 @@ public class RuleCounterVisitor extends Visitor {
 	}
 
 	@Override
-	public void visit(ChoiceList n) {
+	public void visit(RangePEG n) {
 		// TODO Auto-generated method stub
 		
 	}

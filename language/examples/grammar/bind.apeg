@@ -1,0 +1,29 @@
+apeg bind;
+
+start:
+  gama = real<>
+;
+
+real: 
+  a = (zeta = number<x> '.' z = number<y>)
+
+;
+
+digit returns x1 :
+
+  'a'  { x1 = 0; }
+  / 'b'  { x1 = 1; }
+  / 'c'  { x1 = 2; }
+  / 'd'  { x1 = 3; }
+  / 'e'  { x1 = 4; }
+  / 'f'  { x1 = 5; }
+  / 'g'  { x1 = 6; }
+  / 'h'  { x1 = 7; }
+  / 'i'  { x1 = 8; }
+  / 'j'  { x1 = 9; }
+ ;
+
+
+number returns r  :
+    digit<r> ( digit<aux> { r = r * 10 + aux; } )*
+;

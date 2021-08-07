@@ -6,7 +6,7 @@ prog:
 ;
 
 fat[int n] returns m:
-   {? n > 0} fat<n-1, r> {m = n*r;} /{? n == 0} {m = 1;}
+   {? n > 0} fat<n-1, r> {m = n*r;} / {m = 1;}
 ;
 
 number returns r  :

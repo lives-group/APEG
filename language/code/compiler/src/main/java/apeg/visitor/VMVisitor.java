@@ -305,8 +305,6 @@ public class VMVisitor extends Visitor{
 			stk.push(new Pair(VTyInt.getInstance(),(Integer)a.getSecond() + (Integer)b.getSecond()));
 		}else if(a.getFirst().match(VTyFloat.getInstance())){
 			stk.push(new Pair(VTyFloat.getInstance(),(Float)a.getSecond() + (Float)b.getSecond()));
-		}else if(a.getFirst().match(VTyChar.getInstance())){
-			stk.push(new Pair(VTyString.getInstance(),(Character)b.getSecond() + (Character)a.getSecond()));
 		}else if(a.getFirst().match(VTyString.getInstance())){
 			stk.push(new Pair(VTyString.getInstance(),(String)b.getSecond() + (String)a.getSecond()));
 		}else{
@@ -365,21 +363,7 @@ public class VMVisitor extends Visitor{
 	public void visit(Equals n) {
 		n.getLeft().accept(this);
 		n.getRight().accept(this);
-		Pair<VType,Object> a = stk.pop();
-		Pair<VType,Object> b = stk.pop();
-		Boolean bl;
-		if(a.getFirst().match(VTyInt.getInstance())){
-			bl = (Integer)a.getSecond() == (Integer)b.getSecond();
-		}else if(a.getFirst().match(VTyFloat.getInstance())){
-			bl = (Float)a.getSecond() == (Float)b.getSecond();
-		}else if(a.getFirst().match(VTyChar.getInstance())){
-			bl = (Character)a.getSecond() == (Character)b.getSecond();
-		}else if(a.getFirst().match(VTyString.getInstance())){
-			bl = ((String)a.getSecond()).compareTo((String)b.getSecond()) == 0;
-		}else{
-			throw new RuntimeException("(" + n.getSymInfo().getLine() + "," + n.getSymInfo().getColumn() + ") Imcompatible operators for ==");
-		}
-		stk.push(new Pair(VTyBool.getInstance(),bl));
+		stk.push(new Pair(VTyBool.getInstance(),stk.pop().getSecond().equals(stk.pop().getSecond())));
 	}
 
 	@Override
@@ -555,6 +539,13 @@ public class VMVisitor extends Visitor{
 
 	@Override
 	public void visit(UMinus n) {
+		n.getExpr().accept(this);
+		Pair<VType,Object> a = stk.pop();
+		if(a.getFirst().match(VTyInt.getInstance())){
+			stk.push(new Pair(VTyInt.getInstance(),-1 * (Integer)a.getSecond()));
+		}else if(a.getFirst().match(VTyFloat.getInstance())){
+			stk.push(new Pair(VTyFloat.getInstance(),-1.0 * (Float)a.getSecond()));
+		}
 	}
 
 	@Override
@@ -763,7 +754,12 @@ public class VMVisitor extends Visitor{
 
 	@Override
 	public void visit(BindPEG n) {
-		// TODO Auto-generated method stub
+		vm.startBind();
+		n.getExpr().accept(this);
+		if(vm.succeed()){
+			vm.setValue(n.getAttribute().getName(),vm.getBind());
+		}
+		vm.stopBind();
 	}
 
 	@Override
@@ -931,6 +927,7 @@ public class VMVisitor extends Visitor{
 			assigs.getSecond().accept(this);
 			vm.setValue(assigs.getFirst().getName(),stk.pop().getSecond());
 		}
+		vm.success();
 	}
 
 	@Override

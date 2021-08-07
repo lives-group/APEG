@@ -11,7 +11,7 @@ convert [int r] returns st:
 
       / {? x == 1 }{ st = '1'; })
     {r = r/2;}
-    convert<r,s>;
+    convert<r,s>
     {st = s + st;}
 ;
 

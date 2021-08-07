@@ -1,0 +1,5 @@
+apeg exprMult;
+
+a:
+   {z = 2 * 5;}
+;

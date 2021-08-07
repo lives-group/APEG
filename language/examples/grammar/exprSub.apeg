@@ -1,0 +1,5 @@
+apeg exprSub;
+
+a:
+  {z = 3 - 5;}
+;

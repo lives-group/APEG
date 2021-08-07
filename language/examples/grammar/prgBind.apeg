@@ -5,12 +5,10 @@ start:
 ;
 
 real: 
-  a = (zeta = number<x> '.' z = number<y>)
-
+   a = (zeta = number<x> '.' z = number<y>)
 ;
 
 digit returns x1 :
-
   'a'  { x1 = 0; }
   / 'b'  { x1 = 1; }
   / 'c'  { x1 = 2; }
@@ -21,8 +19,7 @@ digit returns x1 :
   / 'h'  { x1 = 7; }
   / 'i'  { x1 = 8; }
   / 'j'  { x1 = 9; }
- ;
-
+;
 
 number returns r  :
     digit<r> ( digit<aux> { r = r * 10 + aux; } )*

@@ -27,7 +27,6 @@ public class VTyInt extends VType{
     }
     
     public boolean matchCT (VType t, CTM ct) {
-    	
     	if(t instanceof VTyVar) {
     		ct.addConstraint(new VarConstraint((VTyVar)t, this));
     		return true;
@@ -36,16 +35,13 @@ public class VTyInt extends VType{
     }
 
 	public boolean Unify (VType t) {
-
 		if(t instanceof VTyInt) {
-
 			return true;
 		}
 		else {
 			if(t instanceof VTyVar) {
 				if(((VTyVar)t).solve() == null) {
 					((VTyVar)t).setInstance(this);
-					
 					return true;
 				}
 				else {
@@ -56,6 +52,10 @@ public class VTyInt extends VType{
 				return false;
 			}
 		}
-
 	}
+
+	public VType simplify(){
+	    return this;
+	}
+
 }

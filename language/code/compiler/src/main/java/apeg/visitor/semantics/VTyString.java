@@ -57,7 +57,10 @@ private static VTyString instance = new VTyString();
 				return false;
 			}
 		}
-	
+	}
+
+	public VType simplify(){
+	    return this;
 	}
 
 }

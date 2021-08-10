@@ -54,8 +54,9 @@ public class VTyChar extends VType {
 				return false;
 			}
 		}
-		
-
 	}
 
+	public VType simplify(){
+	    return this;
+	}
 }

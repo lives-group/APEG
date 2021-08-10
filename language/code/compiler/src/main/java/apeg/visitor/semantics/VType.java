@@ -10,10 +10,15 @@ public abstract  class VType{
 
     abstract public boolean match(VType t);
     abstract public boolean matchCT(VType t, CTM ct);
+
+    /** Simplify the type by removing instanciated type varibales;
+     */
+    abstract public VType simplify();
+
     public abstract boolean Unify(VType t);
 
     public String getName() {
-	return name;
+	    return name;
     }
 
     public String toString() {

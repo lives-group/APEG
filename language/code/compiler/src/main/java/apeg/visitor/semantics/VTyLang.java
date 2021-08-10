@@ -38,4 +38,8 @@ private static VTyLang instance = new VTyLang();
 		return false;
 	}
 
+	public VType simplify(){
+	    return this;
+	}
+
 }

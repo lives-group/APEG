@@ -5,6 +5,7 @@ import java.util.Hashtable;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Stack;
+import java.util.function.*;
 
 /**
  * @class Environment: 
@@ -93,5 +94,20 @@ public class Environment <N,V> {
 		 */
 		public void clear(){
 			st.peek().clear();
+		}
+
+		public void toLevelReplace(BiFunction<? super N,? super V,? extends V> f){
+		    if(st.size() > 0){
+                st.peek().replaceAll(f);
+		    }
+		}
+		public void replace(BiFunction<? super N,? super V,? extends V> f){
+		    if(st.size() > 0){
+                Hashtable<N, V> ht;
+                st.peek().replaceAll(f);
+                ht = st.pop();
+                replace(f);
+                st.push(ht);
+		    }
 		}
 }

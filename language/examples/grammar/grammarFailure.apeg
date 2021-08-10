@@ -1,0 +1,14 @@
+apeg annotation;
+
+r:
+   { x = 2 && true;}
+   '1'
+   {? x == 0}
+ /
+   '2'
+;
+
+a returns x :
+  a<x>
+  'a'
+;

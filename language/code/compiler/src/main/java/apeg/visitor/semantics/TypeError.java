@@ -33,4 +33,8 @@ public class TypeError extends VType {
 
       public boolean Unify (VType t){ return true;}
 
+      public VType simplify(){
+	    return this;
+	  }
+
 }

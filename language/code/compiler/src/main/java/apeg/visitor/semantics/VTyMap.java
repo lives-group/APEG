@@ -21,14 +21,37 @@ public class VTyMap extends VType{
     public VType getTyParameter(){
         return tyParameter;
     }
-	@Override
+    
 	public boolean matchCT(VType t, CTM ct) {
-		// TODO Auto-generated method stub
+		if(t instanceof VTyVar) {
+    		ct.addConstraint(new VarConstraint((VTyVar)t, this));
+    		return true;
+    	}else if ((t instanceof VTyMap) && tyParameter instanceof VTyVar ) {
+            VTyMap tym = (VTyMap) t;
+            ct.addConstraint(new VarConstraint( (VTyVar)tyParameter, tym.tyParameter));
+            return true;
+    	}else if( (t instanceof VTyMap) &&  ((VTyMap) t).tyParameter instanceof VTyVar  ){
+    	    VTyMap tym = (VTyMap) t;
+            ct.addConstraint(new VarConstraint( (VTyVar)tym.tyParameter, tyParameter));
+            return true;
+    	}
+    	return match(t);
+	}
+	
+	public boolean Unify(VType t) {
+		if(t instanceof VTyMap){
+            VTyMap tym = (VTyMap)t;
+		    return tyParameter.Unify( tym.tyParameter);
+		}
 		return false;
 	}
-	@Override
-	public boolean Unify(VType t) {
-		// TODO Auto-generated method stub
-		return false;
+	
+	public String toString() {
+    	return "{ " + tyParameter.toString() + " }" ;
+    }
+
+    public VType simplify(){
+	    tyParameter = tyParameter.simplify();
+	    return this;
 	}
 }

@@ -60,4 +60,8 @@ public class VTyGrammar extends VType{
 		}
 
 	}
+
+	public VType simplify(){
+	    return this;
+	}
 }

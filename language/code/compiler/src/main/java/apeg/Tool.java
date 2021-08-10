@@ -18,6 +18,8 @@ import apeg.ast.ASTFactoryImpl;
 import apeg.ast.Grammar;
 import apeg.util.Pair;
 import apeg.visitor.semantics.VType;
+import apeg.visitor.semantics.ErrorsMsg;
+import apeg.visitor.semantics.ErrorEntry;
 
 //import apeg.visitor.ASTNodeVisitor;
 //import apeg.visitor.BuildRuleEnvironmetVisitor;
@@ -133,13 +135,14 @@ public class Tool {
 
 				if(tool.interpretInput != null){
                     if(!((TypeCheckerVisitor)typechecker).getError().isEmpty()){
-                        for(Pair<String,VType> perr:((TypeCheckerVisitor)typechecker).getError()){
-                            System.out.println(perr.toString());
+                        ErrorsMsg errm = ErrorsMsg.getInstance();
+                        for(ErrorEntry perr:((TypeCheckerVisitor)typechecker).getError()){
+                            System.out.println(errm.translate(perr) );
                         }
                     System.exit(1);
                     }
 					VMVisitor vm = new VMVisitor(tool.interpretInput.toString(),((TypeCheckerVisitor)typechecker).getEnv());
-					System.out.println("Path = " + tool.interpretInput);
+					System.out.println("Executing: " + tool.interpretInput);
 					g.accept(vm);
 					if(vm.succeed()){
 						System.out.println(" accepted.");

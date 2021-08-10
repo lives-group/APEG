@@ -1,0 +1,16 @@
+apeg exprAdd;
+
+a : 
+   b<m,k,s>
+   {y = m[s] * 2;}
+;
+
+b returns z, w, k:
+  {z = {: :};
+   y = z['a'];
+   w = y + 1;
+   t = z['b' -> 21];
+   k = 'c';
+  }
+  
+;

@@ -12,12 +12,12 @@ public class CTM {
 
 
 	private LinkedList<Constraint> ct;
-	private List<Pair<String, VType>>error;
+	private List<ErrorEntry> error;
 	String errorMessage;
 
 	public CTM(){
 		ct = new LinkedList<Constraint>();
-		error = new ArrayList<Pair<String, VType>>();
+		error = new ArrayList<ErrorEntry>();
 	}
 
 
@@ -25,90 +25,58 @@ public class CTM {
 
 
 	private List<NTType> verifyOp( ArrayList<NTType> nt , VType t){
-
 		ArrayList<NTType>r = new ArrayList<NTType>();
-
 		for(NTType ty : nt) {
-
 			if(ty.match(t)) {
 				r.add(ty);
 			}
 		}
-
 		return r;
 	}
 
-	public List<Pair<String, VType>> resolveUnify(Environment<String,ArrayList<NTType>> opTable) {
+	public List<ErrorEntry> resolveUnify(Environment<String,ArrayList<NTType>> opTable) {
 		//TODO
-
 		OpConstraint op;
 		VarConstraint v;
 		List<NTType>type;
 		int t1 = ct.size()+1;
-		
-        
 		while(!ct.isEmpty() && ct.size() < t1) {
-			
             Constraint last = ct.peekLast();
             t1 = ct.size();
              Constraint c;  
             do{
-                
-             c = ct.remove();   
-			
-			
-			if(c instanceof OpConstraint) {
-
-				op = (OpConstraint) c;
-
-					
-				type = verifyOp(opTable.get(op.getOpName()), op.getType());
-				System.out.println(op.getOpName() + " "+ type.toString());
-				if(type.size() == 0) {
-					errorMessage = "Error: No constraints matching for " + op.getOpName() ;
-					System.out.println(errorMessage);
-					error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance() ));
-				}
-				else {
-					if(type.size()>1) {
-						
-						ct.add(c);
-					}
-					else {
-						if(type.size() == 1) {
-								//TODO
-							if(!op.getType().Unify(type.get(0))) {
-								
-								ct.add(c);
-							}
-							
-						}
-					}
-				}
-
-			}
-			else {
-
-				if(c instanceof VarConstraint) {
-
-					v = (VarConstraint) c;
-
-					if(!v.getVarName().Unify(v.getType())) {
-
-						ct.add(c);
-					}
-					
-
-				}
-			}
-			
-        }while(c != last);
-
+               c = ct.remove();
+		       if(c instanceof OpConstraint) {
+				    op = (OpConstraint) c;
+				    type = verifyOp(opTable.get(op.getOpName()), op.getType());
+				    if(type.size() == 0) {
+					    error.add(new ErrorEntry(25, null, op.getOpName() ,new VType[]{ op.getType()} ));
+				    }
+				    else {
+					    if(type.size()>1) {
+						     ct.add(c);
+					    }
+					    else {
+						    if(type.size() == 1) {
+							    if(!op.getType().Unify(type.get(0))) {
+								    ct.add(c);
+							    }
+						    }
+					    }
+				    }
+               }
+			   else {
+				    if(c instanceof VarConstraint) {
+					    v = (VarConstraint) c;
+					    if(!v.getVarName().Unify(v.getType())) {
+						    ct.add(c);
+					    }
+				    }
+			   }
+            }while(c != last);
 		}
         if(!ct.isEmpty()){
-                       errorMessage = "Error: impossible to solve constraints" ;
-					System.out.println(errorMessage);
-					error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance() ));
+                    error.add(new ErrorEntry(26, null, "" ,new VType[]{ TypeError.getInstance() }));
         }
 		return error;
 	}

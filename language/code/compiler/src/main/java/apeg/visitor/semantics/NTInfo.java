@@ -30,4 +30,10 @@ public class NTInfo {
 		return s;
 	}
 
+	public void simplify(){
+	     System.out.println("Replacing signature for " + sig.toString());
+	     sig = (NTType)sig.simplify();
+	     locals.replace((k,v) -> v.simplify());
+	}
+
 }

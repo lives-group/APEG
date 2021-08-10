@@ -55,7 +55,9 @@ private static VTyFloat instance = new VTyFloat();
 				return false;
 			}
 		}
-	
+	}
 
+	public VType simplify(){
+	    return this;
 	}
 }

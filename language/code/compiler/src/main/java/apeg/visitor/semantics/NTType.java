@@ -119,34 +119,32 @@ public class NTType extends VType {
 
 	@Override
 	public boolean matchCT(VType t, CTM ct) {
-	
 		return false;
 	}
 
 	@Override
 	public boolean Unify(VType t) {
-		
-
 		if(t instanceof NTType) {
-
 			NTType nt = (NTType) t;
-
 			if(VTypes.length != nt.VTypes.length) {return false;}
-
 			for(int i=0; i< VTypes.length; i++) {
 
 				if(!VTypes[i].Unify(nt.VTypes[i])) {
 
 					return false;
 				}
-
 			}
 			return true;
-
 		}
 		else {
 			return false;
 		}
+	}
 
+	public VType simplify(){
+	    for(int i = 0; i < VTypes.length; i++){
+	       VTypes[i] = VTypes[i].simplify();
+	    }
+	    return this;
 	}
 }

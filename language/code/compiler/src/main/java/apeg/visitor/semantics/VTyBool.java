@@ -27,14 +27,11 @@ private static VTyBool instance = new VTyBool();
     }
     
     public boolean matchCT(VType t, CTM ct) {
-    	
     	if(t instanceof VTyVar) {
-    
     		ct.addConstraint(new VarConstraint((VTyVar)t, this));
     		return true;	
     	}
 		return match(t);
-    	
     }
     
     public boolean Unify (VType t) {
@@ -57,7 +54,9 @@ private static VTyBool instance = new VTyBool();
     			return false;
     		}
     	}
-    	
-    	
     }
+
+    public VType simplify(){
+	    return this;
+	}
 }

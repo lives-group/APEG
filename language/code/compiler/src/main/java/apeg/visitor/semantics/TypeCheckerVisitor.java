@@ -8,8 +8,7 @@ import java.util.Stack;
 
 import apeg.util.Environment;
 import apeg.util.Pair;
-
-import apeg.util.Environment;
+import apeg.util.SymInfo;
 import apeg.visitor.semantics.*;
 import apeg.visitor.*;
 
@@ -26,31 +25,60 @@ public class TypeCheckerVisitor extends Visitor {
     private Stack<VType> s;
     private Environment <String, VType> gamma;
     private Environment<String, NTInfo> global;
-    private List<Pair<String, VType>>error;
-    private String errorMessage;
+    private List<ErrorEntry> error;
+//    private String errorMessage;
     private VarPool pool;
     private Environment<String,ArrayList<NTType>> opTable;
     private CTM ct;
     private boolean addVar;
+    private VType[] emptyVTyepArray;
 
     public TypeCheckerVisitor() {
         s = new Stack<VType>();
         gamma = new Environment<String, VType>();
         global = new Environment<String, NTInfo>();
         pool = VarPool.getInstance();
-        error = new ArrayList<Pair<String, VType>>();
+        error = new ArrayList<ErrorEntry>();
         ct = new CTM();
         addVar = false;
         opTable = OperatorTables.mkArithmeticEnv();
+        emptyVTyepArray = new VType[0];
     }
     
-    public List<Pair<String, VType>> getError(){
+    public List<ErrorEntry> getError(){
         return error;
     }
     
     public Environment<String,NTInfo> getEnv(){
         return global;
     }
+
+    private void errorMsg(int c, SymInfo s){
+          error.add(new ErrorEntry(c,s,"",emptyVTyepArray));
+    }
+
+    private void errorMsg(int c, SymInfo s, VType td){
+          error.add(new ErrorEntry(c,s,"",new VType[]{td} ));
+    }
+
+    private void errorMsg(int c, SymInfo s, String name){
+          error.add(new ErrorEntry(c,s,name,emptyVTyepArray));
+    }
+
+    private void errorMsg(int c, SymInfo s, String name, VType t){
+          //errorMessage = "Error at (" + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn() + ") :" + msg;
+          error.add(new ErrorEntry(c,s,name,new VType[]{t} ));
+          //System.out.println(errorMessage);
+    }
+
+    private void errorMsg(int c, SymInfo s,String name, VType te, VType td){
+          error.add(new ErrorEntry(c,s,name,new VType[]{te,td} ));
+    }
+    
+    // Construir função para substituir as variáveis.
+
+
+
 
     private boolean matchBinOp(String op, VType l, VType r){
         VTyVar t; 
@@ -62,8 +90,6 @@ public class TypeCheckerVisitor extends Visitor {
         }
         else {
             for(NTType nt : opTable.get(op)) {
-
-
                 if(nt.matchInherited(new VType[] {l, r}) ) {
                     s.push(nt.getReturnAt(0));
                     return true;
@@ -86,9 +112,7 @@ public class TypeCheckerVisitor extends Visitor {
                 return;
             }
             s.push(TypeError.getInstance());
-            errorMessage = "Error06 at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
-            System.out.println(errorMessage);
-            error.add(new Pair<String, VType>(errorMessage,TypeError.getInstance() ));
+            errorMsg(6, n.getSymInfo(), n.getName());
         }
     }
 
@@ -100,9 +124,7 @@ public class TypeCheckerVisitor extends Visitor {
         }
         else {
             s.push(TypeError.getInstance());
-            errorMessage = "Error07 at: " + n.getSymInfo().getLine() + "," + n.getSymInfo().getColumn();
-            System.out.println(errorMessage);
-            error.add(new Pair<String, VType>(errorMessage,TypeError.getInstance() ));
+            errorMsg(6, n.getSymInfo(), n.getName(),TypeError.getInstance());
         }
     }
 
@@ -131,35 +153,34 @@ public class TypeCheckerVisitor extends Visitor {
         Pair<Expr,Expr>[] assocs = n.getAssocs();
         VType tyidx, tyval, tyaux;
         if(assocs == null || assocs.length == 0 ){
-           errorMessage = "Error at: " + n.getSymInfo().getLine() + "," + n.getSymInfo().getColumn() + " Empty map literal is not allowed.";
-           System.out.println(errorMessage);
-           error.add(new Pair<String, VType>(errorMessage,TypeError.getInstance() ));
            s.push(TypeError.getInstance());
+           errorMsg(7, n.getSymInfo());
            return;
         }
-        boolean b = true;
-        assocs[0].getFirst().accept(this);
         assocs[0].getSecond().accept(this);
         tyval = s.pop();
-        if(! s.pop().match(VTyString.getInstance()) ){
-           errorMessage = "Error at: " + assocs[0].getFirst().getSymInfo().getLine() + "," + assocs[0].getFirst().getSymInfo().getColumn() + " Map index must be of type string.";
-           System.out.println(errorMessage);
-           error.add(new Pair<String, VType>(errorMessage,TypeError.getInstance() ));
+        if(tyval instanceof TypeError ){
            s.push(TypeError.getInstance());
-        }
-        for(Pair<Expr,Expr> p : assocs){
-           p.getFirst().accept(this);
-           p.getSecond().accept(this);
-           tyaux = s.pop();
-           tyidx = s.pop();
-           if(!tyidx.match(VTyString.getInstance()) ){
-               errorMessage = "Error at: " + assocs[0].getFirst().getSymInfo().getLine() + "," + assocs[0].getFirst().getSymInfo().getColumn() + " Map index must be of type string.";
-               System.out.println(errorMessage);
-               error.add(new Pair<String, VType>(errorMessage,TypeError.getInstance() ));
-               s.push(TypeError.getInstance());
+           errorMsg(4, n.getSymInfo(),tyval);
+           return;
+        }else{
+           for(Pair<Expr,Expr> p : assocs){
+              p.getFirst().accept(this);
+              p.getSecond().accept(this);
+              tyaux = s.pop();
+              tyidx = s.pop();
+              if(!tyidx.match(VTyString.getInstance()) ){
+                  errorMsg(8, p.getFirst().getSymInfo(), tyidx);
+                  s.push(TypeError.getInstance());
+                  return;
+              }else if(!tyaux.match(tyval) ){
+                  errorMsg(10, p.getSecond().getSymInfo(), "", tyaux, tyval);
+                  s.push(TypeError.getInstance());
+                  return;
+              }
            }
-           b = b && tyidx.match(VTyString.getInstance()) && (tyaux.match(tyval));
         }
+        s.push(new VTyMap(tyval));
     }
 
     @Override
@@ -365,11 +386,8 @@ public class TypeCheckerVisitor extends Visitor {
         n.getRight().accept(this);
         VType right = s.peek();
         if(!matchBinOp("ADD", left, right)) {
-            errorMessage = "Error08 at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
-            System.out.println(errorMessage);
-            error.add(new Pair<String, VType>(errorMessage,TypeError.getInstance() ));    
+            errorMsg(11, n.getSymInfo(),"+",left, right);
         }
-
     }
 
 
@@ -380,9 +398,7 @@ public class TypeCheckerVisitor extends Visitor {
         n.getRight().accept(this);
         VType right = s.peek();
         if(!matchBinOp("AND", left, right)) {
-            errorMessage = "Error09 at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
-            System.out.println(errorMessage);
-            error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance()));    
+            errorMsg(12, n.getSymInfo(),"&&",left, right);
         }
     }
 
@@ -401,10 +417,7 @@ public class TypeCheckerVisitor extends Visitor {
                 s.push(left);
             }
             else {
-                s.push(TypeError.getInstance());
-                errorMessage = "Error10 at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
-                System.out.println(errorMessage);
-                error.add(new Pair<String, VType>(errorMessage,TypeError.getInstance() ));
+                errorMsg(18,n.getSymInfo(),"<<",left,right);
             }
         }
     }
@@ -416,20 +429,12 @@ public class TypeCheckerVisitor extends Visitor {
         VType left = s.peek();
         n.getRight().accept(this);
         VType right = s.peek();
-        if(left instanceof VTyVar || right instanceof VTyVar) {
-
-        }
         if(left == right) {
             s.push(left);
         }
         else {
-
+            errorMsg(14, n.getSymInfo(),"++",left, right);
             s.push(TypeError.getInstance());
-
-            errorMessage = "Error11 at: " + n.getSymInfo().getLine() + n.getSymInfo().getColumn();
-            System.out.println(errorMessage);
-            error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance() ));
-
         }
     }
 
@@ -440,9 +445,7 @@ public class TypeCheckerVisitor extends Visitor {
         n.getRight().accept(this);
         VType right = s.peek();
         if(!matchBinOp("DIV", left, right)) {
-            errorMessage = "Error12 at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
-            System.out.println(errorMessage);
-            error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance() ));    
+            errorMsg(11, n.getSymInfo(),"/",left, right);
         }
     }
 
@@ -453,11 +456,8 @@ public class TypeCheckerVisitor extends Visitor {
         n.getRight().accept(this);
         VType right = s.peek();
         if(!matchBinOp("EQ", left, right)) {
-            errorMessage = "Error13 at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
-            System.out.println(errorMessage);
-            error.add(new Pair<String, VType>(errorMessage,TypeError.getInstance() ));    
+            errorMsg(13, n.getSymInfo(),"==",left, right);
         }
-
     }
 
     @Override
@@ -467,9 +467,7 @@ public class TypeCheckerVisitor extends Visitor {
         n.getRight().accept(this);
         VType right = s.peek();
         if(!matchBinOp("GT", left, right)) {
-            errorMessage = "Error14 at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
-            System.out.println(errorMessage);
-            error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance() ));    
+            errorMsg(13, n.getSymInfo(),">",left, right);
         }
     }
 
@@ -480,11 +478,8 @@ public class TypeCheckerVisitor extends Visitor {
         n.getRight().accept(this);
         VType right = s.peek();
         if(!matchBinOp("GE", left, right)) {
-            errorMessage = "Error15 at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
-            System.out.println(errorMessage);
-            error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance() ));    
+            errorMsg(13, n.getSymInfo(),">=",left, right);
         }
-
     }
 
     @Override
@@ -494,111 +489,122 @@ public class TypeCheckerVisitor extends Visitor {
         n.getRight().accept(this);
         VType right = s.peek();
         if(!matchBinOp("LT", left, right)) {
-            errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
-            System.out.println(errorMessage);
-            error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance() ));    
+            errorMsg(13, n.getSymInfo(),"<",left, right);
         }
-
     }
 
     @Override
     public void visit(LessEq n) {
-
-
         n.getLeft().accept(this);
         VType left = s.peek();
-
         n.getRight().accept(this);
         VType right = s.peek();
-
         if(!matchBinOp("LE", left, right)) {
-
-            
-
-            errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
-            System.out.println(errorMessage);
-            error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance()));    
+            errorMsg(14, n.getSymInfo(),"<=",left, right);
         }
     }
 
     @Override
     public void visit(MapAcces n) {
-        // TODO Auto-generated method stub
-
+         n.getMap().accept(this);
+         n.getIndex().accept(this);
+         VType tm,ti;
+         ti = s.pop();
+         tm = s.pop();
+         if( ti.matchCT(VTyString.getInstance(),ct)){
+             if(tm instanceof VTyMap){
+                 s.push( ((VTyMap)tm).getTyParameter());
+                 return;
+             }else if(tm instanceof VTyVar){
+                  VTyVar tyv = pool.newVar();
+                  VTyMap vmap = new VTyMap( tyv );
+                  if(tm.matchCT(vmap,ct) ){
+                        s.push(tyv);
+                        return;
+                  }
+                  errorMsg(5,n.getSymInfo(),"",tm);
+                  s.push(TypeError.getInstance());
+                  return;
+             }else if(tm instanceof TypeError){
+                  errorMsg(3,n.getSymInfo(),"");
+                  s.push(TypeError.getInstance()); 
+                  return;
+             }
+             
+         }
+         errorMsg(8,n.getSymInfo(),"",ti);
+         s.push(TypeError.getInstance());
     }
 
     @Override
     public void visit(MapExtension n) {
-        // TODO Auto-generated method stub
-
+        n.getMap().accept(this);
+        VType vmp = s.pop();
+        if(vmp instanceof VTyMap ){
+              n.getKey().accept(this);
+              VType vkey = s.pop();
+              if(vkey.matchCT(VTyString.getInstance(),ct) ){
+                  n.getValue().accept(this);
+                  VType val = s.pop();
+                  if(val.matchCT( ((VTyMap)vmp).getTyParameter(),ct)){
+                      s.push(vmp);
+                      return;
+                  }else{
+                      errorMsg(9,n.getSymInfo(),"",val,((VTyMap)vmp).getTyParameter());
+                      s.push(TypeError.getInstance());
+                      return;
+                  }
+                  
+              }else{
+                 errorMsg(8,n.getSymInfo(),"",vkey);
+                 s.push(TypeError.getInstance());
+                 return;
+              }
+        }
+        errorMsg(3,n.getSymInfo(),"");
+        s.push(TypeError.getInstance()); 
+        return;
     }
 
     @Override
     public void visit(Mod n) {
-
         n.getLeft().accept(this);
         VType left = s.peek();
-
         n.getRight().accept(this);
         VType right = s.peek();
-
         if(!matchBinOp("MOD", left, right)) {
-            errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
-            System.out.println(errorMessage);
-            error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance() ));    
+            errorMsg(11, n.getSymInfo(),"%",left, right);
         }
     }
 
     @Override
     public void visit(Mult n) {
-
-
-
         n.getLeft().accept(this);
         VType left = s.peek();
-
         n.getRight().accept(this);
         VType right = s.peek();
-
         if(!matchBinOp("MUL", left, right)) {
-
-        
-
-            errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
-            System.out.println(errorMessage);
-            error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance() ));    
+            errorMsg(11, n.getSymInfo(),"++",left, right);
         }
-
     }
 
     @Override
     public void visit(Not n) {
-
-
         n.getExpr().accept(this);
         VType e = s.peek();
-
         if(!matchBinOp("NOT", e, null)) {
-            errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
-            System.out.println(errorMessage);
-            error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance() ));    
+            errorMsg(11, n.getSymInfo(),"!",e);
         }
     }
 
     @Override
     public void visit(NotEq n) {
-    
-
         n.getLeft().accept(this);
         VType left = s.peek();
-
         n.getRight().accept(this);
         VType right = s.peek();
-
         if(!matchBinOp("NE", left, right)) {
-            errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
-            System.out.println(errorMessage);
-            error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance() ));    
+            errorMsg(13, n.getSymInfo(),"!=",left, right);
         }
     }
 
@@ -609,9 +615,7 @@ public class TypeCheckerVisitor extends Visitor {
         n.getRight().accept(this);
         VType right = s.peek();
         if(!matchBinOp("OR", left, right)) {
-            errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
-            System.out.println(errorMessage);
-            error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance() ));    
+            errorMsg(11, n.getSymInfo(),"||",left, right);
         }
     }
 
@@ -622,21 +626,16 @@ public class TypeCheckerVisitor extends Visitor {
         n.getRight().accept(this);
         VType right = s.peek();
         if(!matchBinOp("SUB", left, right)) {
-            errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
-            System.out.println(errorMessage);
-            error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance() ));    
+            errorMsg(11, n.getSymInfo(),"-",left, right);
         }
     }
 
-
     @Override
     public void visit(UMinus n) {
-        n.getExpr().accept(this);
-        VType e = s.peek();
+       n.getExpr().accept(this);
+       VType e = s.peek();
        if(!matchBinOp("MINUS", e, null)) {
-            errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
-            System.out.println(errorMessage);
-            error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance() ));    
+            errorMsg(11, n.getSymInfo(),"||",e);
         }
     }
 
@@ -756,8 +755,6 @@ public class TypeCheckerVisitor extends Visitor {
 
     @Override
     public void visit(AndPEG n) {
-
-
         n.getPegExp().accept(this);
     }
 
@@ -770,9 +767,7 @@ public class TypeCheckerVisitor extends Visitor {
         VType ty = gamma.get(n.getAttribute().getName());
         if(ty != null){
           if(!ty.matchCT(VTyString.getInstance(),ct ) ){
-              errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn() + ": Incompatible bind type at bind " + n.getAttribute().getName();
-              System.out.println(errorMessage);
-              error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance() )); 
+              errorMsg(15, n.getSymInfo(),"=",s.peek());
           }
         }else{
            gamma.add(n.getAttribute().getName(),VTyString.getInstance() );
@@ -787,16 +782,17 @@ public class TypeCheckerVisitor extends Visitor {
 
     @Override
     public void visit(ChoicePEG n) {
-
         n.getLeftPeg().accept(this);
         n.getRightPeg().accept(this);
-
-
     }
 
     @Override
     public void visit(ConstraintPEG n) {
         n.getExpr().accept(this);
+        VType t = s.pop();
+        if(!t.matchCT(VTyBool.getInstance(),ct)){
+            errorMsg(19, n.getSymInfo(),"",t);
+        }
     }
 
     @Override
@@ -812,153 +808,99 @@ public class TypeCheckerVisitor extends Visitor {
     @Override
     public void visit(LitPEG n) {
 
-
     }
 
     @Override
     public void visit(NonterminalPEG n) {
-
         NTInfo nt = global.get(n.getName());
-
+        VType ty;
         if(nt != null) {
-
             NTType t =  nt.getSig();
-
             int syn, inh;
             inh = t.getNumInherited();
             syn = t.getNumSintetized();
-
             List<Expr>a = n.getArgs();
-
             int i, k=0;
             for(i =0; i <inh && i<a.size(); i++) {
-
                 a.get(k++).accept(this);
-                if(!t.getParamAt(i).matchCT(s.pop(), ct)) {
-
-                    errorMessage = "Error01 at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
-                    System.out.println(errorMessage);
-                    error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance() ));    
+                ty = s.pop();
+                if(!t.getParamAt(i).matchCT(ty, ct)) {
+                    errorMsg(20, n.getSymInfo(), n.getName(),ty);
                 }
             }
-
             addVar = true;
             for(i = 0; i<syn && k<a.size(); i++) {
-
-
                 Expr e = a.get(k++);
-
                 e.accept(this);
-
-
                 if(!(e instanceof Attribute)) {
-
-                    errorMessage = "Error02 at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
-                    System.out.println(errorMessage);
-                    error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance() ));    
+                    errorMsg(21, n.getSymInfo());
                 }
-                if(!t.getReturnAt(i).matchCT(s.pop(), ct)) {
-
-                    errorMessage = "Error03 at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
-                    System.out.println(errorMessage);
-                    error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance() ));    
+                ty = s.pop();
+                if(!t.getReturnAt(i).matchCT(ty, ct)) {
+                    errorMsg(22, n.getSymInfo(),n.getName(),ty,t.getReturnAt(i));
                 }
-
             }
             addVar = false;
             if(a.size() != inh + syn) {
-
-                errorMessage = "Error04 at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
-                System.out.println(errorMessage);
-                error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance() ));    
+                errorMsg(22, n.getSymInfo(), n.getName(),TypeError.getInstance());
             }
         }
         else {
-
-            errorMessage = "Error05 at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
-            System.out.println(errorMessage);
-            error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance() ));    
-
+            errorMsg(24, n.getSymInfo(),n.getName(),TypeError.getInstance());
         }
     }
 
     @Override
     public void visit(NotPEG n) {
-
         n.getPegExp().accept(this);
     }
 
     @Override
     public void visit(OptionalPEG n) {
-
         n.getPegExp().accept(this);
     }
 
     @Override
     public void visit(PKleene n) {
-
         n.getPegExp().accept(this);
-
     }
 
     @Override
     public void visit(RulePEG n) {        
-
         gamma = global.get(n.getRuleName()).getLocals();
-
         n.getPeg().accept(this);
-
+        VType ty;
         VType returns [] = new VType [n.getSyn().size()];
         NTType nt = global.get(n.getRuleName()).getSig();
-        
         int i = 0;
-
         for(Expr e: n.getSyn()) {
-
             e.accept(this);
-            
-            
             returns[i] = s.peek();
-            if(!nt.getReturnAt(i++).matchCT(s.pop(), ct)) {
-                
-                errorMessage = "Error at : " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn() + "k";
-                System.out.println(errorMessage);
-                error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance() ));
+            ty = s.pop();
+            if(!nt.getReturnAt(i++).matchCT(ty, ct)) {
+                errorMsg(25, n.getSymInfo(),n.getRuleName(),ty);
             }
         }    
-
-
     }
 
     @Override
     public void visit(SeqPEG n) {
-
         for(APEG pegs: n.getPegs()) {
             pegs.accept(this);
-
         }
     }
 
     @Override
     public void visit(UpdatePEG n) {
-
-        VType vt;
-
+        VType vt,ty;
         for(Pair<Attribute, Expr>assigs : n.getAssigs()) {
-
             String name = assigs.getFirst().getName();
             vt = gamma.get(name);
-
             assigs.getSecond().accept(this);
-
             if(vt!= null) {
-
-                if(!vt.matchCT(s.pop(), ct)) {
-
-                    errorMessage = "Error at: " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn();
-                    System.out.println(errorMessage);
-                    error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance() ));
-
+                ty = s.pop();
+                if(!vt.matchCT(ty, ct)) {
+                    errorMsg(16, n.getSymInfo(),"=" ,vt,ty);
                 }
             }
             else {
@@ -969,47 +911,32 @@ public class TypeCheckerVisitor extends Visitor {
 
     @Override
     public void visit(TyBool n) {
-
         s.push(VTyBool.getInstance());
-
-
     }
 
     @Override
     public void visit(TyChar n) {
-
         s.push(VTyChar.getInstance());
-
-
     }
 
     @Override
     public void visit(TyFloat n) {
-
         s.push(VTyFloat.getInstance());
-
     }
 
     @Override
     public void visit(TyGrammar n) {
-
         s.push(VTyGrammar.getInstance());
-
-
     }
 
     @Override
     public void visit(TyInt n) {
-
         s.push(VTyInt.getInstance());
-
     }
 
     @Override
     public void visit(TyLang n) {
-
         s.push(VTyLang.getInstance());
-
     }
 
     @Override
@@ -1030,62 +957,40 @@ public class TypeCheckerVisitor extends Visitor {
     @Override
     public void visit(TyMetaPeg n) {
         // TODO Auto-generated method stub
-
     }
 
     @Override
     public void visit(TyString n) {
-
-
         s.push(VTyString.getInstance());
-
     }
 
     @Override
     public void visit(Grammar n) {
-
-
         for(RulePEG rule: n.getRules()) {
-
             gamma = new Environment<String, VType>();
-
             VType inhs[] = new VType[rule.getInh().size()];
-
             int j=0;
             for(Pair<Type, String>inh : rule.getInh()) {
-
                 inh.getFirst().accept(this);
                 inhs[j++] = s.peek();
                 gamma.add(inh.getSecond(), s.pop());
             }
-
             VType returns [] = new VType [rule.getSyn().size()];
-
             int i;
-
             for(i=0; i< rule.getSyn().size(); i++) {
-
                 returns[i] = pool.newVar();
-                
             }
-
             NTType rules = new NTType(inhs, returns);
-
             global.add(rule.getRuleName(), new NTInfo(rules, gamma));
         }
-
         for(RulePEG r : n.getRules()) {
-
             r.accept(this);
         }
 
-                
-        System.out.println(global.toString());
-        System.out.println(ct.toString());
+        // System.out.println(global.toString());
+        // System.out.println(ct.toString());
         error.addAll(ct.resolveUnify(opTable));
-        
-        
-    
+        global.replace((k,v) -> {v.simplify(); return v;} );
         System.out.println(global.toString());
         System.out.println(ct.toString());
 

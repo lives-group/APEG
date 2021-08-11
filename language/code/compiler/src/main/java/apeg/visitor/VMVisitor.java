@@ -863,7 +863,15 @@ public class VMVisitor extends Visitor{
 
 	@Override
 	public void visit(OptionalPEG n) {
+		vm.beginAlt();
 		n.getPegExp().accept(this);
+		if(vm.succeed()){
+		   vm.endAlt();
+		   return;
+		}
+		vm.restore();
+		vm.failAlt();
+		vm.success();
 	}
 
 	@Override
@@ -877,6 +885,7 @@ public class VMVisitor extends Visitor{
 					vm.endAlt();
 				}
 			}
+			vm.restore();
 			vm.failAlt();
 			vm.success();
 		}else{
@@ -991,6 +1000,7 @@ public class VMVisitor extends Visitor{
 			hashRules.put(n.getRules().get(i).getRuleName(),n.getRules().get(i));
 		}
 		n.getRules().get(0).accept(this);
+		System.out.println("Read until " + vm.getLine() + ", " + vm.getColumn());
 	}
 
 	public boolean succeed(){

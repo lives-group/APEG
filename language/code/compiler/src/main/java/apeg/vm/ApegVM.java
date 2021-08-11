@@ -125,6 +125,8 @@ public void stopBind(){
   page.endBuffer();
 }
 
+public int getLine(){ return page.getLine();}
+public int getColumn(){ return page.getColumn();}
 
 
 //   //testar clone

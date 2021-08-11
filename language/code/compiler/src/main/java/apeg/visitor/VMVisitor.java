@@ -808,6 +808,7 @@ public class VMVisitor extends Visitor{
 				vm.endAlt();
 			}
 		}while(vm.succeed());
+		vm.restore();
 		vm.failAlt();
 		vm.success();
 	}

@@ -635,7 +635,7 @@ public class TypeCheckerVisitor extends Visitor {
        n.getExpr().accept(this);
        VType e = s.peek();
        if(!matchBinOp("MINUS", e, null)) {
-            errorMsg(11, n.getSymInfo(),"||",e);
+            errorMsg(2, n.getSymInfo(),"-",e);
         }
     }
 
@@ -988,7 +988,7 @@ public class TypeCheckerVisitor extends Visitor {
         }
 
         // System.out.println(global.toString());
-        // System.out.println(ct.toString());
+        System.out.println(ct.toString());
         error.addAll(ct.resolveUnify(opTable));
         global.replace((k,v) -> {v.simplify(); return v;} );
         System.out.println(global.toString());

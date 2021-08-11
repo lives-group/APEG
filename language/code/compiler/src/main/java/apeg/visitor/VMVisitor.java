@@ -457,11 +457,10 @@ public class VMVisitor extends Visitor{
 		n.getIndex().accept(this);
 		n.getMap().accept(this);
 		Pair<VType,Object> m = stk.pop();
-		// String i = (String)(stk.pop().getSecond())
 		Pair<VType,Object> i = stk.pop();
 
 		//stk.push(new Pair(VTyMap.getInstance(),m.getSecond().get(i.getSecond())));
-		stk.push(new Pair( ((VTyMap)m.getFirst()).getTyParameter(), ((Hashtable)m.getSecond()).get((String)i.getSecond())) );
+		stk.push(new Pair( ((VTyMap)m.getFirst()).getTyParameter(), ((Hashtable)m.getSecond()).get( (String)i.getSecond()) ) );
 	}
 
 	@Override

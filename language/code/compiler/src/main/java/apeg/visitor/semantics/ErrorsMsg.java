@@ -28,7 +28,7 @@ public class ErrorsMsg {
 
     public void addErrorCodes(){
           msg.put(0,"Undefined rule name ");
-          
+          msg.put(2,"Unary operator type error");
           msg.put(3,"Base access is not a map");
           msg.put(4,"Undefined map type value");
           msg.put(5,"Map extension left side must be of type Map");
@@ -55,8 +55,8 @@ public class ErrorsMsg {
 
           msg.put(24,"Undefined non terminal");
 
-          msg.put(25,"Non constratin matching for operator");
-          msg.put(26,"Insolvable constraint ");
+          msg.put(25,"Non constraint matching for operator");
+          msg.put(26,"Unsolvable constraint ");
     }
 
     public String translate(ErrorEntry e){

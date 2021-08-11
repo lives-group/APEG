@@ -19,4 +19,11 @@ public class ErrorEntry  {
          this.name = symName;
          errCode = code;
      }
+     
+     public boolean equals(Object o){
+          if(o instanceof ErrorEntry){
+              return ((ErrorEntry)o).errCode == errCode;
+          }
+          return false;
+     }
 }

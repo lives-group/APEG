@@ -78,7 +78,7 @@ public class VTyVar extends VType {
 	}
 	
     public VType simplify(){
-	    return (t == null) ? this : t;
+	    return (t == null) ? this : t.simplify();
 	}
 
 

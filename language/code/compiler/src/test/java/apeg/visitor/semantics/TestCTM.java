@@ -14,7 +14,7 @@ public class TestCTM {
 	
 	private Environment<String,ArrayList<NTType>> opTable = OperatorTables.mkArithmeticEnv();
 	private CTM ct;
-	private List<Pair<String, VType>> error;
+	private List<ErrorEntry> error;
 	private String errorMessage;
 	
 	// ResolveUnify method test
@@ -23,7 +23,7 @@ public class TestCTM {
 	public void testResolveUnify01 () {
 		
 		
-		error = new ArrayList<Pair<String, VType>>();
+		error = new ArrayList<ErrorEntry>();
 		ct = new CTM();
 		
 		VTyVar a = new VTyVar("a");
@@ -44,9 +44,8 @@ public class TestCTM {
 	@Test
 	public void testResolveUnify02 () {
 		
-		error = new ArrayList<Pair<String, VType>>();
-		errorMessage = "Error: impossible to solve constraints" ;
-		error.add(new Pair<String, VType>(errorMessage, TypeError.getInstance()));
+		error = new ArrayList<ErrorEntry>();
+		error.add(new ErrorEntry(26,null,null,null) );
 		
 		ct = new CTM();
 		
@@ -64,7 +63,7 @@ public class TestCTM {
 	@Test
 	public void testResolveUnify03 () {
 		
-		error = new ArrayList<Pair<String, VType>>();
+		error = new ArrayList<ErrorEntry>();
 		ct = new CTM();
 		
 		VTyVar a = new VTyVar("a");

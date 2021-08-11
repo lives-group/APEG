@@ -30,7 +30,7 @@ public class PageStream{
 	 public void startBuffer(){ recStart.push(pr);}
 	 
      public String getBuffer(){
-         char v[] = new char[pr - recStart.peek() +1];
+         char v[] = new char[pr - recStart.peek()];
 		 for(int j = recStart.peek(); j < pr; j++){
 			 v[j-recStart.peek()] = blocks[decode_page(j)][decode_pos(j)];
 		 }

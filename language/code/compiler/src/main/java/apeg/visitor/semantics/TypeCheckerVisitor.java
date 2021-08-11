@@ -634,9 +634,9 @@ public class TypeCheckerVisitor extends Visitor {
     public void visit(UMinus n) {
        n.getExpr().accept(this);
        VType e = s.peek();
-       if(!matchBinOp("MINUS", e, null)) {
-            errorMsg(2, n.getSymInfo(),"-",e);
-        }
+       if(e.matchCT(VTyInt.getInstance(),ct) ){ return; }
+       if(e.matchCT(VTyFloat.getInstance(),ct) ){return;}
+       errorMsg(2, n.getSymInfo(),"-",e);
     }
 
     @Override

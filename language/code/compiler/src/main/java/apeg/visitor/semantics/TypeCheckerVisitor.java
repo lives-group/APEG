@@ -99,6 +99,15 @@ public class TypeCheckerVisitor extends Visitor {
         s.push(TypeError.getInstance());
         return false;
     }
+    
+    private boolean checkBinaryMetaOperator(VType l, VType r){
+        if(l.matchCT(VTyMetaExpr.getInstance(),ct) && l.matchCT(VTyMetaExpr.getInstance(),ct)){
+            s.push(VTyMetaExpr.getInstance());
+            return true;
+        }
+        s.push(TypeError.getInstance());
+        return false;
+    }
 
     @Override
     public void visit(Attribute n) {
@@ -213,50 +222,79 @@ public class TypeCheckerVisitor extends Visitor {
 
     @Override
     public void visit(MetaBoolLit n) {
-        // TODO Auto-generated method stub
-
+         n.getExpr().accept(this);
+         if( !s.peek().matchCT(VTyBool.getInstance(),ct )){
+             errorMsg(27,n.getSymInfo(),"Meta Bool", s.peek());
+             s.push(TypeError.getInstance());
+         }
+         s.push(VTyMetaExpr.getInstance());
     }
 
     @Override
     public void visit(MetaCharLit n) {
-        // TODO Auto-generated method stub
-
+         n.getExpr().accept(this);
+         if( !s.peek().matchCT(VTyChar.getInstance(), ct )){
+             errorMsg(27,n.getSymInfo(),"Meta Char", s.peek());
+             s.push(TypeError.getInstance());
+         }
+         s.push(VTyMetaExpr.getInstance());
     }
 
     @Override
-    public void visit(MetaRangePEG n) {
-        // TODO Auto-generated method stub
-
-    }
+    public void visit(MetaRangePEG n){ s.push(VTyMetaPeg.getInstance()); }
 
     @Override
-    public void visit(MetaChoicePEG n) {
-        // TODO Auto-generated method stub
-
-    }
+    public void visit(MetaChoicePEG n){ s.push(VTyMetaPeg.getInstance()); }
 
     @Override
     public void visit(MetaConstraintPEG n) {
-        // TODO Auto-generated method stub
-
+         n.getExpr().accept(this);
+         if(! s.peek().matchCT(VTyMetaExpr.getInstance() ,ct) ){
+              errorMsg(27,n.getSymInfo(),"", s.peek());
+              s.pop();
+              s.push(TypeError.getInstance());
+              return;
+         }
+         s.pop();
+         s.push(VTyMetaPeg.getInstance());
     }
 
     @Override
     public void visit(MetaFloatLit n) {
-        // TODO Auto-generated method stub
+         n.getExpr().accept(this);
+         if( !s.peek().matchCT(VTyFloat.getInstance(), ct )){
+             errorMsg(27,n.getSymInfo(),"Meta Float", s.peek());
+             s.push(TypeError.getInstance());
+         }
+         s.push(VTyMetaExpr.getInstance());
 
     }
 
     @Override
     public void visit(MetaIntLit n) {
-        // TODO Auto-generated method stub
-
+         n.getExpr().accept(this);
+         if( !s.peek().matchCT(VTyInt.getInstance(),ct )){
+             errorMsg(27,n.getSymInfo(),"Meta Int", s.peek());
+             s.push(TypeError.getInstance());
+         }
+         s.push(VTyMetaExpr.getInstance());
     }
+    
+    @Override
+    public void visit(MetaMapLit n) {
+         n.getExpr().accept(this);
+    }
+
 
     @Override
     public void visit(MetaKleenePEG n) {
-        // TODO Auto-generated method stub
-
+          n.getExpr().accept(this);
+          if( !s.peek().matchCT(VTyMetaPeg.getInstance(),ct )){
+             errorMsg(27,n.getSymInfo(),"{| * |}", s.peek());
+             s.pop();
+             s.push(TypeError.getInstance());
+             return;
+         }
     }
 
     @Override
@@ -265,11 +303,6 @@ public class TypeCheckerVisitor extends Visitor {
 
     }
 
-    @Override
-    public void visit(MetaMapLit n) {
-        // TODO Auto-generated method stub
-
-    }
 
     @Override
     public void visit(MetaNonterminalPEG n) {
@@ -307,65 +340,6 @@ public class TypeCheckerVisitor extends Visitor {
 
     }
 
-    @Override
-    public void visit(MetaStrLit n) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void visit(MetaTyBool n) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void visit(MetaTyChar n) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void visit(MetaTyFloat n) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void visit(MetaTyGrammar n) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void visit(MetaTyInt n) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void visit(MetaTyLang n) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void visit(MetaTyMap n) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void visit(MetaTyMeta n) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void visit(MetaTyString n) {
-        // TODO Auto-generated method stub
-
-    }
 
     @Override
     public void visit(MetaUpdatePEG n) {
@@ -374,9 +348,8 @@ public class TypeCheckerVisitor extends Visitor {
     }
 
     @Override
-    public void visit(MetaVar n) {
-        // TODO Auto-generated method stub
-
+    public void visit(MetaVar n) { 
+        s.push(VTyMetaExpr.getInstance()); 
     }
 
     @Override
@@ -639,117 +612,264 @@ public class TypeCheckerVisitor extends Visitor {
        errorMsg(2, n.getSymInfo(),"-",e);
     }
 
+        @Override
+    public void visit(MetaStrLit n) { 
+         n.getExpr().accept(this);
+         if( !s.peek().matchCT(VTyString.getInstance(), ct )){
+             errorMsg(27,n.getSymInfo(),"String literal", s.peek());
+             s.push(TypeError.getInstance());
+         }
+         s.push(VTyMetaExpr.getInstance()); 
+    }
+
+    @Override
+    public void visit(MetaTyBool n) { s.push(VTyMetaType.getInstance()); }
+
+    @Override
+    public void visit(MetaTyChar n) { s.push(VTyMetaType.getInstance()); }
+
+    @Override
+    public void visit(MetaTyFloat n) {s.push(VTyMetaType.getInstance());}
+
+    @Override
+    public void visit(MetaTyGrammar n) {s.push(VTyMetaType.getInstance()); }
+
+    @Override
+    public void visit(MetaTyInt n) {s.push(VTyMetaType.getInstance());}
+
+    @Override
+    public void visit(MetaTyLang n) { s.push(VTyMetaType.getInstance()); }
+
+    @Override
+    public void visit(MetaTyMap n) { s.push(VTyMetaType.getInstance()); }
+
+    @Override
+    public void visit(MetaTyMeta n) {
+        // TODO Auto-generated method stub
+    }
+    @Override
+    public void visit(MetaTyString n) {s.push(VTyMetaExpr.getInstance()); }
+
+    
     @Override
     public void visit(MetaAdd n) {
-        // TODO Auto-generated method stub
-
+        n.getLeft().accept(this);
+        n.getRight().accept(this);
+        VType tyr = s.pop();
+        VType tye = s.pop();
+        if(! checkBinaryMetaOperator(tye,tyr)){
+             errorMsg(27,n.getSymInfo(),"(| + |)", tye,tyr);
+        }
     }
 
     @Override
     public void visit(MetaAnd n) {
-        // TODO Auto-generated method stub
-
+        n.getLeft().accept(this);
+        n.getRight().accept(this);
+        VType tyr = s.pop();
+        VType tye = s.pop();
+        if(! checkBinaryMetaOperator(tye,tyr)){
+             errorMsg(27,n.getSymInfo(),"(| & |)", tye,tyr);
+        }
+        
     }
 
     @Override
     public void visit(MetaCompose n) {
-        // TODO Auto-generated method stub
-
+        n.getLeft().accept(this);
+        n.getRight().accept(this);
+        VType tyr = s.pop();
+        VType tye = s.pop();
+        if(! checkBinaryMetaOperator(tye,tyr)){
+             errorMsg(27,n.getSymInfo(),"<<", tye,tyr);
+        }
     }
 
     @Override
     public void visit(MetaConcat n) {
-        // TODO Auto-generated method stub
-
+        n.getLeft().accept(this);
+        n.getRight().accept(this);
+        VType tyr = s.pop();
+        VType tye = s.pop();
+        if(! checkBinaryMetaOperator(tye,tyr)){
+             errorMsg(27,n.getSymInfo(),"(| ++ |)", tye,tyr);
+        }
     }
 
     @Override
     public void visit(MetaDiv n) {
-        // TODO Auto-generated method stub
-
+        n.getLeft().accept(this);
+        n.getRight().accept(this);
+        VType tyr = s.pop();
+        VType tye = s.pop();
+        if(! checkBinaryMetaOperator(tye,tyr)){
+             errorMsg(27,n.getSymInfo(),"(| / |)", tye,tyr);
+        }
     }
 
     @Override
     public void visit(MetaEquals n) {
-        // TODO Auto-generated method stub
-
+        n.getLeft().accept(this);
+        n.getRight().accept(this);
+        VType tyr = s.pop();
+        VType tye = s.pop();
+        if(! checkBinaryMetaOperator(tye,tyr)){
+             errorMsg(27,n.getSymInfo(),"(| == |)", tye,tyr);
+        }
     }
 
     @Override
     public void visit(MetaGreater n) {
-        // TODO Auto-generated method stub
-
+        n.getLeft().accept(this);
+        n.getRight().accept(this);
+        VType tyr = s.pop();
+        VType tye = s.pop();
+        if(! checkBinaryMetaOperator(tye,tyr)){
+             errorMsg(27,n.getSymInfo(),"(| > |)", tye,tyr);
+        }
     }
 
     @Override
     public void visit(MetaGreaterEq n) {
-        // TODO Auto-generated method stub
-
+        n.getLeft().accept(this);
+        n.getRight().accept(this);
+        VType tyr = s.pop();
+        VType tye = s.pop();
+        if(! checkBinaryMetaOperator(tye,tyr)){
+             errorMsg(27,n.getSymInfo(),"(| >= |)", tye,tyr);
+        }
     }
 
     @Override
     public void visit(MetaLess n) {
-        // TODO Auto-generated method stub
-
+        n.getLeft().accept(this);
+        n.getRight().accept(this);
+        VType tyr = s.pop();
+        VType tye = s.pop();
+        if(! checkBinaryMetaOperator(tye,tyr)){
+             errorMsg(27,n.getSymInfo(),"(| < |)", tye,tyr);
+        }
     }
 
     @Override
     public void visit(MetaLessEq n) {
-        // TODO Auto-generated method stub
-
+        n.getLeft().accept(this);
+        n.getRight().accept(this);
+        VType tyr = s.pop();
+        VType tye = s.pop();
+        if(! checkBinaryMetaOperator(tye,tyr)){
+             errorMsg(27,n.getSymInfo(),"(| <= |)", tye,tyr);
+        }
     }
 
     @Override
     public void visit(MetaMapAcces n) {
-        // TODO Auto-generated method stub
-
+        n.getMap().accept(this);
+        n.getIndex().accept(this);
+        VType tyr = s.pop();
+        VType tye = s.pop();
+        if(! checkBinaryMetaOperator(tye,tyr)){
+             errorMsg(27,n.getSymInfo()," metamap access operation", tye,tyr);
+        }
     }
 
     @Override
     public void visit(MetaMapExtension n) {
-        // TODO Auto-generated method stub
-
+        n.getMap().accept(this);
+        n.getKey().accept(this);
+        n.getValue().accept(this);
+        VType tyv = s.pop();
+        VType tyk = s.pop();
+        VType tym = s.pop();
+        if(tym instanceof VTyMetaExpr){
+             if(tyk.matchCT(VTyMetaExpr.getInstance(), ct)){
+                 if(tyv.matchCT(VTyMetaExpr.getInstance(), ct)){
+                    s.push(VTyMetaExpr.getInstance());
+                    return;
+                 }
+                 errorMsg(27,n.getSymInfo()," metamap extension value", tyv);
+                 s.push(TypeError.getInstance());
+                 return;
+             }
+             errorMsg(27,n.getSymInfo()," metamap extension key", tyk);
+             s.push(TypeError.getInstance());
+             return;
+        }
+        errorMsg(27,n.getSymInfo()," metamap extension map", tym);
+        s.push(TypeError.getInstance());
     }
 
     @Override
     public void visit(MetaMod n) {
-        // TODO Auto-generated method stub
-
+        n.getLeft().accept(this);
+        n.getRight().accept(this);
+        VType tyr = s.pop();
+        VType tye = s.pop();
+        if(! checkBinaryMetaOperator(tye,tyr)){
+             errorMsg(27,n.getSymInfo(),"(| % |)", tye,tyr);
+        }
     }
 
     @Override
     public void visit(MetaMult n) {
-        // TODO Auto-generated method stub
-
+        n.getLeft().accept(this);
+        n.getRight().accept(this);
+        VType tyr = s.pop();
+        VType tye = s.pop();
+        if(! checkBinaryMetaOperator(tye,tyr)){
+             errorMsg(27,n.getSymInfo(),"(| * |)", tye,tyr);
+        }
     }
 
     @Override
     public void visit(MetaNot n) {
-        // TODO Auto-generated method stub
-
+        n.getPegExpr().accept(this);
+        if(! s.peek().matchCT(VTyMetaExpr.getInstance(),ct)){
+            s.pop();
+            s.push(TypeError.getInstance());
+        }
     }
 
     @Override
     public void visit(MetaNotEq n) {
-        // TODO Auto-generated method stub
-
+        n.getLeft().accept(this);
+        n.getRight().accept(this);
+        VType tyr = s.pop();
+        VType tye = s.pop();
+        if(! checkBinaryMetaOperator(tye,tyr)){
+             errorMsg(27,n.getSymInfo(),"(| != |)", tye,tyr);
+        }
     }
 
     @Override
     public void visit(MetaOr n) {
-        // TODO Auto-generated method stub
-
+        n.getLeft().accept(this);
+        n.getRight().accept(this);
+        VType tyr = s.pop();
+        VType tye = s.pop();
+        if(! checkBinaryMetaOperator(tye,tyr)){
+             errorMsg(27,n.getSymInfo(),"(| || |)", tye,tyr);
+        }
     }
 
     @Override
     public void visit(MetaSub n) {
-        // TODO Auto-generated method stub
-
+        n.getLeft().accept(this);
+        n.getRight().accept(this);
+        VType tyr = s.pop();
+        VType tye = s.pop();
+        if(! checkBinaryMetaOperator(tye,tyr)){
+             errorMsg(27,n.getSymInfo(),"(| - |)", tye,tyr);
+        }
     }
 
     @Override
     public void visit(MetaUMinus n) {
-        // TODO Auto-generated method stub
+        n.getExpr().accept(this);
+        if(! s.peek().matchCT(VTyMetaExpr.getInstance(),ct)){
+            s.pop();
+            s.push(TypeError.getInstance());
+        }
 
     }
 

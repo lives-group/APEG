@@ -72,6 +72,7 @@ public class PageStream{
 
 	 public boolean match(String s) throws IOException{
 		 int i = 0 ;
+		 System.out.println("PageStream matchin \"" + s + "\" com length = " + s.length());
 		 int pi = decode_page(pr);
 		 int pf = decode_page(pr+s.length()-1);
 		 for(int j = pi; j <= pf; j++){

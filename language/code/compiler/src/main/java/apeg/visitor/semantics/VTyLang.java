@@ -28,14 +28,32 @@ private static VTyLang instance = new VTyLang();
 
 	@Override
 	public boolean matchCT(VType t, CTM ct) {
-		// TODO Auto-generated method stub
-		return false;
+    	if(t instanceof VTyVar) {
+    		ct.addConstraint(new VarConstraint((VTyVar)t, this));
+    		return true;
+    	}
+    	return match(t);
 	}
 
 	@Override
 	public boolean Unify(VType t) {
-		// TODO Auto-generated method stub
-		return false;
+		if(t instanceof VTyLang) {
+			return true;
+		}
+		else {
+			if(t instanceof VTyVar) {
+				if(((VTyVar)t).solve() == null) {
+					((VTyVar)t).setInstance(this);
+					return true;
+				}
+				else {
+					return false;
+				}
+			}
+			else {
+				return false;
+			}
+		}
 	}
 
 	public VType simplify(){

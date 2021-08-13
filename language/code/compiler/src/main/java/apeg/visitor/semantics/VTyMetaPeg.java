@@ -1,18 +1,17 @@
 package apeg.visitor.semantics;
 
-public class VTyGrammar extends VType{
+public class VTyMetaPeg extends VType{
     
       
     
-    private static VTyGrammar instance = new VTyGrammar();
+    private static VTyMetaPeg instance = new VTyMetaPeg();
     
-    public static VTyGrammar getInstance() {
-        
+    public static VTyMetaPeg getInstance() {
         return instance;
     }
     
-    private  VTyGrammar(){
-        super("Grammar");
+    private  VTyMetaPeg(){
+        super("metaPeg");
     }
     public boolean match(VType t){
         if (t == instance || t == TypeError.getInstance()) {
@@ -38,7 +37,7 @@ public class VTyGrammar extends VType{
     }
 
     public boolean Unify (VType t) {
-        if(t instanceof VTyGrammar) { return true; }
+        if(t instanceof VTyMetaPeg) { return true; }
         else {
             if(t instanceof VTyVar) {
                 if(((VTyVar)t).solve() == null) {

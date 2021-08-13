@@ -57,6 +57,7 @@ public class ErrorsMsg {
 
           msg.put(25,"Non constraint matching for operator");
           msg.put(26,"Unsolvable constraint ");
+          msg.put(27,"Meta Operator application error");
     }
 
     public String translate(ErrorEntry e){

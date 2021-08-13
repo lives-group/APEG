@@ -15,4 +15,5 @@ public class MetaBoolLit extends MetaExpr{
     }
     public void accept(Visitor v){ v.visit(this); }
 
+    public String toString(){ return e.toString(); }
 }

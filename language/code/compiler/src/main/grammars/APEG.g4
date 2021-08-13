@@ -20,11 +20,17 @@ grammar APEG;
 
 @parser::members
 {
-	ASTFactory factory;
+	ASTFactory factory, factoryNormal, factoryMeta;
+        boolean metaLevel;
+        int levelCount;
 	
-	public APEGParser(ASTFactory factory, TokenStream input) {
+	public APEGParser(ASTFactory factory, ASTFactory factoryMeta, TokenStream input) {
 		this(input);
 		this.factory = factory;
+                this.factoryNormal = factory;
+                this.factoryMeta = factoryMeta;
+                this.metaLevel = false;
+                this.levelCount = 0;
 	}
 
 	char getCharAt(String s, int i) {
@@ -65,6 +71,20 @@ grammar APEG;
 	    return new CharInterval(init, getCharAt(s,i));
         }
 
+        private void enterMeta(){
+            levelCount++;
+            metaLevel = true;
+            factory = factoryMeta;
+        }
+
+        private void exitMeta(){
+            levelCount--;
+
+            if(levelCount <= 0){
+                metaLevel = false;
+                factory = factoryNormal;
+            }
+        }
 }
 
 @lexer::header
@@ -363,10 +383,12 @@ aexpr returns[Expr exp]:
     e1=term {list.add($e1.exp);} (addOp e2=term
     {
     list.add($e2.exp);
-    if($addOp.op) // it is an add
+    if($addOp.op == 1) // it is an add
         funcs.add((Expr ex1, Expr ex2) -> factory.newAddExpr(new SymInfo($addOp.line, $addOp.pos), ex1, ex2));
-    else // it is a SUB
+    else if($addOp.op == 2) // it is a SUB
         funcs.add((Expr ex1, Expr ex2) -> factory.newSubExpr(new SymInfo($addOp.line, $addOp.pos), ex1, ex2));
+    else if($addOp.op == 3) // it is a conc
+        funcs.add((Expr ex1, Expr ex2) -> factory.newConcatExpr(new SymInfo($addOp.line, $addOp.pos), ex1, ex2));
     }
     )*
     {$exp = factory.newLeftAssocBinOpList(list, funcs);} 
@@ -414,59 +436,15 @@ primary returns[Expr exp]:
   |
    FALSE {$exp = factory.newBooleanExpr(new SymInfo($FALSE.line, $FALSE.pos), false);}
   |
-   meta
+   meta {$exp = $meta.exp;}
   |
    mapLit {$exp = $mapLit.exp;}
   |
    f=primary t='[' e=expr ']' {$exp = factory.newMapAcces(new SymInfo($t.line, $t.pos), $f.exp, $e.exp    );}
   |
    f=primary t='[' m=mapPair ']' {$exp = factory.newMapExtension(new SymInfo($t.line, $t.pos), $f.exp,     $m.p.getFirst(), $m.p.getSecond());}
-  |
-   '{|' primary optDecls optReturn ':' meta_peg '|}'
-
-/*|
-   primary '<<' primary 
-   Isso definitivamente não devia ficar assim ou aqui ! :-(
-*/ 
 ;
 
-
-/*
-factor returns[Expr exp]:
-   attribute_ref {$exp = $attribute_ref.exp;}
-  |
-   number {$exp = $number.exp;}
-  |
-   STRING_LITERAL
-    { 
-      String s = $STRING_LITERAL.text;
-      s = s.substring(1, s.length()-1);
-      $exp = factory.newStringExpr(new SymInfo($STRING_LITERAL.line, $STRING_LITERAL.pos), s);
-    }
-  |
-   OP_SUB factor { $exp = factory.newUMinusExpr(new SymInfo($OP_SUB.line, $OP_SUB.pos), $factor.exp); }
-  |
-   '(' expr ')' {$exp = $expr.exp;}
-  |
-   t='!' f=factor {$exp = factory.newNotExpr(new SymInfo($t.line, $t.pos), $f.exp);}
-  |
-   TRUE {$exp = factory.newBooleanExpr(new SymInfo($TRUE.line, $TRUE.pos), true);}
-  |
-   FALSE {$exp = factory.newBooleanExpr(new SymInfo($FALSE.line, $FALSE.pos), false);}
-  |
-   meta
-  |
-   mapLit {$exp = $mapLit.exp;}
-  |
-   f=factor t='[' e=expr ']' {$exp = factory.newMapAcces(new SymInfo($t.line, $t.pos), $f.exp, $e.exp    );}
-  |
-   f=factor t='[' m=mapPair ']' {$exp = factory.newMapExtension(new SymInfo($t.line, $t.pos), $f.exp,     $m.p.getFirst(), $m.p.getSecond());}
-  8|
-   '{|' factor optDecls optReturn ':' meta_peg '|}'
-  |
-   factor '<<' factor
-;
-*/
 
 mapLit returns[Expr exp]:
    t='{:' r=mapList ':}'
@@ -520,11 +498,13 @@ relOp returns[int op, int line, int pos]:
    OP_GE {$op = 4; $line = $OP_GE.line; $pos = $OP_GE.pos;}
 ;
 
-addOp returns[boolean op, int line, int pos]:
+addOp returns[int op, int line, int pos]:
    
-   OP_SUB {$op = false; $line = $OP_SUB.line; $pos = $OP_SUB.pos;}
+   OP_ADD {$op = 1; $line = $OP_ADD.line; $pos = $OP_ADD.pos;}
    |
-   OP_ADD {$op = true; $line = $OP_ADD.line; $pos = $OP_ADD.pos;}
+   OP_SUB {$op = 2; $line = $OP_SUB.line; $pos = $OP_SUB.pos;}
+   |
+   OP_CONC {$op = 3; $line = $OP_CONC.line; $pos = $OP_CONC.pos;}
 ;
 
 mulOp returns[int op, int line, int pos]:
@@ -539,17 +519,10 @@ mulOp returns[int op, int line, int pos]:
  * Rules for metaprogramming
  */
 
-meta returns[MetaASTNode exp]:
-   '[|' meta_peg+ '|]'
-  |
-   '(|' expr '|)'
+meta returns[Expr exp]:
+   '(|' {enterMeta();} expr '|)' {exitMeta(); $exp = $expr.exp;}
 ;
- 
-meta_peg:
-   '#' expr
-  |
-   factor
-;
+
 
 /*************************************************
  ***************** Lexical *************************
@@ -590,6 +563,7 @@ OP_GE : '>=';
 OP_NE : '!=';
 OP_ADD : '+';
 OP_SUB : '-';
+OP_CONC : '<<';
 OP_MUL : '*';
 OP_DIV : '/';
 OP_MOD : '%';

@@ -21,4 +21,5 @@ public class MapAcces extends Expr{
     }
     public void accept(Visitor v){ v.visit(this); }
 
+    public String toString(){ return "([] " + map.toString() + " " + index.toString() + ")"; }
 }

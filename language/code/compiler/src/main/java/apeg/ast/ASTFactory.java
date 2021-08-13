@@ -48,7 +48,7 @@ public interface ASTFactory {
 	 * 
 	 * @return a boolean expression node
 	 */
-	public BoolLit newBooleanExpr(SymInfo s, boolean value);
+	public Expr newBooleanExpr(SymInfo s, boolean value);
 	
 	/**
 	 * 
@@ -59,7 +59,7 @@ public interface ASTFactory {
 	 * @return a char expression node
 	 */
 
-	public CharLit newCharExpr(SymInfo s, char value);
+	public Expr newCharExpr(SymInfo s, char value);
 
 	/**
 	 * @param s 
@@ -70,7 +70,7 @@ public interface ASTFactory {
 	 * @return a floating expression node
 	 */
 
-	public FloatLit newFloatExpr( SymInfo s, float value);
+	public Expr newFloatExpr( SymInfo s, float value);
 
 	/**
 	 * @param s 
@@ -80,7 +80,7 @@ public interface ASTFactory {
 	 * 
 	 * @return a floating point node
 	 */
-	public IntLit newIntExpr(SymInfo s, int value);
+	public Expr newIntExpr(SymInfo s, int value);
 	
 	/**
 	 * 
@@ -90,7 +90,7 @@ public interface ASTFactory {
 	 * 			a hasmap of names to values
 	 * @return  a map node
 	 */
-	public MapLit newMapExpr(SymInfo s, Pair<Expr, Expr>[] assocs);
+	public Expr newMapExpr(SymInfo s, Pair<Expr, Expr>[] assocs);
 	
 	/**
 	 * @param s 
@@ -101,7 +101,7 @@ public interface ASTFactory {
 	 * @return a plus parsing expression node
 	 */
 
-	public StrLit newStringExpr(SymInfo s, String value);
+	public Expr newStringExpr(SymInfo s, String value);
 	
 	
 	/*------------------------------------------------------
@@ -121,7 +121,7 @@ public interface ASTFactory {
 	 * 
 	 * @return a Add expression node
 	 */
-	public Add newAddExpr(SymInfo s, Expr left, Expr right);
+	public Expr newAddExpr(SymInfo s, Expr left, Expr right);
 	
 	/**
 	 * @param s corresponding node SymInfo
@@ -132,7 +132,7 @@ public interface ASTFactory {
 	 *            
 	 * @return a AND expression node
 	 */
-	public And newAndExpr(SymInfo s, Expr left, Expr right);
+	public Expr newAndExpr(SymInfo s, Expr left, Expr right);
 	
 	/**
 	 * 
@@ -145,7 +145,7 @@ public interface ASTFactory {
 	 * 
 	 * @return a Compose expression node
 	 */
-	public Compose newComposeExpr(SymInfo s, Expr left, Expr right);
+	public Expr newComposeExpr(SymInfo s, Expr left, Expr right);
 	
 	/**
 	 * 
@@ -158,7 +158,7 @@ public interface ASTFactory {
 	 * 
 	 * @return a Concat expression node
 	 */
-	public Concat newConcatExpr(SymInfo s, Expr left, Expr right);
+	public Expr newConcatExpr(SymInfo s, Expr left, Expr right);
 	
 	/**
 	 * 
@@ -171,7 +171,7 @@ public interface ASTFactory {
 	 * 
 	 * @return a Div expression node
 	 */
-	public Div newDivExpr(SymInfo s, Expr left, Expr right);
+	public Expr newDivExpr(SymInfo s, Expr left, Expr right);
 	
 	/**
 	 * 
@@ -185,7 +185,7 @@ public interface ASTFactory {
 	 * 			a value expression
 	 * @return a Map Extension node
 	 */
-	public MapExtension newMapExtension(SymInfo s, Expr map, Expr key, Expr value);
+	public Expr newMapExtension(SymInfo s, Expr map, Expr key, Expr value);
 	
 	/**
 	 * 
@@ -195,7 +195,7 @@ public interface ASTFactory {
 	 * @param index
 	 * @return a map acces node
 	 */
-	public MapAcces newMapAcces(SymInfo s,Expr map,Expr index);
+	public Expr newMapAcces(SymInfo s,Expr map,Expr index);
 
 	/**
 	 * 
@@ -207,7 +207,7 @@ public interface ASTFactory {
 	 * 				the right-hand side expression
 	 * @return a Mod expression node
 	 */
-	public Mod newModExpr(SymInfo s, Expr left, Expr right);
+	public Expr newModExpr(SymInfo s, Expr left, Expr right);
     
 	/**
 	 * 
@@ -219,7 +219,7 @@ public interface ASTFactory {
 	 * 				the right-hand side expression
 	 * @return a Mult expression node
 	 */
-	public Mult newMultExpr(SymInfo s, Expr left, Expr right);
+	public Expr newMultExpr(SymInfo s, Expr left, Expr right);
 	
 	/**
 	 * 
@@ -229,7 +229,7 @@ public interface ASTFactory {
 	 * 				
 	 * @return a not expression node
 	 */
-	public Not newNotExpr(SymInfo s, Expr expr);
+	public Expr newNotExpr(SymInfo s, Expr expr);
 	
 	/**
 	 * 
@@ -238,7 +238,7 @@ public interface ASTFactory {
 	 * @param expr
 	 * @return a not equals expression node
 	 */
-	public NotEq newNotEqExpr(SymInfo s, Expr l, Expr r);
+	public Expr newNotEqExpr(SymInfo s, Expr l, Expr r);
 	
 	/**
 	 * 
@@ -250,7 +250,7 @@ public interface ASTFactory {
 	 * 			the right-hand side expression
 	 * @return a pointer to an equals object
 	 */
-	public Equals newEqualityExpr(SymInfo s, Expr left, Expr right);
+	public Expr newEqualityExpr(SymInfo s, Expr left, Expr right);
 
 	/**
 	 * @param s corresponding node SymInfo 
@@ -259,7 +259,7 @@ public interface ASTFactory {
 	 * 
 	 * @return  a pointer to an greater object
 	 */
-	public Greater newGreaterExpr(SymInfo s, Expr left, Expr right);
+	public Expr newGreaterExpr(SymInfo s, Expr left, Expr right);
 
 	/**
 	 * @param s corresponding node SymInfo 
@@ -268,7 +268,7 @@ public interface ASTFactory {
 	 * 
 	 * @return  a pointer to an greater or equals object
 	 */
-	public GreaterEq newGreaterEqExpr(SymInfo s, Expr left, Expr right);
+	public Expr newGreaterEqExpr(SymInfo s, Expr left, Expr right);
 
 	/**
 	 * @param s corresponding node SymInfo 
@@ -277,7 +277,7 @@ public interface ASTFactory {
 	 * 
 	 * @return  a pointer to an less object
 	 */
-	public Less newLessExpr(SymInfo s, Expr left, Expr right);
+	public Expr newLessExpr(SymInfo s, Expr left, Expr right);
 
 	/**
 	 * @param s corresponding node SymInfo 
@@ -286,7 +286,7 @@ public interface ASTFactory {
 	 * 
 	 * @return  a pointer to an less or equals object
 	 */
-	public LessEq newLessEqExpr(SymInfo s, Expr left, Expr right);
+	public Expr newLessEqExpr(SymInfo s, Expr left, Expr right);
 
 
 	/**
@@ -295,7 +295,7 @@ public interface ASTFactory {
 	 * @param Expr right: the right subexpression
 	 * @return an integer type node
 	 */
-	public Sub newSubExpr(SymInfo s, Expr left, Expr right);
+	public Expr newSubExpr(SymInfo s, Expr left, Expr right);
 
 	
 
@@ -305,7 +305,7 @@ public interface ASTFactory {
 	 * @param Expr right: the right subexpression
 	 * @return a not-predicate parsing expression node
 	 */
-	public Or newOrExpr(SymInfo s, Expr left, Expr right);
+	public Expr newOrExpr(SymInfo s, Expr left, Expr right);
 	
 	/**
 	 * 
@@ -314,7 +314,7 @@ public interface ASTFactory {
 	 * @param e
 	 * @return
 	 */
-	public UMinus newUMinusExpr(SymInfo s,Expr e);
+	public Expr newUMinusExpr(SymInfo s,Expr e);
 
 	/*------------------------------------------------------
 	 * Rules 
@@ -580,195 +580,6 @@ public interface ASTFactory {
 	 * 
 	 * @param s
 	 * 			corresponding SymInfo node
-	 * @param ml
-	 * 			meta expression left
-	 * @param mr
-	 * 			meta expression right
-	 * @return meta add node
-	 */
-	public MetaAdd newMetaAdd(SymInfo s,Expr ml,Expr mr);
-	/**
-	 * 
-	 * @param s
-	 * 			corresponding SymInfo node
-	 * @param ml
-	 * 			meta expression left
-	 * @param mr
-	 * 			meta expression right
-	 * @return meta and node
-	 */
-	public MetaAnd newMetaAnd(SymInfo s,Expr ml,Expr mr);
-	
-	/**
-	 * 
-	 * @param s
-	 * 			corresponding SymInfo node;
-	 * @param ml
-	 * 			meta expression left
-	 * @param mr
-	 * 			meta expression right
-	 * @return meta compose node
-	 */
-	public MetaCompose newMetaCompose(SymInfo s,Expr ml,Expr mr);
-	/**
-	 * 
-	 * @param s
-	 * 			corresponding SymInfo node
-	 * @param ml
-	 * 			meta expression left
-	 * @param mr
-	 * 			meta expression right
-	 * @return meta concat node
-	 */
-	public MetaConcat newMetaConcat(SymInfo s,Expr ml,Expr mr);
-	/**
-	 * 
-	 * @param s
-	 * 			corresponding SymInfo node
-	 * @param ml
-	 * 			meta expression left
-	 * @param mr
-	 * 			meta expression right
-	 * @return meta div node
-	 */
-	public MetaDiv newMetaDiv(SymInfo s,Expr ml,Expr mr);
-	/**
-	 * 
-	 * @param s
-	 * 			corresponding SymInfo node
-	 * @param ml
-	 * 			meta expression left
-	 * @param mr
-	 * 			meta expression right
-	 * @return meta equals node
-	 */
-	public MetaEquals newMetaEquals(SymInfo s,Expr ml,Expr mr);
-	/**
-	 * 
-	 * @param s
-	 * corresponding SymInfo node
-	 * @param ml
-	 * 			meta expression left
-	 * @param mr
-	 * 			meta expression right
-	 * @return meta greater node
-	 */
-	public MetaGreater newMetaGreater(SymInfo s,Expr ml,Expr mr);
-	/**
-	 * 
-	 * @param s
-	 * 			corresponding SymInfo node
-	 * @param ml
-	 * 			meta expression left
-	 * @param mr
-	 * 			meta expression right
-	 * @return meta greater-equals node
-	 */
-	public MetaGreaterEq newMetaGreaterEq(SymInfo s,Expr ml,Expr mr);
-	/**
-	 * 
-	 * @param s
-	 * 			corresponding SymInfo node
-	 * @param ml
-	 * 			meta expression left
-	 * @param mr
-	 * 			meta expression right
-	 * @return meta less node
-	 */
-	public MetaLess newMetaLess(SymInfo s,Expr ml,Expr mr);
-	/**
-	 * 
-	 * @param s
-	 * 			corresponding SymInfo node
-	 * @param ml
-	 * 			meta expression left
-	 * @param mr
-	 * 			meta expression right
-	 * @return meta less-equals node
-	 */
-	public MetaLessEq newMetaLessEq(SymInfo s,Expr ml,Expr mr);
-	/**
-	 * 
-	 * @param s
-	 * 			corresponding SymInfo node
-	 * @param map
-	 * @param index
-	 * @return meta MapAcces node
-	 */
-	public MetaMapAcces newMetaMapAcces(SymInfo s,Expr map,Expr index);
-	/**
-	 * 
-	 * @param s
-	 * 			corresponding SymInfo node
-	 * @param map
-	 * @param key
-	 * @param value
-	 * @return meta map extension node
-	 */
-	public MetaMapExtension newMetaMapExtension(SymInfo s,Expr map,Expr key,Expr value);
-
-	/**
-	 * 
-	 * @param s
-	 * 			corresponding SymInfo node
-	 * @param ml
-	 * 			meta expression left
-	 * @param mr
-	 * 			meta expression right
-	 * @return
-	 */
-	public MetaMod newMetaMod(SymInfo s,Expr ml,Expr mr);    
-
-        /**
-	 * 
-	 * @param s
-	 * 			corresponding SymInfo node
-	 * @param ml
-	 * 			meta expression left
-	 * @param mr
-	 * 			meta expression right
-	 * @return
-	 */
-	public MetaMult newMetaMult(SymInfo s,Expr ml,Expr mr);
-
-	/**
-	 * 
-	 * @param s
-	 * 			corresponding SymInfo node
-	 * @param ml
-	 * 			meta expression left
-	 * @param mr
-	 * 			meta expression right
-	 * @return meta not-equals node
-	 */
-	public MetaNotEq newMetaNotEq(SymInfo s,Expr ml,Expr mr);
-	/**
-	 * 
-	 * @param s
-	 * 			corresponding SymInfo node
-	 * @param ml
-	 * 			meta expression left
-	 * @param mr
-	 * 			meta expression right
-	 * @return meta or node
-	 */
-	public MetaOr newMetaOr(SymInfo s,Expr ml,Expr mr);
-	/**
-	 * 
-	 * @param s
-	 * 			corresponding SymInfo node
-	 * @param ml
-	 * 			meta expression left
-	 * @param mr
-	 * 			meta expression right
-	 * @return meta Sub node
-	 */
-	public MetaSub newMetaSub(SymInfo s,Expr ml,Expr mr);
-
-	/**
-	 * 
-	 * @param s
-	 * 			corresponding SymInfo node
 	 * @param e
 	 * 			a meta parsing expression
 	 * @return meta and peg node
@@ -808,25 +619,6 @@ public interface ASTFactory {
 	 * 				a boolean value
 	 * @return meta boolean literal node
 	 */
-	public MetaBoolLit newMetaBoolLit(SymInfo s,Expr value);
-	/**
-	 * 
-	 * @param s
-	 * 			corresponding SymInfo node
-	 * @param value
-	 * 				 a char value
-	 * @return meta char literal node
-	 */
-	public MetaCharLit newMetaCharLit(SymInfo s,Expr value);
-	/** 
-	 * 
-	 * @param s
-	 * 			corresponding SymInfo node
-	 * @param i
-	 * 		a char interval
-	 * @return a meta choice list
-	 */
-
 	public MetaRangePEG newMetaRangePEG(SymInfo s, CharInterval i);
 	/** 
 	 * 
@@ -856,24 +648,6 @@ public interface ASTFactory {
 	 * 				a float value
 	 * @return meta float literal node
 	 */
-	public MetaFloatLit newMetaFloatLit(SymInfo s,Expr value);
-	/**
-	 * 
-	 * @param s
-	 * 			corresponding SymInfo node
-	 * @param value
-	 * 			a int value
-	 * @return meta int literal node
-	 */
-	public MetaIntLit newMetaIntLit(SymInfo s,Expr value);
-	/**
-	 * 
-	 * @param s
-	 * 			corresponding SymInfo node
-	 * @param e
-	 * 			a meta parsing expression
-	 * @return meta star klenee peg node
-	 */
 	public MetaKleenePEG newMetaKleenePEG(SymInfo s,Expr e);
 	/**
 	 * 
@@ -891,17 +665,6 @@ public interface ASTFactory {
 	 * @param assocs
 	 * @return a meta map literal node
 	 */
-	public MetaMapLit newMetaMapLit(SymInfo s,Expr assocs);
-	/**
-	 * 
-	 * @param s
-	 * 			corresponding SymInfo node
-	 * @param name
-	 * 			nonterminal's name
-	 * @param args
-	 * 			set of nonterminal's arguments
-	 * @return meta nonterminal peg node
-	 */
 	public MetaNonterminalPEG newMetaNonterminalPEG(SymInfo s,Expr name,Expr args);
 	/**
 	 * 
@@ -910,15 +673,6 @@ public interface ASTFactory {
 	 * @param e
 	 * 			a meta expression
 	 * @return meta not node
-	 */
-	public MetaNot newMetaNot(SymInfo s,Expr e);
-	/**
-	 * 
-	 * @param s
-	 * 			corresponding SymInfo node
-	 * @param e
-	 * 			a meta parsing expression
-	 * @return meta not peg node
 	 */
     public MetaNotPEG newMetaNotPEG(SymInfo s,Expr e);
     /**
@@ -972,13 +726,6 @@ public interface ASTFactory {
 	 * @param value
 	 * 			a string value
 	 * @return meta string literal node
-	 */
-	public MetaStrLit newMetaStrLit(SymInfo s,Expr value);
-	/**
-	 * 
-	 * @param s
-	 * 			corresponding SymInfo node
-	 * @return meta boolean node
 	 */
 	public MetaTyBool newMetaTyBool(SymInfo s);
 	/**
@@ -1046,15 +793,6 @@ public interface ASTFactory {
 	 * 			meta expression
 	 * @return meta unary minus node
 	 */
-	public MetaUMinus newMetaUMinus(SymInfo s,Expr e);
-	/** 
-	 * 
-	 * @param s
-	 * 			corresponding SymInfo node
-	 * @param assigs
-	 * 				set of assignments
-	 * @return meta update peg node
-	 */
 	public MetaUpdatePEG newMetaUpdatePEG(SymInfo s,Expr assigs);
 	/**
 	 * 
@@ -1064,7 +802,6 @@ public interface ASTFactory {
 	 * 			meta var's name
 	 * @return meta var node
 	 */
-	public MetaVar newMetaVar(SymInfo s,Expr name);
 
 
 	/*------------------------------------------------------

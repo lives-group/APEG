@@ -15,6 +15,7 @@ import apeg.parse.APEGLexer;
 import apeg.parse.APEGParser;
 import apeg.ast.ASTFactory;
 import apeg.ast.ASTFactoryImpl;
+import apeg.ast.ASTFactoryMetaImpl;
 import apeg.ast.Grammar;
 import apeg.util.Pair;
 import apeg.visitor.semantics.VType;
@@ -107,8 +108,9 @@ public class Tool {
 
 				// create an AST factory
 				ASTFactory factory = new ASTFactoryImpl();
+                                ASTFactory factoryMeta = new ASTFactoryMetaImpl();
 				// create a parser that feeds off the tokens buffer
-				APEGParser parser = new APEGParser(factory, tokens);
+				APEGParser parser = new APEGParser(factory, factoryMeta, tokens);
 				// tell ANTLR to does not automatically build an AST
 				parser.setBuildParseTree(false);
 

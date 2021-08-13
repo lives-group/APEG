@@ -8,90 +8,90 @@ import apeg.util.*;
 import java.util.List;
 import apeg.ast.Grammar.GrammarOption;
 
-public class ASTFactoryImpl implements ASTFactory{
+public class ASTFactoryMetaImpl implements ASTFactory{
 
     public Expr newAddExpr(SymInfo s,Expr l,Expr r){
-        return new Add(s,l,r);
+        return new MetaAdd(s,l,r);
     }
     public Expr newSubExpr(SymInfo s,Expr l,Expr r){
-        return new Sub(s,l,r);
+        return new MetaSub(s,l,r);
     }
 
     public Expr newModExpr(SymInfo s,Expr l,Expr r){
-        return new Mod(s,l,r);
+        return new MetaMod(s,l,r);
     }
     
     public Expr newMultExpr(SymInfo s,Expr l,Expr r){
-        return new Mult(s,l,r);
+        return new MetaMult(s,l,r);
     }
     public Expr newDivExpr(SymInfo s,Expr l,Expr r){
-        return new Div(s,l,r);
+        return new MetaDiv(s,l,r);
     }
     public Expr newAndExpr(SymInfo s,Expr l,Expr r){
-        return new And(s,l,r);
+        return new MetaAnd(s,l,r);
     }
     public Expr newOrExpr(SymInfo s,Expr l,Expr r){
-        return new Or(s,l,r);
+        return new MetaOr(s,l,r);
     }
     public Expr newLessExpr(SymInfo s,Expr l,Expr r){
-        return new Less(s,l,r);
+        return new MetaLess(s,l,r);
     }
     public Expr newEqualityExpr(SymInfo s,Expr l,Expr r){
-        return new Equals(s,l,r);
+        return new MetaEquals(s,l,r);
     }
     public Expr newGreaterExpr(SymInfo s,Expr l,Expr r){
-        return new Greater(s,l,r);
+        return new MetaGreater(s,l,r);
     }
     public Expr newLessEqExpr(SymInfo s,Expr l,Expr r){
-        return new LessEq(s,l,r);
+        return new MetaLessEq(s,l,r);
     }
     public Expr newGreaterEqExpr(SymInfo s,Expr l,Expr r){
-        return new GreaterEq(s,l,r);
+        return new MetaGreaterEq(s,l,r);
     }
     public Expr newNotEqExpr(SymInfo s,Expr l, Expr r){
-        return new NotEq(s,l, r);
+        return new MetaNotEq(s,l, r);
     }
     public Expr newConcatExpr(SymInfo s,Expr l,Expr r){
-        return new Concat(s,l,r);
+        return new MetaConcat(s,l,r);
     }
     public Expr newComposeExpr(SymInfo s,Expr l,Expr r){
-        return new Compose(s,l,r);
+        return new MetaCompose(s,l,r);
     }
     public Expr newMapAcces(SymInfo s,Expr map,Expr index){
-        return new MapAcces(s,map,index);
+        return new MetaMapAcces(s,map,index);
     }
     public Expr newMapExtension(SymInfo s,Expr map,Expr key,Expr value){
-        return new MapExtension(s,map,key,value);
+        return new MetaMapExtension(s,map,key,value);
     }
     public Expr newNotExpr(SymInfo s,Expr e){
-        return new Not(s,e);
+        return new MetaNot(s,e);
     }
     public Expr newUMinusExpr(SymInfo s,Expr e){
-        return new UMinus(s,e);
+        return new MetaUMinus(s,e);
     }
     public Attribute newAttributeExpr(SymInfo s,String name){
-        return new Attribute(s,name);
+        return new Attribute(s, name);
     }
     public AttributeGrammar newAttributeGrammarExpr(SymInfo s){
         return new AttributeGrammar(s);
     }    
     public Expr newIntExpr(SymInfo s,int value){
-        return new IntLit(s,value);
+        return new MetaIntLit(s, new IntLit(s, value));
     }
     public Expr newFloatExpr(SymInfo s,float value){
-        return new FloatLit(s,value);
+        return new MetaFloatLit(s, new FloatLit(s, value));
     }
     public Expr newCharExpr(SymInfo s,char value){
-        return new CharLit(s,value);
+        return new MetaCharLit(s, new CharLit(s, value));
     }
     public Expr newBooleanExpr(SymInfo s,boolean value){
-        return new BoolLit(s,value);
+        return new MetaBoolLit(s, new BoolLit(s, value));
     }
     public Expr newStringExpr(SymInfo s,String value){
-        return new StrLit(s,value);
+        return new MetaStrLit(s, new StrLit(s, value));
     }
     public Expr newMapExpr(SymInfo s,Pair<Expr,Expr>[] assocs){
-        return new MapLit(s,assocs);
+        return new MetaMapLit(s, assocs);
     }
     public MetaAndPEG newMetaAndPEG(SymInfo s,Expr e){
         return new MetaAndPEG(s,e);

@@ -8,5 +8,5 @@ import apeg.util.*;
 import apeg.ast.Grammar.GrammarOption;
 
 public interface BinOPFactory {
-    BinaryOP newOP(Expr e, Expr d);
+    Expr newOP(Expr e, Expr d);
 }

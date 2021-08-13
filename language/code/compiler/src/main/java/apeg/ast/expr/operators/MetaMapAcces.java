@@ -21,4 +21,5 @@ public class MetaMapAcces extends MetaExpr{
     }
     public void accept(Visitor v){ v.visit(this); }
 
+    public String toString(){ return "([] " + map.toString() + " " + index.toString() + ")"; }
 }

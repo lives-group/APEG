@@ -5,15 +5,24 @@ import apeg.util.SymInfo;
 
 public class MetaMapLit extends MetaExpr{
 
-    private Expr e;
+    private Pair<Expr, Expr>[] assocs;
     
-    public MetaMapLit(SymInfo s,Expr e){
+    public MetaMapLit(SymInfo s,Pair<Expr, Expr>[] assocs){
         super(s);
-        this.e = e;
+        this.assocs = assocs;
     }
-    public Expr getExpr(){
-        return e;
+    public Pair<Expr, Expr>[] getAssocs(){
+        return assocs;
     }
     public void accept(Visitor v){ v.visit(this); }
 
+    public String toString(){
+        String res = "'({:";
+
+        for(Pair<Expr, Expr> p : assocs){
+            res += " " + p.getFirst().toString() + ", " + p.getSecond().toString();
+        }
+
+        return res + ")";
+    }
 }

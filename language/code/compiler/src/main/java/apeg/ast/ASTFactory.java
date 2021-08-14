@@ -665,7 +665,7 @@ public interface ASTFactory {
 	 * @param assocs
 	 * @return a meta map literal node
 	 */
-	public MetaNonterminalPEG newMetaNonterminalPEG(SymInfo s,Expr name,Expr args);
+	public MetaNonterminalPEG newMetaNonterminalPEG(SymInfo s,Expr name,Expr[] args);
 	/**
 	 * 
 	 * @param s
@@ -718,7 +718,7 @@ public interface ASTFactory {
      * 			set of meta parsing expression
      * @return meta sequence peg node
      */
-	public MetaSeqPEG newMetaSeqPEG(SymInfo s,Expr p);
+	public MetaSeqPEG newMetaSeqPEG(SymInfo s,Expr[] p);
 	/**
 	 * 
 	 * @param s

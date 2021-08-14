@@ -120,13 +120,13 @@ public class ASTFactoryMetaImpl implements ASTFactory{
     public MetaRangePEG newMetaRangePEG(SymInfo s, CharInterval i){
         return new MetaRangePEG(s,i);
     }
-    public MetaNonterminalPEG newMetaNonterminalPEG(SymInfo s,Expr name,Expr args){
+    public MetaNonterminalPEG newMetaNonterminalPEG(SymInfo s,Expr name,Expr[] args){
         return new MetaNonterminalPEG(s,name,args);
     }
     public MetaChoicePEG newMetaChoicePEG(SymInfo s,Expr leftPeg,Expr rightPeg){
         return new MetaChoicePEG(s,leftPeg,rightPeg);
     }
-    public MetaSeqPEG newMetaSeqPEG(SymInfo s,Expr p){
+    public MetaSeqPEG newMetaSeqPEG(SymInfo s,Expr[] p){
         return new MetaSeqPEG(s,p);
     }
     public MetaRulePEG newMetaRulePEG(SymInfo s,Expr ruleName,Expr anno,Expr inh,Expr syn,Expr peg){

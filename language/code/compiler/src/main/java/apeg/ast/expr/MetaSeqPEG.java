@@ -7,14 +7,14 @@ import apeg.util.SymInfo;
 
 public class MetaSeqPEG extends MetaAPEG{
 
-    private Expr e;
+    private Expr[] e;
     
-    public MetaSeqPEG(SymInfo s,Expr e){
+    public MetaSeqPEG(SymInfo s,Expr[] e){
         super(s);
         this.e = e;
     }
     
-    public Expr getExpr(){ return e;}
+    public Expr[] getExpr(){ return e;}
 
     public void accept(Visitor v){ v.visit(this); }
 

@@ -191,23 +191,8 @@ public class TypeCheckerVisitor extends Visitor {
         }
         s.push(new VTyMap(tyval));
     }
-
-    @Override
-    public void visit(StrLit n) {
-        s.push(VTyString.getInstance());
-    }
-
-    @Override
-    public void visit(MetaAndPEG n) {
-        // TODO Auto-generated method stub
-    }
-
-    @Override
-    public void visit(MetaAnyPEG n) {
-        // TODO Auto-generated method stub
-
-    }
-
+    
+    
     @Override
     public void visit(MetaAttribute n) {
         // TODO Auto-generated method stub
@@ -215,10 +200,11 @@ public class TypeCheckerVisitor extends Visitor {
     }
 
     @Override
-    public void visit(MetaBindPEG n) {
-        // TODO Auto-generated method stub
-
+    public void visit(StrLit n) {
+        s.push(VTyString.getInstance());
     }
+
+
 
     @Override
     public void visit(MetaBoolLit n) {
@@ -282,9 +268,37 @@ public class TypeCheckerVisitor extends Visitor {
     
     @Override
     public void visit(MetaMapLit n) {
-         n.getExpr().accept(this);
+           
+    }
+    
+    @Override
+    public void visit(MetaAndPEG n) {
+         n.getPeg().accept(this);
+         if( !s.peek().matchCT(VTyMetaPeg.getInstance(),ct )){
+             errorMsg(27,n.getSymInfo(),"Meta Int", s.peek());
+             s.push(TypeError.getInstance());
+         }
+         s.push(VTyMetaPeg.getInstance());
     }
 
+    @Override
+    public void visit(MetaAnyPEG n) {
+        s.push(VTyMetaPeg.getInstance());
+    }
+
+    @Override
+    public void visit(MetaBindPEG n) {
+          VType tya;
+          n.getExprAtt().accept(this);
+          tya = s.pop();
+          n.getExprP().accept(this);
+          if(tya.matchCT(VTyMetaExpr.getInstance(),ct) && s.peek().matchCT(VTyMetaPeg.getInstance(),ct) ){
+              return;
+          }
+          errorMsg(27,n.getSymInfo(),"{| = |}", tya,s.peek());
+          s.pop();
+          s.push(TypeError.getInstance());
+    }
 
     @Override
     public void visit(MetaKleenePEG n) {
@@ -295,49 +309,95 @@ public class TypeCheckerVisitor extends Visitor {
              s.push(TypeError.getInstance());
              return;
          }
+    
     }
 
     @Override
     public void visit(MetaLitPEG n) {
-        // TODO Auto-generated method stub
-
+          n.getExpr().accept(this);
+          if( !s.peek().matchCT(VTyMetaPeg.getInstance(),ct )){
+             errorMsg(27,n.getSymInfo(),"Meta Lit", s.peek());
+             s.pop();
+             s.push(TypeError.getInstance());
+             return;
+         }
+    
     }
 
 
     @Override
-    public void visit(MetaNonterminalPEG n) {
-        // TODO Auto-generated method stub
-
+    public void visit(MetaNonterminalPEG n){ 
+          n.getName().accept(this);
+          VType ty = s.pop();
+          if(ty.matchCT(VTyString.getInstance(),ct) ){
+               for(Expr e : n.getArgs()){
+                   e.accept(this);
+                   if( !s.peek().matchCT(VTyMetaExpr.getInstance(),ct) ){
+                        errorMsg(27,n.getSymInfo(),"Meta nonterminal call", s.peek());
+                        s.pop();
+                        return;
+                   }
+                   s.pop();
+               }
+               s.push(VTyMetaPeg.getInstance());
+               return;
+          }else{
+               errorMsg(27,n.getSymInfo(),"Meta nonterminal call name", ty);
+               s.push(TypeError.getInstance());
+          }
     }
 
     @Override
     public void visit(MetaNotPEG n) {
-        // TODO Auto-generated method stub
-
+          n.getExpr().accept(this);
+          if( !s.peek().matchCT(VTyMetaPeg.getInstance(),ct )){
+             errorMsg(27,n.getSymInfo(),"{| ! |}", s.peek());
+             s.pop();
+             s.push(TypeError.getInstance());
+             return;
+         }
     }
 
     @Override
     public void visit(MetaOptionalPEG n) {
-        // TODO Auto-generated method stub
-
+          n.getExpr().accept(this);
+          if( !s.peek().matchCT(VTyMetaPeg.getInstance(),ct )){
+             errorMsg(27,n.getSymInfo(),"{| ? |}", s.peek());
+             s.pop();
+             s.push(TypeError.getInstance());
+             return;
+         }
+         
     }
 
     @Override
     public void visit(MetaPKleene n) {
-        // TODO Auto-generated method stub
-
+          n.getPegExpr().accept(this);
+          if( !s.peek().matchCT(VTyMetaPeg.getInstance(),ct )){
+             errorMsg(27,n.getSymInfo(),"{| + |}", s.peek());
+             s.pop();
+             s.push(TypeError.getInstance());
+             return;
+         }
+         s.pop();
     }
 
     @Override
     public void visit(MetaRulePEG n) {
-        // TODO Auto-generated method stub
-
+                       
     }
 
     @Override
     public void visit(MetaSeqPEG n) {
-        // TODO Auto-generated method stub
-
+         for( Expr e: n.getExpr()){
+             e.accept(this);
+             if( !s.peek().matchCT(VTyMetaPeg.getInstance(),ct ) ){
+                 errorMsg(27,n.getSymInfo(),"Meta nonterminal call", s.peek());
+                 return;
+             }
+             s.pop();
+         }
+         s.push(VTyMetaPeg.getInstance());
     }
 
 
@@ -345,6 +405,7 @@ public class TypeCheckerVisitor extends Visitor {
     public void visit(MetaUpdatePEG n) {
         // TODO Auto-generated method stub
 
+        
     }
 
     @Override

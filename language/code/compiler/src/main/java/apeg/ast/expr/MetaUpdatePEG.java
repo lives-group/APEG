@@ -10,8 +10,8 @@ import apeg.util.SymInfo;
 public class MetaUpdatePEG extends MetaAPEG{
 
     private Expr e;
-    
-    public MetaUpdatePEG(SymInfo s,Expr e){
+        
+    public MetaUpdatePEG(SymInfo s,Expr e ){
         super(s);
         this.e = e;
     }

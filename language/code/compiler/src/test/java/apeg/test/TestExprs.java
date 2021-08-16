@@ -472,7 +472,7 @@ public class TestExprs {
 	TContainer<Expr> test = new ExprContainer("MetaBooleanExpr", stream);
 	Expr e = test.execute();
 	// Expected Result
-	assertEquals("'(|| '(&& true false) true)", e.toString());
+	assertEquals(e.toString(), "'(|| '(&& true false) true)");
     }
 
     @Test
@@ -482,7 +482,7 @@ public class TestExprs {
 	TContainer<Expr> test = new ExprContainer("MapLit01", stream);
 	Expr e = test.execute();
 	// Expected Result
-	assertEquals("({: 'abc', 10 'def', 20)", e.toString());
+	assertEquals(e.toString(), "({: 'abc', 10 'def', 20)");
     }
 
     @Test
@@ -492,7 +492,7 @@ public class TestExprs {
 	TContainer<Expr> test = new ExprContainer("MapLit01", stream);
 	Expr e = test.execute();
 	// Expected Result
-	assertEquals("([] m 'key')", e.toString());
+	assertEquals(e.toString(), "([] m 'key')");
     }
 
     @Test
@@ -502,7 +502,7 @@ public class TestExprs {
 	TContainer<Expr> test = new ExprContainer("MapExtension01", stream);
 	Expr e = test.execute();
 	// Expected Result
-	assertEquals("([->] m 'key' 10)", e.toString());
+	assertEquals(e.toString(), "([->] m 'key' 10)");
     }
 
     @Test
@@ -512,6 +512,43 @@ public class TestExprs {
 	TContainer<Expr> test = new ExprContainer("MetaMapLit01", stream);
 	Expr e = test.execute();
 	// Expected Result
-	assertEquals("'({: 'abc', 10)", e.toString());
+	assertEquals(e.toString(), "'({: 'abc', 10)");
     }
+
+	@Test
+	void testBoolean06() throws IOException {
+
+		CharStream stream = CharStreams.fromReader(new StringReader("true && up != down || false "));
+
+		TContainer<Expr> test = new ExprContainer("Bool06", stream);
+		Expr e = test.execute();
+
+		assertEquals(e.toString(),  "(|| (&& true (!= up down)) false)" );
+
+	}
+
+
+	@Test
+	void testBoolean07() throws IOException {
+
+		CharStream stream = CharStreams.fromReader(new StringReader(" 5*5 != ok || 5*5 == 25 "));
+
+		TContainer<Expr> test = new ExprContainer("Bool07", stream);
+		Expr e = test.execute();
+
+		assertEquals(e.toString(),  "(|| (!= (* 5 5) ok) (== (* 5 5) 25))" );
+
+	}
+	
+	@Test
+	void testBoolean08() throws IOException {
+
+		CharStream stream = CharStreams.fromReader(new StringReader(" true || ( false || false && true )"));
+
+		TContainer<Expr> test = new ExprContainer("Bool08", stream);
+		Expr e = test.execute();
+
+		assertEquals(e.toString(),  "(|| true (|| false (&& false true)))" );
+
+	}
 }

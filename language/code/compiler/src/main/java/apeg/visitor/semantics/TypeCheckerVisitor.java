@@ -101,7 +101,7 @@ public class TypeCheckerVisitor extends Visitor {
     }
     
     private boolean checkBinaryMetaOperator(VType l, VType r){
-        if(l.matchCT(VTyMetaExpr.getInstance(),ct) && l.matchCT(VTyMetaExpr.getInstance(),ct)){
+        if(l.matchCT(VTyMetaExpr.getInstance(),ct) && r.matchCT(VTyMetaExpr.getInstance(),ct)){
             s.push(VTyMetaExpr.getInstance());
             return true;
         }
@@ -257,12 +257,15 @@ public class TypeCheckerVisitor extends Visitor {
     }
 
     @Override
-    public void visit(MetaIntLit n) {
+    public void visit(MetaIntLit n){
          n.getExpr().accept(this);
          if( !s.peek().matchCT(VTyInt.getInstance(),ct )){
              errorMsg(27,n.getSymInfo(),"Meta Int", s.peek());
+             s.pop();
              s.push(TypeError.getInstance());
+             return;
          }
+         s.pop();
          s.push(VTyMetaExpr.getInstance());
     }
     

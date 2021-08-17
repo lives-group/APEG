@@ -32,6 +32,7 @@ public class TypeCheckerVisitor extends Visitor {
     private CTM ct;
     private boolean addVar;
     private VType[] emptyVTyepArray;
+    private boolean debug;
 
     public TypeCheckerVisitor() {
         s = new Stack<VType>();
@@ -43,7 +44,15 @@ public class TypeCheckerVisitor extends Visitor {
         addVar = false;
         opTable = OperatorTables.mkArithmeticEnv();
         emptyVTyepArray = new VType[0];
+        debug = false;
     }
+
+    public TypeCheckerVisitor(boolean debug) {
+        this();
+        this.debug = debug;
+    }
+
+    public void setDebugMode(boolean b){ debug = b; }
     
     public List<ErrorEntry> getError(){
         return error;
@@ -889,6 +898,7 @@ public class TypeCheckerVisitor extends Visitor {
     public void visit(MetaNot n) {
         n.getPegExpr().accept(this);
         if(! s.peek().matchCT(VTyMetaExpr.getInstance(),ct)){
+            errorMsg(27,n.getSymInfo(),"(| ! |)", s.peek());
             s.pop();
             s.push(TypeError.getInstance());
         }
@@ -1172,11 +1182,12 @@ public class TypeCheckerVisitor extends Visitor {
         }
 
         // System.out.println(global.toString());
-        System.out.println(ct.toString());
+        //if{debug){ System.out.println(ct.toString());}
         error.addAll(ct.resolveUnify(opTable));
         global.replace((k,v) -> {v.simplify(); return v;} );
-        System.out.println(global.toString());
-        System.out.println(ct.toString());
-
+        if(debug){
+           System.out.println(global.toString());
+           System.out.println(ct.toString());
+        }
     }
 }

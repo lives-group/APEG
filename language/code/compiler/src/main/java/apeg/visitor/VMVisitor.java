@@ -19,6 +19,8 @@ public class VMVisitor extends Visitor{
 	private Stack<Pair<VType,Object>> stk;
 	private Environment<String,NTInfo> env;
 	private NTInfo nti;
+	private CTX lastctx;
+	private boolean debug;
 	// Criar uma variável NTInfo local;
 
 
@@ -27,11 +29,28 @@ public class VMVisitor extends Visitor{
 			env = e;
 			stk = new Stack();
 			vm = new ApegVM(path);
+			debug = false;
+		} catch(Exception exc) {
+			exc.printStackTrace();
+		}
+	}
+	
+	public VMVisitor(StringReader sr,Environment<String,NTInfo> e){
+		try {
+			env = e;
+			stk = new Stack();
+			vm = new ApegVM(sr);
+			debug = false;
 		} catch(Exception exc) {
 			exc.printStackTrace();
 		}
 	}
 
+	public void setDebugMode(boolean b){ debug = b; }
+
+	public ApegVM getVM(){ return vm; }
+
+	public CTX getLastCTX(){return lastctx;}
 
 	@Override
 	public void visit(Attribute n) {
@@ -80,6 +99,7 @@ public class VMVisitor extends Visitor{
 		stk.push(new Pair(new VTyMap(ty),map));
 	}
 
+
 	@Override
 	public void visit(StrLit n) {
 		stk.push(new Pair(VTyString.getInstance(),n.getValue()));
@@ -87,111 +107,69 @@ public class VMVisitor extends Visitor{
 
 	@Override
 	public void visit(MetaAndPEG n) {
-		//n.getPeg().accept(this);
-		//AndPEG z = new AndPEG(new SymInfo(-1,-1),(AndPEG)stk.pop().getSecond();));
-		//stk.push(new Pair(VTyMetaPeg.getInstance(),z));
+		n.getPeg().accept(this);
+		AndPEG z = new AndPEG(n.getSymInfo(),(APEG)stk.pop().getSecond());
+		stk.push(new Pair(VTyMetaPeg.getInstance(),z));
 	}
 
 	@Override
 	public void visit(MetaAnyPEG n) {
-		//AnyPEG z = new AnyPEG(new SymInfo(-1,-1));
-		//stk.push(new Pair(VTyMetaPeg.getInstance(),z));
+		AnyPEG z = new AnyPEG(n.getSymInfo());
+		stk.push(new Pair(VTyMetaPeg.getInstance(),z));
 	}
 
 	@Override
 	public void visit(MetaAttribute n) {
-		//n.getExpr().accept(this);
-		//Attribute z = new Attribute(new SymInfo(-1,-1),(String)stk.pop().getSecond());
-		//stk.push(new Pair(VTyMetaExpr.getInstance(),z));
+		n.getExpr().accept(this);
+		Attribute z = new Attribute(n.getSymInfo(),(String)stk.pop().getSecond());
+		stk.push(new Pair(VTyMetaExpr.getInstance(),z));
 
 	}
 
 	@Override
 	public void visit(MetaBindPEG n) {
-		//Attribute a = n.getExprAtt().accept(this);
-		//APEG b = n.getExprP().accept(this);
-		//BindPEG z = new BindPEG(new SymInfo(-1,-1),b,a);
-		//stk.push(new Pair(VTyMetaPeg.getInstance(),z));
-
+        n.getExprAtt().accept(this);
+		Attribute a = (Attribute)stk.pop().getSecond();
+		n.getExprP().accept(this);
+		APEG b = (APEG)stk.pop().getSecond();
+		BindPEG z = new BindPEG(n.getSymInfo(),a,b);
+		stk.push(new Pair(VTyMetaPeg.getInstance(),z));
 	}
 
-	@Override
-	public void visit(MetaBoolLit n) {
-		//n.getExpr().accept(this);
-		//boolean z = (boolean)stk.pop().getSecond());
-		//stk.push(new Pair(VTyMetaExpr.getInstance(),z));
-	}
-
-	@Override
-	public void visit(MetaCharLit n) {
-		//n.getExpr().accept(this);
-		//char z = (char)stk.pop().getSecond());
-		//stk.push(new Pair(VTyMetaExpr.getInstance(),z));
-
-	}
 
 	@Override
 	public void visit(MetaRangePEG n) {
-		//n.getExpr().accept(this);
-		//ChoiceList z = new ChoiceList(new SymInfo(-1,-1),(CharInterval)stk.pop().getSecond());
-		//stk.push(new Pair(VTyMetaPeg.getInstance(),z));
-
+		n.getEndExpr().accept(this);
+		n.getStartExpr().accept(this);
+		Character s = (Character)stk.pop().getSecond();
+		Character e = (Character)stk.pop().getSecond();
+		n.getEndExpr().accept(this);
+		RangePEG z = new RangePEG(n.getSymInfo(),new CharInterval(s,e));
+		stk.push(new Pair(VTyMetaPeg.getInstance(),z));
 	}
 
 	@Override
 	public void visit(MetaChoicePEG n) {
-		//APEG a = n.getLeftExpr().accept(this);
-		//APEG b = n.getRightExpr().accept(this);
-		//ChoicePEG z = new ChoicePEG(new SymInfo(-1,-1),b,a);
-		//stk.push(new Pair(VTyMetaPeg.getInstance(),z));
+		n.getLeftPeg().accept(this);
+		APEG a = (APEG)stk.pop().getSecond();
+		n.getRightPeg().accept(this);
+		APEG b = (APEG)stk.pop().getSecond();
+		ChoicePEG z = new ChoicePEG(n.getSymInfo(),b,a);
+		stk.push(new Pair(VTyMetaPeg.getInstance(),z));
 	}
 
 	@Override
 	public void visit(MetaConstraintPEG n) {
-		//n.getExpr().accept(this);
-		//ConstraintPEG z = new ConstraintPEG(new SymInfo(-1,-1),(Expr)stk.pop().getSecond());
-		//stk.push(new Pair(VTyMetaPeg.getInstance(),z));
+		n.getExpr().accept(this);
+		ConstraintPEG z = new ConstraintPEG(n.getSymInfo(),(Expr)stk.pop().getSecond());
+		stk.push(new Pair(VTyMetaPeg.getInstance(),z));
 
 	}
 
-	@Override
-	public void visit(MetaFloatLit n) {
-		//n.getExpr().accept(this);
-		//FloatLit z = new FloatLit(new SymInfo(-1,-1),(float)stk.pop().getSecond());
-		//stk.push(new Pair(VTyMetaExpr.getInstance(),z));		
-	}
-
-	@Override
-	public void visit(MetaIntLit n) {
-		//n.getExpr().accept(this);
-		//IntLit z = new IntLit(new SymInfo(-1,-1),(int)stk.pop().getSecond());
-		//stk.push(new Pair(VTyMetaExpr.getInstance(),z));	
-	}
-
-	@Override
-	public void visit(MetaKleenePEG n) {
-		//n.getExpr().accept(this);
-		//KleenePEG z = new KleenePEG(new SymInfo(-1,-1),(APEG)stk.pop().getSecond());
-		//stk.push(new Pair(VTyMetaPeg.getInstance(),z));
-
-	}
-
-	@Override
-	public void visit(MetaLitPEG n) {
-		//n.getExpr().accept(this);
-		//LitPEG z = new LitPEG(new SymInfo(-1,-1),(String)stk.pop().getSecond());
-		//stk.push(new Pair(VTyMetaPeg.getInstance(),z));
-	}
-
-	@Override
-	public void visit(MetaMapLit n) {
-		//n.getExpr().accept(this);
-		//MapLit z = new MapLit(new SymInfo(-1,-1),(Pair<Expr,Expr>[])stk.pop().getSecond());
-		//stk.push(new Pair(VTyMetaExpr.getInstance(),z));	
-	}
 
 	@Override
 	public void visit(MetaNonterminalPEG n) {
+	    //TODO
 		//APEG a = n.getLeftExpr().accept(this);
 		//APEG b = n.getRightExpr().accept(this);
 		//NonterminalPEG z = new NonterminalPEG(new SymInfo(-1,-1),b,a);
@@ -200,77 +178,74 @@ public class VMVisitor extends Visitor{
 
 	@Override
 	public void visit(MetaNotPEG n) {
-		//n.getExpr().accept(this);
-		//NotPEG z = new NotPEG(new SymInfo(-1,-1),(APEG)stk.pop().getSecond());
-		//stk.push(new Pair(VTyMetaPeg.getInstance(),z));	
+		n.getExpr().accept(this);
+		NotPEG z = new NotPEG(n.getSymInfo(),(APEG)stk.pop().getSecond());
+		stk.push(new Pair(VTyMetaPeg.getInstance(),z));
 	}
 
 	@Override
 	public void visit(MetaOptionalPEG n) {
-		//n.getExpr().accept(this);
-		//OptionalPEG z = new OptionalPEG(new SymInfo(-1,-1),(APEG)stk.pop().getSecond());
-		//stk.push(new Pair(VTyMetaPeg.getInstance(),z));	
+		n.getExpr().accept(this);
+		OptionalPEG z = new OptionalPEG(n.getSymInfo(),(APEG)stk.pop().getSecond());
+		stk.push(new Pair(VTyMetaPeg.getInstance(),z));
 	}
 
-	@Override
 	public void visit(MetaPKleene n) {
-		//n.getExpr().accept(this);
-		//PKleene z = new PKleene(new SymInfo(-1,-1),(APEG)stk.pop().getSecond());
-		//stk.push(new Pair(VTyMetaPeg.getInstance(),z));	
+		n.getPegExpr().accept(this);
+		PKleene z = new PKleene(n.getSymInfo(),(APEG)stk.pop().getSecond());
+		stk.push(new Pair(VTyMetaPeg.getInstance(),z));
 	}
 
-	@Override
 	public void visit(MetaRulePEG n) {
-		// TODO Auto-generated method stub
+
 	}
 
-	@Override
 	public void visit(MetaSeqPEG n) {
-		//n.getExpr().accept(this);
-		//SeqPEG z = new SeqPEG(new SymInfo(-1,-1),(APEG[])stk.pop().getSecond());
-		//stk.push(new Pair(VTyMetaPeg.getInstance(),z));	
+		APEG[] zs = new APEG[n.getExpr().length];
+		int k = 0;
+		for(Expr x :  n.getExpr()){
+		   x.accept(this);
+           zs[k++] = (APEG)stk.pop().getSecond();
+		}
+		SeqPEG z = new SeqPEG(n.getSymInfo(),zs);
+		stk.push(new Pair(VTyMetaPeg.getInstance(),z));
 	}
 
 	@Override
-	public void visit(MetaStrLit n) {
-		//n.getExpr().accept(this);
-		//StrLit z = new StrLit(new SymInfo(-1,-1),(String)stk.pop().getSecond());
-		//stk.push(new Pair(VTyMetaExpr.getInstance(),z));	
-	}
-
-	@Override
-	public void visit(MetaTyBool n) {
-		// TODO Auto-generated method stub
-	}
+	public void visit(MetaTyBool n){
+	     stk.push(new Pair<VType,Object>(VTyMetaType.getInstance(),new TyBool(n.getSymInfo()) ) );
+    }
 
 	@Override
 	public void visit(MetaTyChar n) {
-		// TODO Auto-generated method stub
+		stk.push(new Pair<VType,Object>(VTyMetaType.getInstance(),new TyChar(n.getSymInfo()) ) );
 	}
 
 	@Override
 	public void visit(MetaTyFloat n) {
-		// TODO Auto-generated method stub
+		stk.push(new Pair<VType,Object>(VTyMetaType.getInstance(),new TyFloat(n.getSymInfo()) ) );
 	}
 
 	@Override
 	public void visit(MetaTyGrammar n) {
-		// TODO Auto-generated method stub
+		stk.push(new Pair<VType,Object>(VTyMetaType.getInstance(),new TyGrammar(n.getSymInfo()) ) );
 	}
 
 	@Override
 	public void visit(MetaTyInt n) {
-		// TODO Auto-generated method stub
+		stk.push(new Pair<VType,Object>(VTyMetaType.getInstance(),new TyInt(n.getSymInfo()) ) );
 	}
 
 	@Override
 	public void visit(MetaTyLang n) {
-		// TODO Auto-generated method stub
+		stk.push(new Pair<VType,Object>(VTyMetaType.getInstance(),new TyLang(n.getSymInfo()) ) );
 	}
 
 	@Override
 	public void visit(MetaTyMap n) {
-		// TODO Auto-generated method stub
+		n.getExpr().accept(this);
+        Type t = new TyMap(n.getSymInfo(),(Type)stk.pop().getSecond());
+        stk.push(new Pair(VTyMetaType.getInstance(), t));
 	}
 
 	@Override
@@ -280,11 +255,12 @@ public class VMVisitor extends Visitor{
 
 	@Override
 	public void visit(MetaTyString n) {
-		// TODO Auto-generated method stub
+		stk.push(new Pair<VType,Object>(VTyMetaType.getInstance(),new TyString(n.getSymInfo()) ) );
 	}
 
 	@Override
 	public void visit(MetaUpdatePEG n) {
+		//TODO
 		//n.getExpr().accept(this);
 		//UpdatePEG z = new UpdatePEG(new SymInfo(-1,-1),(List<Pair<Attribute,Expr>>)stk.pop().getSecond());
 		//stk.push(new Pair(VTyMetaPeg.getInstance(),z));	
@@ -293,6 +269,64 @@ public class VMVisitor extends Visitor{
 	@Override
 	public void visit(MetaVar n) {
 		// TODO Auto-generated method stub
+	}
+
+    @Override
+	public void visit(MetaBoolLit n) {
+		n.getExpr().accept(this);
+		BoolLit z = new BoolLit(n.getSymInfo() ,(boolean)stk.pop().getSecond());
+		stk.push(new Pair(VTyMetaExpr.getInstance(),z));
+	}
+
+	@Override
+	public void visit(MetaCharLit n) {
+		n.getExpr().accept(this);
+		CharLit z = new CharLit(n.getSymInfo(),(char)stk.pop().getSecond());
+		stk.push(new Pair(VTyMetaExpr.getInstance(),z));
+
+	}
+
+	@Override
+	public void visit(MetaFloatLit n) {
+		n.getExpr().accept(this);
+		FloatLit z = new FloatLit(n.getSymInfo(),(float)stk.pop().getSecond());
+		stk.push(new Pair(VTyMetaExpr.getInstance(),z));
+	}
+
+	@Override
+	public void visit(MetaIntLit n) {
+		n.getExpr().accept(this);
+		IntLit z = new IntLit(n.getSymInfo(),(int)stk.pop().getSecond());
+		stk.push(new Pair(VTyMetaExpr.getInstance(),z));
+	}
+
+	@Override
+	public void visit(MetaStrLit n) {
+		n.getExpr().accept(this);
+		StrLit z = new StrLit(n.getSymInfo(),(String)stk.pop().getSecond());
+		stk.push(new Pair(VTyMetaExpr.getInstance(),z));
+	}
+
+	@Override
+	public void visit(MetaKleenePEG n) {
+		n.getExpr().accept(this);
+		KleenePEG z = new KleenePEG(n.getSymInfo(),(APEG)stk.pop().getSecond());
+		stk.push(new Pair(VTyMetaPeg.getInstance(),z));
+	}
+
+	@Override
+	public void visit(MetaLitPEG n) {
+		n.getExpr().accept(this);
+		LitPEG z = new LitPEG(n.getSymInfo(),(String)stk.pop().getSecond());
+		stk.push(new Pair(VTyMetaPeg.getInstance(),z));
+	}
+
+	@Override
+	public void visit(MetaMapLit n) {
+	    //TODO
+		//n.getExpr().accept(this);
+		//MapLit z = new MapLit(new SymInfo(-1,-1),(Pair<Expr,Expr>[])stk.pop().getSecond());
+		//stk.push(new Pair(VTyMetaExpr.getInstance(),z));
 	}
 
 	@Override
@@ -335,13 +369,17 @@ public class VMVisitor extends Visitor{
 		Pair<VType,Object> b = stk.pop();
 		Pair<VType,Object> a = stk.pop();
 		if(a.getFirst().match(VTyChar.getInstance())){
-			stk.push(new Pair(VTyString.getInstance(),(Character)b.getSecond() + (Character)a.getSecond()));
+			stk.push(new Pair(VTyString.getInstance(),(Character)a.getSecond() + (Character)b.getSecond()));
 		}else if(a.getFirst().match(VTyString.getInstance())){
-			stk.push(new Pair(VTyString.getInstance(),(String)b.getSecond() + (String)a.getSecond()));
+			stk.push(new Pair(VTyString.getInstance(),(String)a.getSecond() + (String)b.getSecond()));
+		}if(a.getFirst() instanceof VTyList && b.getFirst() instanceof VTyList){
+		    ((ArrayList<Object>)a.getSecond()).addAll( (ArrayList<Object>)b.getSecond() );
+		    stk.push(new Pair(a.getFirst(),a.getSecond()) );
 		}else{
 			throw new RuntimeException("(" + n.getSymInfo().getLine() + "," + n.getSymInfo().getColumn() + ") Imcompatible operators for ++");
 		}
 	}
+
 
 
 	@Override
@@ -463,6 +501,28 @@ public class VMVisitor extends Visitor{
 		stk.push(new Pair( ((VTyMap)m.getFirst()).getTyParameter(), ((Hashtable)m.getSecond()).get( (String)i.getSecond()) ) );
 	}
 
+
+	public void visit(ListAcces n){
+	    n.getList().accept(this);
+	    ArrayList<Object> o = (ArrayList<Object>)stk.pop().getSecond();
+	    n.getIndex().accept(this);
+	    
+	    Integer idx = (Integer)stk.peek().getSecond();
+	    VType ty = stk.peek().getFirst();
+	    stk.push(new Pair(ty, o.get(idx)) );
+	}
+
+	public void visit(ListLit n){
+	    ArrayList<Object> l = new ArrayList<Object>();
+	    VType ty = null;
+	    for(Expr e : n.getElems()){
+	        e.accept(this);
+	        l.add(stk.peek().getSecond());
+	        ty = stk.pop().getFirst();
+	    }
+	    stk.push(new Pair(new VTyList(ty),l) );
+	}
+
 	@Override
 	public void visit(MapExtension n) {
 		n.getKey().accept(this);
@@ -549,29 +609,30 @@ public class VMVisitor extends Visitor{
 
 	@Override
 	public void visit(MetaAdd n) {
-// 		n.getLeft().accept(this);
-// 		n.getRigth().accept(this);
-// 		Expr a = (Expr)(stk.pop().getSecond());
-// 		Expr b = (Expr)(stk.pop().getSecond());
-// 		Add z = new And(new SymInfo(-1,-1),b,a);
-// 		stk.push(new Pair(VTyMetaExpr.getInstance(),z));
+ 		n.getLeft().accept(this);
+ 		n.getRight().accept(this);
+ 		Expr a = (Expr)(stk.pop().getSecond());
+ 		Expr b = (Expr)(stk.pop().getSecond());
+ 		Add z = new Add(new SymInfo(-1,-1),b,a);
+ 		stk.push(new Pair(VTyMetaExpr.getInstance(),z));
 
 	}
 
 	@Override
 	public void visit(MetaAnd n) {
-// 		n.getLeft().accept(this);
-// 		n.getRigth().accept(this);
-// 		Expr a = (Expr)(stk.pop().getSecond());
-// 		Expr b = (Expr)(stk.pop().getSecond());
-// 		And z = new And(new SymInfo(-1,-1),b,a);
-// 		stk.push(new Pair(VTyMetaExpr.getInstance(),z));
+ 		n.getLeft().accept(this);
+ 		n.getRight().accept(this);
+ 		Expr a = (Expr)(stk.pop().getSecond());
+ 		Expr b = (Expr)(stk.pop().getSecond());
+ 		And z = new And(new SymInfo(-1,-1),b,a);
+ 		stk.push(new Pair(VTyMetaExpr.getInstance(),z));
 	}
 
 	@Override
 	public void visit(MetaCompose n) {
+        //TODO
 // 		n.getLeft().accept(this);
-// 		n.getRigth().accept(this);
+// 		n.getRight().accept(this);
 // 		Expr a = (Expr)(stk.pop().getSecond());
 // 		Expr b = (Expr)(stk.pop().getSecond());
 // 		Compose z = new Compose(new SymInfo(-1,-1),b,a);
@@ -581,8 +642,9 @@ public class VMVisitor extends Visitor{
 
 	@Override
 	public void visit(MetaConcat n) {
+	    //TODO
 // 		n.getLeft().accept(this);
-// 		n.getRigth().accept(this);
+// 		n.getRight().accept(this);
 // 		Expr a = (Expr)(stk.pop().getSecond());
 // 		Expr b = (Expr)(stk.pop().getSecond());
 // 		Concat z = new Concat(new SymInfo(-1,-1),b,a);
@@ -591,153 +653,155 @@ public class VMVisitor extends Visitor{
 
 	@Override
 	public void visit(MetaDiv n) {
-// 		n.getLeft().accept(this);
-// 		n.getRigth().accept(this);
-// 		Expr a = (Expr)(stk.pop().getSecond());
-// 		Expr b = (Expr)(stk.pop().getSecond());
-// 		Div div = new Div(new SymInfo(-1,-1),b,a);
-// 		stk.push(new Pair(VTyMetaExpr.getInstance(),div));
+ 		n.getLeft().accept(this);
+ 		n.getRight().accept(this);
+ 		Expr a = (Expr)(stk.pop().getSecond());
+ 		Expr b = (Expr)(stk.pop().getSecond());
+ 		Div div = new Div(new SymInfo(-1,-1),b,a);
+ 		stk.push(new Pair(VTyMetaExpr.getInstance(),div));
 	}
 
 	@Override
 	public void visit(MetaEquals n) {
-// 		n.getLeft().accept(this);
-// 		n.getRigth().accept(this);
-// 		Expr a = (Expr)(stk.pop().getSecond());
-// 		Expr b = (Expr)(stk.pop().getSecond());
-// 		Equals z = new Equals(new SymInfo(-1,-1),b,a);
-// 		stk.push(new Pair(VTyMetaExpr.getInstance(),z));
+ 		n.getLeft().accept(this);
+ 		n.getRight().accept(this);
+ 		Expr a = (Expr)(stk.pop().getSecond());
+ 		Expr b = (Expr)(stk.pop().getSecond());
+ 		Equals z = new Equals(new SymInfo(-1,-1),b,a);
+ 		stk.push(new Pair(VTyMetaExpr.getInstance(),z));
 	}
 
 	@Override
 	public void visit(MetaGreater n) {
-// 		n.getLeft().accept(this);
-// 		n.getRigth().accept(this);
-// 		Expr a = (Expr)(stk.pop().getSecond());
-// 		Expr b = (Expr)(stk.pop().getSecond());
-// 		Greater z = new Greater(new SymInfo(-1,-1),b,a);
-// 		stk.push(new Pair(VTyMetaExpr.getInstance(),z));
+ 		n.getLeft().accept(this);
+ 		n.getRight().accept(this);
+ 		Expr a = (Expr)(stk.pop().getSecond());
+ 		Expr b = (Expr)(stk.pop().getSecond());
+ 		Greater z = new Greater(new SymInfo(-1,-1),b,a);
+ 		stk.push(new Pair(VTyMetaExpr.getInstance(),z));
 
 	}
 
 	@Override
 	public void visit(MetaGreaterEq n) {
-// 		n.getLeft().accept(this);
-// 		n.getRigth().accept(this);
-// 		Expr a = (Expr)(stk.pop().getSecond());
-// 		Expr b = (Expr)(stk.pop().getSecond());
-// 		GreaterEq z = new GreaterEq(new SymInfo(-1,-1),b,a);
-// 		stk.push(new Pair(VTyMetaExpr.getInstance(),z));
+		n.getLeft().accept(this);
+		n.getRight().accept(this);
+		Expr a = (Expr)(stk.pop().getSecond());
+		Expr b = (Expr)(stk.pop().getSecond());
+		GreaterEq z = new GreaterEq(new SymInfo(-1,-1),b,a);
+		stk.push(new Pair(VTyMetaExpr.getInstance(),z));
 	}
 
 	@Override
 	public void visit(MetaLess n) {
-// 		n.getLeft().accept(this);
-// 		n.getRigth().accept(this);
-// 		Expr a = (Expr)(stk.pop().getSecond());
-// 		Expr b = (Expr)(stk.pop().getSecond());
-// 		Less z = new Less(new SymInfo(-1,-1),a,b);
-// 		stk.push(new Pair(VTyMetaExpr.getInstance(),z));
+		n.getLeft().accept(this);
+		n.getRight().accept(this);
+		Expr a = (Expr)(stk.pop().getSecond());
+		Expr b = (Expr)(stk.pop().getSecond());
+		Less z = new Less(new SymInfo(-1,-1),b,a);
+		stk.push(new Pair(VTyMetaExpr.getInstance(),z));
 	}
 
 	@Override
 	public void visit(MetaLessEq n) {
-// 		n.getLeft().accept(this);
-// 		n.getRigth().accept(this);
-// 		Expr a = (Expr)(stk.pop().getSecond());
-// 		Expr b = (Expr)(stk.pop().getSecond());
-// 		LessEq z = new LessEq(new SymInfo(-1,-1),b,a);
-// 		stk.push(new Pair(VTyMetaExpr.getInstance(),z));
+		n.getLeft().accept(this);
+		n.getRight().accept(this);
+		Expr a = (Expr)(stk.pop().getSecond());
+		Expr b = (Expr)(stk.pop().getSecond());
+		LessEq z = new LessEq(new SymInfo(-1,-1),b,a);
+		stk.push(new Pair(VTyMetaExpr.getInstance(),z));
 	}
 
 	@Override
 	public void visit(MetaMapAcces n) {
-// 		n.getMap().accept(this);
-// 		n.getIndex().accept(this);
-// 		Expr a = (Expr)(stk.pop().getSecond());
-// 		Expr b = (Expr)(stk.pop().getSecond());
-// 		MapAcces z = new MapAcces(new SymInfo(-1,-1),b,a);
-// 		stk.push(new Pair(VTyMetaExpr.getInstance(),z));
+		n.getMap().accept(this);
+		n.getIndex().accept(this);
+		Expr a = (Expr)(stk.pop().getSecond());
+		Expr b = (Expr)(stk.pop().getSecond());
+		MapAcces z = new MapAcces(new SymInfo(-1,-1),b,a);
+		stk.push(new Pair(VTyMetaExpr.getInstance(),z));
 	}
 
 	@Override
 	public void visit(MetaMapExtension n) {
-// 		n.getMap().accept(this);
-// 		n.getIndex().accept(this);
-// 		Expr a = (Expr)(stk.pop().getSecond());
-// 		Expr b = (Expr)(stk.pop().getSecond());
-// 		MapExtension z = new MapExtension(new SymInfo(-1,-1),b,a);
-// 		stk.push(new Pair(VTyMetaExpr.getInstance(),z));
+		n.getMap().accept(this);
+		n.getKey().accept(this);
+		n.getValue().accept(this);
+		Expr a = (Expr)(stk.pop().getSecond());
+		Expr b = (Expr)(stk.pop().getSecond());
+		Expr c = (Expr)(stk.pop().getSecond());
+		MapExtension z = new MapExtension(new SymInfo(-1,-1),c,b,a);
+		stk.push(new Pair(VTyMetaExpr.getInstance(),z));
 
 	}
 
 	@Override
 	public void visit(MetaMod n) {
-// 		n.getLeft().accept(this);
-// 		n.getRigth().accept(this);
-// 		Expr a = (Expr)(stk.pop().getSecond());
-// 		Expr b = (Expr)(stk.pop().getSecond());
-// 		Mod z = new Mod(new SymInfo(-1,-1),b,a);
-// 		stk.push(new Pair(VTyMetaExpr.getInstance(),z));}
+		n.getLeft().accept(this);
+		n.getRight().accept(this);
+		Expr a = (Expr)(stk.pop().getSecond());
+		Expr b = (Expr)(stk.pop().getSecond());
+		Mod z = new Mod(new SymInfo(-1,-1),b,a);
+		stk.push(new Pair(VTyMetaExpr.getInstance(),z));
 	}
 
 	@Override
 	public void visit(MetaMult n) {
-// 		n.getLeft().accept(this);
-// 		n.getRigth().accept(this);
-// 		Expr a = (Expr)(stk.pop().getSecond());
-// 		Expr b = (Expr)(stk.pop().getSecond());
-// 		Mult z = new Mult(new SymInfo(-1,-1),b,a);
-// 		stk.push(new Pair(VTyMetaExpr.getInstance(),z));
+ 		n.getLeft().accept(this);
+ 		n.getRight().accept(this);
+ 		Expr a = (Expr)(stk.pop().getSecond());
+ 		Expr b = (Expr)(stk.pop().getSecond());
+ 		Mult z = new Mult(n.getSymInfo(),b,a);
+ 		stk.push(new Pair(VTyMetaExpr.getInstance(),z));
 	}
 	
 
 	@Override
 	public void visit(MetaNot n) {
-// 		n.getExpr().accept(this);
-// 		Expr a = (Expr)(stk.pop().getSecond());
-// 		Not z = new Not(new SymInfo(-1,-1),a);
-// 		stk.push(new Pair(VTyMetaExpr.getInstance(),z));
+ 		n.getPegExpr().accept(this);
+ 		Expr a = (Expr)(stk.pop().getSecond());
+ 		Not z = new Not(n.getSymInfo(),a);
+ 		stk.push(new Pair(VTyMetaExpr.getInstance(),z));
 	}
 
 	
 
 	@Override
 	public void visit(MetaNotEq n) {
-// 		n.getLeft().accept(this);
-// 		n.getRigth().accept(this);
-// 		Expr a = (Expr)(stk.pop().getSecond());
-// 		Expr b = (Expr)(stk.pop().getSecond());
-// 		NotEq z = new NotEq(new SymInfo(-1,-1),b,a);
-// 		stk.push(new Pair(VTyMetaExpr.getInstance(),z));
+ 		n.getLeft().accept(this);
+ 		n.getRight().accept(this);
+ 		Expr a = (Expr)(stk.pop().getSecond());
+ 		Expr b = (Expr)(stk.pop().getSecond());
+ 		NotEq z = new NotEq(n.getSymInfo(),b,a);
+ 		stk.push(new Pair(VTyMetaExpr.getInstance(),z));
 	}
 
 	@Override
 	public void visit(MetaOr n) {
-// 		n.getLeft().accept(this);
-// 		n.getRigth().accept(this);
-// 		Expr a = (Expr)(stk.pop().getSecond());
-// 		Expr b = (Expr)(stk.pop().getSecond());
-// 		Or z = new Or(new SymInfo(-1,-1),b,a);
-// 		stk.push(new Pair(VTyMetaExpr.getInstance(),z));
+ 		n.getLeft().accept(this);
+ 		n.getRight().accept(this);
+ 		Expr a = (Expr)(stk.pop().getSecond());
+ 		Expr b = (Expr)(stk.pop().getSecond());
+ 		Or z = new Or(n.getSymInfo(),b,a);
+ 		stk.push(new Pair(VTyMetaExpr.getInstance(),z));
 	}
 
 	@Override
 	public void visit(MetaSub n) {
-// 		n.getLeft().accept(this);
-// 		n.getRigth().accept(this);
-// 		Expr a = (Expr)(stk.pop().getSecond());
-// 		Expr b = (Expr)(stk.pop().getSecond());
-// 		Sub z = new Sub(new SymInfo(-1,-1),b,a);
-// 		stk.push(new Pair(VTyMetaExpr.getInstance(),z));
+ 		n.getLeft().accept(this);
+ 		n.getRight().accept(this);
+ 		Expr a = (Expr)(stk.pop().getSecond());
+ 		Expr b = (Expr)(stk.pop().getSecond());
+ 		Sub z = new Sub(n.getSymInfo(),b,a);
+ 		stk.push(new Pair(VTyMetaExpr.getInstance(),z));
 	}
 
 	@Override
 	public void visit(MetaUMinus n) {
-// 		n.getExpr().accept(this);
-// 		Expr a = (Expr)(stk.pop().getSecond());
-// 		UMinus z = new UMinus(new SymInfo(-1,-1),a);
-// 		stk.push(new Pair(VTyMetaExpr.getInstance(),z));
+ 		n.getExpr().accept(this);
+ 		Expr a = (Expr)(stk.pop().getSecond());
+ 		UMinus z = new UMinus(n.getSymInfo(),a);
+ 		stk.push(new Pair(VTyMetaExpr.getInstance(),z));
 	}
 
 	@Override
@@ -895,7 +959,7 @@ public class VMVisitor extends Visitor{
 
 	@Override
 	public void visit(RulePEG n) {
-		CTX t1=null,t2;
+		CTX t1=null;
 
 		// Montar o contexto tirando os valores do topo da pila.
 		// Visitar o coporp do rule;
@@ -915,7 +979,8 @@ public class VMVisitor extends Visitor{
 		// Visitar expressões sintetizados
 		// Empilhar os resultados.
 		}else{}
-		System.out.println("context: "+n.getRuleName()+"\n  "+ctx.toString());
+		lastctx = ctx;
+		if(debug){System.out.println("context: "+n.getRuleName()+"\n  "+ctx.toString());}
 		vm.endRule();
 		nti = backupNti;
 	}
@@ -939,59 +1004,18 @@ public class VMVisitor extends Visitor{
 		vm.success();
 	}
 
-	@Override
-	public void visit(TyBool n) {
-		// TODO Auto-generated method stub
-	}
-
-	public void visit(TyMetaPeg n) {
-		// TODO Auto-generated method stub
-	}
-
-	public void visit(TyMetaExpr n) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void visit(TyChar n) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void visit(TyFloat n) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void visit(TyGrammar n) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void visit(TyInt n) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void visit(TyLang n) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void visit(TyMap n) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void visit(TyMeta n) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void visit(TyString n) {
-		// TODO Auto-generated method stub
-	}
+	public void visit(TyBool n){}
+	public void visit(TyMetaPeg n){}
+	public void visit(TyMetaExpr n){}
+	public void visit(TyChar n){}
+	public void visit(TyFloat n){}
+	public void visit(TyGrammar n){}
+	public void visit(TyInt n){}
+	public void visit(TyLang n){}
+	public void visit(TyMap n){}
+	public void visit(TyMeta n){}
+	public void visit(TyString n){}
+	public void visit(TyList n){}
 
 	@Override
 	public void visit(Grammar n) {
@@ -1000,12 +1024,10 @@ public class VMVisitor extends Visitor{
 			hashRules.put(n.getRules().get(i).getRuleName(),n.getRules().get(i));
 		}
 		n.getRules().get(0).accept(this);
-		System.out.println("Read until " + vm.getLine() + ", " + vm.getColumn());
+		if(debug){System.out.println("Read until " + vm.getLine() + ", " + vm.getColumn());}
 	}
 
 	public boolean succeed(){
 		return vm.succeed();
 	}
-
-
 }

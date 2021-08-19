@@ -2,7 +2,8 @@ apeg exprAdd;
 
 term returns m:
    {m = {:' ' -> -1 :};}
-   ( id<s>'='nat<k> { m = m[s -> k]; } ';')*
+   '\n'
+   ( id<s>'='nat<k> { m = m[s -> k]; } ';' )+
 ;
 
 

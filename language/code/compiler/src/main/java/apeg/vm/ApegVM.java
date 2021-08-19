@@ -20,6 +20,18 @@ public class ApegVM {
       System.out.println(e);
     }
   }
+  
+  public ApegVM(StringReader sr){
+    try{
+      ctx = new Stack<CTX>();
+      page = new PageStream(sr);
+      rule = new Stack<String>();
+      lastResult = true;
+    }catch(IOException e) {
+      System.out.println(e);
+    }
+  }
+  
   public int size(){
     return ctx.size();
   }

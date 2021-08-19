@@ -1,6 +1,8 @@
 package apeg.vm;
 
 import java.io.FileReader;
+import java.io.StringReader;
+import java.io.Reader;
 import java.io.IOException;
 import java.util.Stack;
 
@@ -30,11 +32,24 @@ public class PageStream{
      
      private Stack<Integer> recStart; // para usar o Bind
      
-     private FileReader f;
+     private Reader f;
 
 	 public PageStream(String path) throws IOException{
 	    blocksize = 4;
 	    f = new FileReader(path);
+	    blocks = new char[128][];
+	    pw = 0;
+	    pr = 0;
+	    load(0);
+	    marks = new Stack<Tern>();
+	    recStart = new Stack<Integer>();
+	    line = 0;
+        col = 0;
+	 }
+	 
+	 public PageStream(StringReader sr) throws IOException{
+	    blocksize = 4;
+	    f = sr;
 	    blocks = new char[128][];
 	    pw = 0;
 	    pr = 0;
@@ -72,7 +87,6 @@ public class PageStream{
 
 	 public boolean match(String s) throws IOException{
 		 int i = 0 ;
-		 System.out.println("PageStream matchin \"" + s + "\" com length = " + s.length());
 		 int pi = decode_page(pr);
 		 int pf = decode_page(pr+s.length()-1);
 		 for(int j = pi; j <= pf; j++){

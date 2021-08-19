@@ -11,15 +11,6 @@ public abstract class Visitor {
     /**
      * Visit method for each AST element
      */
-    // Expressions
-    public abstract void visit(Attribute n);
-    public abstract void visit(AttributeGrammar n);
-    public abstract void visit(BoolLit n);
-    public abstract void visit(CharLit n);
-    public abstract void visit(FloatLit n);
-    public abstract void visit(IntLit n);
-    public abstract void visit(MapLit n);
-    public abstract void visit(StrLit n);
 
     // Meta Expressions
     public abstract void visit(MetaAndPEG n);
@@ -55,7 +46,18 @@ public abstract class Visitor {
     public abstract void visit(MetaUpdatePEG n);
     public abstract void visit(MetaVar n);
 
-    // Operators
+    // Expressions
+    public abstract void visit(Attribute n);
+    public abstract void visit(AttributeGrammar n);
+    public abstract void visit(BoolLit n);
+    public abstract void visit(CharLit n);
+    public abstract void visit(FloatLit n);
+    public abstract void visit(IntLit n);
+    public abstract void visit(MapLit n);
+    public abstract void visit(ListLit n);
+    public abstract void visit(StrLit n);
+
+    // Operator
     public abstract void visit(Add n);
     public abstract void visit(And n);
     public abstract void visit(Compose n);
@@ -67,6 +69,7 @@ public abstract class Visitor {
     public abstract void visit(Less n);
     public abstract void visit(LessEq n);
     public abstract void visit(MapAcces n);
+    public abstract void visit(ListAcces n);
     public abstract void visit(MapExtension n);
     public abstract void visit(Mod n);
     public abstract void visit(Mult n);
@@ -123,6 +126,7 @@ public abstract class Visitor {
     public abstract void visit(TyInt n);
     public abstract void visit(TyLang n);
     public abstract void visit(TyMap n);
+    public abstract void visit(TyList n);
     public abstract void visit(TyMeta n);
     public abstract void visit(TyMetaExpr n);
     public abstract void visit(TyMetaPeg n);

@@ -58,6 +58,10 @@ public class ErrorsMsg {
           msg.put(25,"Non constraint matching for operator");
           msg.put(26,"Unsolvable constraint ");
           msg.put(27,"Meta Operator application error");
+
+          msg.put(28,"List index must be int");
+          msg.put(29,"List base acces type error");
+          msg.put(30,"List element type error");
     }
 
     public String translate(ErrorEntry e){

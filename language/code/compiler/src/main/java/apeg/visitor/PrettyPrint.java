@@ -1088,6 +1088,9 @@ public class PrettyPrint extends Visitor{
 		
 		System.out.println(template.render());
 	}
+	public void visit(TyList n){}
+	public void visit(ListAcces n){}
+	public void visit(ListLit n){}
 
 	
 

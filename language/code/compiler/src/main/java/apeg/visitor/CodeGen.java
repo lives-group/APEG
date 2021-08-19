@@ -381,7 +381,9 @@ public void visit(TyString n){}
 
     //Others
     @Override
-public void visit(Grammar n){}
-
+ public void visit(Grammar n){}
+ public void visit(TyList n){}
+ public void visit(ListAcces n){}
+ public void visit(ListLit n){}
 
 }

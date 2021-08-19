@@ -1,19 +1,19 @@
 package apeg.visitor.semantics;
 
 
-public class VTyMap extends VType{
+public class VTyList extends VType{
 	
 
 	private VType tyParameter;
 		
-    public  VTyMap(VType tyParameter){
-        super("map");
+    public  VTyList(VType tyParameter){
+        super("list");
         this.tyParameter = tyParameter;
         
     }
     public boolean match(VType t){
-    	 if(t instanceof VTyMap ){
-             return tyParameter.match(((VTyMap)t).getTyParameter());
+    	 if(t instanceof VTyList ){
+             return tyParameter.match(((VTyList)t).getTyParameter());
           }
           return false;
     }
@@ -26,12 +26,12 @@ public class VTyMap extends VType{
 		if(t instanceof VTyVar) {
     		ct.addConstraint(new VarConstraint((VTyVar)t, this));
     		return true;
-    	}else if ((t instanceof VTyMap) && tyParameter instanceof VTyVar ) {
-            VTyMap tym = (VTyMap) t;
+    	}else if ((t instanceof VTyList) && tyParameter instanceof VTyVar ) {
+            VTyList tym = (VTyList) t;
             ct.addConstraint(new VarConstraint( (VTyVar)tyParameter, tym.tyParameter));
             return true;
-    	}else if( (t instanceof VTyMap) &&  ((VTyMap) t).tyParameter instanceof VTyVar  ){
-    	    VTyMap tym = (VTyMap) t;
+    	}else if( (t instanceof VTyList) &&  ((VTyList) t).tyParameter instanceof VTyVar  ){
+    	    VTyList tym = (VTyList) t;
             ct.addConstraint(new VarConstraint( (VTyVar)tym.tyParameter, tyParameter));
             return true;
     	}
@@ -39,15 +39,15 @@ public class VTyMap extends VType{
 	}
 	
 	public boolean Unify(VType t) {
-		if(t instanceof VTyMap){
-            VTyMap tym = (VTyMap)t;
+		if(t instanceof VTyList){
+            VTyList tym = (VTyList)t;
 		    return tyParameter.Unify( tym.tyParameter);
 		}
 		return false;
 	}
 	
 	public String toString() {
-    	return "[ " + tyParameter.toString() + " ]" ;
+    	return "{ " + tyParameter.toString() + " }" ;
     }
 
     public VType simplify(){

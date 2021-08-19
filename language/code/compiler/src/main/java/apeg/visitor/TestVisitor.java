@@ -839,8 +839,10 @@ public class TestVisitor extends Visitor{
 
 		for(RulePEG r: n.getRules())
 			r.accept(this);
-
-
 	}
+
+	public void visit(TyList n){}
+	public void visit(ListAcces n){}
+	public void visit(ListLit n){}
 
 }

@@ -99,6 +99,7 @@ public class VMVisitor extends Visitor{
 		stk.push(new Pair(new VTyMap(ty),map));
 	}
 
+
 	@Override
 	public void visit(StrLit n) {
 		stk.push(new Pair(VTyString.getInstance(),n.getValue()));
@@ -270,7 +271,7 @@ public class VMVisitor extends Visitor{
 		// TODO Auto-generated method stub
 	}
 
-@Override
+    @Override
 	public void visit(MetaBoolLit n) {
 		n.getExpr().accept(this);
 		BoolLit z = new BoolLit(n.getSymInfo() ,(boolean)stk.pop().getSecond());
@@ -315,10 +316,9 @@ public class VMVisitor extends Visitor{
 
 	@Override
 	public void visit(MetaLitPEG n) {
-	    //TODO
-		//n.getExpr().accept(this);
-		//LitPEG z = new LitPEG(new SymInfo(-1,-1),(String)stk.pop().getSecond());
-		//stk.push(new Pair(VTyMetaPeg.getInstance(),z));
+		n.getExpr().accept(this);
+		LitPEG z = new LitPEG(n.getSymInfo(),(String)stk.pop().getSecond());
+		stk.push(new Pair(VTyMetaPeg.getInstance(),z));
 	}
 
 	@Override
@@ -369,13 +369,17 @@ public class VMVisitor extends Visitor{
 		Pair<VType,Object> b = stk.pop();
 		Pair<VType,Object> a = stk.pop();
 		if(a.getFirst().match(VTyChar.getInstance())){
-			stk.push(new Pair(VTyString.getInstance(),(Character)b.getSecond() + (Character)a.getSecond()));
+			stk.push(new Pair(VTyString.getInstance(),(Character)a.getSecond() + (Character)b.getSecond()));
 		}else if(a.getFirst().match(VTyString.getInstance())){
-			stk.push(new Pair(VTyString.getInstance(),(String)b.getSecond() + (String)a.getSecond()));
+			stk.push(new Pair(VTyString.getInstance(),(String)a.getSecond() + (String)b.getSecond()));
+		}if(a.getFirst() instanceof VTyList && b.getFirst() instanceof VTyList){
+		    ((ArrayList<Object>)a.getSecond()).addAll( (ArrayList<Object>)b.getSecond() );
+		    stk.push(new Pair(a.getFirst(),a.getSecond()) );
 		}else{
 			throw new RuntimeException("(" + n.getSymInfo().getLine() + "," + n.getSymInfo().getColumn() + ") Imcompatible operators for ++");
 		}
 	}
+
 
 
 	@Override
@@ -495,6 +499,28 @@ public class VMVisitor extends Visitor{
 
 		//stk.push(new Pair(VTyMap.getInstance(),m.getSecond().get(i.getSecond())));
 		stk.push(new Pair( ((VTyMap)m.getFirst()).getTyParameter(), ((Hashtable)m.getSecond()).get( (String)i.getSecond()) ) );
+	}
+
+
+	public void visit(ListAcces n){
+	    n.getList().accept(this);
+	    ArrayList<Object> o = (ArrayList<Object>)stk.pop().getSecond();
+	    n.getIndex().accept(this);
+	    
+	    Integer idx = (Integer)stk.peek().getSecond();
+	    VType ty = stk.peek().getFirst();
+	    stk.push(new Pair(ty, o.get(idx)) );
+	}
+
+	public void visit(ListLit n){
+	    ArrayList<Object> l = new ArrayList<Object>();
+	    VType ty = null;
+	    for(Expr e : n.getElems()){
+	        e.accept(this);
+	        l.add(stk.peek().getSecond());
+	        ty = stk.pop().getFirst();
+	    }
+	    stk.push(new Pair(new VTyList(ty),l) );
 	}
 
 	@Override
@@ -672,7 +698,7 @@ public class VMVisitor extends Visitor{
 		n.getRight().accept(this);
 		Expr a = (Expr)(stk.pop().getSecond());
 		Expr b = (Expr)(stk.pop().getSecond());
-		Less z = new Less(new SymInfo(-1,-1),a,b);
+		Less z = new Less(new SymInfo(-1,-1),b,a);
 		stk.push(new Pair(VTyMetaExpr.getInstance(),z));
 	}
 
@@ -989,6 +1015,7 @@ public class VMVisitor extends Visitor{
 	public void visit(TyMap n){}
 	public void visit(TyMeta n){}
 	public void visit(TyString n){}
+	public void visit(TyList n){}
 
 	@Override
 	public void visit(Grammar n) {
@@ -997,7 +1024,7 @@ public class VMVisitor extends Visitor{
 			hashRules.put(n.getRules().get(i).getRuleName(),n.getRules().get(i));
 		}
 		n.getRules().get(0).accept(this);
-		System.out.println("Read until " + vm.getLine() + ", " + vm.getColumn());
+		if(debug){System.out.println("Read until " + vm.getLine() + ", " + vm.getColumn());}
 	}
 
 	public boolean succeed(){

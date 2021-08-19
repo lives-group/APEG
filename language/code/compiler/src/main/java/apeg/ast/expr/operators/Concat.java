@@ -9,6 +9,7 @@ public class Concat extends BinaryOP{
     public Concat(SymInfo s,Expr l,Expr r){
         super(s,l,r);
     }
+
     public void accept(Visitor v){ v.visit(this); }
 
 }

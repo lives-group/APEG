@@ -204,8 +204,16 @@ public class TypeCheckerVisitor extends Visitor {
     
     @Override
     public void visit(MetaAttribute n) {
-        // TODO Auto-generated method stub
-
+         n.getExpr().accept(this);
+         if( !s.peek().matchCT(VTyString.getInstance(),ct )){
+             errorMsg(27,n.getSymInfo(),"Meta Attribute", s.peek());
+             s.pop();
+             s.push(TypeError.getInstance());
+             return;
+         }
+         s.pop();
+         s.push(VTyMetaExpr.getInstance());
+         return;
     }
 
     @Override
@@ -214,14 +222,16 @@ public class TypeCheckerVisitor extends Visitor {
     }
 
 
-
     @Override
     public void visit(MetaBoolLit n) {
          n.getExpr().accept(this);
          if( !s.peek().matchCT(VTyBool.getInstance(),ct )){
              errorMsg(27,n.getSymInfo(),"Meta Bool", s.peek());
+             s.pop();
              s.push(TypeError.getInstance());
+             return;
          }
+         s.pop();
          s.push(VTyMetaExpr.getInstance());
     }
 
@@ -230,8 +240,11 @@ public class TypeCheckerVisitor extends Visitor {
          n.getExpr().accept(this);
          if( !s.peek().matchCT(VTyChar.getInstance(), ct )){
              errorMsg(27,n.getSymInfo(),"Meta Char", s.peek());
+             s.pop();
              s.push(TypeError.getInstance());
+             return;
          }
+         s.pop();
          s.push(VTyMetaExpr.getInstance());
     }
 
@@ -259,8 +272,11 @@ public class TypeCheckerVisitor extends Visitor {
          n.getExpr().accept(this);
          if( !s.peek().matchCT(VTyFloat.getInstance(), ct )){
              errorMsg(27,n.getSymInfo(),"Meta Float", s.peek());
+             s.pop();
              s.push(TypeError.getInstance());
+             return;
          }
+         s.pop();
          s.push(VTyMetaExpr.getInstance());
 
     }
@@ -327,13 +343,12 @@ public class TypeCheckerVisitor extends Visitor {
     @Override
     public void visit(MetaLitPEG n) {
           n.getExpr().accept(this);
-          if( !s.peek().matchCT(VTyMetaPeg.getInstance(),ct )){
+          if( !s.pop().matchCT(VTyString.getInstance(),ct )){
              errorMsg(27,n.getSymInfo(),"Meta Lit", s.peek());
-             s.pop();
              s.push(TypeError.getInstance());
              return;
          }
-    
+         s.push(VTyMetaPeg.getInstance());
     }
 
 
@@ -396,7 +411,7 @@ public class TypeCheckerVisitor extends Visitor {
 
     @Override
     public void visit(MetaRulePEG n) {
-                       
+           // TODO            
     }
 
     @Override
@@ -468,15 +483,16 @@ public class TypeCheckerVisitor extends Visitor {
         }
     }
 
-
     @Override
     public void visit(Concat n) {
         n.getLeft().accept(this);
-        VType left = s.peek();
+        VType left = s.pop();
         n.getRight().accept(this);
-        VType right = s.peek();
-        if(left == right) {
+        VType right = s.pop();
+        if( left.matchCT(right,ct) &&
+           (left.matchCT(VTyString.getInstance(),ct) || left instanceof VTyList) ){
             s.push(left);
+            return;
         }
         else {
             errorMsg(14, n.getSymInfo(),"++",left, right);
@@ -581,6 +597,66 @@ public class TypeCheckerVisitor extends Visitor {
          errorMsg(8,n.getSymInfo(),"",ti);
          s.push(TypeError.getInstance());
     }
+
+	public void visit(TyList n){
+	    n.getTyParameter().accept(this);
+	    if(!(s.peek() instanceof TypeError)){
+	        s.push( new VTyList(s.pop()) );
+	    }
+	}
+
+	public void visit(ListAcces n){
+	    n.getList().accept(this);
+	    VType ty = s.pop();
+	    if(ty instanceof VTyList){
+	        n.getIndex().accept(this);
+	        if(s.peek().matchCT(VTyInt.getInstance(),ct)){
+                  s.pop();
+                  s.push( ((VTyList)ty).getTyParameter() );
+                  return;
+	        }
+	        else{
+	            errorMsg(28,n.getSymInfo(),"",s.peek());
+	            s.pop();
+	            s.push(TypeError.getInstance());
+	        }
+	    }else if(ty instanceof VTyVar){
+                VTyVar tyv = pool.newVar();
+                VTyList vlist = new VTyList( tyv );
+                if(ty.matchCT(vlist,ct) ){
+                     s.push(tyv);
+                     return;
+                }
+                errorMsg(29,n.getSymInfo(),"",ty);
+                s.push(TypeError.getInstance());
+                return;
+	    }
+	    errorMsg(29,n.getSymInfo(),"",ty);
+        s.push(TypeError.getInstance());
+        return;
+    }
+
+	public void visit(ListLit n){
+	    ArrayList<Expr> ls = n.getElems();
+	    VType ty;
+	    if(ls.size() > 0){
+	       ls.get(0).accept(this);
+	       ty = s.pop();
+	       for(int i = 1; i < ls.size(); i++){
+	          ls.get(i).accept(this);
+	          if(!ty.matchCT(s.peek(),ct)){
+                    errorMsg(30,n.getSymInfo(),"",ty,s.pop());
+                    s.push(TypeError.getInstance());
+                    return;
+	          }
+	          s.pop();
+	       }
+	       s.push(new VTyList(ty));
+	       return;
+	    }
+	    ty = pool.newVar();
+	    s.push(new VTyList(ty));
+	}
 
     @Override
     public void visit(MapExtension n) {
@@ -690,8 +766,11 @@ public class TypeCheckerVisitor extends Visitor {
          n.getExpr().accept(this);
          if( !s.peek().matchCT(VTyString.getInstance(), ct )){
              errorMsg(27,n.getSymInfo(),"String literal", s.peek());
+             s.pop();
              s.push(TypeError.getInstance());
+             return;
          }
+         s.pop();
          s.push(VTyMetaExpr.getInstance()); 
     }
 
@@ -1135,6 +1214,7 @@ public class TypeCheckerVisitor extends Visitor {
 
     @Override
     public void visit(TyMap n) {
+        n.getTyParameter().accept(this);
         s.push(new VTyMap(s.pop()));
     }
 
@@ -1182,7 +1262,7 @@ public class TypeCheckerVisitor extends Visitor {
         }
 
         // System.out.println(global.toString());
-        //if{debug){ System.out.println(ct.toString());}
+        if(debug){ System.out.println(ct.toString());}
         error.addAll(ct.resolveUnify(opTable));
         global.replace((k,v) -> {v.simplify(); return v;} );
         if(debug){

@@ -14,5 +14,9 @@ public class LitPEG extends APEG{
         return lit;
     }
     public void accept(Visitor v){ v.visit(this); }
+    
+    public String toString(){
+        return "\'"+lit+ "\'";
+    }     
 
 }

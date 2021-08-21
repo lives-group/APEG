@@ -120,7 +120,7 @@ public class ASTFactoryMetaImpl implements ASTFactory{
     public MetaRangePEG newMetaRangePEG(SymInfo s, CharInterval i){
         return new MetaRangePEG(s,i);
     }
-    public MetaNonterminalPEG newMetaNonterminalPEG(SymInfo s,Expr name,Expr[] args){
+    public MetaNonterminalPEG newMetaNonterminalPEG(SymInfo s,Expr name,Expr args){
         return new MetaNonterminalPEG(s,name,args);
     }
     public MetaChoicePEG newMetaChoicePEG(SymInfo s,Expr leftPeg,Expr rightPeg){
@@ -129,8 +129,8 @@ public class ASTFactoryMetaImpl implements ASTFactory{
     public MetaSeqPEG newMetaSeqPEG(SymInfo s,Expr[] p){
         return new MetaSeqPEG(s,p);
     }
-    public MetaRulePEG newMetaRulePEG(SymInfo s,Expr ruleName,Expr anno,Expr inh,Expr syn,Expr peg){
-        return new MetaRulePEG(s,ruleName,anno,inh,syn,peg);
+    public MetaRulePEG newMetaRulePEG(SymInfo s,Expr ruleName,Expr anno, Expr types, Expr inh,Expr syn,Expr peg){
+        return new MetaRulePEG(s,ruleName,anno,types, inh,syn,peg);
     }
     public MetaUpdatePEG newMetaUpdatePEG(SymInfo s,Expr assigs){
         return new MetaUpdatePEG(s,assigs);
@@ -162,8 +162,8 @@ public class ASTFactoryMetaImpl implements ASTFactory{
     public MetaTyGrammar newMetaTyGrammar(SymInfo s){
         return new MetaTyGrammar(s);
     }
-    public MetaTyMeta newMetaTyMeta(SymInfo s){
-        return new MetaTyMeta(s);
+    public MetaTyTy newMetaTyTy(SymInfo s){
+        return new MetaTyTy(s);
     }
     public MetaAttribute newMetaAttribute(SymInfo s,Expr name){
         return new MetaAttribute(s,name);

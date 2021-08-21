@@ -13,15 +13,16 @@ import apeg.ast.*;
 
 public class MetaRulePEG extends MetaASTNode{
 
-     private Expr ruleName,anno,inh,syn,peg;
+     private Expr ruleName,anno,types, inh,syn,peg;
     
-    public MetaRulePEG(SymInfo s,Expr ruleName,Expr anno,Expr inh,Expr syn,Expr peg){
+    public MetaRulePEG(SymInfo s,Expr ruleName,Expr anno,Expr types,Expr inh,Expr syn,Expr peg){
         super(s);
         this.ruleName = ruleName;
         this.anno = anno;
         this.inh = inh;
         this.syn = syn;
         this.peg = peg;
+        this.types = types;
     }
     public Expr getRuleName(){
         return ruleName;
@@ -31,6 +32,9 @@ public class MetaRulePEG extends MetaASTNode{
     }
     public Expr getInh(){
         return inh;
+    }
+    public Expr getTypes(){
+        return types;
     }
     public Expr getSyn(){
         return syn;

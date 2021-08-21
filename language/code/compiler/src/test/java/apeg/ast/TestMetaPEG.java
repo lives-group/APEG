@@ -93,6 +93,189 @@ public class TestMetaPEG {
          Object r = runAndReportVar(g,"y");
          assertEquals("aa",((LitPEG)((KleenePEG)r).getPegExp()).getLit());
     }
+    
+   
+    @Test
+    public void testMetaNonterminal(){
+        Expr name, al;
+        MetaAPEG p;
+        
+        ArrayList<Expr> arr = new ArrayList<Expr>();
+        
+        arr.add(  new MetaIntLit(new SymInfo(5,21), new IntLit(new SymInfo(5,21), 2)) );
+        arr.add(  new MetaIntLit(new SymInfo(5,13), new IntLit(new SymInfo(5,17), 3)) );
+        al =  new ListLit(new SymInfo(5,20), arr);
+        
+        name =  new StrLit(new SymInfo(5,21), "r2dd");
 
+        p = new MetaNonterminalPEG(new SymInfo(6,20), name, new Attribute(new SymInfo(6,27), "es") );
+        
+        Grammar g = buildAttGrammar("es",al,"y", p);
+        Object r = runAndReportVar(g,"y");
+        assertEquals("(r2dd 2 3)",r.toString());
+    }
+    
+    @Test
+    public void testMetaNonterminal2(){
+        Expr name, al, el, er, op;
+        MetaAPEG p;
+        
+        ArrayList<Expr> arr = new ArrayList<Expr>();
+        
+        el =  new MetaIntLit(new SymInfo(5,17), new IntLit(new SymInfo(5,17), 7));
+        er =  new MetaIntLit(new SymInfo(5,19), new IntLit(new SymInfo(5,19), 2));
+        op =  new MetaAdd(new SymInfo(5,19),el,er);
+        
+        arr.add(  op  );
+        arr.add(  new MetaIntLit(new SymInfo(5,13), new IntLit(new SymInfo(5,17), 3)) );
+        al =  new ListLit(new SymInfo(5,20), arr);
+        
+        name =  new StrLit(new SymInfo(5,21), "r2dd");
 
+        p = new MetaNonterminalPEG(new SymInfo(6,20), name, new Attribute(new SymInfo(6,27), "es") );
+        
+        Grammar g = buildAttGrammar("es",al,"y", p);
+        Object r = runAndReportVar(g,"y");
+        assertEquals("(r2dd (+ 7 2) 3)",r.toString());
+    }
+
+    @Test
+    public void testMetaRule(){
+        Expr name, tyl, al, rl, el, er, op;
+        MetaAPEG b;
+        MetaRulePEG p;
+        
+        
+        ArrayList<Expr> arrTy = new ArrayList<Expr>();
+        arrTy.add( new MetaTyInt(new SymInfo(5,17)) );
+        arrTy.add( new MetaTyInt(new SymInfo(5,19) ));
+        tyl =  new ListLit(new SymInfo(7,28), arrTy);
+        
+        ArrayList<Expr> arrRet = new ArrayList<Expr>();
+        arrRet.add( new MetaIntLit(new SymInfo(6,17), new IntLit(new SymInfo(6,17), 7)) );
+        rl =  new ListLit(new SymInfo(7,28), arrRet);
+        
+        ArrayList<Expr> arr = new ArrayList<Expr>();
+        arr.add( new  StrLit(new SymInfo(6, 17), "x") );
+        arr.add( new  StrLit(new SymInfo(6, 19), "y") );
+        al =  new ListLit(new SymInfo(7,28), arr);
+        
+        name =  new StrLit(new SymInfo(7,10), "r2dd");
+        
+        b = new MetaLitPEG(new SymInfo(7,10), new StrLit(new SymInfo(7,10), "a") );
+
+        p = new MetaRulePEG(new SymInfo(8,10), name, null, tyl, al, rl, b);
+        
+        Grammar g = buildAttGrammar("y",p,"y", null);
+        Object r = runAndReportVar(g,"y");
+
+        assertEquals("[(rule r2dd NONE ( (:: int x) (:: int y)) ( 7) 'a')]",r.toString());
+    }   
+
+    @Test
+    public void testMetaGrammarCompose(){
+        Expr name, tyl, al, rl, el, er, op;
+        MetaAPEG b;
+        MetaRulePEG p,p2;
+        
+        
+        ArrayList<Expr> arrTy = new ArrayList<Expr>();
+        arrTy.add( new MetaTyInt(new SymInfo(5,17)) );
+        arrTy.add( new MetaTyInt(new SymInfo(5,19) ));
+        tyl =  new ListLit(new SymInfo(7,28), arrTy);
+        
+        ArrayList<Expr> arrRet = new ArrayList<Expr>();
+        arrRet.add( new MetaIntLit(new SymInfo(6,17), new IntLit(new SymInfo(6,17), 7)) );
+        rl =  new ListLit(new SymInfo(7,28), arrRet);
+        
+        ArrayList<Expr> arr = new ArrayList<Expr>();
+        arr.add( new  StrLit(new SymInfo(6, 17), "x") );
+        arr.add( new  StrLit(new SymInfo(6, 19), "y") );
+        al =  new ListLit(new SymInfo(7,28), arr);
+        
+        name =  new StrLit(new SymInfo(7,10), "r2dd");
+        
+        b = new MetaLitPEG(new SymInfo(7,10), new StrLit(new SymInfo(7,10), "a") );
+
+        p = new MetaRulePEG(new SymInfo(8,10), name, null, tyl, al, rl, b);
+        
+        
+        arrTy = new ArrayList<Expr>();
+        arrTy.add( new MetaTyInt(new SymInfo(5,17)) );
+        tyl =  new ListLit(new SymInfo(7,28), arrTy);
+        
+        arrRet = new ArrayList<Expr>();
+        rl =  new ListLit(new SymInfo(7,28), arrRet);
+        
+        arr = new ArrayList<Expr>();
+        arr.add( new  StrLit(new SymInfo(6, 17), "x") );
+        al =  new ListLit(new SymInfo(7,28), arr);
+        
+        name =  new StrLit(new SymInfo(7,10), "c3po");
+        
+        b = new MetaLitPEG(new SymInfo(7,10), new StrLit(new SymInfo(7,10), "c") );
+
+        p2 = new MetaRulePEG(new SymInfo(8,10), name, null, tyl, al, rl, b);
+        
+        op = new Compose(new SymInfo(9,10), p, p2);
+        
+        Grammar g = buildAttGrammar("y",op,"y", null);
+        Object r = runAndReportVar(g,"y");
+        System.out.println(r);
+        assertEquals("[(rule r2dd NONE ( (:: int x) (:: int y)) ( 7) 'a'), (rule c3po NONE ( (:: int x)) () 'c')]",r.toString());
+    }
+    
+    
+    @Test
+    public void testMetaLanCompose(){
+        Expr name, tyl, al, rl, el, er, op;
+        MetaAPEG b;
+        MetaRulePEG p,p2;
+        
+        
+        ArrayList<Expr> arrTy = new ArrayList<Expr>();
+        arrTy.add( new MetaTyInt(new SymInfo(5,17)) );
+        arrTy.add( new MetaTyInt(new SymInfo(5,19) ));
+        tyl =  new ListLit(new SymInfo(7,28), arrTy);
+        
+        ArrayList<Expr> arrRet = new ArrayList<Expr>();
+        arrRet.add( new MetaIntLit(new SymInfo(6,17), new IntLit(new SymInfo(6,17), 7)) );
+        rl =  new ListLit(new SymInfo(7,28), arrRet);
+        
+        ArrayList<Expr> arr = new ArrayList<Expr>();
+        arr.add( new  StrLit(new SymInfo(6, 17), "x") );
+        arr.add( new  StrLit(new SymInfo(6, 19), "y") );
+        al =  new ListLit(new SymInfo(7,28), arr);
+        
+        name =  new StrLit(new SymInfo(7,10), "r2dd");
+        
+        b = new MetaLitPEG(new SymInfo(7,10), new StrLit(new SymInfo(7,10), "a") );
+
+        p = new MetaRulePEG(new SymInfo(8,10), name, null, tyl, al, rl, b);
+        
+        
+        arrTy = new ArrayList<Expr>();
+        arrTy.add( new MetaTyInt(new SymInfo(5,17)) );
+        tyl =  new ListLit(new SymInfo(7,28), arrTy);
+        
+        arrRet = new ArrayList<Expr>();
+        rl =  new ListLit(new SymInfo(7,28), arrRet);
+        
+        arr = new ArrayList<Expr>();
+        arr.add( new  StrLit(new SymInfo(6, 17), "x") );
+        al =  new ListLit(new SymInfo(7,28), arr);
+        
+        name =  new StrLit(new SymInfo(7,10), "c3po");
+        
+        b = new MetaLitPEG(new SymInfo(7,10), new StrLit(new SymInfo(7,10), "c") );
+
+        p2 = new MetaRulePEG(new SymInfo(8,10), name, null, tyl, al, rl, b);
+        
+        op = new Compose(new SymInfo(9,10), p, p2);
+        
+        Grammar g = buildAttGrammar("y",op,"y", null);
+        Object r = runAndReportVar(g,"y");
+        System.out.println(r);
+        assertEquals("[(rule r2dd NONE ( (:: int x) (:: int y)) ( 7) 'a'), (rule c3po NONE ( (:: int x)) () 'c')]",r.toString());
+    }      
 }

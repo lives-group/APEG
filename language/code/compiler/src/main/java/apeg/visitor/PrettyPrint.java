@@ -300,7 +300,7 @@ public class PrettyPrint extends Visitor{
 	}
 
 	@Override
-	public void visit(MetaTyMeta n) {
+	public void visit(MetaTyTy n) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -1031,6 +1031,8 @@ public class PrettyPrint extends Visitor{
 
 		this.type = groupTemplate.getInstanceOf("string_type");
 	}
+	
+	public void visit(TyMetaTy n){}
 
 	@Override
 	public void visit(Grammar n) {

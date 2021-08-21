@@ -15,5 +15,9 @@ public class ConstraintPEG extends APEG{
         return expr;
     }
     public void accept(Visitor v){ v.visit(this); }
+    
+    public String toString(){
+        return "{? " + expr.toString() +"}";
+    } 
 
 }

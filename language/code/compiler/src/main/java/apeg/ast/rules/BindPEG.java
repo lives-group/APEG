@@ -21,5 +21,10 @@ public class BindPEG extends APEG{
         return attribute;
     }
     public void accept(Visitor v){ v.visit(this); }
+    
+    
+    public String toString(){
+        return "(= " +attribute.toString()+ " "+ peg.toString()+ ")";
+    } 
 
 }

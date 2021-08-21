@@ -3,19 +3,20 @@ import apeg.util.Pair;
 import apeg.visitor.Visitor;
 import apeg.util.SymInfo;
 
-public class TyString extends Type{
+public class TyMetaTy extends Type{
 
     
-    public TyString(SymInfo s){
-        super(s, "string");
+    public TyMetaTy(SymInfo s){
+        super(s, "metaTy");
     }
     public boolean match(Type t){
-        return t instanceof TyString;
+        return t instanceof TyMetaTy;
     }
     public void accept (Visitor v) {
     	v.visit(this);
     }
+    
     public String toString(){
-        return "string";
-    }
+         return "Mtype";
+    }    
 }

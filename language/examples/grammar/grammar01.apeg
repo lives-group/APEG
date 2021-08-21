@@ -1,15 +1,9 @@
 apeg annotation;
 
-options {
- memoize;
-}
-
 a:
-  b '1'
- /
-  b '2'
+    b '1'  /  b '2'
 ;
 
-@transient
-b:
- 'b';
+b: 
+  'b' 
+;

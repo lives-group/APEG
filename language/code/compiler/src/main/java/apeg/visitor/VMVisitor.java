@@ -169,11 +169,14 @@ public class VMVisitor extends Visitor{
 
 	@Override
 	public void visit(MetaNonterminalPEG n) {
-	    //TODO
-		//APEG a = n.getLeftExpr().accept(this);
-		//APEG b = n.getRightExpr().accept(this);
-		//NonterminalPEG z = new NonterminalPEG(new SymInfo(-1,-1),b,a);
-		//stk.push(new Pair(VTyMetaPeg.getInstance(),z));
+		n.getName().accept(this);
+        String a = (String)stk.pop().getSecond();
+
+		n.getArgs().accept(this);
+		ArrayList<Expr> b = (ArrayList<Expr>)stk.pop().getSecond();
+
+		NonterminalPEG z = new NonterminalPEG(n.getSymInfo(),a,b);
+		stk.push(new Pair(VTyMetaPeg.getInstance(),z));
 	}
 
 	@Override
@@ -197,7 +200,32 @@ public class VMVisitor extends Visitor{
 	}
 
 	public void visit(MetaRulePEG n) {
+        n.getRuleName().accept(this);
+        String s = (String)stk.pop().getSecond();
+        
+        n.getTypes().accept(this);
+        ArrayList<Type> lty = (ArrayList<Type>)stk.pop().getSecond();
 
+        n.getInh().accept(this);
+        ArrayList<String> linh = (ArrayList<String>)stk.pop().getSecond();
+
+        n.getSyn().accept(this);
+        ArrayList<Expr> lsyn = (ArrayList<Expr>)stk.pop().getSecond();
+
+        n.getPeg().accept(this);
+        APEG body = (APEG)stk.pop().getSecond();
+        
+        if(lty.size() != linh.size()){
+            throw new RuntimeException("List of types and Inherited arguments must have same size"); 
+        }
+        ArrayList<Pair<Type,String>> param = new ArrayList<Pair<Type,String>>(linh.size());
+        for(int i =0; i < linh.size(); i++){
+            param.add(new Pair<Type,String>(lty.get(i), linh.get(i)));
+        }
+        RulePEG rl = new RulePEG(n.getSymInfo(),s, RulePEG.Annotation.NONE,param,lsyn, body );          
+        ArrayList<RulePEG> ruleList = new ArrayList<RulePEG>();
+        ruleList.add(rl);
+        stk.push(new Pair(VTyGrammar.getInstance(),ruleList));
 	}
 
 	public void visit(MetaSeqPEG n) {
@@ -249,8 +277,8 @@ public class VMVisitor extends Visitor{
 	}
 
 	@Override
-	public void visit(MetaTyMeta n) {
-		// TODO Auto-generated method stub
+	public void visit(MetaTyTy n) {
+        
 	}
 
 	@Override
@@ -354,12 +382,51 @@ public class VMVisitor extends Visitor{
 		Boolean b = (Boolean)(stk.pop().getSecond());
 		stk.push(new Pair(VTyBool.getInstance(),a && b));
 	}
-
+//g1   f : 'a'
+//
+//g2   h : 'b' 
+// g3 = g1 << g2 = [f: 'a', h 'b']
+//
+//g1   [f : 'a', t : '2']
+//
+//g2   [t : 'b', k : 'e'] 
+//  g3 = g1 << g2 = [f: 'a', h 'b'] XX
+//  g3 = g1 << g2 = [f: 'a' / 'b'] XX
+//
+    private ArrayList<RulePEG> mergeGrammars(ArrayList<RulePEG> e, ArrayList<RulePEG>d){
+      
+      return null;
+    }
+     
 	@Override
 	public void visit(Compose n) {
-		// TODO Auto-generated method stub
 		n.getLeft().accept(this);
-		n.getRight().accept(this);
+		ArrayList<RulePEG> re,rd;
+		if(stk.peek().getFirst().match(VTyGrammar.getInstance()) ){
+		    n.getRight().accept(this);
+		    if(stk.peek().getFirst().match(VTyGrammar.getInstance()) ){
+		        rd = (ArrayList<RulePEG>)stk.pop().getSecond();
+		        re = (ArrayList<RulePEG>)stk.pop().getSecond();
+		        re.addAll(rd);
+		        //re = mergeGrammars(rd,re);
+		        stk.push(new Pair<VType,Object>(VTyGrammar.getInstance(),re));
+		        return;
+		    }
+		}else if(stk.peek().getFirst().match(VTyLang.getInstance())){
+		    Pair<Grammar,Environment<String,NTInfo>> lan = (Pair<Grammar,Environment<String,NTInfo>>)stk.pop().getSecond();
+		    Grammar gext;
+		    n.getRight().accept(this);
+		    if(stk.peek().getFirst().match(VTyGrammar.getInstance()) ){
+		        gext = (Grammar)lan.getFirst().compose((ArrayList<RulePEG>)stk.peek().getSecond());
+		        TypeCheckerVisitor tychk = new TypeCheckerVisitor();
+		        gext.accept(tychk);
+		        if(tychk.getError() == null){
+		            System.out.println("Type erros when composing grammars at " + n.getSymInfo().toString());
+		            throw new RuntimeException("Composition error at " + n.getSymInfo().toString()); 
+                }
+		    }
+		    return;
+		}
 	}
 
 	@Override
@@ -642,13 +709,12 @@ public class VMVisitor extends Visitor{
 
 	@Override
 	public void visit(MetaConcat n) {
-	    //TODO
-// 		n.getLeft().accept(this);
-// 		n.getRight().accept(this);
-// 		Expr a = (Expr)(stk.pop().getSecond());
-// 		Expr b = (Expr)(stk.pop().getSecond());
-// 		Concat z = new Concat(new SymInfo(-1,-1),b,a);
-// 		stk.push(new Pair(VTyMetaExpr.getInstance(),z));
+ 		n.getLeft().accept(this);
+ 		n.getRight().accept(this);
+ 		Expr a = (Expr)(stk.pop().getSecond());
+ 		Expr b = (Expr)(stk.pop().getSecond());
+ 		Concat z = new Concat(n.getSymInfo(),b,a);
+ 		stk.push(new Pair(VTyMetaExpr.getInstance(),z));
 	}
 
 	@Override
@@ -895,15 +961,28 @@ public class VMVisitor extends Visitor{
 		// Avaliar (ou visitar) os argumentos herdados e por na pilha.
 		NTInfo local = env.get(n.getName());
 		List<Expr> l = n.getArgs();
-		for(int i = 0;i < local.getSig().getNumInherited();i++){
-			l.get(i).accept(this);
+		RulePEG rule = null;
+		if(l.size() > 0){ 
+		    l.get(0).accept(this);
+		    if(stk.peek().getFirst().match(VTyLang.getInstance()) ){
+		         Grammar r = (Grammar)stk.peek().getSecond();   
+		         for(RulePEG rp : r.getRules()){
+		              if( rp.getRuleName().equals(n.getName()) ){
+		                   rule = rp;
+		                   break;
+		              }
+		         }
+		    }
+		    for(int i = 1;i < local.getSig().getNumInherited();i++){
+			    l.get(i).accept(this);
+		    }
 		}
 		// Visitar rulepeg. 
-		RulePEG b = hashRules.get(n.getName());
-		if(b==null){
+		rule = rule == null ? hashRules.get(n.getName()) : rule;
+		if(rule==null){
 			throw new RuntimeException("Rule "+n.getName()+" not found");
 		}
-		b.accept(this);
+		rule.accept(this);
 		//os ultimos serao os primeiros
 		if(vm.succeed()){
 			for (int i = local.getSig().getNumSintetized()+local.getSig().getNumInherited();i>local.getSig().getNumInherited();i--) {
@@ -1007,6 +1086,7 @@ public class VMVisitor extends Visitor{
 	public void visit(TyBool n){}
 	public void visit(TyMetaPeg n){}
 	public void visit(TyMetaExpr n){}
+	public void visit(TyMetaTy n){}
 	public void visit(TyChar n){}
 	public void visit(TyFloat n){}
 	public void visit(TyGrammar n){}

@@ -62,6 +62,12 @@ public class ErrorsMsg {
           msg.put(28,"List index must be int");
           msg.put(29,"List base acces type error");
           msg.put(30,"List element type error");
+          msg.put(31,"Meta rule name must be of type string");
+          msg.put(32,"Meta rule types must be of type MetaType");
+          msg.put(33,"Meta rule inherited must be of type String");
+          msg.put(34,"Meta rule Synthetized must be of type MetaExpr");
+          msg.put(35,"Meta rule body must be of type MetaPeg");
+
     }
 
     public String translate(ErrorEntry e){

@@ -16,5 +16,14 @@ public class SeqPEG extends APEG{
     public int getSize(){return pegs.length;}
     public APEG getAt(int i){return pegs[i];}
     public void accept(Visitor v){ v.visit(this); }
+    
+    public String toString(){
+        String s = "(seq "  ;
+        for(APEG p : pegs){
+            s += " " + p.toString();
+        }
+        s += ")";
+        return s;
+    }
 
 }

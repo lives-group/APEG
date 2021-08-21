@@ -41,7 +41,7 @@ public abstract class Visitor {
     public abstract void visit(MetaTyInt n);
     public abstract void visit(MetaTyLang n);
     public abstract void visit(MetaTyMap n);
-    public abstract void visit(MetaTyMeta n);
+    public abstract void visit(MetaTyTy n);
     public abstract void visit(MetaTyString n);
     public abstract void visit(MetaUpdatePEG n);
     public abstract void visit(MetaVar n);
@@ -130,6 +130,7 @@ public abstract class Visitor {
     public abstract void visit(TyMeta n);
     public abstract void visit(TyMetaExpr n);
     public abstract void visit(TyMetaPeg n);
+    public abstract void visit(TyMetaTy n);
     public abstract void visit(TyString n);
     //Others
     public abstract void visit(Grammar n);

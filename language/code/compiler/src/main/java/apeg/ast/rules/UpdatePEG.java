@@ -19,5 +19,14 @@ public class UpdatePEG extends APEG {
         return assigs;
     }
     public void accept(Visitor v){ v.visit(this); }
+    
+    public String toString(){
+        String s = "{"  ;
+        for(Pair<Attribute,Expr> p : assigs){
+            s += " (= " + p.getFirst().toString() + " " + p.getSecond().toString() + ")";
+        }
+        s += "}";
+        return s;
+    }
 
 }

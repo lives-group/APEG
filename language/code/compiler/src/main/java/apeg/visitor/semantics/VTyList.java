@@ -47,7 +47,7 @@ public class VTyList extends VType{
 	}
 	
 	public String toString() {
-    	return "{ " + tyParameter.toString() + " }" ;
+    	return "[ " + tyParameter.toString() + " ]" ;
     }
 
     public VType simplify(){

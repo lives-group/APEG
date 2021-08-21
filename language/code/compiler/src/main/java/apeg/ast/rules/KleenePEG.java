@@ -14,5 +14,9 @@ public class KleenePEG extends APEG{
         return pegExp;
     }
     public void accept(Visitor v){ v.visit(this); }
+    
+    public String toString(){
+        return "(* " + pegExp.toString() +")";
+    }     
 
 }

@@ -344,7 +344,7 @@ private STGroup groupTemplate;
 	}
 
 	@Override
-	public void visit(MetaTyMeta n) {
+	public void visit(MetaTyTy n) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -1256,6 +1256,8 @@ private STGroup groupTemplate;
 		this.type = groupTemplate.getInstanceOf("string_type");
 		
 	}
+	
+	public void visit(TyMetaTy n){}
 
 	@Override
 	public void visit(Grammar n) {

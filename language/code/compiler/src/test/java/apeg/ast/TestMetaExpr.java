@@ -52,6 +52,7 @@ public class TestMetaExpr {
         opts.memoize = false;
         return new Grammar(new SymInfo (1,1), "Annotation", opts, rules);
     }
+    
 
     private Object runAndReportVar(Grammar gram, String x){
         CTX ctx;
@@ -113,10 +114,10 @@ public class TestMetaExpr {
     @Test
     public void testMetaStr(){
         Expr e;
-        e =  new StrLit(new SymInfo(5,21), "abc");
+        e =  new MetaStrLit(new SymInfo(5,21), new StrLit(new SymInfo(5,21), "abc"));
         Grammar g = buildAttGrammar("y",e,"x", null);
         Object r = runAndReportVar(g,"y");
-        assertEquals("abc",r);
+        assertEquals("abc",((StrLit)r).getValue());
     }
 
     @Test
@@ -421,5 +422,7 @@ public class TestMetaExpr {
         Object r = runAndReportVar(g,"x");
         assertEquals("[1, 2, 3, 4, 5, 6, 7]",r.toString());
     }
+    
+  
 
 }

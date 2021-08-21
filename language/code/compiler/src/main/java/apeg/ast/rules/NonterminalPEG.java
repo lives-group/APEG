@@ -15,12 +15,24 @@ public class NonterminalPEG extends APEG{
         this.name = name;
         this.args = args;
     }
+    
     public String getName(){
         return name;
     }
+    
     public List<Expr> getArgs(){
         return args;
     }
+    
     public void accept(Visitor v){ v.visit(this); }
+    
+    public String toString(){
+        String s = "(" + name ;
+        for(Expr e : args){
+            s += " " + e.toString();
+        }
+        s += ")";
+        return s;
+    }
 
 }

@@ -15,4 +15,7 @@ public class AndPEG extends APEG{
     }
     public void accept(Visitor v){ v.visit(this); }
 
+    public String toString(){
+        return "(& " + pegExp.toString()+ ")";
+    } 
 }

@@ -127,7 +127,7 @@ public void visit(MetaTyLang n){}
     @Override
 public void visit(MetaTyMap n){}
     @Override
-public void visit(MetaTyMeta n){}
+public void visit(MetaTyTy n){}
     @Override
 public void visit(MetaTyString n){}
     @Override
@@ -378,6 +378,7 @@ public void visit(TyMetaExpr n){}
 public void visit(TyMetaPeg n){}
     @Override
 public void visit(TyString n){}
+public void visit(TyMetaTy n){}
 
     //Others
     @Override

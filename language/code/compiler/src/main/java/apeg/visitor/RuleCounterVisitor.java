@@ -231,7 +231,7 @@ public class RuleCounterVisitor extends Visitor {
 	}
 
 	@Override
-	public void visit(MetaTyMeta n) {
+	public void visit(MetaTyTy n) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -640,6 +640,8 @@ public class RuleCounterVisitor extends Visitor {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	public void visit(TyMetaTy n){}
 
 	@Override
 	public void visit(Grammar n) {

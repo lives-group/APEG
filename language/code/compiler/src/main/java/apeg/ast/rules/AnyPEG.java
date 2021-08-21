@@ -9,5 +9,10 @@ public class AnyPEG extends APEG{
         super(s);
     }
     public void accept(Visitor v){ v.visit(this); }
+    
+    
+    public String toString(){
+        return ".";
+    } 
 
 }

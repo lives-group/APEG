@@ -5,10 +5,10 @@ import apeg.visitor.Visitor;
 import apeg.ast.types.TyMeta;
 import apeg.util.SymInfo;
 
-public class MetaTyMeta extends MetaType{
+public class MetaTyTy extends MetaType{
 
   
-    public MetaTyMeta(SymInfo s){
+    public MetaTyTy(SymInfo s){
         super(s);
     }
     

@@ -1,7 +1,7 @@
 package apeg.ast;
 
 import java.util.List;
-
+import java.util.ArrayList;
 import apeg.util.*;
 
 import apeg.ast.rules.RulePEG;
@@ -36,6 +36,15 @@ public class Grammar extends ASTNode {
 
 	public void accept(Visitor v) {
 		v.visit(this);
+	}
+	
+	
+	public Grammar compose(List<RulePEG> g){
+	    List<RulePEG> gs =  new ArrayList<RulePEG>();
+	    gs.addAll( rules );
+	    gs.addAll(g);
+	    Grammar gm = new Grammar(getSymInfo(), name, opts, gs);
+	    return gm;
 	}
 
 	public static class GrammarOption {

@@ -14,8 +14,4 @@ public abstract class Type extends ASTNode{
     
     abstract public boolean match(Type t);
 
-    public String getName() {
-	return name;
-    }
-
 }

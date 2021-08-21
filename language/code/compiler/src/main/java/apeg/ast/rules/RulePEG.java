@@ -39,7 +39,21 @@ public class RulePEG extends ASTNode{
     public APEG getPeg(){
         return peg;
     }
+    
     public void accept(Visitor v){ v.visit(this); }
     public enum Annotation { MEMOIZE, TRANSIENT, NONE}
-
+    
+    public String toString(){
+        String s = "(rule " + ruleName  + " " + anno.toString();
+        s += " (";
+        for(Pair<Type,String> p : inh){
+            s += " (:: " + p.getFirst() + " " + p.getSecond().toString() + ")";
+        }
+        s += ") (";
+        for(Expr p : syn){
+            s += " " + p.toString();
+        }
+        s += ") " + peg.toString() +")";
+        return s;
+    }
 }

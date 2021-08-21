@@ -8,9 +8,9 @@ import apeg.util.SymInfo;
 
 public class MetaNonterminalPEG extends MetaAPEG{
 
-    private Expr name,args[];
+    private Expr name,args;
     
-    public MetaNonterminalPEG(SymInfo s,Expr name,Expr args[]){
+    public MetaNonterminalPEG(SymInfo s,Expr name,Expr args){
         super(s);
         this.name = name;
         this.args = args;
@@ -18,7 +18,7 @@ public class MetaNonterminalPEG extends MetaAPEG{
     public Expr getName(){
         return name;
     }
-    public Expr[] getArgs(){
+    public Expr getArgs(){
         return args;
     }
     

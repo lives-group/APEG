@@ -412,10 +412,13 @@ term returns[Expr exp]:
 
 
 factor returns[Expr exp]: 
+   {metaLevel}? t='#' primary // { $exp = factory.newUnquoteExpr(new SymInfo($t.line, $t.pos), $primary.exp); }
+  |
    OP_SUB primary { $exp = factory.newUMinusExpr(new SymInfo($OP_SUB.line, $OP_SUB.pos), $primary.exp); }
   |
    t='!' f=primary {$exp = factory.newNotExpr(new SymInfo($t.line, $t.pos), $f.exp);}
-  | primary {$exp = $primary.exp;}
+  |
+   primary {$exp = $primary.exp;}
  ;
 
 primary returns[Expr exp]:

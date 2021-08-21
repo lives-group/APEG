@@ -203,12 +203,28 @@ private STGroup groupTemplate;
 	public void visit(MetaBoolLit n) {
 		// TODO Auto-generated method stub
 		
+		ST node = groupTemplate.getInstanceOf("node");
+		
+		node.add("parent", parent);
+		nodeName = "MetaBooleanLiteralExpr" + c_expr++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("metaboolean_expr_lable").add("value", n.getExpr()));
+		
+		nodes.add(node);
 	}
 
 	@Override
 	public void visit(MetaCharLit n) {
 		// TODO Auto-generated method stub
 		
+		ST node = groupTemplate.getInstanceOf("node");
+		
+		node.add("parent", parent);
+		nodeName = "MetaCharLiteralExpr" + c_expr++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("metachar_expr_lable").add("value", n.getExpr()));
+		
+		nodes.add(node);
 	}
 
 	@Override
@@ -233,12 +249,28 @@ private STGroup groupTemplate;
 	public void visit(MetaFloatLit n) {
 		// TODO Auto-generated method stub
 		
+		ST node = groupTemplate.getInstanceOf("node");
+		
+		node.add("parent", parent);
+		nodeName = "MetaFloatLiteralExpr" + c_expr++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("metafloat_expr_lable").add("value", n.getExpr()));
+		
+		nodes.add(node);
 	}
 
 	@Override
 	public void visit(MetaIntLit n) {
 		// TODO Auto-generated method stub
 		
+		ST node = groupTemplate.getInstanceOf("node");
+		
+		node.add("parent", parent);
+		nodeName = "MetaIntLiteralExpr" + c_expr++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("metaint_expr_lable").add("value", n.getExpr()));
+		
+		nodes.add(node);
 	}
 
 	@Override
@@ -257,6 +289,20 @@ private STGroup groupTemplate;
 	public void visit(MetaMapLit n) {
 		// TODO Auto-generated method stub
 		
+                ST node = groupTemplate.getInstanceOf("node");
+                node.add("parent", parent);
+                nodeName = "metamapLit" + c_expr++;
+                node.add("node", nodeName);
+                node.add("lable", groupTemplate.getInstanceOf("metamapLit_expr_lable"));
+                nodes.add(node);                  
+  
+                String s = nodeName;
+                for(Pair<Expr, Expr> p : n.getAssocs()){
+                        parent = s;
+                        p.getFirst().accept(this);
+                        parent = s;
+                        p.getSecond().accept(this);
+                }
 	}
 
 	@Override
@@ -299,6 +345,14 @@ private STGroup groupTemplate;
 	public void visit(MetaStrLit n) {
 		// TODO Auto-generated method stub
 		
+		ST node = groupTemplate.getInstanceOf("node");
+		
+		node.add("parent", parent);
+		nodeName = "MetaStrLiteralExpr" + c_expr++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("metastring_expr_lable").add("value", n.getExpr()));
+		
+		nodes.add(node);
 	}
 
 	@Override
@@ -724,12 +778,40 @@ private STGroup groupTemplate;
 	public void visit(MetaAdd n) {
 		// TODO Auto-generated method stub
 		
+		ST node = groupTemplate.getInstanceOf("node");
+		
+		node.add("parent", parent);
+		nodeName = "MetaAddExpr" + c_expr++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("metaadd_expr_lable"));
+		
+		nodes.add(node);
+		
+		String s = nodeName;
+		parent = s;
+		n.getLeft().accept(this);
+		parent = s;
+		n.getRight().accept(this);
 	}
 
 	@Override
 	public void visit(MetaAnd n) {
 		// TODO Auto-generated method stub
 		
+		ST node = groupTemplate.getInstanceOf("node");
+		
+		node.add("parent", parent);
+		nodeName = "MetaAndExpr" + c_expr++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("metaand_expr_lable"));
+		
+		nodes.add(node);
+		
+		String s = nodeName;
+		parent = s;
+		n.getLeft().accept(this);
+		parent = s;
+		n.getRight().accept(this);
 	}
 
 	@Override
@@ -742,90 +824,295 @@ private STGroup groupTemplate;
 	public void visit(MetaConcat n) {
 		// TODO Auto-generated method stub
 		
+		ST node = groupTemplate.getInstanceOf("node");
+		
+		node.add("parent", parent);
+		nodeName = "MetaConcatExpr" + c_expr++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("metaconcat_expr_lable"));
+		
+		nodes.add(node);
+		
+		String s = nodeName;
+		parent = s;
+		n.getLeft().accept(this);
+		parent = s;
+		n.getRight().accept(this);
 	}
 
 	@Override
 	public void visit(MetaDiv n) {
 		// TODO Auto-generated method stub
 		
+		ST node = groupTemplate.getInstanceOf("node");
+		
+		node.add("parent", parent);
+		nodeName = "MetaDivExpr" + c_expr++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("metadiv_expr_lable"));
+		
+		nodes.add(node);
+		
+		String s = nodeName;
+		parent = s;
+		n.getLeft().accept(this);
+		parent = s;
+		n.getRight().accept(this);
 	}
 
 	@Override
 	public void visit(MetaEquals n) {
 		// TODO Auto-generated method stub
 		
+		ST node = groupTemplate.getInstanceOf("node");
+		
+		node.add("parent", parent);
+		nodeName = "MetaEqualsExpr" + c_expr++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("metaequals_expr_lable"));
+		
+		nodes.add(node);
+		
+		String s = nodeName;
+		parent = s;
+		n.getLeft().accept(this);
+		parent = s;
+		n.getRight().accept(this);
 	}
 
 	@Override
 	public void visit(MetaGreater n) {
 		// TODO Auto-generated method stub
 		
+		ST node = groupTemplate.getInstanceOf("node");
+		
+		node.add("parent", parent);
+		nodeName = "MetaGreaterExpr" + c_expr++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("metagt_expr_lable"));
+		
+		nodes.add(node);
+		
+		String s = nodeName;
+		parent = s;
+		n.getLeft().accept(this);
+		parent = s;
+		n.getRight().accept(this);
 	}
 
 	@Override
 	public void visit(MetaGreaterEq n) {
 		// TODO Auto-generated method stub
 		
+		ST node = groupTemplate.getInstanceOf("node");
+		
+		node.add("parent", parent);
+		nodeName = "MetaGreaterEqualsExpr" + c_expr++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("metage_expr_lable"));
+		
+		nodes.add(node);
+		
+		String s = nodeName;
+		parent = s;
+		n.getLeft().accept(this);
+		parent = s;
+		n.getRight().accept(this);
 	}
 
 	@Override
 	public void visit(MetaLess n) {
 		// TODO Auto-generated method stub
 		
+		ST node = groupTemplate.getInstanceOf("node");
+		
+		node.add("parent", parent);
+		nodeName = "MetaLessExpr" + c_expr++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("metalt_expr_lable"));
+		
+		nodes.add(node);
+		
+		String s = nodeName;
+		parent = s;
+		n.getLeft().accept(this);
+		parent = s;
+		n.getRight().accept(this);
 	}
 
 	@Override
 	public void visit(MetaLessEq n) {
 		// TODO Auto-generated method stub
 		
+		ST node = groupTemplate.getInstanceOf("node");
+		
+		node.add("parent", parent);
+		nodeName = "MetaLessEqualsExpr" + c_expr++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("metale_expr_lable"));
+		
+		nodes.add(node);
+		
+		String s = nodeName;
+		parent = s;
+		n.getLeft().accept(this);
+		parent = s;
+		n.getRight().accept(this);
 	}
 
 	@Override
 	public void visit(MetaMapAcces n) {
 		// TODO Auto-generated method stub
 		
+                ST node = groupTemplate.getInstanceOf("node");
+                node.add("parent", parent);
+                nodeName = "metamapAcces" + c_expr++; 
+                node.add("node", nodeName);
+                node.add("lable", groupTemplate.getInstanceOf("metamapAcces_expr_lable"));
+                nodes.add(node);
+  
+                String s = nodeName;
+                parent = s;
+                n.getMap().accept(this);
+                parent = s;
+                n.getIndex().accept(this);
 	}
 
 	@Override
 	public void visit(MetaMapExtension n) {
 		// TODO Auto-generated method stub
 		
+                ST node = groupTemplate.getInstanceOf("node");
+                node.add("parent", parent);
+                nodeName = "metamapAcces" + c_expr++;
+                node.add("node", nodeName);    
+                node.add("lable", groupTemplate.getInstanceOf("metamapExtension_expr_lable"));
+                nodes.add(node);
+ 
+                String s = nodeName;
+                parent = s;
+                n.getMap().accept(this);
+                parent = s;
+                n.getKey().accept(this);
+                parent = s;
+                n.getValue().accept(this);
 	}
 
 	@Override
 	public void visit(MetaMod n) {
 		// TODO Auto-generated method stub
 		
+		ST node = groupTemplate.getInstanceOf("node");
+		
+		node.add("parent", parent);
+		nodeName = "MetaModExpr" + c_expr++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("metamod_expr_lable"));
+		
+		nodes.add(node);
+		
+		String s = nodeName;
+		parent = s;
+		n.getLeft().accept(this);
+		parent = s;
+		n.getRight().accept(this);
 	}
 
 	@Override
 	public void visit(MetaMult n) {
 		// TODO Auto-generated method stub
 		
+		ST node = groupTemplate.getInstanceOf("node");
+		
+		node.add("parent", parent);
+		nodeName = "MetaMultExpr" + c_expr++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("metamul_expr_lable"));
+		
+		nodes.add(node);
+		
+		String s = nodeName;
+		parent = s;
+		n.getLeft().accept(this);
+		parent = s;
+		n.getRight().accept(this);
 	}
 
 	@Override
 	public void visit(MetaNot n) {
 		// TODO Auto-generated method stub
 		
+		ST node = groupTemplate.getInstanceOf("node");
+		
+		node.add("parent", parent);
+		nodeName = "MetaNotExpr" + c_expr++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("metanot_expr_lable"));
+		
+		nodes.add(node);
+		
+		parent = nodeName;
+		n.getPegExpr().accept(this);
 	}
 
 	@Override
 	public void visit(MetaNotEq n) {
 		// TODO Auto-generated method stub
 		
+		ST node = groupTemplate.getInstanceOf("node");
+		
+		node.add("parent", parent);
+		nodeName = "MetaNotEqualsExpr" + c_expr++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("metano_equals_expr_lable"));
+		
+		nodes.add(node);
+		
+		String s = nodeName;
+		parent = s;
+		n.getLeft().accept(this);
+		parent = s;
+		n.getRight().accept(this);
 	}
 
 	@Override
 	public void visit(MetaOr n) {
 		// TODO Auto-generated method stub
 		
+		ST node = groupTemplate.getInstanceOf("node");
+		
+		node.add("parent", parent);
+		nodeName = "MetaOrExpr" + c_expr++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("metaor_expr_lable"));
+		
+		nodes.add(node);
+		
+		String s = nodeName;
+		parent = s;
+		n.getLeft().accept(this);
+		parent = s;
+		n.getRight().accept(this);
 	}
 
 	@Override
 	public void visit(MetaSub n) {
 		// TODO Auto-generated method stub
 		
+		ST node = groupTemplate.getInstanceOf("node");
+		
+		node.add("parent", parent);
+		nodeName = "MetaSubExpr" + c_expr++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("metasub_expr_lable"));
+		
+		nodes.add(node);
+		
+		String s = nodeName;
+		parent = s;
+		n.getLeft().accept(this);
+		parent = s;
+		n.getRight().accept(this);
 	}
 
 	@Override

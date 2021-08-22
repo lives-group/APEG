@@ -382,20 +382,48 @@ public class VMVisitor extends Visitor{
 		Boolean b = (Boolean)(stk.pop().getSecond());
 		stk.push(new Pair(VTyBool.getInstance(),a && b));
 	}
-//g1   f : 'a'
 //
-//g2   h : 'b' 
-// g3 = g1 << g2 = [f: 'a', h 'b']
+//g1   [a : 'a', b : '2',c : '8']
 //
-//g1   [f : 'a', t : '2']
-//
-//g2   [t : 'b', k : 'e'] 
+//g2   [c : 'b',a : '0', d : 'e'] 
 //  g3 = g1 << g2 = [f: 'a', h 'b'] XX
 //  g3 = g1 << g2 = [f: 'a' / 'b'] XX
 //
-    private ArrayList<RulePEG> mergeGrammars(ArrayList<RulePEG> e, ArrayList<RulePEG>d){
-      
-      return null;
+    
+    private boolean chkParams(List<Pair<Type,String>> le, List<Pair<Type,String>> lr){
+       boolean r = true;
+       if(le.size() == lr.size()){
+           for(int i =0; i < le.size(); i++){
+               r = r && le.get(i).getFirst().match(lr.get(i).getFirst());
+           }
+       }else{ return false;}
+       return r;
+    }
+    
+    private ArrayList<RulePEG> mergeGrammars(ArrayList<RulePEG> re,ArrayList<RulePEG> rd){
+        ArrayList<RulePEG> a = new ArrayList<RulePEG>();
+        boolean merger = false;
+        RulePEG intersec;
+        APEG body;
+        RulePEG y;
+        for (RulePEG x: re) {
+            body = x.getPeg();
+            int j = 0;
+            while (j < rd.size()) {
+                y = rd.get(j);
+                if (x.getRuleName() == y.getRuleName()) {
+                    if(!chkParams(x.getInh(), y.getInh()) || x.getSyn().size() != y.getSyn().size()){
+                        throw new RuntimeException(x.getSymInfo().toString()+" Type parameters for rules diverge: rules " + x.getRuleName() + " and " + y.getRuleName());
+                    }
+                    body = new ChoicePEG(y.getSymInfo(), body, y.getPeg());
+                    rd.remove(j);
+                    merger = true;
+                }else{ j++;}
+            }
+            a.add(new RulePEG(x.getSymInfo(),x.getRuleName(),x.getAnno(),x.getInh(),x.getSyn(),body));
+        }
+        a.addAll(rd);
+        return a;
     }
      
 	@Override
@@ -407,8 +435,8 @@ public class VMVisitor extends Visitor{
 		    if(stk.peek().getFirst().match(VTyGrammar.getInstance()) ){
 		        rd = (ArrayList<RulePEG>)stk.pop().getSecond();
 		        re = (ArrayList<RulePEG>)stk.pop().getSecond();
-		        re.addAll(rd);
-		        //re = mergeGrammars(rd,re);
+		        //re.addAll(rd);
+		        re = mergeGrammars(re,rd);
 		        stk.push(new Pair<VType,Object>(VTyGrammar.getInstance(),re));
 		        return;
 		    }
@@ -417,11 +445,19 @@ public class VMVisitor extends Visitor{
 		    Grammar gext;
 		    n.getRight().accept(this);
 		    if(stk.peek().getFirst().match(VTyGrammar.getInstance()) ){
-		        gext = (Grammar)lan.getFirst().compose((ArrayList<RulePEG>)stk.peek().getSecond());
+		        
+		        gext = (Grammar)lan.getFirst();
+		        re =  (ArrayList<RulePEG>)((Grammar)lan.getFirst()).cloneRules();
+		        rd = mergeGrammars((ArrayList)re, (ArrayList<RulePEG>)stk.peek().getSecond());
+		        gext = new Grammar(gext.getSymInfo(), gext.getName(),gext.getOptions(),rd);
 		        TypeCheckerVisitor tychk = new TypeCheckerVisitor();
 		        gext.accept(tychk);
-		        if(tychk.getError() == null){
+		        if(tychk.getError().size() == 0){
 		            System.out.println("Type erros when composing grammars at " + n.getSymInfo().toString());
+		            ErrorsMsg err = ErrorsMsg.getInstance();
+		            for(ErrorEntry e: tychk.getError()){
+		                 System.out.println(err.translate(e));
+		            }
 		            throw new RuntimeException("Composition error at " + n.getSymInfo().toString()); 
                 }
 		    }

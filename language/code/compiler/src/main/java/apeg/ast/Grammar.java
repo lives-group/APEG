@@ -39,12 +39,10 @@ public class Grammar extends ASTNode {
 	}
 	
 	
-	public Grammar compose(List<RulePEG> g){
+	public List<RulePEG> cloneRules(){
 	    List<RulePEG> gs =  new ArrayList<RulePEG>();
 	    gs.addAll( rules );
-	    gs.addAll(g);
-	    Grammar gm = new Grammar(getSymInfo(), name, opts, gs);
-	    return gm;
+	    return gs;
 	}
 
 	public static class GrammarOption {

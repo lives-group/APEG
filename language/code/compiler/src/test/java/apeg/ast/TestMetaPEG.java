@@ -226,6 +226,57 @@ public class TestMetaPEG {
     }
     
     
+    
+    @Test
+    public void testMetaGrammarCompose2(){
+        Expr name, tyl, al, rl, el, er, op;
+        MetaAPEG b;
+        MetaRulePEG p,p2;
+        
+        
+        ArrayList<Expr> arrTy = new ArrayList<Expr>();
+        arrTy.add( new MetaTyInt(new SymInfo(5,17)) );
+        tyl =  new ListLit(new SymInfo(7,28), arrTy);
+        
+        ArrayList<Expr> arrRet = new ArrayList<Expr>();
+        rl =  new ListLit(new SymInfo(7,28), arrRet);
+        
+        ArrayList<Expr> arr = new ArrayList<Expr>();
+        arr.add( new  StrLit(new SymInfo(6, 17), "x") );
+        al =  new ListLit(new SymInfo(7,28), arr);
+        
+        name =  new StrLit(new SymInfo(7,10), "c3po");
+        
+        b = new MetaLitPEG(new SymInfo(7,10), new StrLit(new SymInfo(7,10), "a") );
+
+        p = new MetaRulePEG(new SymInfo(8,10), name, null, tyl, al, rl, b);
+        
+        
+        arrTy = new ArrayList<Expr>();
+        arrTy.add( new MetaTyInt(new SymInfo(5,17)) );
+        tyl =  new ListLit(new SymInfo(7,28), arrTy);
+        
+        arrRet = new ArrayList<Expr>();
+        rl =  new ListLit(new SymInfo(7,28), arrRet);
+        
+        arr = new ArrayList<Expr>();
+        arr.add( new  StrLit(new SymInfo(6, 17), "x") );
+        al =  new ListLit(new SymInfo(7,28), arr);
+        
+        name =  new StrLit(new SymInfo(7,10), "c3po");
+        
+        b = new MetaLitPEG(new SymInfo(7,10), new StrLit(new SymInfo(7,10), "c") );
+
+        p2 = new MetaRulePEG(new SymInfo(8,10), name, null, tyl, al, rl, b);
+        
+        op = new Compose(new SymInfo(9,10), p, p2);
+        
+        Grammar g = buildAttGrammar("y",op,"y", null);
+        Object r = runAndReportVar(g,"y");
+        System.out.println(r);
+        assertEquals("[(rule c3po NONE ( (:: int x)) () (/ 'a' 'c'))]",r.toString());
+    }
+    
     @Test
     public void testMetaLanCompose(){
         Expr name, tyl, al, rl, el, er, op;

@@ -504,52 +504,83 @@ public class TestExprs {
 	// Expected Result
 	assertEquals(e.toString(), "([->] m 'key' 10)");
     }
-
-    @Test
-    void testMetaMapLit01() throws IOException {
-	CharStream stream = CharStreams.fromReader(new StringReader("(| {: 'abc' -> 10 :} |)"));
-
-	TContainer<Expr> test = new ExprContainer("MetaMapLit01", stream);
-	Expr e = test.execute();
-	// Expected Result
-	assertEquals(e.toString(), "'({: 'abc', 10)");
-    }
-
+	
 	@Test
 	void testBoolean06() throws IOException {
-
+		
 		CharStream stream = CharStreams.fromReader(new StringReader("true && up != down || false "));
-
+		
 		TContainer<Expr> test = new ExprContainer("Bool06", stream);
 		Expr e = test.execute();
-
+		
 		assertEquals(e.toString(),  "(|| (&& true (!= up down)) false)" );
-
+		
 	}
-
-
+	
+	
 	@Test
 	void testBoolean07() throws IOException {
-
+		
 		CharStream stream = CharStreams.fromReader(new StringReader(" 5*5 != ok || 5*5 == 25 "));
-
+		
 		TContainer<Expr> test = new ExprContainer("Bool07", stream);
 		Expr e = test.execute();
-
+		
 		assertEquals(e.toString(),  "(|| (!= (* 5 5) ok) (== (* 5 5) 25))" );
-
+		
 	}
-
-
+	
+	
 	@Test
 	void testBoolean08() throws IOException {
-
+		
 		CharStream stream = CharStreams.fromReader(new StringReader(" true || ( false || false && true )"));
-
+		
 		TContainer<Expr> test = new ExprContainer("Bool08", stream);
 		Expr e = test.execute();
-
+		
 		assertEquals(e.toString(),  "(|| true (|| false (&& false true)))" );
-
+		
 	}
+	
+		@Test
+		void testMetaMapLit01() throws IOException {
+		CharStream stream = CharStreams.fromReader(new StringReader("(| {: 'abc' -> 10 :} |)"));
+	
+		TContainer<Expr> test = new ExprContainer("MetaMapLit01", stream);
+		Expr e = test.execute();
+		// Expected Result
+		assertEquals(e.toString(), "'({: 'abc', 10)");
+		}
+	
+	@Test
+    void testMetaMapLitKeyMult01() throws IOException {
+		CharStream stream = CharStreams.fromReader(new StringReader("(| {: (2 * 4) -> 'mult' :} |)"));
+		
+		TContainer<Expr> test = new ExprContainer("MetaMapLitKeyMult01", stream);
+		Expr e = test.execute();
+		// Expected Result
+		assertEquals(e.toString(), "'({: (* 2 4), 'mult')");
+    }
+	
+	@Test
+    void testMapLitKeyMetaMult01() throws IOException {
+		CharStream stream = CharStreams.fromReader(new StringReader("({: | (2 * 4) | -> 'mult' :})"));
+		
+		TContainer<Expr> test = new ExprContainer("MapLitKeyMetaMult01", stream);
+		Expr e = test.execute();
+		// Expected Result
+		assertEquals(e.toString(), "({: '(* 2 4), 'mult')");
+    }
+	
+	@Test
+    void testMapLitKeyMult01() throws IOException {
+		CharStream stream = CharStreams.fromReader(new StringReader("({: (2 * 4) -> 'mult' :})"));
+		
+		TContainer<Expr> test = new ExprContainer("MapLitKeyMult01", stream);
+		Expr e = test.execute();
+		// Expected Result
+		assertEquals(e.toString(), "({: (* 2 4), 'mult')");
+    }
+	
 }

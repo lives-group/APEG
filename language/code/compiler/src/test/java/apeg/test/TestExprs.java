@@ -121,7 +121,7 @@ public class TestExprs {
 	TContainer<Expr> test = new ExprContainer("plus00", stream);
 	Expr e = test.execute();
 	// Expected Result
-	assertEquals(e.toString(), "(+ 2 3)");
+	assertEquals( "(+ 2 3)", e.toString());
     }
 
     @Test
@@ -133,7 +133,7 @@ public class TestExprs {
 	TContainer<Expr> test = new ExprContainer("plus01", stream);
 	Expr e = test.execute();
 	// Expected Result
-	assertEquals(e.toString(), "(+ (+ 2 3) 7)");
+	assertEquals( "(+ (+ 2 3) 7)", e.toString());
     }
 
     @Test
@@ -145,7 +145,7 @@ public class TestExprs {
 	TContainer<Expr> test = new ExprContainer("plus01", stream);
 	Expr e = test.execute();
 	// Expected Result
-	assertEquals(e.toString(), "(+ 7 (* 3 2))");
+	assertEquals( "(+ 7 (* 3 2))", e.toString());
     }
 
     @Test
@@ -157,7 +157,7 @@ public class TestExprs {
 	TContainer<Expr> test = new ExprContainer("plus01", stream);
 	Expr e = test.execute();
 	// Expected Result
-	assertEquals(e.toString(), "(* (+ 7 3) 2)");
+	assertEquals( "(* (+ 7 3) 2)", e.toString());
     }
     
     @Test
@@ -169,7 +169,7 @@ public class TestExprs {
 	TContainer<Expr> test = new ExprContainer("plus01", stream);
 	Expr e = test.execute();
 	// Expected Result
-	assertEquals(e.toString(), "(* (/ 10 8) 100)");
+	assertEquals( "(* (/ 10 8) 100)", e.toString());
     } 
     
     @Test
@@ -181,7 +181,7 @@ public class TestExprs {
 	TContainer<Expr> test = new ExprContainer("plus01", stream);
 	Expr e = test.execute();
 	// Expected Result
-	assertEquals(e.toString(), "(- 13 9)");
+	assertEquals( "(- 13 9)", e.toString());
     }
     
     @Test
@@ -193,7 +193,7 @@ public class TestExprs {
 	TContainer<Expr> test = new ExprContainer("plus01", stream);
 	Expr e = test.execute();
 	// Expected Result
-	assertEquals(e.toString(), "(% 27 7)");
+	assertEquals( "(% 27 7)", e.toString());
     }
     
     @Test
@@ -205,7 +205,7 @@ public class TestExprs {
 	TContainer<Expr> test = new ExprContainer("plus01", stream);
 	Expr e = test.execute();
 	// Expected Result
-	assertEquals(e.toString(), "(/ 31 15)");
+	assertEquals( "(/ 31 15)", e.toString());
     }
     
     @Test
@@ -217,7 +217,7 @@ public class TestExprs {
 	TContainer<Expr> test = new ExprContainer("plus01", stream);
 	Expr e = test.execute();
 	// Expected Result
-	assertEquals(e.toString(), "(* (% (/ 9 2) 18) (- 1 (+ 13 7)))");
+	assertEquals( "(* (% (/ 9 2) 18) (- 1 (+ 13 7)))", e.toString());
     }
     
     @Test
@@ -229,7 +229,7 @@ public class TestExprs {
 	TContainer<Expr> test = new ExprContainer("plus01", stream);
 	Expr e = test.execute();
 	// Expected Result
-	assertEquals(e.toString(), "(+ x 2)");
+	assertEquals( "(+ x 2)", e.toString());
     }
     
     @Test
@@ -241,7 +241,7 @@ public class TestExprs {
 	TContainer<Expr> test = new ExprContainer("plus01", stream);
 	Expr e = test.execute();
 	// Expected Result
-	assertEquals(e.toString(), "(- (* b b) (* (* 4 a) c))");
+	assertEquals( "(- (* b b) (* (* 4 a) c))", e.toString());
     }
     
     @Test
@@ -254,7 +254,7 @@ public class TestExprs {
 	TContainer<Expr> test = new ExprContainer("plus01", stream);
 	Expr e = test.execute();
 	// Expected Result
-	assertEquals(e.toString(),"(|| (|| true (&& (&& false (== (== false true) a)) false)) true)");
+	assertEquals("(|| (|| true (&& (&& false (== (== false true) a)) false)) true)", e.toString());
     }
     
     @Test
@@ -266,7 +266,7 @@ public class TestExprs {
 	TContainer<Expr> test = new ExprContainer("plus01", stream);
 	Expr e = test.execute();
 	// Expected Result
-	assertEquals(e.toString(), "(<= 1 (+ -6 (* a b)))");
+	assertEquals( "(<= 1 (+ -6 (* a b)))", e.toString());
     }
   
     @Test
@@ -278,7 +278,7 @@ public class TestExprs {
 	TContainer<Expr> test = new ExprContainer("plus01", stream);
 	Expr e = test.execute();
 	// Expected Result
-	assertEquals(e.toString(), "(== (< 1 2) false)");
+	assertEquals( "(== (< 1 2) false)", e.toString());
     }
     
     @Test
@@ -302,7 +302,7 @@ public class TestExprs {
 	TContainer<Expr> test = new ExprContainer("plus01", stream);
 	Expr e = test.execute();
 	// Expected Result
-	assertEquals(e.toString(), "(== (- (+ (* a z) b) c) false)");
+	assertEquals( "(== (- (+ (* a z) b) c) false)", e.toString());
     }
     
     @Test
@@ -314,7 +314,7 @@ public class TestExprs {
 	TContainer<Expr> test = new ExprContainer("plus01", stream);
 	Expr e = test.execute();
 	// Expected Result
-	assertEquals(e.toString(), "(< (- (+ (* a 2) b) c) 10)");
+	assertEquals( "(< (- (+ (* a 2) b) c) 10)", e.toString());
     }
      
     @Test
@@ -339,7 +339,7 @@ public class TestExprs {
 	TContainer<Expr> test = new ExprContainer("plus01", stream);
 	Expr e = test.execute();
 	// Expected Result
-	assertEquals(e.toString(), "(&& (&& (> 1 2) (<= b a)) true)");
+	assertEquals( "(&& (&& (> 1 2) (<= b a)) true)", e.toString());
     }
     
     @Test
@@ -351,7 +351,7 @@ public class TestExprs {
 	TContainer<Expr> test = new ExprContainer("plus01", stream);
 	Expr e = test.execute();
 	// Expected Result
-	assertEquals(e.toString(), "(|| (&& (> 1 2) (<= b a)) (&& true v))");
+	assertEquals( "(|| (&& (> 1 2) (<= b a)) (&& true v))", e.toString());
     }
     
     @Test
@@ -363,7 +363,7 @@ public class TestExprs {
 	TContainer<Expr> test = new ExprContainer("plus01", stream);
 	Expr e = test.execute();
 	// Expected Result
-	assertEquals(e.toString(), "(|| (|| (|| (> 1 2) (<= b a)) true) v)");
+	assertEquals( "(|| (|| (|| (> 1 2) (<= b a)) true) v)", e.toString());
     }
     
     @Test
@@ -375,7 +375,7 @@ public class TestExprs {
 	TContainer<Expr> test = new ExprContainer("plus01", stream);
 	Expr e = test.execute();
 	// Expected Result
-	assertEquals(e.toString(), "(== (!= (== a 2) false) (< b c))");
+	assertEquals( "(== (!= (== a 2) false) (< b c))", e.toString());
     }
     
     @Test
@@ -412,7 +412,7 @@ public class TestExprs {
 	Expr e = test.execute();
 	// Expected Result
 	
-	assertEquals(e.toString(), "(|| (&& true (< a b)) false)" );
+	assertEquals( "(|| (&& true (< a b)) false)" , e.toString());
     }
 
     @Test
@@ -422,7 +422,7 @@ public class TestExprs {
 	TContainer<Expr> test = new ExprContainer("MetaAdd01", stream);
 	Expr e = test.execute();
 	// Expected Result
-	assertEquals(e.toString(), "'(+ 10 20)");
+	assertEquals( "'(+ 10 20)", e.toString());
     }
 
     @Test
@@ -432,7 +432,7 @@ public class TestExprs {
 	TContainer<Expr> test = new ExprContainer("MetaSub01", stream);
 	Expr e = test.execute();
 	// Expected Result
-	assertEquals(e.toString(), "'(- 10 20)");
+	assertEquals( "'(- 10 20)", e.toString());
     }
 
     @Test
@@ -442,7 +442,7 @@ public class TestExprs {
 	TContainer<Expr> test = new ExprContainer("MetaMult01", stream);
 	Expr e = test.execute();
 	// Expected Result
-	assertEquals(e.toString(), "'(* 10 20)");
+	assertEquals( "'(* 10 20)", e.toString());
     }
 
     @Test
@@ -452,7 +452,7 @@ public class TestExprs {
 	TContainer<Expr> test = new ExprContainer("MetaAdd02", stream);
 	Expr e = test.execute();
 	// Expected Result
-	assertEquals(e.toString(), "'(+ 10 '(* 20 30))");
+	assertEquals( "'(+ 10 '(* 20 30))", e.toString());
     }
 
     @Test
@@ -472,7 +472,7 @@ public class TestExprs {
 	TContainer<Expr> test = new ExprContainer("MetaBooleanExpr", stream);
 	Expr e = test.execute();
 	// Expected Result
-	assertEquals(e.toString(), "'(|| '(&& true false) true)");
+	assertEquals( "'(|| '(&& true false) true)", e.toString());
     }
 
     @Test
@@ -482,7 +482,7 @@ public class TestExprs {
 	TContainer<Expr> test = new ExprContainer("MapLit01", stream);
 	Expr e = test.execute();
 	// Expected Result
-	assertEquals(e.toString(), "({: 'abc', 10 'def', 20)");
+	assertEquals( "({: 'abc', 10 'def', 20)", e.toString());
     }
 
     @Test
@@ -492,7 +492,7 @@ public class TestExprs {
 	TContainer<Expr> test = new ExprContainer("MapLit01", stream);
 	Expr e = test.execute();
 	// Expected Result
-	assertEquals(e.toString(), "([] m 'key')");
+	assertEquals( "([] m 'key')", e.toString());
     }
 
     @Test
@@ -502,7 +502,7 @@ public class TestExprs {
 	TContainer<Expr> test = new ExprContainer("MapExtension01", stream);
 	Expr e = test.execute();
 	// Expected Result
-	assertEquals(e.toString(), "([->] m 'key' 10)");
+	assertEquals( "([->] m 'key' 10)", e.toString());
     }
 	
 	@Test
@@ -513,7 +513,7 @@ public class TestExprs {
 		TContainer<Expr> test = new ExprContainer("Bool06", stream);
 		Expr e = test.execute();
 		
-		assertEquals(e.toString(),  "(|| (&& true (!= up down)) false)" );
+		assertEquals(  "(|| (&& true (!= up down)) false)", e.toString());
 		
 	}
 	
@@ -526,7 +526,7 @@ public class TestExprs {
 		TContainer<Expr> test = new ExprContainer("Bool07", stream);
 		Expr e = test.execute();
 		
-		assertEquals(e.toString(),  "(|| (!= (* 5 5) ok) (== (* 5 5) 25))" );
+		assertEquals(  "(|| (!= (* 5 5) ok) (== (* 5 5) 25))", e.toString());
 		
 	}
 	
@@ -539,7 +539,7 @@ public class TestExprs {
 		TContainer<Expr> test = new ExprContainer("Bool08", stream);
 		Expr e = test.execute();
 		
-		assertEquals(e.toString(),  "(|| true (|| false (&& false true)))" );
+		assertEquals(  "(|| true (|| false (&& false true)))", e.toString());
 		
 	}
 	
@@ -550,7 +550,7 @@ public class TestExprs {
 		TContainer<Expr> test = new ExprContainer("MetaMapLit01", stream);
 		Expr e = test.execute();
 		// Expected Result
-		assertEquals(e.toString(), "'({: 'abc', 10)");
+		assertEquals( "'({: 'abc', 10)", e.toString());
 		}
 	
 	@Test
@@ -560,17 +560,17 @@ public class TestExprs {
 		TContainer<Expr> test = new ExprContainer("MetaMapLitKeyMult01", stream);
 		Expr e = test.execute();
 		// Expected Result
-		assertEquals(e.toString(), "'({: (* 2 4), 'mult')");
+		assertEquals( "'({: '(* 2 4), 'mult')", e.toString());
     }
 	
 	@Test
     void testMapLitKeyMetaMult01() throws IOException {
-		CharStream stream = CharStreams.fromReader(new StringReader("({: | (2 * 4) | -> 'mult' :})"));
+		CharStream stream = CharStreams.fromReader(new StringReader("({: (| (2 * 4) |) -> 'mult' :})"));
 		
 		TContainer<Expr> test = new ExprContainer("MapLitKeyMetaMult01", stream);
 		Expr e = test.execute();
 		// Expected Result
-		assertEquals(e.toString(), "({: '(* 2 4), 'mult')");
+		assertEquals( "({: '(* 2 4), 'mult')", e.toString());
     }
 	
 	@Test
@@ -580,7 +580,7 @@ public class TestExprs {
 		TContainer<Expr> test = new ExprContainer("MapLitKeyMult01", stream);
 		Expr e = test.execute();
 		// Expected Result
-		assertEquals(e.toString(), "({: (* 2 4), 'mult')");
+		assertEquals( "({: (* 2 4), 'mult')", e.toString());
     }
 	
 }

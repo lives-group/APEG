@@ -998,7 +998,7 @@ public class VMVisitor extends Visitor{
 		NTInfo local = env.get(n.getName());
 		List<Expr> l = n.getArgs();
 		RulePEG rule = null;
-		if(l.size() > 0){ 
+		if( local.getSig().getNumInherited() > 0){ 
 		    l.get(0).accept(this);
 		    if(stk.peek().getFirst().match(VTyLang.getInstance()) ){
 		         Grammar r = (Grammar)stk.peek().getSecond();   
@@ -1024,8 +1024,7 @@ public class VMVisitor extends Visitor{
 			for (int i = local.getSig().getNumSintetized()+local.getSig().getNumInherited();i>local.getSig().getNumInherited();i--) {
 				vm.setValue(((Attribute)l.get(i-1)).getName(),stk.pop().getSecond());
 			}		
-		}else{}
-		
+		}
 	}
 
 

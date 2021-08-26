@@ -136,7 +136,7 @@ public class Tool {
 				g.accept(dotvisitor);
                                 */
 
-				Visitor typechecker = new TypeCheckerVisitor();
+				Visitor typechecker = new TypeCheckerVisitor(true);
 
 				g.accept(typechecker);
 
@@ -149,6 +149,7 @@ public class Tool {
                     System.exit(1);
                     }
 					VMVisitor vm = new VMVisitor(tool.interpretInput.toString(),((TypeCheckerVisitor)typechecker).getEnv());
+                                        vm.setDebugMode(true);
 					System.out.println("Executing: " + tool.interpretInput);
 					g.accept(vm);
 					if(vm.succeed()){

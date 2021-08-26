@@ -463,7 +463,22 @@ private STGroup groupTemplate;
 	@Override
 	public void visit(Compose n) {
 		// TODO Auto-generated method stub
+
+		ST node = groupTemplate.getInstanceOf("node");
 		
+		node.add("parent", parent);
+		nodeName = "ComposeExpr" + c_expr++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("compose_expr_lable"));
+		
+		nodes.add(node);
+		
+		String s = nodeName;
+		parent = s;
+		n.getLeft().accept(this);
+		parent = s;
+		n.getRight().accept(this);
+
 	}
 
 	@Override
@@ -818,6 +833,21 @@ private STGroup groupTemplate;
 	public void visit(MetaCompose n) {
 		// TODO Auto-generated method stub
 		
+		ST node = groupTemplate.getInstanceOf("node");
+		
+		node.add("parent", parent);
+		nodeName = "MetaComposeExpr" + c_expr++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("metacompose_expr_lable"));
+		
+		nodes.add(node);
+		
+		String s = nodeName;
+		parent = s;
+		n.getLeft().accept(this);
+		parent = s;
+		n.getRight().accept(this);
+
 	}
 
 	@Override
@@ -1609,6 +1639,40 @@ private STGroup groupTemplate;
 	}
 
 	public void visit(TyList n){}
-	public void visit(ListAcces n){}
-	public void visit(ListLit n){}
+
+	public void visit(ListAcces n){
+
+                ST node = groupTemplate.getInstanceOf("node");
+                node.add("parent", parent);
+                nodeName = "listAcces" + c_expr++; 
+                node.add("node", nodeName);
+                node.add("lable", groupTemplate.getInstanceOf("listAcces_expr_lable"));
+                nodes.add(node);
+  
+                String s = nodeName;
+                parent = s;
+                n.getList().accept(this);
+                parent = s;
+                n.getIndex().accept(this);
+
+        }
+
+	public void visit(ListLit n){
+
+                ST node = groupTemplate.getInstanceOf("node");
+                node.add("parent", parent);
+                nodeName = "ListLit" + c_expr++;
+                node.add("node", nodeName);
+                node.add("lable", groupTemplate.getInstanceOf("listLit_expr_lable"));
+                nodes.add(node);                  
+  
+                String s = nodeName;
+                for(Expr p : n.getElems()){
+                        parent = s;
+                        p.accept(this);
+                        // parent = s;
+                        // p.getSecond().accept(this);
+                }
+
+        }
 }

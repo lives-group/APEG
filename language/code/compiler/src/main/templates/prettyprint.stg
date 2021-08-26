@@ -37,7 +37,8 @@ boolean_type() ::= "boolean"
 grammar_type() ::= "grammar"
 rule_type() ::= "rule"
 user_type(name) ::= "<name>"
-map_type(type) ::= "{ <type> }"
+map_type(type) ::= "{<type>}"
+list_type(type) ::= "[<type>]"
 
 
 /** Template for expressions */
@@ -54,6 +55,7 @@ mod_expr(left_expr, right_expr) ::= "(<left_expr> % <right_expr>)"
 add_expr(left_expr, right_expr) ::= "(<left_expr> + <right_expr>)"
 sub_expr(left_expr, right_expr) ::= "(<left_expr> - <right_expr>)"
 concat_expr(left_expr, right_expr) ::= "(<left_expr> ++ <right_expr>)"
+compose_expr(left_expr, right_expr) ::= "(<left_expr> \<\< <right_expr>)"
 
 equals_expr(left_expr, right_expr) ::= "(<left_expr> == <right_expr>)"
 no_equals_expr(left_expr, right_expr) ::= "(<left_expr> != <right_expr>)"
@@ -74,6 +76,8 @@ mapLit(pairs) ::= << {: <pairs; separator=", ", wrap> :} >>
 mapExtension(acces, pair) ::= "<acces> [<pair>]"
 mapAcces(acces, factor, expr) ::= "<factor> [<expr>]"
 
+listLit(exprs) ::= << [<exprs; separator=", ", wrap>] >>
+listAcces(list, index) ::= "<list> !! <index>"
 
 /** Template for parsing expression */
 and_peg(peg_expr) ::= "&<peg_expr>"

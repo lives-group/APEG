@@ -215,6 +215,8 @@ type returns[Type tp]:
  |
   t='{' type '}' {$tp = factory.newMapType(new SymInfo($t.line, $t.pos), $type.tp);}
  |
+  t='[' type ']' {$tp = factory.newListType(new SymInfo($t.line, $t.pos), $type.tp);}
+ |
   META_TYPE {$tp = factory.newMetaType(new SymInfo($META_TYPE.line, $META_TYPE.pos));}
 ;
 
@@ -387,7 +389,9 @@ aexpr returns[Expr exp]:
         funcs.add((Expr ex1, Expr ex2) -> factory.newAddExpr(new SymInfo($addOp.line, $addOp.pos), ex1, ex2));
     else if($addOp.op == 2) // it is a SUB
         funcs.add((Expr ex1, Expr ex2) -> factory.newSubExpr(new SymInfo($addOp.line, $addOp.pos), ex1, ex2));
-    else if($addOp.op == 3) // it is a conc
+    else if($addOp.op == 3) // it is a compose
+        funcs.add((Expr ex1, Expr ex2) -> factory.newComposeExpr(new SymInfo($addOp.line, $addOp.pos), ex1, ex2));
+    else if($addOp.op == 4) // it is a concat
         funcs.add((Expr ex1, Expr ex2) -> factory.newConcatExpr(new SymInfo($addOp.line, $addOp.pos), ex1, ex2));
     }
     )*
@@ -405,6 +409,8 @@ term returns[Expr exp]:
      funcs.add((Expr ex1, Expr ex2) -> factory.newDivExpr(new SymInfo($mulOp.line, $mulOp.pos), ex1, ex2));
    else if($mulOp.op == 3) // it is a mod operator
      funcs.add((Expr ex1, Expr ex2) -> factory.newModExpr(new SymInfo($mulOp.line, $mulOp.pos), ex1, ex2));
+   else if($mulOp.op == 4) // it is a double-exclamation operator
+     funcs.add((Expr ex1, Expr ex2) -> factory.newListAcces(new SymInfo($mulOp.line, $mulOp.pos), ex1, ex2));
    }
    )*
    {$exp = factory.newLeftAssocBinOpList(list, funcs);} 
@@ -441,13 +447,14 @@ primary returns[Expr exp]:
   |
    meta {$exp = $meta.exp;}
   |
+   t='[' exprs ']' {$exp = factory.newListExpr(new SymInfo($t.line, $t.pos), new ArrayList($exprs.list));}
+  |
    mapLit {$exp = $mapLit.exp;}
   |
-   f=primary t='[' e=expr ']' {$exp = factory.newMapAcces(new SymInfo($t.line, $t.pos), $f.exp, $e.exp    );}
+   f=primary t='[' e=expr ']' {$exp = factory.newMapAcces(new SymInfo($t.line, $t.pos), $f.exp, $e.exp);}
   |
-   f=primary t='[' m=mapPair ']' {$exp = factory.newMapExtension(new SymInfo($t.line, $t.pos), $f.exp,     $m.p.getFirst(), $m.p.getSecond());}
+   f=primary t='[' m=mapPair ']' {$exp = factory.newMapExtension(new SymInfo($t.line, $t.pos), $f.exp, $m.p.getFirst(), $m.p.getSecond());}
 ;
-
 
 mapLit returns[Expr exp]:
    t='{:' r=mapList ':}'
@@ -507,7 +514,9 @@ addOp returns[int op, int line, int pos]:
    |
    OP_SUB {$op = 2; $line = $OP_SUB.line; $pos = $OP_SUB.pos;}
    |
-   OP_CONC {$op = 3; $line = $OP_CONC.line; $pos = $OP_CONC.pos;}
+   OP_COMPOSE {$op = 3; $line = $OP_COMPOSE.line; $pos = $OP_COMPOSE.pos;}
+   |
+   OP_CONC {$op = 4; $line = $OP_CONC.line; $pos = $OP_CONC.pos;}
 ;
 
 mulOp returns[int op, int line, int pos]:
@@ -516,6 +525,8 @@ mulOp returns[int op, int line, int pos]:
    OP_DIV {$op = 2; $line = $OP_DIV.line; $pos = $OP_DIV.pos;}
   |
    OP_MOD {$op = 3; $line = $OP_MOD.line; $pos = $OP_MOD.pos;}
+  |
+   OP_DE {$op = 4; $line = $OP_DE.line; $pos = $OP_DE.pos;}
 ;
 
 /***
@@ -566,10 +577,12 @@ OP_GE : '>=';
 OP_NE : '!=';
 OP_ADD : '+';
 OP_SUB : '-';
-OP_CONC : '<<';
+OP_COMPOSE : '<<';
+OP_CONC : '++';
 OP_MUL : '*';
 OP_DIV : '/';
 OP_MOD : '%';
+OP_DE : '!!';
 
 /*
  * Lexical rule for a range (character group)

@@ -1090,9 +1090,33 @@ public class PrettyPrint extends Visitor{
 		
 		System.out.println(template.render());
 	}
-	public void visit(TyList n){}
-	public void visit(ListAcces n){}
-	public void visit(ListLit n){}
+	public void visit(TyList n){
+                ST type_aux = groupTemplate.getInstanceOf("list_type");
+                n.getTyParameter().accept(this);
+                type_aux.add("type", this.type);
+ 
+                this.type = type_aux;
+        }
+	public void visit(ListAcces n){
+            ST r = groupTemplate.getInstanceOf("listAcces");
+
+            n.getList().accept(this);
+            r.add("list", expr);
+            n.getIndex().accept(this);
+            r.add("index", expr);
+
+            expr = r;
+        }
+	public void visit(ListLit n){
+            ST r = groupTemplate.getInstanceOf("listLit");
+
+            for(Expr e: n.getElems()) {
+                e.accept(this);
+                r.add("exprs", expr);
+            }
+
+            expr = r;
+        }
 
 	
 

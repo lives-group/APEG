@@ -11,4 +11,5 @@ public class Compose extends BinaryOP{
     }
     public void accept(Visitor v){ v.visit(this); }
 
+    public String toString() {return "(<< " + getLeft().toString() + " " + getRight().toString() + ")";}
 }

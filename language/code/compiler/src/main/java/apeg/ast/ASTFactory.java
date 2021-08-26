@@ -1,6 +1,7 @@
 package apeg.ast;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import apeg.ast.expr.*;
 import apeg.ast.expr.operators.*;
@@ -81,6 +82,16 @@ public interface ASTFactory {
 	 * @return a floating point node
 	 */
 	public Expr newIntExpr(SymInfo s, int value);
+
+	/**
+	 * 
+	 * @param s 
+	 * 			corresponding node SymInfo
+	 * @param elems 
+	 * 			a list of values
+	 * @return  a list node
+	 */
+        public Expr newListExpr(SymInfo s, ArrayList<Expr> elems);
 	
 	/**
 	 * 
@@ -221,6 +232,18 @@ public interface ASTFactory {
 	 */
 	public Expr newMultExpr(SymInfo s, Expr left, Expr right);
 	
+	/**
+	 * 
+	 * @param s
+	 * 				corresponding SymInfo node
+	 * @param list
+	 * 				the left-hand side expression
+	 * @param index
+	 * 				the right-hand side expression
+	 * @return a listAcces node
+	 */
+	public Expr newListAcces(SymInfo s, Expr list, Expr index);
+
 	/**
 	 * 
 	 * @param s
@@ -544,6 +567,14 @@ public interface ASTFactory {
 	 * @return a Lang type node
 	 */
 	public TyLang newLangType(SymInfo s);
+
+	/**
+	 * 
+	 * @param s
+	 * 			corresponding SymInfo node
+	 * @return a list type node
+	 */
+	public TyList newListType(SymInfo s, Type tyParameter);
 	
 	/**
 	 * 

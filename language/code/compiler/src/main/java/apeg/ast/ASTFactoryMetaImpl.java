@@ -6,6 +6,7 @@ import apeg.ast.rules.*;
 import apeg.ast.types.*;
 import apeg.util.*;
 import java.util.List;
+import java.util.ArrayList;
 import apeg.ast.Grammar.GrammarOption;
 
 public class ASTFactoryMetaImpl implements ASTFactory{
@@ -21,6 +22,10 @@ public class ASTFactoryMetaImpl implements ASTFactory{
         return new MetaMod(s,l,r);
     }
     
+    public Expr newListAcces(SymInfo s, Expr list, Expr index){
+        return new ListAcces(s, list, index);
+    }
+
     public Expr newMultExpr(SymInfo s,Expr l,Expr r){
         return new MetaMult(s,l,r);
     }
@@ -89,6 +94,9 @@ public class ASTFactoryMetaImpl implements ASTFactory{
     }
     public Expr newStringExpr(SymInfo s,String value){
         return new MetaStrLit(s, new StrLit(s, value));
+    }
+    public Expr newListExpr(SymInfo s, ArrayList<Expr> elems){
+        return new ListLit(s, elems);
     }
     public Expr newMapExpr(SymInfo s,Pair<Expr,Expr>[] assocs){
         return new MetaMapLit(s, assocs);
@@ -215,6 +223,9 @@ public class ASTFactoryMetaImpl implements ASTFactory{
     }
     public NonterminalPEG newNonterminalPEG(SymInfo s,String name,List<Expr> args){
         return new NonterminalPEG(s,name,args);
+    }
+    public TyList newListType(SymInfo s,Type tyParameter){
+        return new TyList(s,tyParameter);
     }
     public TyMap newMapType(SymInfo s,Type tyParameter){
         return new TyMap(s,tyParameter);

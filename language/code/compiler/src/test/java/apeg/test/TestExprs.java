@@ -617,7 +617,7 @@ public class TestExprs {
 		TContainer<Expr> test = new ExprContainer("List01", stream);
 		Expr e = test.execute();
 		// Expected Result
-		assertEquals( "([: 1 2 3:])", e.toString());
+		assertEquals( "[ 1 2 3]", e.toString());
     }
 
 	@Test
@@ -627,7 +627,7 @@ public class TestExprs {
 		TContainer<Expr> test = new ExprContainer("List01", stream);
 		Expr e = test.execute();
 		// Expected Result
-		assertEquals( "( [: 'a' 'b' 'c':])", e.toString());
+		assertEquals( "[ 'a' 'b' 'c']", e.toString());
     }
 
 	@Test
@@ -637,7 +637,7 @@ public class TestExprs {
 		TContainer<Expr> test = new ExprContainer("ListBang01", stream);
 		Expr e = test.execute();
 		// Expected Result
-		assertEquals( "(!! m 1)", e.toString());
+		assertEquals("(!! m 1)", e.toString());
     }
 
 	@Test
@@ -647,7 +647,7 @@ public class TestExprs {
 		TContainer<Expr> test = new ExprContainer("ListBang02", stream);
 		Expr e = test.execute();
 		// Expected Result
-		assertEquals( "(!! [: 1 2 3:] 0)", e.toString());
+		assertEquals( "(!! [ 1 2 3] 0)", e.toString());
     }
 
 	@Test
@@ -667,7 +667,7 @@ public class TestExprs {
 		TContainer<Expr> test = new ExprContainer("ListConcat01", stream);
 		Expr e = test.execute();
 		// Expected Result
-		assertEquals( "(++ m ([: 1 2 3:]))", e.toString());
+		assertEquals( "(++ m [ 1 2 3])", e.toString());
     }
 
 	@Test
@@ -677,7 +677,7 @@ public class TestExprs {
 		TContainer<Expr> test = new ExprContainer("ListConcat02", stream);
 		Expr e = test.execute();
 		// Expected Result
-		assertEquals( "(++ [: 1 2 3:] [: 4 5 6 7:])", e.toString());
+		assertEquals( "(++ [ 1 2 3] [ 4 5 6 7])", e.toString());
     }
 
 	@Test
@@ -687,9 +687,7 @@ public class TestExprs {
 		TContainer<Expr> test = new ExprContainer("ListConcat02", stream);
 		Expr e = test.execute();
 		// Expected Result
-		assertEquals( "(++ [: 1 2 3:] (!! m 0) )", e.toString());
+		assertEquals("(++ [ 1 2 3] (!! m 0))", e.toString());
     }
-
-
 
 }

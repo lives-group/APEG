@@ -147,8 +147,7 @@ rules returns[List<RulePEG> list]:
 // A definition of an APEG rule
 production returns[RulePEG rule]:
    annotation ID optDecls optReturn ':' peg_expr ';'
-   {$rule = factory.newRule(new SymInfo($ID.line, $ID.pos) ,$ID.text, $annotation.anno, $optDecls.list,
-   	                        $optReturn.list, $peg_expr.peg);
+   {$rule = factory.newRule(new SymInfo($ID.line, $ID.pos) ,$ID.text, $annotation.anno, $optDecls.list, $optReturn.list, $peg_expr.peg);
    }
   |
    ID optDecls optReturn ':' peg_expr ';'
@@ -228,27 +227,52 @@ type returns[Type tp]:
 // This rule defines that the CHOICE operator has the lowest precedence 
 // The precedence of CHOICE operator is 1
 // CHOICE is an associative operator. We decided for right association because it may be faster to interpret
-peg_expr returns[APEG peg]:
-  peg_seq t='/' e=peg_expr {$peg = factory.newChoicePEG(new SymInfo($t.line, $t.pos), $peg_seq.peg, $e.peg);}
+peg_expr returns[APEG peg, Expr mpeg]:
+  peg_seq t='/' e=peg_expr {
+    if(!metaLevel) $peg = factory.newChoicePEG(new SymInfo($t.line, $t.pos), $peg_seq.peg, $e.peg);
+    else $mpeg = factory.newMetaChoicePEG(new SymInfo($t.line, $t.pos), $peg_seq.mpeg, $e.mpeg);
+  }
  |
-  peg_seq {$peg = $peg_seq.peg;}
+  peg_seq {
+    if(!metaLevel) $peg = $peg_seq.peg;
+    else $mpeg = $peg_seq.mpeg;
+  }
 ;
 
 // This rule defines a sequence operator: e1 e2 
 // The precedence of sequence operator is 2
-peg_seq returns[APEG peg]: 
-   p1=peg_capturetext {List<APEG> l = new ArrayList<APEG>(); l.add($p1.peg);}
-   (p2=peg_capturetext {l.add($p2.peg);})+ {$peg = factory.newSequencePEG($p1.peg.getSymInfo(), l.toArray(new APEG[l.size()]));}
+peg_seq returns[APEG peg, Expr mpeg]: 
+   p1=peg_capturetext {
+      List<APEG> l1 = new ArrayList<APEG>();
+      List<Expr> l2 = new ArrayList<Expr>();
+
+      if(!metaLevel) l1.add($p1.peg);
+      else l2.add($p1.mpeg);
+   }
+   (p2=peg_capturetext {if(!metaLevel) l1.add($p2.peg); else l2.add($p2.mpeg);})+
+   {
+      if(!metaLevel) $peg = factory.newSequencePEG($p1.peg.getSymInfo(), l1.toArray(new APEG[l1.size()]));
+      else $mpeg = factory.newMetaSeqPEG($p1.mpeg.getSymInfo(), l2.toArray(new Expr[l2.size()]));
+   }
   |
-   peg_capturetext {$peg = $peg_capturetext.peg;}
+   peg_capturetext {
+     $peg = $peg_capturetext.peg;
+     $mpeg = $peg_capturetext.mpeg;
+   }
   |
    '\u03bb' {$peg = factory.newLambdaPEG(new SymInfo(_ctx.start.getLine(), _ctx.start.getCharPositionInLine()));}/ // LAMBDA parsing expression
 ;
 
-peg_capturetext returns[APEG peg]:
-   peg_unary_op {$peg = $peg_unary_op.peg;}
+peg_capturetext returns[APEG peg, Expr mpeg]:
+   peg_unary_op {
+     if(!metaLevel) $peg = $peg_unary_op.peg;
+     else $mpeg = $peg_unary_op.mpeg;
+   }
   |
-   attribute_ref t='=' peg_unary_op {$peg = factory.newBindPEG(new SymInfo($t.line, $t.pos), $attribute_ref.exp, $peg_unary_op.peg);}
+   attribute_ref t='=' peg_unary_op {
+     if(!metaLevel) $peg = factory.newBindPEG(new SymInfo($t.line, $t.pos), $attribute_ref.exp, $peg_unary_op.peg);
+     else $mpeg = factory.newMetaBindPEG(new SymInfo($t.line, $t.pos), $attribute_ref.exp, $peg_unary_op.mpeg);
+   }
 ;
 
 
@@ -258,26 +282,42 @@ peg_capturetext returns[APEG peg]:
 // e+ (One-or-more with precedence 4)
 // &e (And-predicate with precedence 3)
 // !e (Not-predicate with precedence 3)
-peg_unary_op returns[APEG peg]:
-   peg_factor t= '?' {$peg = factory.newOptionalPEG(new SymInfo($t.line, $t.pos), $peg_factor.peg);}
+peg_unary_op returns[APEG peg, Expr mpeg]:
+   peg_factor t= '?' {
+   if(!metaLevel) $peg = factory.newOptionalPEG(new SymInfo($t.line, $t.pos), $peg_factor.peg);
+   else $mpeg = factory.newMetaOptionalPEG(new SymInfo($t.line, $t.pos), $peg_factor.mpeg);}
   | 
-   peg_factor t='*' {$peg = factory.newStarPEG(new SymInfo($t.line, $t.pos), $peg_factor.peg);}
+   peg_factor t='*' {
+   if(!metaLevel) $peg = factory.newStarPEG(new SymInfo($t.line, $t.pos), $peg_factor.peg);
+   else $mpeg = factory.newMetaKleenePEG(new SymInfo($t.line, $t.pos), $peg_factor.mpeg);}
   | 
-   peg_factor t='+' {$peg = factory.newPositiveKleenePEG(new SymInfo($t.line, $t.pos), $peg_factor.peg);}
+   peg_factor t='+' {
+   if(!metaLevel) $peg = factory.newPositiveKleenePEG(new SymInfo($t.line, $t.pos), $peg_factor.peg);
+   else $mpeg = factory.newMetaPKleene(new SymInfo($t.line, $t.pos), $peg_factor.mpeg);}
   |
-   peg_factor {$peg = $peg_factor.peg;}
+   peg_factor {
+   if(!metaLevel) $peg = $peg_factor.peg;
+   else $mpeg = $peg_factor.mpeg; }
   |
-   t='&' peg_factor {$peg = factory.newAndPEG(new SymInfo($t.line, $t.pos), $peg_factor.peg);}
+   t='&' peg_factor {
+   if(!metaLevel) $peg = factory.newAndPEG(new SymInfo($t.line, $t.pos), $peg_factor.peg);
+   else $mpeg = factory.newMetaAndPEG(new SymInfo($t.line, $t.pos), $peg_factor.mpeg);}
   |
-   t='!' peg_factor {$peg = factory.newNotPEG(new SymInfo($t.line, $t.pos), $peg_factor.peg);}
+   t='!' peg_factor {
+   if(!metaLevel) $peg = factory.newNotPEG(new SymInfo($t.line, $t.pos), $peg_factor.peg);
+   else $mpeg = factory.newMetaNotPEG(new SymInfo($t.line, $t.pos), $peg_factor.mpeg);}
   |
-   t='{?' expr '}' {$peg = factory.newConstraintPEG(new SymInfo($t.line, $t.pos), $expr.exp);}
+   t='{?' expr '}' {
+   if(!metaLevel) $peg = factory.newConstraintPEG(new SymInfo($t.line, $t.pos), $expr.exp);
+   else $mpeg = factory.newMetaConstraintPEG(new SymInfo($t.line, $t.pos), $expr.exp);}
   |
    t='{' st1=assign
      {List<Pair<Attribute, Expr>> l = new ArrayList<Pair<Attribute, Expr>>();
       l.add($st1.stm);
      } (st2=assign {l.add($st2.stm);})*
-   '}' {$peg = factory.newUpdatePEG(new SymInfo($t.line, $t.pos), l);}
+   '}' {
+   if(!metaLevel) $peg = factory.newUpdatePEG(new SymInfo($t.line, $t.pos), l);
+   else $mpeg = factory.newMetaUpdatePEG(new SymInfo($t.line, $t.pos), $st1.stm.getSecond());}
 ;
 
 // This rule defines the other operators and basic expressions
@@ -287,26 +327,47 @@ peg_unary_op returns[APEG peg]:
 // (e) (Grouping with precedence 5)
 // A<...> (non-terminal basic expression)
 // \lambda (empty basic expression)
-peg_factor returns[APEG peg]:
+peg_factor returns[APEG peg, Expr mpeg]:
    STRING_LITERAL { 
      String s = $STRING_LITERAL.text;
      s = s.substring(1, s.length()-1);
-     $peg = factory.newLiteralPEG(new SymInfo($STRING_LITERAL.line, $STRING_LITERAL.pos), s);
+     if(!metaLevel) $peg = factory.newLiteralPEG(new SymInfo($STRING_LITERAL.line, $STRING_LITERAL.pos), s);
+     else $mpeg = factory.newMetaLitPEG(new SymInfo($STRING_LITERAL.line, $STRING_LITERAL.pos),
+                                        factory.newStringExpr(new SymInfo($STRING_LITERAL.line, $STRING_LITERAL.pos),
+                                        $STRING_LITERAL.text));
    }
   |
-   ntcall {$peg = $ntcall.peg;}
+   ntcall {
+     if(!metaLevel) $peg = $ntcall.peg;
+     else $mpeg = $ntcall.mpeg;
+   }
   |
-   range {$peg = factory.newRangePEG(new SymInfo($range.line, $range.pos), $range.ranges);}
+   range {
+     if(!metaLevel) $peg = factory.newRangePEG(new SymInfo($range.line, $range.pos), $range.ranges);
+     else $mpeg = factory.newMetaRangePEG(new SymInfo($range.line, $range.pos), $range.ranges);
+   }
   |
-   t='_' {$peg = factory.newAnyPEG(new SymInfo($t.line, $t.pos));}
+   t='_' {
+     if(!metaLevel) $peg = factory.newAnyPEG(new SymInfo($t.line, $t.pos));
+     else $mpeg = factory.newMetaAnyPEG(new SymInfo($t.line, $t.pos));
+   }
   |
-   '(' peg_expr ')' {$peg = $peg_expr.peg;}
+   '(' peg_expr ')' {
+     if(!metaLevel) $peg = $peg_expr.peg;
+     else $mpeg = $peg_expr.mpeg;
+   }
 ;
 
-ntcall returns[APEG peg]:
-   ID '<' actPars '>' {$peg = factory.newNonterminalPEG(new SymInfo($ID.line, $ID.pos), $ID.text, $actPars.list);}
+ntcall returns[APEG peg, Expr mpeg]:
+   ID '<' actPars '>' {
+     if(!metaLevel) $peg = factory.newNonterminalPEG(new SymInfo($ID.line, $ID.pos), $ID.text, $actPars.list);
+     else $mpeg = factory.newMetaNonterminalPEG(new SymInfo($ID.line, $ID.pos), factory.newStringExpr(new SymInfo($ID.line, $ID.pos), $ID.text), $actPars.list.get(0));
+   }
   |
-   ID {$peg = factory.newNonterminalPEG(new SymInfo($ID.line, $ID.pos), $ID.text, new ArrayList<Expr>());}
+   ID {
+     if(!metaLevel) $peg = factory.newNonterminalPEG(new SymInfo($ID.line, $ID.pos), $ID.text, new ArrayList<Expr>());
+     else $mpeg = factory.newMetaNonterminalPEG(new SymInfo($ID.line, $ID.pos), factory.newStringExpr(new SymInfo($ID.line, $ID.pos), $ID.text), null);
+   }
 ;
 
 range returns[CharInterval ranges, int line, int pos]: RANGE_LITERAL
@@ -534,7 +595,9 @@ mulOp returns[int op, int line, int pos]:
  */
 
 meta returns[Expr exp]:
-   '(|' {enterMeta();} expr '|)' {exitMeta(); $exp = $expr.exp;}
+    '{|' {enterMeta();} peg_expr '|}' {exitMeta(); $exp = $peg_expr.mpeg;}
+   |
+    '(|' {enterMeta();} expr '|)' {exitMeta(); $exp = $expr.exp;}
 ;
 
 

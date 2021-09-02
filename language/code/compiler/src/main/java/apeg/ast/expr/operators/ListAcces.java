@@ -18,5 +18,5 @@ public class ListAcces extends Expr{
     public Expr getIndex(){ return index;}
     public void accept(Visitor v){ v.visit(this); }
 
-    public String toString(){ return "(@ " + list.toString() + " " + index.toString() + ")"; }
+    public String toString(){ return "(!! " + list.toString() + " " + index.toString() + ")"; }
 }

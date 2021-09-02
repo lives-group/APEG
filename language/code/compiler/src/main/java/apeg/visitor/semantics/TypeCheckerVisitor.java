@@ -212,7 +212,7 @@ public class TypeCheckerVisitor extends Visitor {
     public void visit(MetaAttribute n) {
          n.getExpr().accept(this);
          if( !s.peek().matchCT(VTyString.getInstance(),ct )){
-             errorMsg(27,n.getSymInfo(),"Meta Attribute", s.peek());
+             errorMsg(37,n.getSymInfo(),"Meta Attribute", s.peek());
              s.pop();
              s.push(TypeError.getInstance());
              return;

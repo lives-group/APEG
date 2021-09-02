@@ -94,6 +94,17 @@ public class TestMetaPEG {
          assertEquals("aa",((LitPEG)((KleenePEG)r).getPegExp()).getLit());
     }
     
+    @Test
+    public void testMetaKleneePEG(){
+         Expr e,e2;
+         e =  new MetaLitPEG(new SymInfo(5,21), new StrLit(new SymInfo(5,21), "aa"));
+         e2 =  new MetaKleenePEG(new SymInfo(5,19), e);
+         Grammar g = buildAttGrammar("y",e2,null, null);
+         Object r = runAndReportVar(g,"y");
+         assertEquals("aa",((LitPEG)((KleenePEG)r).getPegExp()).getLit());
+    }
+    
+    
    
     @Test
     public void testMetaNonterminal(){

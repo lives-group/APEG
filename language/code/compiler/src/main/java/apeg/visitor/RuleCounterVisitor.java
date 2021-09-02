@@ -646,20 +646,14 @@ public class RuleCounterVisitor extends Visitor {
 	@Override
 	public void visit(Grammar n) {
 		// TODO Auto-generated method stub
-		
 		System.out.println(n.getRules().size());
-		
 	}
 	
 	public void report () {
 		System.out.println("Número de regras:" + counter);
-		
 	}
-
+	
 	public void visit(TyList n){}
 	public void visit(ListAcces n){}
 	public void visit(ListLit n){}
-	
-	
-
 }

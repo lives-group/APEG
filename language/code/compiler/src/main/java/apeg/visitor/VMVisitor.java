@@ -288,10 +288,14 @@ public class VMVisitor extends Visitor{
 
 	@Override
 	public void visit(MetaUpdatePEG n) {
-		//TODO
-		//n.getExpr().accept(this);
-		//UpdatePEG z = new UpdatePEG(new SymInfo(-1,-1),(List<Pair<Attribute,Expr>>)stk.pop().getSecond());
-		//stk.push(new Pair(VTyMetaPeg.getInstance(),z));	
+		n.getPegExpr().accept(this);
+        ArrayList<Object> l = (ArrayList<Object>)stk.pop().getSecond();
+        List<Pair<Attribute,Expr>> lst = new ArrayList<Pair<Attribute,Expr>>();
+        for(int i = 0; i < l.size(); i = i + 2){
+            lst.add(new Pair<Attribute, Expr>((Attribute)l.get(i), (Expr)l.get(i+1)) );
+        }
+        UpdatePEG z = new UpdatePEG(n.getSymInfo(),lst);
+        stk.push(new Pair(VTyMetaPeg.getInstance(),z));
 	}
 
 	@Override
@@ -955,7 +959,6 @@ public class VMVisitor extends Visitor{
 
 	@Override
 	public void visit(ConstraintPEG n) {
-		// TODO Auto-generated method stub
 		n.getExpr().accept(this);
 		if((Boolean)stk.pop().getSecond()){
 			vm.success();

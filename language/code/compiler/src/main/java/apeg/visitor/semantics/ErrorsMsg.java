@@ -68,6 +68,7 @@ public class ErrorsMsg {
           msg.put(34,"Meta rule Synthetized must be of type MetaExpr");
           msg.put(35,"Meta rule body must be of type MetaPeg");
           msg.put(36,"Meta update construction error");
+          msg.put(37,"Meta attribute error");
 
     }
 

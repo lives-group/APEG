@@ -550,7 +550,7 @@ mapPair returns[Pair<Expr, Expr> p]:
 attribute_ref returns[Attribute exp, Expr mexp]:
   ID {
   if(!metaLevel) $exp = factory.newAttributeExpr(new SymInfo($ID.line, $ID.pos), $ID.text);
-  else $mexp = factory.newMetaAttribute(new SymInfo($ID.line, $ID.pos), factory.newStringExpr(new SymInfo($ID.line, $ID.pos), $ID.text));}
+  else $mexp = factory.newMetaAttribute(new SymInfo($ID.line, $ID.pos), factoryNormal.newStringExpr(new SymInfo($ID.line, $ID.pos), $ID.text));}
  |
   t='$g' {$exp = factory.newAttributeGrammarExpr(new SymInfo($t.line, $t.pos));}
 ;

@@ -312,12 +312,24 @@ peg_unary_op returns[APEG peg, Expr mpeg]:
    else $mpeg = factory.newMetaConstraintPEG(new SymInfo($t.line, $t.pos), $expr.exp);}
   |
    t='{' st1=assign
-     {List<Pair<Attribute, Expr>> l = new ArrayList<Pair<Attribute, Expr>>();
-      l.add($st1.stm);
-     } (st2=assign {l.add($st2.stm);})*
+     {
+      List<Pair<Attribute, Expr>> l = new ArrayList<Pair<Attribute, Expr>>();
+      ArrayList<Expr> ml = new ArrayList<Expr>();
+
+      if(!metaLevel) l.add($st1.stm);
+      else {
+        ml.add($st1.mstm.getFirst());
+        ml.add($st1.mstm.getSecond());
+      }
+     }(st2=assign {if(!metaLevel) l.add($st2.stm);
+      else {
+        ml.add($st2.mstm.getFirst());
+        ml.add($st2.mstm.getSecond());
+      }
+      })*
    '}' {
    if(!metaLevel) $peg = factory.newUpdatePEG(new SymInfo($t.line, $t.pos), l);
-   else $mpeg = factory.newMetaUpdatePEG(new SymInfo($t.line, $t.pos), $st1.stm.getSecond());}
+   else $mpeg = factory.newMetaUpdatePEG(new SymInfo($t.line, $t.pos), factory.newListExpr(new SymInfo($t.line, $t.pos), ml));}
 ;
 
 // This rule defines the other operators and basic expressions
@@ -382,9 +394,11 @@ range returns[CharInterval ranges, int line, int pos]: RANGE_LITERAL
  * Constraint and Update Expressions
  ***/
 
-assign returns[Pair<Attribute, Expr> stm]:
+assign returns[Pair<Attribute, Expr> stm, Pair<Expr, Expr> mstm]:
   attribute_ref '=' expr ';'
-     {$stm = new Pair<Attribute, Expr>($attribute_ref.exp, $expr.exp);}
+     {
+     if(!metaLevel) $stm = new Pair<Attribute, Expr>($attribute_ref.exp, $expr.exp);
+     else $mstm = new Pair<Expr, Expr>($attribute_ref.mexp, $expr.exp);}
 ;
 
 expr returns[Expr exp]: or_cond {$exp = $or_cond.exp;};
@@ -533,8 +547,10 @@ mapPair returns[Pair<Expr, Expr> p]:
    e1=expr '->' e2=expr {$p = new Pair<Expr, Expr>($e1.exp, $e2.exp);}
 ;
 
-attribute_ref returns[Attribute exp]:
-  ID {$exp = factory.newAttributeExpr(new SymInfo($ID.line, $ID.pos), $ID.text);}
+attribute_ref returns[Attribute exp, Expr mexp]:
+  ID {
+  if(!metaLevel) $exp = factory.newAttributeExpr(new SymInfo($ID.line, $ID.pos), $ID.text);
+  else $mexp = factory.newMetaAttribute(new SymInfo($ID.line, $ID.pos), factory.newStringExpr(new SymInfo($ID.line, $ID.pos), $ID.text));}
  |
   t='$g' {$exp = factory.newAttributeGrammarExpr(new SymInfo($t.line, $t.pos));}
 ;

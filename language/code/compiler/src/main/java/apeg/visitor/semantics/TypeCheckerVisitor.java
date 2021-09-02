@@ -302,7 +302,19 @@ public class TypeCheckerVisitor extends Visitor {
     
     @Override
     public void visit(MetaMapLit n) {
-           
+        VType t1,t2;
+        for(Pair<Expr,Expr> mp : n.getAssocs()){
+            mp.getFirst().accept(this);
+            mp.getSecond().accept(this);
+            t2 = s.pop();
+            t1 = s.pop();
+            if(!t1.matchCT(VTyMetaExpr.getInstance(),ct) || !t2.matchCT(VTyMetaExpr.getInstance(),ct)){
+                errorMsg(28,n.getSymInfo(),"", t1,t2);
+                s.push(TypeError.getInstance());
+                return;
+            }
+        }
+        s.push(VTyMetaExpr.getInstance());
     }
     
     @Override

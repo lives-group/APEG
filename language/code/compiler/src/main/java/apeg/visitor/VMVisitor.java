@@ -356,9 +356,17 @@ public class VMVisitor extends Visitor{
 	@Override
 	public void visit(MetaMapLit n) {
 	    //TODO
-		//n.getExpr().accept(this);
-		//MapLit z = new MapLit(new SymInfo(-1,-1),(Pair<Expr,Expr>[])stk.pop().getSecond());
-		//stk.push(new Pair(VTyMetaExpr.getInstance(),z));
+	    ArrayList<Pair<Expr,Expr>> arr = new ArrayList<Pair<Expr,Expr>>(n.getAssocs().length);
+		Expr e1,e2;
+		for(Pair<Expr,Expr> mp : n.getAssocs()){
+		    mp.getFirst().accept(this);
+		    e1 = (Expr)stk.pop().getSecond();
+		    mp.getSecond().accept(this);
+		    e2 = (Expr)stk.pop().getSecond();
+		    arr.add(new Pair<Expr,Expr>(e1,e2));
+		}
+		MapLit z = new MapLit(n.getSymInfo(),(Pair<Expr,Expr>[])arr.toArray(new Pair[arr.size()] ));
+        stk.push(new Pair(VTyMetaExpr.getInstance(),z));
 	}
 
 	@Override

@@ -69,6 +69,7 @@ public class ErrorsMsg {
           msg.put(35,"Meta rule body must be of type MetaPeg");
           msg.put(36,"Meta update construction error");
           msg.put(37,"Meta attribute error");
+          msg.put(38,"Meta Maplit construction error");
 
     }
 

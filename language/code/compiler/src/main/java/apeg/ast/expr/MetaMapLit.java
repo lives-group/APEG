@@ -23,6 +23,6 @@ public class MetaMapLit extends MetaExpr{
             res += " " + p.getFirst().toString() + ", " + p.getSecond().toString();
         }
 
-        return res + ")";
+        return res + ":})";
     }
 }

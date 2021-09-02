@@ -445,7 +445,6 @@ public class VMVisitor extends Visitor{
 		    Grammar gext;
 		    n.getRight().accept(this);
 		    if(stk.peek().getFirst().match(VTyGrammar.getInstance()) ){
-		        
 		        gext = (Grammar)lan.getFirst();
 		        re =  (ArrayList<RulePEG>)((Grammar)lan.getFirst()).cloneRules();
 		        rd = mergeGrammars((ArrayList)re, (ArrayList<RulePEG>)stk.peek().getSecond());
@@ -1008,6 +1007,7 @@ public class VMVisitor extends Visitor{
 		                   break;
 		              }
 		         }
+		         if(rule == null){ throw new RuntimeException(n.getSymInfo() + " Calling an abscented composed rule " + n.getName()); }
 		    }
 		    for(int i = 1;i < local.getSig().getNumInherited();i++){
 			    l.get(i).accept(this);

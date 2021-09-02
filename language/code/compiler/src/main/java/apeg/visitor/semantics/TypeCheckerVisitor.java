@@ -497,9 +497,17 @@ public class TypeCheckerVisitor extends Visitor {
 
     @Override
     public void visit(MetaUpdatePEG n) {
-        // TODO Auto-generated method stub
 
-        
+         n.getPegExpr().accept(this);
+         VTyList dummy = new VTyList(VTyMetaExpr.getInstance());
+         if(!s.peek().matchCT(dummy,ct)){
+              errorMsg(36,n.getSymInfo(),"Meta Update", s.peek());
+              s.pop();
+              s.push(TypeError.getInstance());
+              return;
+         }
+         s.pop();
+         s.push(VTyMetaPeg.getInstance());
     }
 
     @Override

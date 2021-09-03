@@ -256,8 +256,8 @@ peg_seq returns[APEG peg, Expr mpeg]:
    }
   |
    peg_capturetext {
-     $peg = $peg_capturetext.peg;
-     $mpeg = $peg_capturetext.mpeg;
+     if(!metaLevel) $peg = $peg_capturetext.peg;
+     else $mpeg = $peg_capturetext.mpeg;
    }
   |
    '\u03bb' {$peg = factory.newLambdaPEG(new SymInfo(_ctx.start.getLine(), _ctx.start.getCharPositionInLine()));}/ // LAMBDA parsing expression
@@ -373,7 +373,8 @@ peg_factor returns[APEG peg, Expr mpeg]:
 ntcall returns[APEG peg, Expr mpeg]:
    ID '<' actPars '>' {
      if(!metaLevel) $peg = factory.newNonterminalPEG(new SymInfo($ID.line, $ID.pos), $ID.text, $actPars.list);
-     else $mpeg = factory.newMetaNonterminalPEG(new SymInfo($ID.line, $ID.pos), factory.newStringExpr(new SymInfo($ID.line, $ID.pos), $ID.text), $actPars.list.get(0));
+     $mpeg = factory.newMetaNonterminalPEG(new SymInfo($ID.line, $ID.pos), factory.newStringExpr(new SymInfo($ID.line, $ID.pos), $ID.text),
+                                                                           factory.newListExpr(new SymInfo($ID.line, $ID.pos), new ArrayList($actPars.list)));
    }
   |
    ID {
@@ -503,7 +504,7 @@ factor returns[Expr exp]:
  ;
 
 primary returns[Expr exp]:
-   attribute_ref {$exp = $attribute_ref.exp;}
+   attribute_ref {if(!metaLevel) $exp = $attribute_ref.exp; else $exp = $attribute_ref.mexp;}
   |
    number {$exp = $number.exp;}
   |

@@ -556,7 +556,7 @@ public class TestExprs {
 		TContainer<Expr> test = new ExprContainer("MetaMapLit01", stream);
 		Expr e = test.execute();
 		// Expected Result
-		assertEquals( "'({: 'abc', 10)", e.toString());
+		assertEquals( "'({: 'abc', 10:})", e.toString());
 		}
 	
 	@Test
@@ -566,7 +566,7 @@ public class TestExprs {
 		TContainer<Expr> test = new ExprContainer("MetaMapLitKeyMult01", stream);
 		Expr e = test.execute();
 		// Expected Result
-		assertEquals( "'({: '(* 2 4), 'mult')", e.toString());
+		assertEquals( "'({: '(* 2 4), 'mult':})", e.toString());
     }
 	
 	@Test

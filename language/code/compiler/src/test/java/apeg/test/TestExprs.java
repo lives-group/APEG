@@ -690,4 +690,13 @@ public class TestExprs {
 		assertEquals("(++ [ 1 2 3] (!! m 0))", e.toString());
     }
 
+	@Test
+    void testBooleanExpression() throws IOException {
+		CharStream stream = CharStreams.fromReader(new StringReader("(| (20 < 30 && 40 > 20) || (a + m[l !! 2] + l !! 666 == (b + m['abc'] < d[h])) |)"));
+		
+		TContainer<Expr> test = new ExprContainer("TestBooleanExpression", stream);
+		Expr e = test.execute();
+		// Expected Result
+		assertEquals("'(|| '(&& '(< 20 30) '(> 40 20)) '(== '(+ '(+ 'a ('[] 'm (!! 'l 2))) (!! 'l 666)) '(< '(+ 'b ('[] 'm 'abc')) ('[] 'd 'h))))", e.toString());
+    }
 }

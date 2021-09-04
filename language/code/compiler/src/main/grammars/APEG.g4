@@ -271,7 +271,7 @@ peg_capturetext returns[APEG peg, Expr mpeg]:
   |
    attribute_ref t='=' peg_unary_op {
      if(!metaLevel) $peg = factory.newBindPEG(new SymInfo($t.line, $t.pos), $attribute_ref.exp, $peg_unary_op.peg);
-     else $mpeg = factory.newMetaBindPEG(new SymInfo($t.line, $t.pos), $attribute_ref.exp, $peg_unary_op.mpeg);
+     else $mpeg = factory.newMetaBindPEG(new SymInfo($t.line, $t.pos), $attribute_ref.mexp, $peg_unary_op.mpeg);
    }
 ;
 
@@ -293,7 +293,8 @@ peg_unary_op returns[APEG peg, Expr mpeg]:
   | 
    peg_factor t='+' {
    if(!metaLevel) $peg = factory.newPositiveKleenePEG(new SymInfo($t.line, $t.pos), $peg_factor.peg);
-   else $mpeg = factory.newMetaPKleene(new SymInfo($t.line, $t.pos), $peg_factor.mpeg);}
+   else $mpeg = factory.newMetaPKleene(new SymInfo($t.line, $t.pos), $peg_factor.mpeg);
+   }
   |
    peg_factor {
    if(!metaLevel) $peg = $peg_factor.peg;
@@ -345,8 +346,7 @@ peg_factor returns[APEG peg, Expr mpeg]:
      s = s.substring(1, s.length()-1);
      if(!metaLevel) $peg = factory.newLiteralPEG(new SymInfo($STRING_LITERAL.line, $STRING_LITERAL.pos), s);
      else $mpeg = factory.newMetaLitPEG(new SymInfo($STRING_LITERAL.line, $STRING_LITERAL.pos),
-                                        factory.newStringExpr(new SymInfo($STRING_LITERAL.line, $STRING_LITERAL.pos),
-                                        $STRING_LITERAL.text));
+                                        factoryNormal.newStringExpr(new SymInfo($STRING_LITERAL.line, $STRING_LITERAL.pos), $STRING_LITERAL.text));
    }
   |
    ntcall {
@@ -373,13 +373,14 @@ peg_factor returns[APEG peg, Expr mpeg]:
 ntcall returns[APEG peg, Expr mpeg]:
    ID '<' actPars '>' {
      if(!metaLevel) $peg = factory.newNonterminalPEG(new SymInfo($ID.line, $ID.pos), $ID.text, $actPars.list);
-     $mpeg = factory.newMetaNonterminalPEG(new SymInfo($ID.line, $ID.pos), factory.newStringExpr(new SymInfo($ID.line, $ID.pos), $ID.text),
-                                                                           factory.newListExpr(new SymInfo($ID.line, $ID.pos), new ArrayList($actPars.list)));
+     $mpeg = factory.newMetaNonterminalPEG(new SymInfo($ID.line, $ID.pos), factoryNormal.newStringExpr(new SymInfo($ID.line, $ID.pos), $ID.text)
+                                                                         , factoryNormal.newListExpr(new SymInfo($ID.line, $ID.pos), new ArrayList($actPars.list)));
    }
   |
    ID {
      if(!metaLevel) $peg = factory.newNonterminalPEG(new SymInfo($ID.line, $ID.pos), $ID.text, new ArrayList<Expr>());
-     else $mpeg = factory.newMetaNonterminalPEG(new SymInfo($ID.line, $ID.pos), factory.newStringExpr(new SymInfo($ID.line, $ID.pos), $ID.text), null);
+     else $mpeg = factory.newMetaNonterminalPEG(new SymInfo($ID.line, $ID.pos), factoryNormal.newStringExpr(new SymInfo($ID.line, $ID.pos), $ID.text)
+                                                                              , factoryNormal.newListExpr(new SymInfo($ID.line, $ID.pos), new ArrayList<Expr>()));
    }
 ;
 

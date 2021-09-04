@@ -445,7 +445,7 @@ public class TypeCheckerVisitor extends Visitor {
              s.push(TypeError.getInstance());
              return;
          }
-         s.pop();
+         // s.pop();
     }
 
     @Override

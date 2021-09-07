@@ -164,13 +164,16 @@ private STGroup groupTemplate;
 	@Override
 	public void visit(StrLit n) {
 		// TODO Auto-generated method stub
-		
+
+                ST curr_lable = groupTemplate.getInstanceOf("string_expr_lable");
+                curr_lable.add("value", n.getValue());
+
 		ST node = groupTemplate.getInstanceOf("node");
 		
 		node.add("parent", parent);
 		nodeName = "StringLiteralExpr" + c_expr++;
 		node.add("node", nodeName);
-		node.add("lable", groupTemplate.getInstanceOf("string_expr_lable").add("value", n.getValue()));
+                node.add("lable", curr_lable);
 		
 		nodes.add(node);
 	}
@@ -179,24 +182,63 @@ private STGroup groupTemplate;
 	public void visit(MetaAndPEG n) {
 		// TODO Auto-generated method stub
 		
+		ST node = groupTemplate.getInstanceOf("node");
+		
+		node.add("parent", parent);
+		nodeName = "MetaAndPeg" + c_peg++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("metaand_peg_lable"));
+		
+		nodes.add(node);
+		
+		parent = nodeName;
+		n.getPeg().accept(this);
 	}
 
 	@Override
 	public void visit(MetaAnyPEG n) {
 		// TODO Auto-generated method stub
 		
+		ST node = groupTemplate.getInstanceOf("node");
+		
+		node.add("parent", parent);
+		nodeName = "MetaAnyPeg" + c_peg++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("metaany_peg_lable"));
+		
+		nodes.add(node);
 	}
 
 	@Override
 	public void visit(MetaAttribute n) {
 		// TODO Auto-generated method stub
 		
+		ST node = groupTemplate.getInstanceOf("node");
+                StrLit ref = (StrLit) n.getExpr();
+		
+		node.add("parent", parent);
+		nodeName = "MetaattributeExpr" + c_expr++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("metaattribute_expr_lable").add("name", ref.getValue()));
+		
+		nodes.add(node);
 	}
 
 	@Override
 	public void visit(MetaBindPEG n) {
 		// TODO Auto-generated method stub
+
+		ST node = groupTemplate.getInstanceOf("node");
 		
+		node.add("parent", parent);
+		nodeName = "MetaBindPeg" + c_peg++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("metabind_peg_lable"));
+		
+		nodes.add(node);
+		
+		parent = nodeName;
+		n.getExprP().accept(this);
 	}
 
 	@Override
@@ -237,12 +279,38 @@ private STGroup groupTemplate;
 	public void visit(MetaChoicePEG n) {
 		// TODO Auto-generated method stub
 		
+		ST node = groupTemplate.getInstanceOf("node");
+		
+		node.add("parent", parent);
+		nodeName = "MetachoicePeg" + c_peg++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("metachoice_peg_lable"));
+		
+		nodes.add(node);
+		
+		String s = nodeName;
+		parent = s;
+		
+		n.getLeftPeg().accept(this);
+		parent = s;
+		n.getRightPeg().accept(this);
 	}
 
 	@Override
 	public void visit(MetaConstraintPEG n) {
 		// TODO Auto-generated method stub
 		
+		ST node = groupTemplate.getInstanceOf("node");
+		
+		node.add("parent", parent);
+		nodeName = "MetaConstraintPeg" + c_peg++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("metaconstraint_peg_lable"));
+		
+		nodes.add(node);
+		
+		parent = nodeName;
+		n.getExpr().accept(this);
 	}
 
 	@Override
@@ -277,12 +345,31 @@ private STGroup groupTemplate;
 	public void visit(MetaKleenePEG n) {
 		// TODO Auto-generated method stub
 		
+		ST node = groupTemplate.getInstanceOf("node");
+		
+		node.add("parent", parent);
+		nodeName = "MetaKleenePeg" + c_peg++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("metastar_peg_lable"));
+		
+		nodes.add(node);
+		
+		parent = nodeName;
+		n.getExpr().accept(this);
 	}
 
 	@Override
 	public void visit(MetaLitPEG n) {
 		// TODO Auto-generated method stub
 		
+		ST node = groupTemplate.getInstanceOf("node");
+		
+		node.add("parent", parent);
+		nodeName = "MetaLiteralPeg" + c_peg++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("metaliteral_peg_lable").add("value", n.getExpr()));
+		
+		nodes.add(node);
 	}
 
 	@Override
@@ -309,24 +396,69 @@ private STGroup groupTemplate;
 	public void visit(MetaNonterminalPEG n) {
 		// TODO Auto-generated method stub
 		
+		ST node = groupTemplate.getInstanceOf("node");
+		
+		node.add("parent", parent);
+		nodeName = "MetaNonterminalPeg" + c_peg++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("metanonterminal_peg_lable").add("name", n.getName()));
+		
+		nodes.add(node);
+		
+		String s = nodeName;
+                parent = s;
+                n.getArgs().accept(this);
 	}
 
 	@Override
 	public void visit(MetaNotPEG n) {
 		// TODO Auto-generated method stub
 		
+		ST node = groupTemplate.getInstanceOf("node");
+		
+		node.add("parent", parent);
+		nodeName = "MetaNotPeg" + c_peg++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("metanot_peg_lable"));
+		
+		nodes.add(node);
+		
+		parent = nodeName;
+		n.getExpr().accept(this);
 	}
 
 	@Override
 	public void visit(MetaOptionalPEG n) {
 		// TODO Auto-generated method stub
 		
+		ST node = groupTemplate.getInstanceOf("node");
+		
+		node.add("parent", parent);
+		nodeName = "MetaOptionalPeg" + c_peg++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("metaoptional_peg_lable"));
+		
+		nodes.add(node);
+		
+		parent = nodeName;
+		n.getExpr().accept(this);
 	}
 
 	@Override
 	public void visit(MetaPKleene n) {
 		// TODO Auto-generated method stub
 		
+		ST node = groupTemplate.getInstanceOf("node");
+		
+		node.add("parent", parent);
+		nodeName = "MetaPlusKleenePeg" + c_peg++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("metaplus_peg_lable"));
+		
+		nodes.add(node);
+		
+		parent = nodeName;
+		n.getPegExpr().accept(this);
 	}
 
 	@Override
@@ -339,6 +471,18 @@ private STGroup groupTemplate;
 	public void visit(MetaSeqPEG n) {
 		// TODO Auto-generated method stub
 		
+		ST node = groupTemplate.getInstanceOf("node"); // get a node template
+		node.add("parent", parent); // set the attribute parent node
+		nodeName = "MetaSequencePeg" + c_peg++; // set the current node name
+		node.add("node", nodeName); //  set current node name
+		node.add("lable", groupTemplate.getInstanceOf("metasequence_peg_lable")); // set node label
+		nodes.add(node);
+
+		String s = nodeName; // save the node name
+		for(Expr p : n.getExpr()) {
+			parent = s;
+			p.accept(this);
+		}	
 	}
 
 	@Override
@@ -413,6 +557,18 @@ private STGroup groupTemplate;
 	public void visit(MetaUpdatePEG n) {
 		// TODO Auto-generated method stub
 		
+		ST node = groupTemplate.getInstanceOf("node");
+		
+		node.add("parent", parent);
+		nodeName = "MetaUpdatePeg" + c_peg++;
+		node.add("node", nodeName);
+		node.add("lable", groupTemplate.getInstanceOf("metaupdate_peg_lable"));
+		
+		nodes.add(node);
+		
+		String s = nodeName;
+                parent = s;
+                n.getPegExpr().accept(this);
 	}
 
 	@Override
@@ -1670,8 +1826,6 @@ private STGroup groupTemplate;
                 for(Expr p : n.getElems()){
                         parent = s;
                         p.accept(this);
-                        // parent = s;
-                        // p.getSecond().accept(this);
                 }
 
         }

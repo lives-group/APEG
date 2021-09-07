@@ -346,7 +346,7 @@ peg_factor returns[APEG peg, Expr mpeg]:
      s = s.substring(1, s.length()-1);
      if(!metaLevel) $peg = factory.newLiteralPEG(new SymInfo($STRING_LITERAL.line, $STRING_LITERAL.pos), s);
      else $mpeg = factory.newMetaLitPEG(new SymInfo($STRING_LITERAL.line, $STRING_LITERAL.pos),
-                                        factoryNormal.newStringExpr(new SymInfo($STRING_LITERAL.line, $STRING_LITERAL.pos), $STRING_LITERAL.text));
+                                        factoryNormal.newStringExpr(new SymInfo($STRING_LITERAL.line, $STRING_LITERAL.pos), s));
    }
   |
    ntcall {

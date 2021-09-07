@@ -59,13 +59,15 @@ compose_expr(left_expr, right_expr) ::= "(<left_expr> \<\< <right_expr>)"
 
 equals_expr(left_expr, right_expr) ::= "(<left_expr> == <right_expr>)"
 no_equals_expr(left_expr, right_expr) ::= "(<left_expr> != <right_expr>)"
- 
 
 boolean_expr(value) ::= "<value>"
 float_expr(value) ::= "<value>"
 int_expr(value) ::= "<value>"
-string_expr(value) ::= "'<value>'"
-meta_expr(expr) ::= "@[ <expr> ]"
+
+// If condition to avoid too much quotes when in meta level
+string_expr(meta, value) ::= <<
+<if(meta)><value><else>'<value>'<endif>
+>>
 minus_expr(expr) ::= "-<expr>"
 not_expr(expr) ::= "!<expr>"
 or_expr(left_expr, right_expr) ::= "(<left_expr> || <right_expr>)"
@@ -76,8 +78,43 @@ mapLit(pairs) ::= << {: <pairs; separator=", ", wrap> :} >>
 mapExtension(acces, pair) ::= "<acces> [<pair>]"
 mapAcces(acces, factor, expr) ::= "<factor> [<expr>]"
 
-listLit(exprs) ::= << [<exprs; separator=", ", wrap>] >>
+listLit(exprs) ::= <<[<exprs; separator=", ", wrap>]>>
 listAcces(list, index) ::= "<list> !! <index>"
+
+/** Template for metaexpressions */
+metaattribute(name) ::="'<name>"
+
+metagt_expr(left_expr, right_expr) ::= "'(<left_expr> \> <right_expr>)"
+metage_expr(left_expr, right_expr) ::= "'(<left_expr> \>= <right_expr>)"
+metalt_expr(left_expr, right_expr) ::= "'(<left_expr> \< <right_expr>)"
+metale_expr(left_expr, right_expr) ::= "'(<left_expr> \<= <right_expr>)"
+metamul_expr(left_expr, right_expr) ::= "'(<left_expr> * <right_expr>)"
+metadiv_expr(left_expr, right_expr) ::= "'(<left_expr> / <right_expr>)"
+metamod_expr(left_expr, right_expr) ::= "'(<left_expr> % <right_expr>)"
+metaadd_expr(left_expr, right_expr) ::= "'(<left_expr> + <right_expr>)"
+metasub_expr(left_expr, right_expr) ::= "'(<left_expr> - <right_expr>)"
+metaconcat_expr(left_expr, right_expr) ::= "'(<left_expr> ++ <right_expr>)"
+metacompose_expr(left_expr, right_expr) ::= "'(<left_expr> \<\< <right_expr>)"
+
+metaequals_expr(left_expr, right_expr) ::= "'(<left_expr> == <right_expr>)"
+metano_equals_expr(left_expr, right_expr) ::= "'(<left_expr> != <right_expr>)"
+ 
+
+metaboolean_expr(value) ::= "'<value>"
+metafloat_expr(value) ::= "'<value>"
+metaint_expr(value) ::= "'<value>"
+metastring_expr(value) ::= "'<value>"
+meta_expr(expr) ::= "(| <expr> |)"
+metaminus_expr(expr) ::= "'-<expr>"
+metanot_expr(expr) ::= "'!<expr>"
+metaor_expr(left_expr, right_expr) ::= "'(<left_expr> || <right_expr>)"
+metaand_expr(left_expr, right_expr) ::= "'(<left_expr> && <right_expr>)"
+
+metapair(left_expr, right_expr) ::= << <left_expr> -> <right_expr> >>
+metamapLit(pairs) ::= << '{: <pairs; separator=", ", wrap> :} >>
+metamapExtension(acces, pair) ::= "<acces> [<pair>]"
+metamapAcces(acces, factor, expr) ::= "<factor> [<expr>]"
+
 
 /** Template for parsing expression */
 and_peg(peg_expr) ::= "&<peg_expr>"
@@ -98,13 +135,30 @@ plus_peg(peg_expr) ::= "(<peg_expr>)+"
 optional_peg(peg_expr) ::= "(<peg_expr>)?"
 sequence_peg(peg_exprs) ::= "<peg_exprs:{x | <x>}; separator=\" \">"
 kleene(peg) ::= "(<peg>)*"
-update_peg(assig) ::= "<assig>"
+update_peg(assig) ::= "{<assig; separator=\" \", wrap>}"
 
-assig(attr, expr) ::= "{<attr> = <expr>;}"
+assig(attr, expr) ::= "<attr> = <expr>;"
 
 inh(type, name) ::= "<type> <name>"
 
 /** func(f) ::= "<f>"  Not implemented yet */
 
+/** Template for meta parsing expression */
 
-
+metaand_peg(peg_expr) ::= "'&<peg_expr>"
+metaany_peg() ::= "'_"
+metabind_peg(name, peg_expr) ::="<name>='<peg_expr>)"
+metachoice_peg(left_peg, right_peg) ::=<<
+ <left_peg>
+'/
+<right_peg>
+>>
+metaconstraint_peg(expr) ::= "'{? <expr> }"
+metaliteral_peg(value) ::= "'<value>"
+metanonterminal_peg(name, attrs) ::= "'<name>\<<attrs>>"
+metanot_peg(peg_expr) ::= "'!(<peg_expr>)"
+metaplus_peg(peg_expr) ::= "(<peg_expr>)+'"
+metaoptional_peg(peg_expr) ::= "(<peg_expr>)?'"
+metasequence_peg(peg_exprs) ::= "<peg_exprs:{x | <x>}; separator=\" \">"
+metakleene(peg) ::= "(<peg>)*'"
+metaupdate_peg(assig) ::= "'{<assig>}"

@@ -125,9 +125,9 @@ public class Tool {
 				}
 
 				// Pretty printing the grammar. Just for testing
-                                // Visitor prettyprint = new PrettyPrint(new RelativePath(new AbsolutePath("."), "src/main/templates/prettyprint.stg"));
+                                Visitor prettyprint = new PrettyPrint(new RelativePath(new AbsolutePath("."), "src/main/templates/prettyprint.stg"));
 
-                                // g.accept(prettyprint);
+                                g.accept(prettyprint);
 
 				/*
                                  Visitor dotvisitor = new DOTVisitor(new RelativePath(tool.outputPath, fName + ".dot"),

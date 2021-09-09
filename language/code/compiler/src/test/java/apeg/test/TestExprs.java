@@ -684,11 +684,31 @@ public class TestExprs {
     void testListConcatBang01() throws IOException {
 		CharStream stream = CharStreams.fromReader(new StringReader("( [ 1 , 2 , 3 ] ++ m !! 0 )"));
 		
-		TContainer<Expr> test = new ExprContainer("ListConcat02", stream);
+		TContainer<Expr> test = new ExprContainer("ListConcatBang01", stream);
 		Expr e = test.execute();
 		// Expected Result
 		assertEquals("(++ [ 1 2 3] (!! m 0))", e.toString());
     }
+	@Test
+    void testListConcatBang02() throws IOException {
+		CharStream stream = CharStreams.fromReader(new StringReader("([ 4 , 5 , 6 ,7 ] ++ (m !! 0 ++ n) )"));
+		
+		TContainer<Expr> test = new ExprContainer("ListConcatBang02", stream);
+		Expr e = test.execute();
+		// Expected Result
+		assertEquals("(++ [ 4 5 6 7] (++ (!! m 0) n))", e.toString());
+    }
+
+	@Test
+	void testListMap01() throws IOException {
+		CharStream stream = CharStreams.fromReader(new StringReader("( [ m['key1' -> 1] , n['key2' -> 2] , o['key3' -> 3] ] )"));
+		
+		TContainer<Expr> test = new ExprContainer("testListMap01", stream);
+		Expr e = test.execute();
+		// Expected Result
+		assertEquals( "( [ ([->] m 'key1' 1) ([->] n 'key2' 2) ([->] o 'key3' 3)])", e.toString());
+		    		//<[ ([->] m 'key1' 1) ([->] n 'key2' 2) ([->] o 'key3' 3)]>
+	}
 
 	@Test
     void testBooleanExpression() throws IOException {
@@ -698,5 +718,29 @@ public class TestExprs {
 		Expr e = test.execute();
 		// Expected Result
 		assertEquals("'(|| '(&& '(< 20 30) '(> 40 20)) '(== '(+ '(+ 'a ('[] 'm (!! 'l 2))) (!! 'l 666)) '(< '(+ 'b ('[] 'm 'abc')) ('[] 'd 'h))))", e.toString());
+				  // <'(|| '(&& '(< 20 30) '(> 40 20)) '(== '(+ '(+ 'a ([] 'm (!! 'l 2))) (!! 'l 666)) '(< '(+ 'b ([] 'm 'abc')) ([] 'd 'h))))>
     }
+
+	@Test
+    void ListList01() throws IOException {
+		CharStream stream = CharStreams.fromReader(new StringReader("( [ [ m['key1' -> 1] , n['key2' -> 2] , o['key3' -> 3] , [ 1 , 2 , 3 ] ++ m !! 0 , [ 1 , 2 , 3 ] ++ [ 4 , 5 , 6 ,7 ] , ( m ++ n )])"));
+		
+		TContainer<Expr> test = new ExprContainer("ListList01", stream);
+		Expr e = test.execute();
+		// Expected Result
+		assertEquals("( [ ( [ ([->] m 'key1' 1) ([->] n 'key2' 2) ([->] o 'key3' 3)]) (++ [ 1 2 3] (!! m 0)) (++ [ 1 2 3] [ 4 5 6 7]) (++ m n) ])", e.toString());
+    }
+
+	@Test
+    void ListList02() throws IOException {
+		CharStream stream = CharStreams.fromReader(new StringReader
+		("( [ [ m['key1' -> 1], n['key2' -> 2], o['key3' -> 3], [ 1 , 2 , 3 ,[ 1 , 2 , 3 ] ++ [ 4 , 5 , 6 ,7 ] ] ++ m !! 0 ++ n )])"));
+		
+		TContainer<Expr> test = new ExprContainer("ListList02", stream);
+		Expr e = test.execute();
+		// Expected Result
+		assertEquals("( [ ( [ ([->] m 'key1' 1) ([->] n 'key2' 2) ([->] o 'key3' 3)]) (++ [ 1 2 3 (++ [ 1 2 3] [ 4 5 6 7])] (++ (!! m 0) n))])", e.toString());
+    }
+
 }
+

@@ -617,7 +617,7 @@ public class TestExprs {
 		TContainer<Expr> test = new ExprContainer("List01", stream);
 		Expr e = test.execute();
 		// Expected Result
-		assertEquals( "[ 1 2 3]", e.toString());
+		assertEquals( "([ 1 2 3])", e.toString());
     }
 
 	@Test
@@ -627,7 +627,7 @@ public class TestExprs {
 		TContainer<Expr> test = new ExprContainer("List01", stream);
 		Expr e = test.execute();
 		// Expected Result
-		assertEquals( "[ 'a' 'b' 'c']", e.toString());
+		assertEquals( "([ 'a' 'b' 'c'])", e.toString());
     }
 
 	@Test
@@ -647,7 +647,7 @@ public class TestExprs {
 		TContainer<Expr> test = new ExprContainer("ListBang02", stream);
 		Expr e = test.execute();
 		// Expected Result
-		assertEquals( "(!! [ 1 2 3] 0)", e.toString());
+		assertEquals( "(!! ([ 1 2 3]) 0)", e.toString());
     }
 
 	@Test
@@ -667,7 +667,7 @@ public class TestExprs {
 		TContainer<Expr> test = new ExprContainer("ListConcat01", stream);
 		Expr e = test.execute();
 		// Expected Result
-		assertEquals( "(++ m [ 1 2 3])", e.toString());
+		assertEquals( "(++ m ([ 1 2 3]))", e.toString());
     }
 
 	@Test
@@ -677,7 +677,7 @@ public class TestExprs {
 		TContainer<Expr> test = new ExprContainer("ListConcat02", stream);
 		Expr e = test.execute();
 		// Expected Result
-		assertEquals( "(++ [ 1 2 3] [ 4 5 6 7])", e.toString());
+		assertEquals( "(++ ([ 1 2 3]) ([ 4 5 6 7]))", e.toString());
     }
 
 	@Test
@@ -687,7 +687,7 @@ public class TestExprs {
 		TContainer<Expr> test = new ExprContainer("ListConcatBang01", stream);
 		Expr e = test.execute();
 		// Expected Result
-		assertEquals("(++ [ 1 2 3] (!! m 0))", e.toString());
+		assertEquals("(++ ([ 1 2 3]) (!! m 0))", e.toString());
     }
 	@Test
     void testListConcatBang02() throws IOException {
@@ -696,7 +696,7 @@ public class TestExprs {
 		TContainer<Expr> test = new ExprContainer("ListConcatBang02", stream);
 		Expr e = test.execute();
 		// Expected Result
-		assertEquals("(++ [ 4 5 6 7] (++ (!! m 0) n))", e.toString());
+		assertEquals("(++ ([ 4 5 6 7]) (++ (!! m 0) n))", e.toString());
     }
 
 	@Test
@@ -706,8 +706,7 @@ public class TestExprs {
 		TContainer<Expr> test = new ExprContainer("testListMap01", stream);
 		Expr e = test.execute();
 		// Expected Result
-		assertEquals( "( [ ([->] m 'key1' 1) ([->] n 'key2' 2) ([->] o 'key3' 3)])", e.toString());
-		    		//<( [ ([->] m 'key1' 1) ([->] n 'key2' 2) ([->] o 'key3' 3)])>
+		assertEquals( "([ ([->] m 'key1' 1) ([->] n 'key2' 2) ([->] o 'key3' 3)])", e.toString());
 	}
 
 	@Test
@@ -717,8 +716,7 @@ public class TestExprs {
 		TContainer<Expr> test = new ExprContainer("TestBooleanExpression", stream);
 		Expr e = test.execute();
 		// Expected Result
-		assertEquals("'(|| '(&& '(< 20 30) '(> 40 20)) '(== '(+ '(+ 'a ('[] 'm (!! 'l 2))) (!! 'l 666)) '(< '(+ 'b ('[] 'm 'abc')) ('[] 'd 'h))))", e.toString());
-				  // <'(|| '(&& '(< 20 30) '(> 40 20)) '(== '(+ '(+ 'a ('[] 'm (!! 'l 2))) (!! 'l 666)) '(< '(+ 'b ('[] 'm 'abc')) ('[] 'd 'h))))>
+		assertEquals("'(|| '(&& '(< 20 30) '(> 40 20)) '(== '(+ '(+ 'a ([] 'm (!! 'l 2))) (!! 'l 666)) '(< '(+ 'b ([] 'm 'abc')) ([] 'd 'h))))", e.toString());
     }
 
 	@Test
@@ -729,8 +727,7 @@ public class TestExprs {
 		TContainer<Expr> test = new ExprContainer("ListList01", stream);
 		Expr e = test.execute();
 		// Expected Result
-		assertEquals("([ ([->] m 'key1' 1) ([->] n 'key2' 2) ([->] o 'key3' 3) (++ [ 1 2 3] (!! m 0)) (++ [ 1 2 3] [ 4 5 6 7]) (++ m n)])", e.toString());
-				   // <[ ([->] m 'key1' 1) ([->] n 'key2' 2) ([->] o 'key3' 3) (++ [ 1 2 3] (!! m 0)) (++ [ 1 2 3] [ 4 5 6 7]) (++ m n)]>
+		assertEquals("([ ([->] m 'key1' 1) ([->] n 'key2' 2) ([->] o 'key3' 3) (++ ([ 1 2 3]) (!! m 0)) (++ ([ 1 2 3]) ([ 4 5 6 7])) (++ m n)])", e.toString());
 	}
 
 	@Test
@@ -741,19 +738,27 @@ public class TestExprs {
 		TContainer<Expr> test = new ExprContainer("ListList02", stream);
 		Expr e = test.execute();
 		// Expected Result
-		assertEquals("( [ ([->] m 'key1' 1) ([->] n 'key2' 2) ([->] o 'key3' 3)] (++ [ 1 2 3 (++ [ 1 2 3] [ 4 5 6 7])] (++ (!! m 0) n))])", e.toString());
+		assertEquals("(++ (++ ([ ([->] m 'key1' 1) ([->] n 'key2' 2) ([->] o 'key3' 3) ([ 1 2 3]) (++ ([ 1 2 3]) ([ 4 5 6 7]))]) (!! m 0)) n)", e.toString());
     }
 
 	@Test
     void ListList03() throws IOException {
-		CharStream stream = CharStreams.fromReader(new StringReader
-		("( [ [ ] ++ [ 1, 2] ])"));
+		CharStream stream = CharStreams.fromReader(new StringReader ("[ [ ] ++ [ 1, 2] ]"));
 		
 		TContainer<Expr> test = new ExprContainer("ListList03", stream);
 		Expr e = test.execute();
 		// Expected Result
-		assertEquals("( [ (++ [ ] [ 1 2]) ])", e.toString());
+		assertEquals("([ (++ ([]) ([ 1 2]))])", e.toString());
     }
 
+	@Test
+    void MetaRuleTest01() throws IOException {
+		CharStream stream = CharStreams.fromReader(new StringReader ("{| foobar[int x, {int} m, string str] returns y: noterm<metafoo, metabar>* {y = 30;}; |}"));
+		
+		TContainer<Expr> test = new ExprContainer("MetaRule01", stream);
+		Expr e = test.execute();
+		// Expected Result
+		assertEquals("([ (metaRule 'foobar' ([ 'int 'map 'string]) ([ 'x' 'm' 'str']))])", e.toString());
+    }
 }
 

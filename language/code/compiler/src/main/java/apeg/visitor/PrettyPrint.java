@@ -345,7 +345,36 @@ public class PrettyPrint extends Visitor{
 	@Override
 	public void visit(MetaRulePEG n) {
 		// TODO Auto-generated method stub
+
+                this.metaLevel = true;
+		ST r = groupTemplate.getInstanceOf("metarule");
 		
+                n.getRuleName().accept(this);
+		r.add("name", expr);
+		
+                int i = 0;
+                ListLit l = (ListLit) n.getTypes();
+                ListLit la = (ListLit) n.getInh();
+                for(Expr e : l.getElems()){
+                    ST vardecl = groupTemplate.getInstanceOf("metadecl");
+
+                    e.accept(this);
+                    vardecl.add("type", expr);
+
+                    Expr aux_e = la.getElems().get(i++);
+                    aux_e.accept(this);
+                    vardecl.add("var", expr);
+
+                    r.add("vardecl", vardecl);
+                }
+
+                n.getSyn().accept(this);
+                r.add("syn", expr);
+
+                n.getPeg().accept(this);
+                r.add("peg", expr);
+		
+                expr = r;
 	}
 
 	@Override
@@ -377,42 +406,51 @@ public class PrettyPrint extends Visitor{
 	public void visit(MetaTyBool n) {
 		// TODO Auto-generated method stub
 		
+		expr = groupTemplate.getInstanceOf("boolean_type");
 	}
 
 	@Override
 	public void visit(MetaTyChar n) {
 		// TODO Auto-generated method stub
 		
+		expr = groupTemplate.getInstanceOf("char_type");
 	}
 
 	@Override
 	public void visit(MetaTyFloat n) {
 		// TODO Auto-generated method stub
 		
+		expr = groupTemplate.getInstanceOf("float_type");
 	}
 
 	@Override
 	public void visit(MetaTyGrammar n) {
 		// TODO Auto-generated method stub
 		
+		expr = groupTemplate.getInstanceOf("grammar_type");
 	}
 
 	@Override
 	public void visit(MetaTyInt n) {
 		// TODO Auto-generated method stub
-		
+
+		expr = groupTemplate.getInstanceOf("int_type");
 	}
 
 	@Override
 	public void visit(MetaTyLang n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(MetaTyMap n) {
 		// TODO Auto-generated method stub
-		
+            
+                ST e = groupTemplate.getInstanceOf("map_type");
+                n.getExpr().accept(this);
+                e.add("type", expr);
+                expr = e;
 	}
 
 	@Override
@@ -425,6 +463,7 @@ public class PrettyPrint extends Visitor{
 	public void visit(MetaTyString n) {
 		// TODO Auto-generated method stub
 		
+                expr = groupTemplate.getInstanceOf("string_type");
 	}
 
 	@Override
@@ -1271,9 +1310,8 @@ public class PrettyPrint extends Visitor{
                         if(e.getClass().getSuperclass() == MetaExpr.class)
                             assig.add("metaExpr", true);
 
-                        else if(e.getClass().getSuperclass() == MetaAPEG.class){
+                        else if(e.getClass().getSuperclass() == MetaAPEG.class)
                             assig.add("metaRule", true);
-                        }
 
                         else if(e.getClass().getSuperclass() == MetaBinaryOP.class)
                             assig.add("metaExpr", true);

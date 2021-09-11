@@ -24,6 +24,12 @@ rule(annotation, name, inh, syn, peg) ::= <<
 ;
 >>
 
+/** Template for meta rule */
+metarule(name, vardecl, syn, peg) ::= <<
+<name>[<vardecl; separator=", ", wrap>]<if(syn)> returns <syn><endif> : <peg> ;
+>>
+
+metadecl(type, var) ::= "<type> <var>"
 
 /** Template for parameters declaration */
 decl(type, name) ::= "<type> <name>"
@@ -33,6 +39,7 @@ decl(type, name) ::= "<type> <name>"
 int_type() ::= "int"
 float_type() ::= "float"
 string_type() ::= "string"
+char_type() ::= "char"
 boolean_type() ::= "boolean"
 grammar_type() ::= "grammar"
 rule_type() ::= "rule"
@@ -89,9 +96,7 @@ and_peg(peg_expr) ::= "&<peg_expr>"
 any_peg() ::= "_"
 bind_peg(name, peg_expr) ::="<name>=<peg_expr>)"
 choice_peg(left_peg, right_peg) ::=<<
- <left_peg>
-/
-<right_peg>
+ <left_peg> / <right_peg>
 >>
 constraint_peg(expr) ::= "{? <expr> }"
 group_peg(ranges) ::= "[<ranges>]"
@@ -106,10 +111,7 @@ kleene(peg) ::= "(<peg>)*"
 update_peg(assig) ::= "{<assig; separator=\" \", wrap>}"
 
 assig(metaExpr, metaRule, attr, expr) ::= <<
-<if(metaRule)><attr> = {| <expr> |};
-<elseif(metaExpr)><attr> = (| <expr> |);
-<else><attr> = <expr>;
-<endif>
+<if(metaRule)><attr> = {| <expr> |};<elseif(metaExpr)><attr> = (| <expr> |);<else><attr> = <expr>;<endif>
 >>
 
 inh(type, name) ::= "<type> <name>"

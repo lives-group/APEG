@@ -591,6 +591,17 @@ public class TestExprs {
 	}
 
 	@Test
+    void testMapListValue() throws IOException {
+		CharStream stream = CharStreams.fromReader(new StringReader("({: Y -> [ 1, 2] :})"));
+		
+		TContainer<Expr> test = new ExprContainer("MapLitKeyMult01", stream);
+		Expr e = test.execute();
+		// Expected Result
+		assertEquals( "({: Y, ([ 1 2]))", e.toString());
+
+	}
+
+	@Test
     void testMap01() throws IOException {
 		CharStream stream = CharStreams.fromReader(new StringReader("({: :})"));
 		
@@ -598,6 +609,16 @@ public class TestExprs {
 		Expr e = test.execute();
 		// Expected Result
 		assertEquals( "({:)", e.toString());
+    }
+
+	@Test
+    void testMetaMap01() throws IOException {
+		CharStream stream = CharStreams.fromReader(new StringReader("(|{: :}|)"));
+		
+		TContainer<Expr> test = new ExprContainer("Map01", stream);
+		Expr e = test.execute();
+		// Expected Result
+		assertEquals( "'({::})", e.toString());
     }
 	
 	@Test
@@ -661,6 +682,36 @@ public class TestExprs {
     }
 
 	@Test
+    void testList04() throws IOException {
+		CharStream stream = CharStreams.fromReader(new StringReader("[ '[' , ']' ]"));
+		
+		TContainer<Expr> test = new ExprContainer("List03", stream);
+		Expr e = test.execute();
+		// Expected Result
+		assertEquals( "([ '[' ']'])", e.toString());
+    }
+
+	@Test
+    void testList05() throws IOException {
+		CharStream stream = CharStreams.fromReader(new StringReader("[ '[::]' , '' ]"));
+		
+		TContainer<Expr> test = new ExprContainer("List03", stream);
+		Expr e = test.execute();
+		// Expected Result
+		assertEquals( "([ '[::]' ''])", e.toString());
+    }
+
+	@Test
+    void testList06() throws IOException {
+		CharStream stream = CharStreams.fromReader(new StringReader("[ |'[::]'| ]"));
+		
+		TContainer<Expr> test = new ExprContainer("List03", stream);
+		Expr e = test.execute();
+		// Expected Result
+		assertEquals( "([ ''[::]'])", e.toString());
+    }
+
+	@Test
     void testListConcat01() throws IOException {
 		CharStream stream = CharStreams.fromReader(new StringReader("( m ++ [ 1 , 2 , 3 ] )"));
 		
@@ -720,7 +771,17 @@ public class TestExprs {
     }
 
 	@Test
-    void ListList01() throws IOException {
+    void testBooleanExpression02() throws IOException {
+		CharStream stream = CharStreams.fromReader(new StringReader("( '\t' || '\n')"));
+		
+		TContainer<Expr> test = new ExprContainer("TestBooleanExpressiono2", stream);
+		Expr e = test.execute();
+		// Expected Result
+		assertEquals("(|| '\t' '\n')", e.toString());
+    }
+
+	@Test
+    void TestListList01() throws IOException {
 		CharStream stream = CharStreams.fromReader(new StringReader
 		("( [ m['key1' -> 1] , n['key2' -> 2] , o['key3' -> 3] , [ 1 , 2 , 3 ] ++ m !! 0 , [ 1 , 2 , 3 ] ++ [ 4 , 5 , 6 ,7 ] , ( m ++ n )])"));
 		
@@ -731,7 +792,7 @@ public class TestExprs {
 	}
 
 	@Test
-    void ListList02() throws IOException {
+    void TestListList02() throws IOException {
 		CharStream stream = CharStreams.fromReader(new StringReader
 		("( [ m['key1' -> 1], n['key2' -> 2], o['key3' -> 3], [ 1 , 2 , 3] ,[ 1 , 2 , 3] ++ [ 4 , 5 , 6 ,7]] ++ m !! 0 ++ n)"));
 		
@@ -742,7 +803,7 @@ public class TestExprs {
     }
 
 	@Test
-    void ListList03() throws IOException {
+    void TestListList03() throws IOException {
 		CharStream stream = CharStreams.fromReader(new StringReader ("[ [ ] ++ [ 1, 2] ]"));
 		
 		TContainer<Expr> test = new ExprContainer("ListList03", stream);

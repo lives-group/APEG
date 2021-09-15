@@ -16,5 +16,5 @@ public class MetaStrLit extends MetaExpr{
     
     public void accept(Visitor v){ v.visit(this); }
 
-    public String toString(){ return e.toString(); }
+    public String toString(){ return "'" + e.toString(); }
 }

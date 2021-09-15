@@ -683,9 +683,9 @@ public class TestExprs {
 
 	@Test
     void testList04() throws IOException {
-		CharStream stream = CharStreams.fromReader(new StringReader("[ '[' , ']' ]"));
+		CharStream stream = CharStreams.fromReader(new StringReader("([ '[' , ']' ])"));
 		
-		TContainer<Expr> test = new ExprContainer("List03", stream);
+		TContainer<Expr> test = new ExprContainer("List04", stream);
 		Expr e = test.execute();
 		// Expected Result
 		assertEquals( "([ '[' ']'])", e.toString());
@@ -693,23 +693,43 @@ public class TestExprs {
 
 	@Test
     void testList05() throws IOException {
-		CharStream stream = CharStreams.fromReader(new StringReader("[ '[::]' , '' ]"));
+		CharStream stream = CharStreams.fromReader(new StringReader("([ '[::]' , '' ])"));
 		
-		TContainer<Expr> test = new ExprContainer("List03", stream);
+		TContainer<Expr> test = new ExprContainer("List05", stream);
 		Expr e = test.execute();
 		// Expected Result
 		assertEquals( "([ '[::]' ''])", e.toString());
     }
-
+	
 	@Test
     void testList06() throws IOException {
-		CharStream stream = CharStreams.fromReader(new StringReader("[ |'[::]'| ]"));
+		CharStream stream = CharStreams.fromReader(new StringReader("([ (| '[::]' |) ])"));
 		
-		TContainer<Expr> test = new ExprContainer("List03", stream);
+		TContainer<Expr> test = new ExprContainer("List0", stream);
 		Expr e = test.execute();
 		// Expected Result
 		assertEquals( "([ ''[::]'])", e.toString());
     }
+
+	@Test
+	void testList07() throws IOException {
+		CharStream stream = CharStreams.fromReader(new StringReader("([ (| '[::]' |), (|''|) ])"));
+		
+		TContainer<Expr> test = new ExprContainer("List07", stream);
+		Expr e = test.execute();
+		// Expected Result
+		assertEquals( "([ ''[::]' '''])", e.toString());
+	}
+
+	@Test
+	void testList08() throws IOException {
+		CharStream stream = CharStreams.fromReader(new StringReader("[ (| '' |) ]"));
+		
+		TContainer<Expr> test = new ExprContainer("List08", stream);
+		Expr e = test.execute();
+		// Expected Result
+		assertEquals( "([ '''])", e.toString());
+	}
 
 	@Test
     void testListConcat01() throws IOException {

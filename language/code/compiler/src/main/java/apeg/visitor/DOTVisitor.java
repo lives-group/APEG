@@ -465,6 +465,27 @@ private STGroup groupTemplate;
 	public void visit(MetaRulePEG n) {
 		// TODO Auto-generated method stub
 		
+                ST node = groupTemplate.getInstanceOf("node");
+
+                node.add("parent", parent);
+                nodeName = "MetaRule" + c_peg++;
+                node.add("node", nodeName);
+
+                ST n_aux = groupTemplate.getInstanceOf("metarule");
+                n_aux.add("name", n.getRuleName());
+                node.add("lable", n_aux);
+
+                nodes.add(node);
+                String s = nodeName;
+
+                parent = s;
+                n.getTypes().accept(this);
+                parent = s;
+                n.getInh().accept(this);
+                parent = s;
+                n.getSyn().accept(this);
+                parent = s;
+                n.getPeg().accept(this);
 	}
 
 	@Override
@@ -502,31 +523,86 @@ private STGroup groupTemplate;
 	@Override
 	public void visit(MetaTyBool n) {
 		// TODO Auto-generated method stub
-		
+
+                ST node = groupTemplate.getInstanceOf("node");
+
+                node.add("parent", parent);
+                nodeName = "MetaTyBool" + c_peg++;
+                node.add("node", nodeName);
+
+                ST n_aux = groupTemplate.getInstanceOf("noolean_type");
+                node.add("lable", n_aux);
+
+                nodes.add(node);
+                parent = nodeName;
 	}
 
 	@Override
 	public void visit(MetaTyChar n) {
 		// TODO Auto-generated method stub
 		
+                ST node = groupTemplate.getInstanceOf("node");
+
+                node.add("parent", parent);
+                nodeName = "MetaTyChar" + c_peg++;
+                node.add("node", nodeName);
+
+                ST n_aux = groupTemplate.getInstanceOf("char_type");
+                node.add("lable", n_aux);
+
+                nodes.add(node);
+                parent = nodeName;
 	}
 
 	@Override
 	public void visit(MetaTyFloat n) {
 		// TODO Auto-generated method stub
 		
+                ST node = groupTemplate.getInstanceOf("node");
+
+                node.add("parent", parent);
+                nodeName = "MetaTyFloat" + c_peg++;
+                node.add("node", nodeName);
+
+                ST n_aux = groupTemplate.getInstanceOf("float_type");
+                node.add("lable", n_aux);
+
+                nodes.add(node);
+                parent = nodeName;
 	}
 
 	@Override
 	public void visit(MetaTyGrammar n) {
 		// TODO Auto-generated method stub
 		
+                ST node = groupTemplate.getInstanceOf("node");
+
+                node.add("parent", parent);
+                nodeName = "MetaTyGrammar" + c_peg++;
+                node.add("node", nodeName);
+
+                ST n_aux = groupTemplate.getInstanceOf("grammar_type");
+                node.add("lable", n_aux);
+
+                nodes.add(node);
+                parent = nodeName;
 	}
 
 	@Override
 	public void visit(MetaTyInt n) {
 		// TODO Auto-generated method stub
 		
+                ST node = groupTemplate.getInstanceOf("node");
+
+                node.add("parent", parent);
+                nodeName = "MetaTyInt" + c_peg++;
+                node.add("node", nodeName);
+
+                ST n_aux = groupTemplate.getInstanceOf("int_type");
+                node.add("lable", n_aux);
+
+                nodes.add(node);
+                parent = nodeName;
 	}
 
 	@Override
@@ -539,6 +615,18 @@ private STGroup groupTemplate;
 	public void visit(MetaTyMap n) {
 		// TODO Auto-generated method stub
 		
+                ST node = groupTemplate.getInstanceOf("node");
+
+                node.add("parent", parent);
+                nodeName = "MetaTyMap" + c_peg++;
+                node.add("node", nodeName);
+
+                ST n_aux = groupTemplate.getInstanceOf("map_type");
+                node.add("lable", n_aux);
+
+                nodes.add(node);
+                parent = nodeName;
+                n.getExpr().accept(this);
 	}
 
 	@Override
@@ -551,6 +639,17 @@ private STGroup groupTemplate;
 	public void visit(MetaTyString n) {
 		// TODO Auto-generated method stub
 		
+                ST node = groupTemplate.getInstanceOf("node");
+
+                node.add("parent", parent);
+                nodeName = "MetaTyString" + c_peg++;
+                node.add("node", nodeName);
+
+                ST n_aux = groupTemplate.getInstanceOf("string_type");
+                node.add("lable", n_aux);
+
+                nodes.add(node);
+                parent = nodeName;
 	}
 
 	@Override

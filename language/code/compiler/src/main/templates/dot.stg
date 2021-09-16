@@ -24,6 +24,9 @@ grammar -> <nodeName>;
 <peg; separator="\n", wrap>
 >>
 
+/** Template for metarule declaration */
+metarule(name) ::= "metaRule[<name>]"
+
 /** Template for dot node and edges */
 node(parent, node, lable) ::= <<
 <node> [label = "<lable>"];
@@ -57,6 +60,8 @@ string_type() ::= "string"
 boolean_type() ::= "boolean"
 grammar_type() ::= "grammar"
 char_type() ::= "char"
+map_type() ::= "map"
+list_type() ::= "list"
 
 
 /** Template for parsing expression */

@@ -834,12 +834,25 @@ public class TestExprs {
 
 	@Test
     void MetaRuleTest01() throws IOException {
-		CharStream stream = CharStreams.fromReader(new StringReader ("{| foobar[int x, {int} m, string str] returns y: noterm<metafoo, metabar>* {y = 30;}; |}"));
+		CharStream stream = CharStreams.fromReader(new StringReader("{| foobar[int x, {int} m, string str] returns y: noterm<metafoo, metabar>* {y = 30;}; |}"));
 		
 		TContainer<Expr> test = new ExprContainer("MetaRule01", stream);
 		Expr e = test.execute();
 		// Expected Result
 		assertEquals("([ (metaRule 'foobar' ([ 'int 'map 'string]) ([ 'x' 'm' 'str']))])", e.toString());
     }
+
+	@Test
+    void testArithmetic07() throws IOException {
+		CharStream stream = CharStreams.fromReader(new StringReader (" ( ) + 2 * 3 * [ 4 * 5]"));
+		
+		TContainer<Expr> test = new ExprContainer("Arithmetic07", stream);
+		Expr e = test.execute();
+		// Expected Result
+		assertEquals(null, e);
+    }
+
+	
+
 }
 

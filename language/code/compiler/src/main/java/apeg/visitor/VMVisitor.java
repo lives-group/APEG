@@ -423,7 +423,7 @@ public class VMVisitor extends Visitor{
             int j = 0;
             while (j < rd.size()) {
                 y = rd.get(j);
-                if (x.getRuleName() == y.getRuleName()) {
+                if (x.getRuleName().equals(y.getRuleName()) ) {
                     if(!chkParams(x.getInh(), y.getInh()) || x.getSyn().size() != y.getSyn().size()){
                         throw new RuntimeException(x.getSymInfo().toString()+" Type parameters for rules diverge: rules " + x.getRuleName() + " and " + y.getRuleName());
                     }

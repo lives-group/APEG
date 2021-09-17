@@ -553,20 +553,15 @@ public class TypeCheckerVisitor extends Visitor {
     @Override
     public void visit(Compose n) {
         n.getLeft().accept(this);
-        VType left = s.peek();
+        VType left = s.pop();
         n.getRight().accept(this);
-        VType right = s.peek();
-        if(left instanceof VTyVar || right instanceof VTyVar) {
-            VTyVar r = pool.newVar();
-            s.push(r);
+        VType right = s.pop();
+        if(left.matchCT(TyLang.getInstance(), ct) && 
+          (right.matchCT(TyLang.getInstance(), ct) || right.matchCT(TyGrammar.getInstance(), ct))) {
+          s.psuh(TyGrammar.getInstance());
         }
         else {
-            if(left == right) {
-                s.push(left);
-            }
-            else {
                 errorMsg(18,n.getSymInfo(),"<<",left,right);
-            }
         }
     }
 

@@ -2,6 +2,7 @@ package apeg.parser;
 
 import java.util.List;
 import java.util.ArrayList;
+import apeg.*;
 
 public class TestMachine {
     private List<TContainer> tests;

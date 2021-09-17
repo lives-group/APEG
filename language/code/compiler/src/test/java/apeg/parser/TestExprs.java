@@ -842,7 +842,7 @@ public class TestExprs {
 		TContainer<Expr> test = new ExprContainer("MetaRule01", stream);
 		Expr e = test.execute();
 		// Expected Result
-		assertEquals("([ (metaRule 'foobar' ([ 'int 'map 'string]) ([ 'x' 'm' 'str']))])", e.toString());
+		assertEquals("(metagrammar ([ (metaRule 'foobar' ([ 'int 'map 'string]) ([ 'x' 'm' 'str']))]))", e.toString());
     }
 
 	@Test

@@ -387,4 +387,5 @@ public void visit(TyMetaTy n){}
  public void visit(ListAcces n){}
  public void visit(ListLit n){}
 
+ public void visit(MetaGrammar n){}
 }

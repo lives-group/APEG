@@ -1486,6 +1486,6 @@ public class PrettyPrint extends Visitor{
             expr = r;
         }
 
-	
+        public void visit(MetaGrammar n){}
 
 }

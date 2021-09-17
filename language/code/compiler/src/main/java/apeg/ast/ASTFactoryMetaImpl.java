@@ -140,6 +140,9 @@ public class ASTFactoryMetaImpl implements ASTFactory{
     public MetaRulePEG newMetaRulePEG(SymInfo s,Expr ruleName,Expr anno, Expr types, Expr inh,Expr syn,Expr peg){
         return new MetaRulePEG(s,ruleName,anno,types, inh,syn,peg);
     }
+    public MetaGrammar newMetaGrammar(SymInfo s, Expr listMetaRule){
+        return new MetaGrammar(s, listMetaRule);
+    }
     public MetaUpdatePEG newMetaUpdatePEG(SymInfo s,Expr assigs){
         return new MetaUpdatePEG(s,assigs);
     }

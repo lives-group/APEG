@@ -697,6 +697,7 @@ public interface ASTFactory {
 	 * @return a meta map literal node
 	 */
 	public MetaNonterminalPEG newMetaNonterminalPEG(SymInfo s,Expr name, Expr args);
+
 	/**
 	 * 
 	 * @param s
@@ -741,6 +742,16 @@ public interface ASTFactory {
      * @return
      */
     public MetaRulePEG newMetaRulePEG(SymInfo s,Expr ruleName,Expr anno,Expr types, Expr inh,Expr syn,Expr peg);
+
+    /**
+     * 
+     * @param s
+     * 			corresponding SymInfo node
+     * @param listMetaRule
+     * @return a metaGrammar node
+     */
+    public MetaGrammar newMetaGrammar(SymInfo s, Expr listMetaRule);
+
     /**
      * 
      * @param s

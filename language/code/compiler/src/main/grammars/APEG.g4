@@ -145,7 +145,7 @@ rules returns[List<RulePEG> list, Expr mrules]:
     ArrayList l = new ArrayList<Expr>();
    }
    (r=production {if(!metaLevel) $list.add($r.rule); else l.add($r.mrule);})+
-   {if(metaLevel) $mrules = factory.newListExpr(new SymInfo(10, 20), l);}
+   {if(metaLevel) $mrules = factory.newMetaGrammar($r.mrule.getSymInfo(), factory.newListExpr($r.mrule.getSymInfo(), l));}
 ;
 
 // A definition of an APEG rule

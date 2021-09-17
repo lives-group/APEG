@@ -1928,4 +1928,6 @@ private STGroup groupTemplate;
                 }
 
         }
+
+        public void visit(MetaGrammar n){}
 }

@@ -4,28 +4,28 @@ options {
   isAdaptable;
 }
 
-literal3[grammar g] :
-    literal<g> literal<g> literal<g> !. ;
-
-literal[grammar g] :
-    number<n>
-	// { g1 = addRule(copyGrammar(g), concat(concat('strN : ', concatN('CHAR ', n)), ';')) ; } <- we must to define a concrete syntax for it
+literal[language g] :
+    number<g, n>
+        {ml = {| strN[language g]: CHAR<g> CHAR<g> CHAR<g> ; |};
+         g1 = g << ml;}
 	'['
 	strN<g1>
 	']'
     ;
 
-strN[grammar g]:
-    {? false }
-	;
 
-CHAR : . ;
 
-number returns r  :
-    digit<r> ( digit<aux> { r = r * 10 + aux; } )*
+strN[language g]:
+   {? false }
+     ;
+
+CHAR[language g]: 'a' ;
+
+number[language g] returns r  :
+    digit<g, r> ( digit<g, aux> { r = r * 10 + aux; } )*
     ;
   
-digit returns x1 :
+digit[language g] returns x1 :
   '0'  { x1 = 0; }
   / '1'  { x1 = 1; }
   / '2'  { x1 = 2; }

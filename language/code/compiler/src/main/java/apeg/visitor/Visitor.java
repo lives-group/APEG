@@ -134,4 +134,5 @@ public abstract class Visitor {
     public abstract void visit(TyString n);
     //Others
     public abstract void visit(Grammar n);
+    public abstract void visit(MetaGrammar n);
 }

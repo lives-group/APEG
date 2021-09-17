@@ -464,7 +464,7 @@ public class TypeCheckerVisitor extends Visitor {
                    if(s.pop().matchCT(tyex,ct)){
                        n.getPeg().accept(this);
                        if(s.pop().matchCT(VTyMetaPeg.getInstance(),ct)){
-                           s.push(VTyMetaPeg.getInstance());
+                           s.push(VTyGrammar.getInstance());
                            return;
                        }else{
                            errorMsg(35,n.getSymInfo());
@@ -553,20 +553,18 @@ public class TypeCheckerVisitor extends Visitor {
     @Override
     public void visit(Compose n) {
         n.getLeft().accept(this);
-        VType left = s.peek();
+        VType left = s.pop();
         n.getRight().accept(this);
-        VType right = s.peek();
-        if(left instanceof VTyVar || right instanceof VTyVar) {
-            VTyVar r = pool.newVar();
-            s.push(r);
+        VType right = s.pop();
+        if(left.matchCT(VTyLang.getInstance(), ct) && 
+          (right.matchCT(VTyLang.getInstance(), ct) || right.matchCT(VTyGrammar.getInstance(), ct))) {
+          s.push(VTyLang.getInstance());
+          return;
         }
         else {
-            if(left == right) {
-                s.push(left);
-            }
-            else {
                 errorMsg(18,n.getSymInfo(),"<<",left,right);
-            }
+                s.push(TypeError.getInstance());
+                return;
         }
     }
 
@@ -1358,5 +1356,19 @@ public class TypeCheckerVisitor extends Visitor {
            System.out.println(global.toString());
            System.out.println(ct.toString());
         }
+    }
+
+    public void visit(MetaGrammar n){
+        VTyGrammar g = VTyGrammar.getInstance();
+        VTyList l = new VTyList(g);
+        n.getListMetaRule().accept(this);
+        if(!s.peek().matchCT(l, ct)){
+            errorMsg(27, n.getSymInfo(), s.pop());
+            s.push(TypeError.getInstance());
+            return;
+        }
+
+        s.pop();
+        s.push(VTyGrammar.getInstance());
     }
 }

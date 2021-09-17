@@ -33,6 +33,10 @@ public class Environment <N,V> {
 	     * convert this environment into a String. For debug purposes only. 
 	     */
 	    public String toString(){
+	    	return "Environment";
+	    }
+	    
+	    public String pprint(){
 	    	return toStringf("");
 	    }
 	    

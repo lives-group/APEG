@@ -407,11 +407,10 @@ public class VMVisitor extends Visitor{
     
     private boolean chkParams(List<Pair<Type,String>> le, List<Pair<Type,String>> lr){
        boolean r = true;
-       if(le.size() == lr.size()){
-           for(int i =0; i < le.size(); i++){
-               r = r && le.get(i).getFirst().match(lr.get(i).getFirst());
-           }
-       }else{ return false;}
+       if(le.size() != lr.size()){ return false;}
+       for(int i =0; i < le.size(); i++){
+          r = r && le.get(i).getFirst().match(lr.get(i).getFirst());
+       }
        return r;
     }
     
@@ -464,11 +463,11 @@ public class VMVisitor extends Visitor{
 		        re =  (ArrayList<RulePEG>)((Grammar)lan.getFirst()).cloneRules();
 		        rd = mergeGrammars((ArrayList)re, (ArrayList<RulePEG>)stk.peek().getSecond());
 		        gext = new Grammar(gext.getSymInfo(), gext.getName(),gext.getOptions(),rd);
-                        Visitor prettyprint = new PrettyPrint(new RelativePath(new AbsolutePath("."), "src/main/templates/prettyprint.stg"));
-                        System.out.println("----------------------");
-                        gext.accept(prettyprint);
-                        System.out.println("----------------------");
-                        TypeCheckerVisitor tychk = new TypeCheckerVisitor();
+//                 Visitor prettyprint = new PrettyPrint(new RelativePath(new AbsolutePath("."), "src/main/templates/prettyprint.stg"));
+//                 System.out.println("----------------------");
+//                 gext.accept(prettyprint);
+//                 System.out.println("----------------------");
+                TypeCheckerVisitor tychk = new TypeCheckerVisitor();
 		        gext.accept(tychk);
 		        if(tychk.getError().size() != 0){
 		            System.out.println("Type erros when composing grammars at " + n.getSymInfo().toString());
@@ -1041,7 +1040,6 @@ public class VMVisitor extends Visitor{
 		if(rule==null){
 			throw new RuntimeException("Rule "+n.getName()+" not found");
 		}
-                System.out.println("-->>> Rule being called: " + rule.toString());
 		rule.accept(this);
 		//os ultimos serao os primeiros
 		if(vm.succeed()){

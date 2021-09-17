@@ -1353,7 +1353,7 @@ public class TypeCheckerVisitor extends Visitor {
         error.addAll(ct.resolveUnify(opTable));
         global.replace((k,v) -> {v.simplify(); return v;} );
         if(debug){
-           System.out.println(global.toString());
+           System.out.println(global.pprint());
            System.out.println(ct.toString());
         }
     }

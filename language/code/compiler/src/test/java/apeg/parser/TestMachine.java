@@ -1,4 +1,4 @@
-package apeg.test;
+package apeg.parser;
 
 import java.util.List;
 import java.util.ArrayList;

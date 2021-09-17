@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 import apeg.util.SymInfo;
-import apeg.visitor.TestVisitor;
+// import apeg.visitor.TestVisitor;
 import apeg.visitor.VMVisitor;
 import apeg.ast.expr.*;
 import apeg.ast.expr.operators.*;

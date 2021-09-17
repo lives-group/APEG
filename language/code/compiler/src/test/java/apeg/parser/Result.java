@@ -1,4 +1,4 @@
-package apeg.test;
+package apeg.parser;
 
 public class Result<E> {
     /**

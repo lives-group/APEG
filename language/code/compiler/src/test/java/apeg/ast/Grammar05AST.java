@@ -7,7 +7,7 @@ import apeg.util.Pair;
 import apeg.ast.types.*;
 import apeg.ast.expr.*;
 import apeg.ast.expr.operators.*;
-import apeg.visitor.TestVisitor;
+// import apeg.visitor.TestVisitor;
 
 public class Grammar05AST {
 	
@@ -93,7 +93,7 @@ public class Grammar05AST {
 		
 		Grammar gram = new Grammar(new SymInfo(0,0), "testfunction", null, rules );
 		
-		TestVisitor v = new TestVisitor();
-		gram.accept(v);
+		// TestVisitor v = new TestVisitor();
+		// gram.accept(v);
 	}
 }

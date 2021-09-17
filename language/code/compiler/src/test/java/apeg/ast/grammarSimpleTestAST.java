@@ -36,7 +36,7 @@ public class grammarSimpleTestAST {
 		
 		Grammar gram = new Grammar(new SymInfo(0,0), "simpleTest", opts, rules);
 		
-		TestVisitor v = new TestVisitor();
-		gram.accept(v);
+		// TestVisitor v = new TestVisitor();
+		// gram.accept(v);
 	}
 }

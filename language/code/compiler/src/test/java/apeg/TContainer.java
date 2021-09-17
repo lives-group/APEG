@@ -1,4 +1,4 @@
-package apeg.test;
+package apeg;
 
 /***
  * An interface for defining a test for each compiler phase

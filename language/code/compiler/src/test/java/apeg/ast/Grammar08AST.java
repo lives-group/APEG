@@ -7,7 +7,7 @@ import apeg.ast.expr.operators.*;
 import apeg.ast.rules.*;
 import apeg.ast.types.*;
 import apeg.ast.Grammar;
-import apeg.visitor.TestVisitor;
+// import apeg.visitor.TestVisitor;
 
 
 public class Grammar08AST {

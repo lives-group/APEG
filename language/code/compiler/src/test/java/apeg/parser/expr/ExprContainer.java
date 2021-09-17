@@ -1,4 +1,4 @@
-package apeg.test.expr;
+package apeg.parser.expr;
 
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -14,7 +14,7 @@ import apeg.ast.expr.Expr;
 
 import apeg.util.path.Path;
 
-import apeg.test.TContainer;
+import apeg.TContainer;
 
 public class ExprContainer extends TContainer<Expr> {
 

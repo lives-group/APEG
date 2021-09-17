@@ -1,4 +1,4 @@
-package apeg.test;
+package apeg.parser;
 
 import java.io.File;
 import java.io.StringReader;
@@ -9,7 +9,9 @@ import org.antlr.v4.runtime.CharStreams;
 
 import apeg.util.path.*;
 
-import apeg.test.expr.ExprContainer;
+import apeg.parser.expr.ExprContainer;
+import apeg.TContainer;
+
 
 import apeg.ast.expr.*;
 import apeg.ast.ASTFactory;
@@ -834,7 +836,8 @@ public class TestExprs {
 
 	@Test
     void MetaRuleTest01() throws IOException {
-		CharStream stream = CharStreams.fromReader(new StringReader("{| foobar[int x, {int} m, string str] returns y: noterm<metafoo, metabar>* {y = 30;}; |}"));
+		CharStream stream = CharStreams.fromReader(new StringReader
+		("{| foobar[int x, {int} m, string str] returns y: noterm<metafoo, metabar>* {y = 30;}; |}"));
 		
 		TContainer<Expr> test = new ExprContainer("MetaRule01", stream);
 		Expr e = test.execute();

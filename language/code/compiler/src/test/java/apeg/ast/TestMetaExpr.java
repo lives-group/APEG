@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 import apeg.util.SymInfo;
-import apeg.visitor.TestVisitor;
+// import apeg.visitor.TestVisitor;
 import apeg.visitor.semantics.TypeCheckerVisitor;
 import apeg.visitor.semantics.ErrorEntry;
 import apeg.visitor.semantics.ErrorsMsg;

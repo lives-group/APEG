@@ -5,7 +5,7 @@ import apeg.util.*;
 import apeg.ast.expr.*;
 import apeg.ast.rules.*;
 import apeg.ast.types.*;
-import apeg.visitor.TestVisitor;
+// import apeg.visitor.TestVisitor;
 import apeg.ast.Grammar.GrammarOption;
 
 
@@ -36,8 +36,8 @@ public class Grammar03AST {
 		GrammarOption opts = new GrammarOption();
 		Grammar gram = new Grammar(new SymInfo(0,0), "expression", opts, rules);
 		
-		TestVisitor v = new TestVisitor();
-		gram.accept(v);
+		// TestVisitor v = new TestVisitor();
+		// gram.accept(v);
 	}
 
 }

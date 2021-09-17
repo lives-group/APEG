@@ -4,14 +4,14 @@ import java.util.List;
 import java.util.ArrayList;
 import apeg.visitor.VMVisitor;
 import apeg.util.SymInfo;
-import apeg.visitor.TestVisitor;
+// import apeg.visitor.TestVisitor;
 import apeg.ast.rules.*;
 import apeg.ast.expr.*;
 import apeg.ast.types.*;
 import apeg.util.*;
 import apeg.ast.Grammar;
 import apeg.ast.Grammar.GrammarOption;
-import apeg.visitor.TestVisitor;
+// import apeg.visitor.TestVisitor;
 
 
 public class Grammar02AST {

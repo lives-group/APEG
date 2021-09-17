@@ -27,7 +27,10 @@ public class PrettyPrint extends Visitor{
 	private ST expr, peg;
 	private List<ST> inh;
 	private List<ST>assig;
-	
+
+        // This variable is used to avoid too much quotes when
+        // pretty printing meta level nodes
+        private boolean metaLevel;
 	
 	public PrettyPrint (Path filePath) {
 		
@@ -45,6 +48,7 @@ public class PrettyPrint extends Visitor{
 		// set the name attribute
 		attr.add("name", n.getName());
 		expr = attr;
+                metaLevel = false;
 	}
 
 	@Override
@@ -128,37 +132,64 @@ public class PrettyPrint extends Visitor{
 		//set the current expression template
 		expr = groupTemplate.getInstanceOf("string_expr");
 		//set value propriety
+                expr.add("meta", this.metaLevel);
 		expr.add("value", n.getValue());
 	}
 
 	@Override
 	public void visit(MetaAndPEG n) {
 		// TODO Auto-generated method stub
+
+		ST meta_peg = groupTemplate.getInstanceOf("and_peg");
 		
+		n.getPeg().accept(this);
+		meta_peg.add("peg_expr", this.expr);
+		this.expr = meta_peg;
 	}
 
 	@Override
 	public void visit(MetaAnyPEG n) {
 		// TODO Auto-generated method stub
 		
+		ST meta_peg = groupTemplate.getInstanceOf("any_peg");
+                this.expr = meta_peg;
 	}
 
 	@Override
 	public void visit(MetaAttribute n) {
 		// TODO Auto-generated method stub
-		
+                
+                this.metaLevel = true;
+		// set the current expression template
+		ST meta_attr = groupTemplate.getInstanceOf("attribute");
+                n.getExpr().accept(this);
+		// set the name attribute
+		meta_attr.add("name", this.expr);
+		this.expr = meta_attr;
+                this.metaLevel = false;
 	}
 
 	@Override
 	public void visit(MetaBindPEG n) {
 		// TODO Auto-generated method stub
 		
+		ST meta_peg = groupTemplate.getInstanceOf("bind_peg");
+		n.getExprAtt().accept(this);
+		meta_peg.add("name", this.expr);
+		
+		n.getExprP().accept(this);
+		meta_peg.add("peg_expr", this.expr);
+		this.expr = meta_peg;
 	}
 
 	@Override
 	public void visit(MetaBoolLit n) {
 		// TODO Auto-generated method stub
 		
+		//set the current expression template
+		expr = groupTemplate.getInstanceOf("boolean_expr");
+		//set value propriety
+		expr.add("value", n.getExpr());
 	}
 
 	@Override
@@ -177,126 +208,249 @@ public class PrettyPrint extends Visitor{
 	public void visit(MetaChoicePEG n) {
 		// TODO Auto-generated method stub
 		
+		// set the current parsing expression template
+                ST meta_peg = groupTemplate.getInstanceOf("choice_peg");
+                // visit the left parsing expression
+                n.getLeftPeg().accept(this);
+                // set propriety for the left parsing expression
+                meta_peg.add("left_peg", this.expr);
+                // visit the right parsing expression
+                n.getRightPeg().accept(this);
+                // set propriety for the left parsing expression
+                meta_peg.add("right_peg", this.expr);
+                // set the current parsing expression
+                this.expr = meta_peg;
 	}
 
 	@Override
 	public void visit(MetaConstraintPEG n) {
 		// TODO Auto-generated method stub
 		
+		ST peg_expr = groupTemplate.getInstanceOf("constraint_peg");
+		
+		n.getExpr().accept(this);
+		peg_expr.add("expr",expr);
+		
+		this.expr = peg_expr;
 	}
 
 	@Override
 	public void visit(MetaFloatLit n) {
 		// TODO Auto-generated method stub
 		
+		expr = groupTemplate.getInstanceOf("char_expr");
+		//set value propriety
+		expr.add("value", n.getExpr());
 	}
 
 	@Override
 	public void visit(MetaIntLit n) {
 		// TODO Auto-generated method stub
 		
+		//set the current expression template
+		expr = groupTemplate.getInstanceOf("int_expr");
+		//set value propriety
+		expr.add("value", n.getExpr());
 	}
 
 	@Override
 	public void visit(MetaKleenePEG n) {
 		// TODO Auto-generated method stub
 		
+		ST meta_peg = groupTemplate.getInstanceOf("kleene");
+		
+		n.getExpr().accept(this);
+		meta_peg.add("peg", this.expr);
+		this.expr = meta_peg;
 	}
 
 	@Override
 	public void visit(MetaLitPEG n) {
 		// TODO Auto-generated method stub
-		
+
+                this.metaLevel = true;
+		ST peg = groupTemplate.getInstanceOf("literal_peg");
+                n.getExpr().accept(this);
+                peg.add("value", this.expr);
+                this.expr = peg;
+                this.metaLevel = false;
 	}
 
 	@Override
 	public void visit(MetaMapLit n) {
 		// TODO Auto-generated method stub
 		
+                ST aux_expr = groupTemplate.getInstanceOf("mapLit");
+                Pair <Expr, Expr>[] pairs = n.getAssocs();
+ 
+                for(Pair<Expr, Expr> p : pairs){
+                        ST pair = groupTemplate.getInstanceOf("pair");
+                        p.getFirst().accept(this);
+                        pair.add("left_expr", expr);
+                        p.getSecond().accept(this);
+                        pair.add("right_expr", expr);
+                        aux_expr.add("pairs", pair);
+                }
+ 
+                expr = aux_expr;
 	}
 
 	@Override
 	public void visit(MetaNonterminalPEG n) {
 		// TODO Auto-generated method stub
-		
+
+                this.metaLevel = true;
+		ST aux_peg = groupTemplate.getInstanceOf("nonterminal_peg");
+                n.getName().accept(this);
+		aux_peg.add("name", this.expr);
+                n.getArgs().accept(this);
+                aux_peg.add("attrs", this.expr);
+
+                expr = aux_peg;
+                this.metaLevel = false;
 	}
 
 	@Override
 	public void visit(MetaNotPEG n) {
 		// TODO Auto-generated method stub
 		
+		ST aux_peg = groupTemplate.getInstanceOf("not_peg");
+		
+		n.getExpr().accept(this);
+		aux_peg.add("peg_expr", this.expr);
+		this.expr = aux_peg;
 	}
 
 	@Override
 	public void visit(MetaOptionalPEG n) {
 		// TODO Auto-generated method stub
 		
+		ST aux_peg = groupTemplate.getInstanceOf("optional_peg");
+		n.getExpr().accept(this);
+		aux_peg.add("peg_expr", this.expr);
+		this.expr = aux_peg;
 	}
 
 	@Override
 	public void visit(MetaPKleene n) {
 		// TODO Auto-generated method stub
 		
+		ST aux_peg = groupTemplate.getInstanceOf("plus_peg");
+		
+		n.getPegExpr().accept(this);
+		aux_peg.add("peg_expr", this.expr);
+		this.expr = aux_peg;
 	}
 
 	@Override
 	public void visit(MetaRulePEG n) {
 		// TODO Auto-generated method stub
+
+                this.metaLevel = true;
+		ST r = groupTemplate.getInstanceOf("metarule");
 		
+                n.getRuleName().accept(this);
+		r.add("name", expr);
+		
+                int i = 0;
+                ListLit l = (ListLit) n.getTypes();
+                ListLit la = (ListLit) n.getInh();
+                for(Expr e : l.getElems()){
+                    ST vardecl = groupTemplate.getInstanceOf("metadecl");
+
+                    e.accept(this);
+                    vardecl.add("type", expr);
+
+                    Expr aux_e = la.getElems().get(i++);
+                    aux_e.accept(this);
+                    vardecl.add("var", expr);
+
+                    r.add("vardecl", vardecl);
+                }
+
+                n.getSyn().accept(this);
+                r.add("syn", expr);
+
+                n.getPeg().accept(this);
+                r.add("peg", expr);
+		
+                expr = r;
 	}
 
 	@Override
 	public void visit(MetaSeqPEG n) {
 		// TODO Auto-generated method stub
 		
+		ST aux_peg = groupTemplate.getInstanceOf("sequence_peg");
+		
+		for(Expr p: n.getExpr()) {
+			p.accept(this);
+			aux_peg.add("peg_exprs", this.expr);
+		}
+
+                this.expr = aux_peg;
 	}
 
 	@Override
 	public void visit(MetaStrLit n) {
 		// TODO Auto-generated method stub
 		
+		//set the current expression template
+		expr = groupTemplate.getInstanceOf("string_expr");
+		//set value propriety
+                expr.add("meta", true);
+		expr.add("value", n.getExpr());
 	}
 
 	@Override
 	public void visit(MetaTyBool n) {
 		// TODO Auto-generated method stub
 		
+		expr = groupTemplate.getInstanceOf("boolean_type");
 	}
 
 	@Override
 	public void visit(MetaTyChar n) {
 		// TODO Auto-generated method stub
 		
+		expr = groupTemplate.getInstanceOf("char_type");
 	}
 
 	@Override
 	public void visit(MetaTyFloat n) {
 		// TODO Auto-generated method stub
 		
+		expr = groupTemplate.getInstanceOf("float_type");
 	}
 
 	@Override
 	public void visit(MetaTyGrammar n) {
 		// TODO Auto-generated method stub
 		
+		expr = groupTemplate.getInstanceOf("grammar_type");
 	}
 
 	@Override
 	public void visit(MetaTyInt n) {
 		// TODO Auto-generated method stub
-		
+
+		expr = groupTemplate.getInstanceOf("int_type");
 	}
 
 	@Override
 	public void visit(MetaTyLang n) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(MetaTyMap n) {
 		// TODO Auto-generated method stub
-		
+            
+                ST e = groupTemplate.getInstanceOf("map_type");
+                n.getExpr().accept(this);
+                e.add("type", expr);
+                expr = e;
 	}
 
 	@Override
@@ -309,12 +463,32 @@ public class PrettyPrint extends Visitor{
 	public void visit(MetaTyString n) {
 		// TODO Auto-generated method stub
 		
+                expr = groupTemplate.getInstanceOf("string_type");
 	}
 
 	@Override
 	public void visit(MetaUpdatePEG n) {
 		// TODO Auto-generated method stub
 		
+		ST aux_peg = groupTemplate.getInstanceOf("update_peg");
+                ListLit l = (ListLit) n.getPegExpr();
+                Expr e;
+
+                for(int i=0; i<l.getElems().size(); i++){
+                    ST meta_assig = groupTemplate.getInstanceOf("assig");
+
+                    e = l.getElems().get(i++);
+                    e.accept(this);
+                    meta_assig.add("attr", this.expr);
+
+                    e = l.getElems().get(i);
+                    e.accept(this);
+                    meta_assig.add("expr", this.expr);
+
+                    aux_peg.add("assig", meta_assig);
+                }
+
+                this.expr = aux_peg;
 	}
 
 	@Override
@@ -363,6 +537,15 @@ public class PrettyPrint extends Visitor{
 	public void visit(Compose n) {
 		// TODO Auto-generated method stub
 		
+		ST peg_expr = groupTemplate.getInstanceOf("compose_expr");
+		
+		n.getLeft().accept(this);
+		peg_expr.add("left_expr",expr);
+		
+		n.getRight().accept(this);
+		peg_expr.add("right_expr",expr);
+		
+		this.expr = peg_expr;
 	}
 
 	@Override
@@ -607,108 +790,277 @@ public class PrettyPrint extends Visitor{
 	public void visit(MetaAdd n) {
 		// TODO Auto-generated method stub
 		
+                //set the current expression template
+		ST aux_expr = groupTemplate.getInstanceOf("add_expr");
+		//visit left expression
+		n.getLeft().accept(this);
+		//set the left expression attribute
+		aux_expr.add("left_expr", expr);
+		//visit the right expression
+		n.getRight().accept(this);
+		//set the right expression attribute
+		aux_expr.add("right_expr", expr);
+		//set the current expression
+		this.expr = aux_expr;
+		
 	}
 
 	@Override
 	public void visit(MetaAnd n) {
 		// TODO Auto-generated method stub
 		
+		// set the current expression template
+		ST aux_expr = groupTemplate.getInstanceOf("and_expr");
+		// visit left expression
+		n.getLeft().accept(this);
+		// set the left expression attribute
+		aux_expr.add("left_expr", expr);
+		// visit right expression
+		n.getRight().accept(this);
+		// set the right expression attribute
+		aux_expr.add("right_expr", expr);
+		// set the current expression
+		this.expr = aux_expr;
 	}
 
 	@Override
 	public void visit(MetaCompose n) {
 		// TODO Auto-generated method stub
 		
+		ST peg_expr = groupTemplate.getInstanceOf("compose_expr");
+		
+		n.getLeft().accept(this);
+		peg_expr.add("left_expr",expr);
+		
+		n.getRight().accept(this);
+		peg_expr.add("right_expr",expr);
+		
+		this.expr = peg_expr;
 	}
 
 	@Override
 	public void visit(MetaConcat n) {
 		// TODO Auto-generated method stub
 		
+		ST peg_expr = groupTemplate.getInstanceOf("concat_expr");
+		
+		n.getLeft().accept(this);
+		peg_expr.add("left_expr",expr);
+		
+		n.getRight().accept(this);
+		peg_expr.add("right_expr",expr);
+		
+		expr = peg_expr;
 	}
 
 	@Override
 	public void visit(MetaDiv n) {
 		// TODO Auto-generated method stub
 		
+		ST aux_expr = groupTemplate.getInstanceOf("div_expr");
+		
+		n.getLeft().accept(this);
+		aux_expr.add("left_expr", expr);
+		
+		n.getRight().accept(this);
+		aux_expr.add("right_expr",expr);
+		
+		expr = aux_expr;
 	}
 
 	@Override
 	public void visit(MetaEquals n) {
 		// TODO Auto-generated method stub
 		
+		ST aux_expr = groupTemplate.getInstanceOf("equals_expr");
+		
+		n.getLeft().accept(this);
+		aux_expr.add("left_expr", expr);
+		
+		n.getRight().accept(this);
+		aux_expr.add("right_expr",expr);
+		
+		expr = aux_expr;
 	}
 
 	@Override
 	public void visit(MetaGreater n) {
 		// TODO Auto-generated method stub
 		
+		ST aux_expr = groupTemplate.getInstanceOf("gt_expr");
+		
+		n.getLeft().accept(this);
+		aux_expr.add("left_expr", expr);
+		
+		n.getRight().accept(this);
+		aux_expr.add("right_expr", expr);
+		
+		expr = aux_expr;
 	}
 
 	@Override
 	public void visit(MetaGreaterEq n) {
 		// TODO Auto-generated method stub
 		
+		ST aux_expr = groupTemplate.getInstanceOf("ge_expr");
+		
+		n.getLeft().accept(this);
+		aux_expr.add("left_expr", expr);
+		
+		n.getRight().accept(this);
+		aux_expr.add("right_expr", expr);
+		
+		expr = aux_expr;
 	}
 
 	@Override
 	public void visit(MetaLess n) {
 		// TODO Auto-generated method stub
 		
+		ST aux_expr = groupTemplate.getInstanceOf("lt_expr");
+		
+		n.getLeft().accept(this);
+		aux_expr.add("left_expr", expr);
+		
+		n.getRight().accept(this);
+		aux_expr.add("right_expr", expr);
+		
+		expr = aux_expr;
 	}
 
 	@Override
 	public void visit(MetaLessEq n) {
 		// TODO Auto-generated method stub
 		
+		ST aux_expr = groupTemplate.getInstanceOf("le_expr");
+		
+		n.getLeft().accept(this);
+		aux_expr.add("left_expr", expr);
+		
+		n.getRight().accept(this);
+		aux_expr.add("right_expr", expr);
+		
+		expr = aux_expr;
 	}
 
 	@Override
 	public void visit(MetaMapAcces n) {
 		// TODO Auto-generated method stub
 		
+                ST aux_expr = groupTemplate.getInstanceOf("mapAcces");
+
+                n.getMap().accept(this);
+                aux_expr.add("factor", expr);  
+ 
+                n.getIndex().accept(this);
+                aux_expr.add("expr", expr);
+ 
+                expr = aux_expr;
+
 	}
 
 	@Override
 	public void visit(MetaMapExtension n) {
 		// TODO Auto-generated method stub
 		
+                ST aux_expr = groupTemplate.getInstanceOf("mapExtension");
+
+                n.getMap().accept(this);
+                aux_expr.add("acces", expr);
+ 
+                ST pair = groupTemplate.getInstanceOf("pair");
+                n.getKey().accept(this);
+                pair.add("left_expr", expr);
+                n.getValue().accept(this);
+                pair.add("right_expr", expr);
+                aux_expr.add("pair", pair);
+ 
+                expr = aux_expr;
 	}
 
 	@Override
 	public void visit(MetaMod n) {
 		// TODO Auto-generated method stub
 		
+		ST aux_expr = groupTemplate.getInstanceOf("mod_expr");
+		
+		n.getLeft().accept(this);
+		aux_expr.add("left_expr", expr);
+		
+		n.getRight().accept(this);
+		aux_expr.add("right_expr", expr);
+		
+		expr = aux_expr;
 	}
 
 	@Override
 	public void visit(MetaMult n) {
 		// TODO Auto-generated method stub
 		
+		ST aux_expr = groupTemplate.getInstanceOf("mul_expr");
+		
+		n.getLeft().accept(this);
+		aux_expr.add("left_expr", expr);
+		
+		n.getRight().accept(this);
+		aux_expr.add("right_expr", expr);
+		
+		expr = aux_expr;
 	}
 
 	@Override
 	public void visit(MetaNot n) {
 		// TODO Auto-generated method stub
 		
+		ST aux_expr = groupTemplate.getInstanceOf("not_expr");
+		
+		n.getPegExpr().accept(this);
+		aux_expr.add("expr", expr);
+		this.expr = aux_expr;
 	}
 
 	@Override
 	public void visit(MetaNotEq n) {
 		// TODO Auto-generated method stub
 		
+		ST aux_expr = groupTemplate.getInstanceOf("ano_equals_expr");
+		
+		n.getLeft().accept(this);
+		aux_expr.add("left_expr", expr);
+		
+		n.getRight().accept(this);
+		aux_expr.add("right_expr", expr);
+		
+		expr = aux_expr;
 	}
 
 	@Override
 	public void visit(MetaOr n) {
 		// TODO Auto-generated method stub
 		
+		ST aux_expr = groupTemplate.getInstanceOf("or_expr");
+		
+		n.getLeft().accept(this);
+		aux_expr.add("left_expr", expr);
+		n.getRight().accept(this);
+		aux_expr.add("right_expr", expr);
+		
+		expr = aux_expr;
 	}
 
 	@Override
 	public void visit(MetaSub n) {
 		// TODO Auto-generated method stub
 		
+		ST peg_expr = groupTemplate.getInstanceOf("sub_expr");
+		
+		n.getLeft().accept(this);
+		peg_expr.add("left_expr",expr);
+		
+		n.getRight().accept(this);
+		peg_expr.add("right_expr",expr);
+		
+		expr = peg_expr;
 	}
 
 	@Override
@@ -762,17 +1114,17 @@ public class PrettyPrint extends Visitor{
 		// TODO Auto-generated method stub
 		
 		// set the current parsing expression template
-				ST aux_peg = groupTemplate.getInstanceOf("choice_peg");
-				// visit the left parsing expression
-				n.getLeftPeg().accept(this);
-				// set propriety for the left parsing expression
-				aux_peg.add("left_peg", peg);
-				// visit the right parsing expression
-				n.getRightPeg().accept(this);
-				// set propriety for the left parsing expression
-				aux_peg.add("right_peg", peg);
-				// set the current parsing expression
-				peg = aux_peg;
+                ST aux_peg = groupTemplate.getInstanceOf("choice_peg");
+                // visit the left parsing expression
+                n.getLeftPeg().accept(this);
+                // set propriety for the left parsing expression
+                aux_peg.add("left_peg", peg);
+                // visit the right parsing expression
+                n.getRightPeg().accept(this);
+                // set propriety for the left parsing expression
+                aux_peg.add("right_peg", peg);
+                // set the current parsing expression
+                peg = aux_peg;
 		
 		
 	}
@@ -814,7 +1166,7 @@ public class PrettyPrint extends Visitor{
 		// TODO Auto-generated method stub
 		
 		peg = groupTemplate.getInstanceOf("literal_peg");
-	    peg.add("value",n.getLit());
+                peg.add("value",n.getLit());
 	}
 
 	@Override
@@ -939,21 +1291,37 @@ public class PrettyPrint extends Visitor{
 		peg = groupTemplate.getInstanceOf("update_peg");
 		
 		ST assig;
+                this.assig = new ArrayList<ST>();
 	
 		for(Pair<Attribute, Expr>a : n.getAssigs()) {
-			
-			this.assig = new ArrayList<ST>();
 			
 			a.getFirst().accept(this);
 			assig = groupTemplate.getInstanceOf("assig");
 			assig.add("attr", attr);
 			
-			a.getSecond().accept(this);
+                        Expr e = a.getSecond();
+			e.accept(this);
 			assig.add("expr", expr);
-			
+
+                        assig.add("metaExpr", false);
+                        assig.add("metaRule", false);
+
+                        // Just to print the meta brackets or parentesis
+                        if(e.getClass().getSuperclass() == MetaExpr.class)
+                            assig.add("metaExpr", true);
+
+                        else if(e.getClass().getSuperclass() == MetaAPEG.class)
+                            assig.add("metaRule", true);
+
+                        else if(e.getClass().getSuperclass() == MetaBinaryOP.class)
+                            assig.add("metaExpr", true);
+
 			this.assig.add(assig);
 		}
-		peg.add("assig", this.assig);	
+
+                for(ST s : this.assig){
+                    peg.add("assig", s);	
+                }
 	}
 
 	@Override
@@ -1118,6 +1486,6 @@ public class PrettyPrint extends Visitor{
             expr = r;
         }
 
-	
+        public void visit(MetaGrammar n){}
 
 }

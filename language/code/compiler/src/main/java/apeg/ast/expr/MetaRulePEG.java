@@ -44,4 +44,7 @@ public class MetaRulePEG extends MetaASTNode{
     }
     public void accept(Visitor v){ v.visit(this); }
 
+    public String toString(){
+        return "(metaRule " + ruleName.toString() + " " + types.toString() + " " + inh.toString() + ")"; 
+    }
 }

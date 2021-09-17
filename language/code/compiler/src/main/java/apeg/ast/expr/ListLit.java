@@ -20,10 +20,10 @@ public class ListLit extends Expr{
     public void accept(Visitor v){ v.visit(this); }
 
     public String toString(){
-        String res = "[";
+        String res = "([";
         for(Expr p : elems){
             res += " " + p.toString();
         }
-        return res + "]";
+        return res + "])";
     }
 }

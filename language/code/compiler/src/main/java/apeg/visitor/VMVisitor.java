@@ -9,6 +9,9 @@ import apeg.util.*;
 import apeg.vm.*;
 import java.io.*;
 import apeg.visitor.semantics.*;
+import apeg.util.path.AbsolutePath;
+import apeg.util.path.Path;
+import apeg.util.path.RelativePath;
 
 
 
@@ -423,7 +426,7 @@ public class VMVisitor extends Visitor{
             int j = 0;
             while (j < rd.size()) {
                 y = rd.get(j);
-                if (x.getRuleName().equals(y.getRuleName()) ) {
+                if (x.getRuleName().equals(y.getRuleName())) {
                     if(!chkParams(x.getInh(), y.getInh()) || x.getSyn().size() != y.getSyn().size()){
                         throw new RuntimeException(x.getSymInfo().toString()+" Type parameters for rules diverge: rules " + x.getRuleName() + " and " + y.getRuleName());
                     }
@@ -461,17 +464,26 @@ public class VMVisitor extends Visitor{
 		        re =  (ArrayList<RulePEG>)((Grammar)lan.getFirst()).cloneRules();
 		        rd = mergeGrammars((ArrayList)re, (ArrayList<RulePEG>)stk.peek().getSecond());
 		        gext = new Grammar(gext.getSymInfo(), gext.getName(),gext.getOptions(),rd);
-		        TypeCheckerVisitor tychk = new TypeCheckerVisitor();
+                        Visitor prettyprint = new PrettyPrint(new RelativePath(new AbsolutePath("."), "src/main/templates/prettyprint.stg"));
+                        System.out.println("----------------------");
+                        gext.accept(prettyprint);
+                        System.out.println("----------------------");
+                        TypeCheckerVisitor tychk = new TypeCheckerVisitor();
 		        gext.accept(tychk);
-		        if(tychk.getError().size() == 0){
+		        if(tychk.getError().size() != 0){
 		            System.out.println("Type erros when composing grammars at " + n.getSymInfo().toString());
 		            ErrorsMsg err = ErrorsMsg.getInstance();
 		            for(ErrorEntry e: tychk.getError()){
 		                 System.out.println(err.translate(e));
 		            }
 		            throw new RuntimeException("Composition error at " + n.getSymInfo().toString()); 
-                }
+                        }
+
+                        stk.push(new Pair<VType,Object>(VTyLang.getInstance(), new Pair<Grammar, Environment<String, NTInfo>>(gext, tychk.getEnv())));
 		    }
+                    else{
+                        throw new RuntimeException(" Unexpected composed parameters at " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn());
+                    }
 		    return;
 		}
 	}
@@ -1010,8 +1022,8 @@ public class VMVisitor extends Visitor{
 		RulePEG rule = null;
 		if( local.getSig().getNumInherited() > 0){ 
 		    l.get(0).accept(this);
-		    if(stk.peek().getFirst().match(VTyLang.getInstance()) ){
-		         Grammar r = (Grammar)stk.peek().getSecond();   
+		    if(stk.peek().getFirst().match(VTyLang.getInstance())){
+		         Grammar r = ((Pair<Grammar, Environment<String, NTInfo>>)stk.peek().getSecond()).getFirst();
 		         for(RulePEG rp : r.getRules()){
 		              if( rp.getRuleName().equals(n.getName()) ){
 		                   rule = rp;
@@ -1029,6 +1041,7 @@ public class VMVisitor extends Visitor{
 		if(rule==null){
 			throw new RuntimeException("Rule "+n.getName()+" not found");
 		}
+                System.out.println("-->>> Rule being called: " + rule.toString());
 		rule.accept(this);
 		//os ultimos serao os primeiros
 		if(vm.succeed()){
@@ -1105,7 +1118,7 @@ public class VMVisitor extends Visitor{
 		// Empilhar os resultados.
 		}else{}
 		lastctx = ctx;
-		if(debug){System.out.println("context: "+n.getRuleName()+"\n  "+ctx.toString());}
+		if(debug){System.out.println("context: "+n.getRuleName()+"\n  "+ (ctx == null ? "NULL CTX" : ctx.toString()));}
 		vm.endRule();
 		nti = backupNti;
 	}
@@ -1149,6 +1162,8 @@ public class VMVisitor extends Visitor{
 		for(int i = 0 ; i < n.getRules().size(); i++){
 			hashRules.put(n.getRules().get(i).getRuleName(),n.getRules().get(i));
 		}
+                // TODO: Replace new parameter by type environment
+                stk.push(new Pair<VType, Object>(VTyLang.getInstance(), new Pair<Grammar,Environment<String,NTInfo>>(n, new Environment<String, NTInfo>())));
 		n.getRules().get(0).accept(this);
 		if(debug){System.out.println("Read until " + vm.getLine() + ", " + vm.getColumn());}
 	}
@@ -1156,4 +1171,16 @@ public class VMVisitor extends Visitor{
 	public boolean succeed(){
 		return vm.succeed();
 	}
+
+        public void visit(MetaGrammar n){
+            n.getListMetaRule().accept(this);
+            ArrayList<ArrayList<RulePEG>> l = (ArrayList<ArrayList<RulePEG>>) stk.pop().getSecond();
+            ArrayList<RulePEG> rules = new ArrayList<RulePEG>();
+
+            for(ArrayList<RulePEG> r : l){
+                rules.addAll(r);
+            }
+            
+            stk.push(new Pair<VType, Object>(VTyLang.getInstance(), rules));
+        }
 }

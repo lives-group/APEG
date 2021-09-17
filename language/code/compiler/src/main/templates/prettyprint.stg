@@ -24,6 +24,12 @@ rule(annotation, name, inh, syn, peg) ::= <<
 ;
 >>
 
+/** Template for meta rule */
+metarule(name, vardecl, syn, peg) ::= <<
+<name>[<vardecl; separator=", ", wrap>]<if(syn)> returns <syn><endif> : <peg> ;
+>>
+
+metadecl(type, var) ::= "<type> <var>"
 
 /** Template for parameters declaration */
 decl(type, name) ::= "<type> <name>"
@@ -33,6 +39,7 @@ decl(type, name) ::= "<type> <name>"
 int_type() ::= "int"
 float_type() ::= "float"
 string_type() ::= "string"
+char_type() ::= "char"
 boolean_type() ::= "boolean"
 grammar_type() ::= "grammar"
 rule_type() ::= "rule"
@@ -59,13 +66,15 @@ compose_expr(left_expr, right_expr) ::= "(<left_expr> \<\< <right_expr>)"
 
 equals_expr(left_expr, right_expr) ::= "(<left_expr> == <right_expr>)"
 no_equals_expr(left_expr, right_expr) ::= "(<left_expr> != <right_expr>)"
- 
 
 boolean_expr(value) ::= "<value>"
 float_expr(value) ::= "<value>"
 int_expr(value) ::= "<value>"
-string_expr(value) ::= "'<value>'"
-meta_expr(expr) ::= "@[ <expr> ]"
+
+// If condition to avoid too much quotes when in meta level
+string_expr(meta, value) ::= <<
+<if(meta)><value><else>'<value>'<endif>
+>>
 minus_expr(expr) ::= "-<expr>"
 not_expr(expr) ::= "!<expr>"
 or_expr(left_expr, right_expr) ::= "(<left_expr> || <right_expr>)"
@@ -76,17 +85,18 @@ mapLit(pairs) ::= << {: <pairs; separator=", ", wrap> :} >>
 mapExtension(acces, pair) ::= "<acces> [<pair>]"
 mapAcces(acces, factor, expr) ::= "<factor> [<expr>]"
 
-listLit(exprs) ::= << [<exprs; separator=", ", wrap>] >>
+listLit(exprs) ::= <<[<exprs; separator=", ", wrap>]>>
 listAcces(list, index) ::= "<list> !! <index>"
+
+/** Template for metaexpressions */
+metaattribute(name) ::="<name>"
 
 /** Template for parsing expression */
 and_peg(peg_expr) ::= "&<peg_expr>"
 any_peg() ::= "_"
 bind_peg(name, peg_expr) ::="<name>=<peg_expr>)"
 choice_peg(left_peg, right_peg) ::=<<
- <left_peg>
-/
-<right_peg>
+ <left_peg> / <right_peg>
 >>
 constraint_peg(expr) ::= "{? <expr> }"
 group_peg(ranges) ::= "[<ranges>]"
@@ -98,13 +108,12 @@ plus_peg(peg_expr) ::= "(<peg_expr>)+"
 optional_peg(peg_expr) ::= "(<peg_expr>)?"
 sequence_peg(peg_exprs) ::= "<peg_exprs:{x | <x>}; separator=\" \">"
 kleene(peg) ::= "(<peg>)*"
-update_peg(assig) ::= "<assig>"
+update_peg(assig) ::= "{<assig; separator=\" \", wrap>}"
 
-assig(attr, expr) ::= "{<attr> = <expr>;}"
+assig(metaExpr, metaRule, attr, expr) ::= <<
+<if(metaRule)><attr> = {| <expr> |};<elseif(metaExpr)><attr> = (| <expr> |);<else><attr> = <expr>;<endif>
+>>
 
 inh(type, name) ::= "<type> <name>"
 
 /** func(f) ::= "<f>"  Not implemented yet */
-
-
-

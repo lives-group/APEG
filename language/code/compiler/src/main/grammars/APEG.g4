@@ -139,20 +139,32 @@ h_text:
  * Grammar Rule Section
  ***/
 
-rules returns[List<RulePEG> list]:
-   {$list = new ArrayList<RulePEG>();}
-   (r=production {$list.add($r.rule);})+
+rules returns[List<RulePEG> list, Expr mrules]:
+   {
+    $list = new ArrayList<RulePEG>();
+    ArrayList l = new ArrayList<Expr>();
+   }
+   (r=production {if(!metaLevel) $list.add($r.rule); else l.add($r.mrule);})+
+   {if(metaLevel) $mrules = factory.newMetaGrammar($r.mrule.getSymInfo(), factory.newListExpr($r.mrule.getSymInfo(), l));}
 ;
 
 // A definition of an APEG rule
-production returns[RulePEG rule]:
+production returns[RulePEG rule, MetaRulePEG mrule]:
    annotation ID optDecls optReturn ':' peg_expr ';'
-   {$rule = factory.newRule(new SymInfo($ID.line, $ID.pos) ,$ID.text, $annotation.anno, $optDecls.list, $optReturn.list, $peg_expr.peg);
-   }
+   {$rule = factory.newRule(new SymInfo($ID.line, $ID.pos) ,$ID.text, $annotation.anno, $optDecls.list, $optReturn.list, $peg_expr.peg);}
   |
    ID optDecls optReturn ':' peg_expr ';'
-   {$rule = factory.newRule(new SymInfo($ID.line, $ID.pos), $ID.text, RulePEG.Annotation.NONE,
+   {if(!metaLevel) $rule = factory.newRule(new SymInfo($ID.line, $ID.pos), $ID.text, RulePEG.Annotation.NONE,
    	                        $optDecls.list, $optReturn.list, $peg_expr.peg);
+
+    else $mrule = factory.newMetaRulePEG(
+                           new SymInfo($ID.line, $ID.pos),
+                           factoryNormal.newStringExpr(new SymInfo($ID.line, $ID.pos), $ID.text),
+                           null,
+                           factory.newListExpr(new SymInfo($ID.line, $ID.pos), $optDecls.mtypes),
+                           factory.newListExpr(new SymInfo($ID.line, $ID.pos), $optDecls.minh),
+                           factory.newListExpr(new SymInfo($ID.line, $ID.pos), $optReturn.msyn),
+                           $peg_expr.mpeg);
    }
 ;
 
@@ -169,23 +181,60 @@ annotation returns[RulePEG.Annotation anno]:
  ***/
 
 // This rule defines the list of inherited attributes
-optDecls returns[List<Pair<Type, String>> list]:
-   decls {$list = $decls.list;}
+optDecls returns[List<Pair<Type, String>> list, ArrayList<Expr> mtypes, ArrayList<Expr> minh]:
+   decls {
+     if(!metaLevel) $list = $decls.list;
+     else{
+       $mtypes = $decls.mtypes;
+       $minh = $decls.minh;
+     }
+   }
   |
-   {$list = new ArrayList<Pair<Type, String>>();}
+   {
+    if(!metaLevel) $list = new ArrayList<Pair<Type, String>>();
+    else {
+        $mtypes = new ArrayList<Expr>();
+        $minh = new ArrayList<Expr>();
+    }
+   }
 ;
 
 // This rule defines the list of synthesized attributes
-optReturn returns[List<Expr> list]:
-   'returns' exprs {$list = $exprs.list;}
+optReturn returns[List<Expr> list, ArrayList<Expr> msyn]:
+   'returns' exprs {
+     if(!metaLevel) $list = $exprs.list;
+     else $msyn = new ArrayList($exprs.list);
+   }
   |
-   {$list = new ArrayList<Expr>();}
+   {
+     if(!metaLevel) $list = new ArrayList<Expr>();
+     else $msyn = new ArrayList();
+   }
 ;
 
 // This rule defines the lists of all attributes
-decls returns[List<Pair<Type, String>> list]:
-  '[' {$list = new ArrayList<Pair<Type, String>>();}
-  v1=varDecl {$list.add($v1.var);} (',' v2=varDecl {$list.add($v2.var);})* ']'
+decls returns[List<Pair<Type, String>> list, ArrayList<Expr> mtypes, ArrayList<Expr> minh]:
+  '[' {
+    $list = new ArrayList<Pair<Type, String>>();
+    $mtypes = new ArrayList<Expr>();
+    $minh = new ArrayList<Expr>();
+  }
+  v1=varDecl {
+   if(!metaLevel)
+     $list.add($v1.var);
+   else{
+     $mtypes.add($v1.mvar.getFirst());
+     $minh.add($v1.mvar.getSecond());
+   }
+  }
+  (',' v2=varDecl {
+   if(!metaLevel)
+     $list.add($v2.var);
+   else{
+     $mtypes.add($v2.mvar.getFirst());
+     $minh.add($v2.mvar.getSecond());
+   }
+  })* ']'
 ;
 
 exprs returns[List<Expr> list] :
@@ -193,28 +242,57 @@ exprs returns[List<Expr> list] :
    e1=expr {$list.add($e1.exp);} (',' e2=expr {$list.add($e2.exp);})*
 ;
 
-varDecl returns[Pair<Type, String> var]:
-  type ID {$var = new Pair<Type, String>($type.tp, $ID.text);}
+varDecl returns[Pair<Type, String> var, Pair<Expr, Expr> mvar]:
+  type ID {
+     if(!metaLevel) $var = new Pair<Type, String>($type.tp, $ID.text);
+     else $mvar = new Pair<Expr, Expr>($type.mtp, factoryNormal.newStringExpr(new SymInfo($ID.line, $ID.pos), $ID.text));
+  }
 ;
 
-type returns[Type tp]:
-  INT_TYPE {$tp = factory.newIntType(new SymInfo($INT_TYPE.line, $INT_TYPE.pos));}
+type returns[Type tp, Expr mtp]:
+  INT_TYPE {
+     if(!metaLevel) $tp = factory.newIntType(new SymInfo($INT_TYPE.line, $INT_TYPE.pos));
+     else $mtp = factory.newMetaTyInt(new SymInfo($INT_TYPE.line, $INT_TYPE.pos));
+  }
  |
-  FLOAT_TYPE {$tp = factory.newFloatType(new SymInfo($FLOAT_TYPE.line, $FLOAT_TYPE.pos));}
+  FLOAT_TYPE {
+     if(!metaLevel) $tp = factory.newFloatType(new SymInfo($FLOAT_TYPE.line, $FLOAT_TYPE.pos));
+     else $mtp = factory.newMetaTyFloat(new SymInfo($FLOAT_TYPE.line, $FLOAT_TYPE.pos));
+  }
  |
-  BOOLEAN_TYPE {$tp = factory.newBooleanType(new SymInfo($BOOLEAN_TYPE.line, $BOOLEAN_TYPE.pos));}
+  BOOLEAN_TYPE {
+     if(!metaLevel) $tp = factory.newBooleanType(new SymInfo($BOOLEAN_TYPE.line, $BOOLEAN_TYPE.pos));
+     else $mtp = factory.newMetaTyBool(new SymInfo($BOOLEAN_TYPE.line, $BOOLEAN_TYPE.pos));
+  }
  |
-  STRING_TYPE {$tp = factory.newStringType(new SymInfo($STRING_TYPE.line, $STRING_TYPE.pos));}
- /*|
-  CHAR_TYPE {$tp = factory.newCharType(new SymInfo($CHAR_TYPE.line, $CHAR_TYPE.pos));}*/
+  STRING_TYPE {
+     if(!metaLevel) $tp = factory.newStringType(new SymInfo($STRING_TYPE.line, $STRING_TYPE.pos));
+     else $mtp = factory.newMetaTyString(new SymInfo($STRING_TYPE.line, $STRING_TYPE.pos));
+  }
  |
-  GRAMMAR_TYPE {$tp = factory.newGrammarType(new SymInfo($GRAMMAR_TYPE.line, $GRAMMAR_TYPE.pos));}
+  CHAR_TYPE {
+     if(!metaLevel) $tp = factory.newCharType(new SymInfo($CHAR_TYPE.line, $CHAR_TYPE.pos));
+     else $mtp = factory.newMetaTyChar(new SymInfo($CHAR_TYPE.line, $CHAR_TYPE.pos));
+  }
  |
-  LANGUAGE_TYPE {$tp = factory.newLangType(new SymInfo($LANGUAGE_TYPE.line, $LANGUAGE_TYPE.pos));}
+  GRAMMAR_TYPE {
+     if(!metaLevel) $tp = factory.newGrammarType(new SymInfo($GRAMMAR_TYPE.line, $GRAMMAR_TYPE.pos));
+     else $mtp = factory.newMetaTyGrammar(new SymInfo($GRAMMAR_TYPE.line, $GRAMMAR_TYPE.pos));
+  }
  |
-  t='{' type '}' {$tp = factory.newMapType(new SymInfo($t.line, $t.pos), $type.tp);}
+  LANGUAGE_TYPE {
+     if(!metaLevel) $tp = factory.newLangType(new SymInfo($LANGUAGE_TYPE.line, $LANGUAGE_TYPE.pos));
+     else $mtp = factory.newMetaTyLang(new SymInfo($LANGUAGE_TYPE.line, $LANGUAGE_TYPE.pos));
+  }
  |
-  t='[' type ']' {$tp = factory.newListType(new SymInfo($t.line, $t.pos), $type.tp);}
+  t='{' type '}' {
+     if(!metaLevel) $tp = factory.newMapType(new SymInfo($t.line, $t.pos), $type.tp);
+     else $mtp = factory.newMetaTyMap(new SymInfo($t.line, $t.pos), $type.mtp);
+  }
+ |
+  t='[' type ']' {
+     if(!metaLevel) $tp = factory.newListType(new SymInfo($t.line, $t.pos), $type.tp);
+  }
  |
   META_TYPE {$tp = factory.newMetaType(new SymInfo($META_TYPE.line, $META_TYPE.pos));}
 ;
@@ -256,8 +334,8 @@ peg_seq returns[APEG peg, Expr mpeg]:
    }
   |
    peg_capturetext {
-     $peg = $peg_capturetext.peg;
-     $mpeg = $peg_capturetext.mpeg;
+     if(!metaLevel) $peg = $peg_capturetext.peg;
+     else $mpeg = $peg_capturetext.mpeg;
    }
   |
    '\u03bb' {$peg = factory.newLambdaPEG(new SymInfo(_ctx.start.getLine(), _ctx.start.getCharPositionInLine()));}/ // LAMBDA parsing expression
@@ -271,7 +349,7 @@ peg_capturetext returns[APEG peg, Expr mpeg]:
   |
    attribute_ref t='=' peg_unary_op {
      if(!metaLevel) $peg = factory.newBindPEG(new SymInfo($t.line, $t.pos), $attribute_ref.exp, $peg_unary_op.peg);
-     else $mpeg = factory.newMetaBindPEG(new SymInfo($t.line, $t.pos), $attribute_ref.exp, $peg_unary_op.mpeg);
+     else $mpeg = factory.newMetaBindPEG(new SymInfo($t.line, $t.pos), $attribute_ref.mexp, $peg_unary_op.mpeg);
    }
 ;
 
@@ -293,7 +371,8 @@ peg_unary_op returns[APEG peg, Expr mpeg]:
   | 
    peg_factor t='+' {
    if(!metaLevel) $peg = factory.newPositiveKleenePEG(new SymInfo($t.line, $t.pos), $peg_factor.peg);
-   else $mpeg = factory.newMetaPKleene(new SymInfo($t.line, $t.pos), $peg_factor.mpeg);}
+   else $mpeg = factory.newMetaPKleene(new SymInfo($t.line, $t.pos), $peg_factor.mpeg);
+   }
   |
    peg_factor {
    if(!metaLevel) $peg = $peg_factor.peg;
@@ -345,8 +424,7 @@ peg_factor returns[APEG peg, Expr mpeg]:
      s = s.substring(1, s.length()-1);
      if(!metaLevel) $peg = factory.newLiteralPEG(new SymInfo($STRING_LITERAL.line, $STRING_LITERAL.pos), s);
      else $mpeg = factory.newMetaLitPEG(new SymInfo($STRING_LITERAL.line, $STRING_LITERAL.pos),
-                                        factory.newStringExpr(new SymInfo($STRING_LITERAL.line, $STRING_LITERAL.pos),
-                                        $STRING_LITERAL.text));
+                                        factoryNormal.newStringExpr(new SymInfo($STRING_LITERAL.line, $STRING_LITERAL.pos), s));
    }
   |
    ntcall {
@@ -373,12 +451,14 @@ peg_factor returns[APEG peg, Expr mpeg]:
 ntcall returns[APEG peg, Expr mpeg]:
    ID '<' actPars '>' {
      if(!metaLevel) $peg = factory.newNonterminalPEG(new SymInfo($ID.line, $ID.pos), $ID.text, $actPars.list);
-     else $mpeg = factory.newMetaNonterminalPEG(new SymInfo($ID.line, $ID.pos), factory.newStringExpr(new SymInfo($ID.line, $ID.pos), $ID.text), $actPars.list.get(0));
+     $mpeg = factory.newMetaNonterminalPEG(new SymInfo($ID.line, $ID.pos), factoryNormal.newStringExpr(new SymInfo($ID.line, $ID.pos), $ID.text)
+                                                                         , factoryNormal.newListExpr(new SymInfo($ID.line, $ID.pos), new ArrayList($actPars.list)));
    }
   |
    ID {
      if(!metaLevel) $peg = factory.newNonterminalPEG(new SymInfo($ID.line, $ID.pos), $ID.text, new ArrayList<Expr>());
-     else $mpeg = factory.newMetaNonterminalPEG(new SymInfo($ID.line, $ID.pos), factory.newStringExpr(new SymInfo($ID.line, $ID.pos), $ID.text), null);
+     else $mpeg = factory.newMetaNonterminalPEG(new SymInfo($ID.line, $ID.pos), factoryNormal.newStringExpr(new SymInfo($ID.line, $ID.pos), $ID.text)
+                                                                              , factoryNormal.newListExpr(new SymInfo($ID.line, $ID.pos), new ArrayList<Expr>()));
    }
 ;
 
@@ -503,7 +583,7 @@ factor returns[Expr exp]:
  ;
 
 primary returns[Expr exp]:
-   attribute_ref {$exp = $attribute_ref.exp;}
+   attribute_ref {if(!metaLevel) $exp = $attribute_ref.exp; else $exp = $attribute_ref.mexp;}
   |
    number {$exp = $number.exp;}
   |
@@ -522,13 +602,18 @@ primary returns[Expr exp]:
   |
    meta {$exp = $meta.exp;}
   |
-   t='[' exprs ']' {$exp = factory.newListExpr(new SymInfo($t.line, $t.pos), new ArrayList($exprs.list));}
+   listLit {$exp = $listLit.exp;}
   |
    mapLit {$exp = $mapLit.exp;}
   |
    f=primary t='[' e=expr ']' {$exp = factory.newMapAcces(new SymInfo($t.line, $t.pos), $f.exp, $e.exp);}
   |
    f=primary t='[' m=mapPair ']' {$exp = factory.newMapExtension(new SymInfo($t.line, $t.pos), $f.exp, $m.p.getFirst(), $m.p.getSecond());}
+;
+
+listLit returns[Expr exp]:
+   {boolean j = false;}
+   t='[' (exprs {j = true;})* ']' {$exp = factory.newListExpr(new SymInfo($t.line, $t.pos), j ? new ArrayList($exprs.list) : new ArrayList());}
 ;
 
 mapLit returns[Expr exp]:
@@ -613,9 +698,10 @@ mulOp returns[int op, int line, int pos]:
 meta returns[Expr exp]:
     '{|' {enterMeta();} peg_expr '|}' {exitMeta(); $exp = $peg_expr.mpeg;}
    |
+    '{|' {enterMeta();} rules '|}' {exitMeta(); $exp = $rules.mrules;}
+   |
     '(|' {enterMeta();} expr '|)' {exitMeta(); $exp = $expr.exp;}
 ;
-
 
 /*************************************************
  ***************** Lexical *************************
@@ -632,7 +718,8 @@ FLOAT_TYPE: 'float';
 BOOLEAN_TYPE: 'boolean';
 /* String type */
 STRING_TYPE: 'string';
-//CHAR_TYPE: 'char';
+/* Char type */
+CHAR_TYPE: 'char';
 /* Grammars types */ 
 GRAMMAR_TYPE: 'grammar';
 LANGUAGE_TYPE: 'language';

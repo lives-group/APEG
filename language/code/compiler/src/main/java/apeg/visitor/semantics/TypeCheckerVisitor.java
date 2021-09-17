@@ -445,7 +445,7 @@ public class TypeCheckerVisitor extends Visitor {
              s.push(TypeError.getInstance());
              return;
          }
-         s.pop();
+         // s.pop();
     }
 
     @Override
@@ -464,7 +464,7 @@ public class TypeCheckerVisitor extends Visitor {
                    if(s.pop().matchCT(tyex,ct)){
                        n.getPeg().accept(this);
                        if(s.pop().matchCT(VTyMetaPeg.getInstance(),ct)){
-                           s.push(VTyMetaPeg.getInstance());
+                           s.push(VTyGrammar.getInstance());
                            return;
                        }else{
                            errorMsg(35,n.getSymInfo());
@@ -556,12 +556,15 @@ public class TypeCheckerVisitor extends Visitor {
         VType left = s.pop();
         n.getRight().accept(this);
         VType right = s.pop();
-        if(left.matchCT(TyLang.getInstance(), ct) && 
-          (right.matchCT(TyLang.getInstance(), ct) || right.matchCT(TyGrammar.getInstance(), ct))) {
-          s.psuh(TyGrammar.getInstance());
+        if(left.matchCT(VTyLang.getInstance(), ct) && 
+          (right.matchCT(VTyLang.getInstance(), ct) || right.matchCT(VTyGrammar.getInstance(), ct))) {
+          s.push(VTyLang.getInstance());
+          return;
         }
         else {
                 errorMsg(18,n.getSymInfo(),"<<",left,right);
+                s.push(TypeError.getInstance());
+                return;
         }
     }
 
@@ -1353,5 +1356,19 @@ public class TypeCheckerVisitor extends Visitor {
            System.out.println(global.toString());
            System.out.println(ct.toString());
         }
+    }
+
+    public void visit(MetaGrammar n){
+        VTyGrammar g = VTyGrammar.getInstance();
+        VTyList l = new VTyList(g);
+        n.getListMetaRule().accept(this);
+        if(!s.peek().matchCT(l, ct)){
+            errorMsg(27, n.getSymInfo(), s.pop());
+            s.push(TypeError.getInstance());
+            return;
+        }
+
+        s.pop();
+        s.push(VTyGrammar.getInstance());
     }
 }

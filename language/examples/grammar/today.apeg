@@ -1,0 +1,7 @@
+apeg today;
+
+rule: prog<> { y = {| {? 10 == 10 } _ 'def'? !'abc' refBind=metaProg<foo, bar>+ / metaproduction* |}; }
+;
+
+anotherRule: { u = (| 'strongstring' |); x = {| fooBar { h = 10 + a + b + 20; z = m['abc'] !! 20; } |}; }
+;

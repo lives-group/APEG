@@ -58,6 +58,7 @@ public void success(){ lastResult = true;}
 public boolean any(){
   try {
     page.next();
+    lastResult = true;
   } catch(IOException e) {
     lastResult = false;
   }

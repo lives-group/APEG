@@ -13,4 +13,5 @@ public class MetaTyBool extends MetaType{
     
     public void accept(Visitor v){ v.visit(this); }
 
+    public String toString(){ return "'bool"; }
 }

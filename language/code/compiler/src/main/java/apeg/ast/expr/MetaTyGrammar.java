@@ -13,4 +13,5 @@ public class MetaTyGrammar extends MetaType{
     
     public void accept(Visitor v){ v.visit(this); }
 
+    public String toString(){ return "'gram"; }
 }

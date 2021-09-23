@@ -36,12 +36,12 @@ public class TestPeg {
     @Test
     void TestChar01() throws IOException {
 	// Create a ANTLR CharStream from a string
-	CharStream stream = CharStreams.fromReader(new StringReader(" literal = 'char' "));
+	CharStream stream = CharStreams.fromReader(new StringReader(" ('char')"));
 
 	TContainer<APEG> test = new PegContainer("TestChar01", stream);
 	APEG e = test.execute();
 	// Expected Result
-	assertEquals( "(= literal 'char')", e.toString());
+	assertEquals( "'char'", e.toString());
     }
 
 	@Test
@@ -60,80 +60,80 @@ public class TestPeg {
 	@Test
 	void TestAny01() throws IOException {
 	// Create a ANTLR CharStream from a string
-	CharStream stream = CharStreams.fromReader(new StringReader(" Any = _"));
+	CharStream stream = CharStreams.fromReader(new StringReader("(_)"));
 	
 	TContainer<APEG> test = new PegContainer("TestAny01", stream);
 	APEG e = test.execute();
 	// Expected Result
-	assertEquals( "(= Any _)", e.toString());
+	assertEquals( "_", e.toString());
 	}	
 	
 	
 	@Test
 	void TestChoice01() throws IOException {
 	// Create a ANTLR CharStream from a string
-	CharStream stream = CharStreams.fromReader(new StringReader(" Choice = ( A / B ) "));
+	CharStream stream = CharStreams.fromReader(new StringReader("( A / B )"));
 	
 	TContainer<APEG> test = new PegContainer("TestChoice01", stream);
 	APEG e = test.execute();
 	// Expected Result
-	assertEquals( "(= Choice (/ (A) (B)))", e.toString());
+	assertEquals( "(/ (A) (B))", e.toString());
 	}	
 	
 	
 	@Test
 	void TestOptional01() throws IOException {
 	// Create a ANTLR CharStream from a string
-	CharStream stream = CharStreams.fromReader(new StringReader(" Op = A? "));
+	CharStream stream = CharStreams.fromReader(new StringReader("  A? "));
 	
 	TContainer<APEG> test = new PegContainer("TestOptional01", stream);
 	APEG e = test.execute();
 	// Expected Result
-	assertEquals( "(= Op (? (A)))", e.toString());
+	assertEquals( "(? (A))", e.toString());
 	}
 		
 	@Test
 	void TestNot01() throws IOException {
 	// Create a ANTLR CharStream from a string
-	CharStream stream = CharStreams.fromReader(new StringReader(" NOT = !A "));
+	CharStream stream = CharStreams.fromReader(new StringReader(" !'A' "));
 	
 	TContainer<APEG> test = new PegContainer("TestNot01", stream);
 	APEG e = test.execute();
 	// Expected Result
-	assertEquals( "(= NOT (! (A)))", e.toString());
+	assertEquals( "(! 'A')", e.toString());
 	}	
 		
 	@Test
 	void TestKleene01() throws IOException {
 	// Create a ANTLR CharStream from a string
-	CharStream stream = CharStreams.fromReader(new StringReader(" rule = AB* "));
+	CharStream stream = CharStreams.fromReader(new StringReader(" AB* "));
 	
 	TContainer<APEG> test = new PegContainer("TestKleene01", stream);
 	APEG e = test.execute();
 	// Expected Result
-	assertEquals( "(= rule (* (AB)))", e.toString());
+	assertEquals( "(* (AB))", e.toString());
 	}	
 		
 	@Test
 	void TestpKleene01() throws IOException {
 	// Create a ANTLR CharStream from a string
-	CharStream stream = CharStreams.fromReader(new StringReader(" rule = AB+ "));
+	CharStream stream = CharStreams.fromReader(new StringReader(" AB+ "));
 	
 	TContainer<APEG> test = new PegContainer("TestpKleene01", stream);
 	APEG e = test.execute();
 	// Expected Result
-	assertEquals( "(= rule (+ (AB)))", e.toString());
+	assertEquals( "(+ (AB))", e.toString());
 	}	
 		
 	@Test
 	void TestAnd01() throws IOException {
 	// Create a ANTLR CharStream from a string
-	CharStream stream = CharStreams.fromReader(new StringReader("AND = (A&B)"));
+	CharStream stream = CharStreams.fromReader(new StringReader("& 'a' "));
 	
-	TContainer<APEG> test = new PegContainer("TestAnd01", stream);
+	TContainer<APEG> test = new PegContainer("TestAnd01", stream);	
 	APEG e = test.execute();
 	// Expected Result
-	assertEquals( "(= AND (& (A) (B)))", e.toString());
+	assertEquals( "(& 'a')", e.toString());
 	}	
 	
 		
@@ -146,6 +146,17 @@ public class TestPeg {
 	APEG e = test.execute();
 	// Expected Result
 	assertEquals( "(Rule)", e.toString());
+	}	
+		
+	@Test
+	void TestLambda() throws IOException {
+	// Create a ANTLR CharStream from a string
+	CharStream stream = CharStreams.fromReader(new StringReader(" 'A' / \u03bb"));
+	
+	TContainer<APEG> test = new PegContainer("TestNonTerminal01", stream);
+	APEG e = test.execute();
+	// Expected Result
+	assertEquals( "(/ 'A' \u03bb)", e.toString());
 	}	
 
 }

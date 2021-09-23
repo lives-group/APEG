@@ -458,7 +458,7 @@ public class VMVisitor extends Visitor{
 		    Pair<Grammar,Environment<String,NTInfo>> lan = (Pair<Grammar,Environment<String,NTInfo>>)stk.pop().getSecond();
 		    Grammar gext;
 		    n.getRight().accept(this);
-		    if(stk.peek().getFirst().match(VTyGrammar.getInstance()) ){
+		    if(stk.peek().getFirst().match(VTyGrammar.getInstance())){
 		        gext = (Grammar)lan.getFirst();
 		        re =  (ArrayList<RulePEG>)((Grammar)lan.getFirst()).cloneRules();
 		        rd = mergeGrammars((ArrayList)re, (ArrayList<RulePEG>)stk.peek().getSecond());
@@ -481,7 +481,8 @@ public class VMVisitor extends Visitor{
                         stk.push(new Pair<VType,Object>(VTyLang.getInstance(), new Pair<Grammar, Environment<String, NTInfo>>(gext, tychk.getEnv())));
 		    }
                     else{
-                        throw new RuntimeException(" Unexpected composed parameters at " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn());
+                        throw new RuntimeException(" Unexpected composed parameters at " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn()
+                                                    + " Stack: " + stk.peek().getFirst());
                     }
 		    return;
 		}

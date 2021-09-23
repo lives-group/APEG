@@ -441,6 +441,7 @@ public class PrettyPrint extends Visitor{
 	public void visit(MetaTyLang n) {
 		// TODO Auto-generated method stub
 
+		expr = groupTemplate.getInstanceOf("lang_type");
 	}
 
 	@Override
@@ -1362,6 +1363,8 @@ public class PrettyPrint extends Visitor{
 	@Override
 	public void visit(TyLang n) {
 		// TODO Auto-generated method stub
+
+		this.type = groupTemplate.getInstanceOf("lang_type");
 	}
 
 	@Override
@@ -1486,6 +1489,12 @@ public class PrettyPrint extends Visitor{
             expr = r;
         }
 
-        public void visit(MetaGrammar n){}
+        public void visit(MetaGrammar n){
+            ST r = groupTemplate.getInstanceOf("meta_grammar");
+
+            n.getListMetaRule().accept(this);
+            r.add("expr", expr);
+            expr = r;
+        }
 
 }

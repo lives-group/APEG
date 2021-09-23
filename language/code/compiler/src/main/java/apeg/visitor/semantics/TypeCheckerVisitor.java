@@ -560,6 +560,9 @@ public class TypeCheckerVisitor extends Visitor {
           (right.matchCT(VTyLang.getInstance(), ct) || right.matchCT(VTyGrammar.getInstance(), ct))) {
           s.push(VTyLang.getInstance());
           return;
+        }else if(right.matchCT(VTyGrammar.getInstance(), ct) || right.matchCT(VTyGrammar.getInstance(), ct)) {
+          s.push(VTyLang.getInstance());
+          return;
         }
         else {
                 errorMsg(18,n.getSymInfo(),"<<",left,right);

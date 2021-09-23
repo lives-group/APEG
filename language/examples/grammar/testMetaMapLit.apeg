@@ -1,0 +1,5 @@
+apeg testMetaUpdate;
+
+a:
+   {x = (| {: 'x' -> 2, 'y' -> 3:} |); }
+;

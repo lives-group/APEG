@@ -13,13 +13,11 @@ literal[language g] :
 	']'
     ;
 
-
-
 strN[language g]:
    {? false }
      ;
 
-CHAR[language g]: 'a' ;
+CHAR[language g]: _ ;
 
 number[language g] returns r  :
     digit<g, r> ( digit<g, aux> { r = r * 10 + aux; } )*

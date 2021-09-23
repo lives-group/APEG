@@ -1179,6 +1179,6 @@ public class VMVisitor extends Visitor{
                 rules.addAll(r);
             }
             
-            stk.push(new Pair<VType, Object>(VTyLang.getInstance(), rules));
+            stk.push(new Pair<VType, Object>(VTyGrammar.getInstance(), rules));
         }
 }

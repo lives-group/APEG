@@ -78,7 +78,7 @@ public class ErrorsMsg {
          if(e.t != null){
              if((e.errCode >= 11) && (e.errCode <= 14) ){
                  err += ": " + e.t[0].getName() + " and " + e.t[1].getName();
-             }else if( (e.errCode >= 15) && (e.errCode <= 19) ){
+             }else if( ((e.errCode >= 15) && (e.errCode <= 17)) || (e.errCode == 19)  ){
                  err += e.t.length == 2 ? " expected " + e.t[0] + " found " + e.t[1] : " found " + e.t[0] ;
              }else {
                 if(e.t.length > 0 ){

@@ -5,8 +5,8 @@ prog:
  number<n> '!=' number<m> fat<n,r> {? m == r }
 ;
 
-fat[int n] returns m:
-   {? n > 0} fat<n-1, r> {m = n*r;} / {m = 1;}
+fat[int k] returns m:
+   {? k > 0} fat<k-1, r> {m = k*r;} / {m = 1;}
 ;
 
 number returns r  :

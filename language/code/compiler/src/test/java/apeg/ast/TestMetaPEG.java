@@ -52,6 +52,39 @@ public class TestMetaPEG {
         opts.memoize = false;
         return new Grammar(new SymInfo (1,1), "Annotation", opts, rules);
     }
+    
+    
+    private Grammar buildAttGrammarWithLang(String v1, Expr e1,String v2, Expr e2){
+        /*
+                   10        20        30
+          123456789012345678901234567890
+          1 Grammar MetaIntAST {
+          2
+          3     a:
+          4       { _v1_ = _e1_ ; // Only if _e1_ != null
+                    _v2_ = _e2_;} // Only if _e2_ != null
+          5     ;
+          6 }*/
+          
+        List<RulePEG>rules = new ArrayList<RulePEG>();
+        List<Expr>arg = new ArrayList<Expr>();
+        List<Pair<Type, String>>inh = new ArrayList<Pair<Type, String>>();
+        inh.add(new Pair<Type, String>(new TyLang( new SymInfo(3,10)) , "g") );
+        
+        List<Expr>syn = new ArrayList<Expr>();
+        List<Pair<Attribute,Expr>> updates = new ArrayList<Pair<Attribute,Expr>>();
+        Attribute att1 = new Attribute(new SymInfo(4,10), v1);
+        Attribute att2 = new Attribute(new SymInfo(5,10), v2);
+        if(e1 != null){updates.add(new Pair<Attribute,Expr>(att1,e1) );}
+        if(e2 != null){updates.add(new Pair<Attribute,Expr>(att2,e2) );}
+        APEG peg = new UpdatePEG(new SymInfo(5,12),updates);
+        RulePEG a = new RulePEG(new SymInfo(3, 7), "a", RulePEG.Annotation.NONE, inh, syn, peg);
+        rules.add(a);
+        GrammarOption opts = new GrammarOption();
+        opts.memoize = false;
+        return new Grammar(new SymInfo (1,1), "Annotation", opts, rules);
+    }
+
 
     private Object runAndReportVar(Grammar gram, String x){
         CTX ctx;
@@ -323,7 +356,7 @@ public class TestMetaPEG {
         
         op = new Compose(new SymInfo(9,10), p, p2);
         
-        Grammar g = buildAttGrammar("y",op,"y", null);
+        Grammar g = buildAttGrammarWithLang("y",op,"y", null);
         Object r = runAndReportVar(g,"y");
         System.out.println(r);
         assertEquals("[(rule r2dd NONE ( (:: int x) (:: int y)) ( 7) 'a'), (rule c3po NONE ( (:: int x)) () 'c')]",r.toString());

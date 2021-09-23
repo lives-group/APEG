@@ -65,7 +65,7 @@ public class TestPeg {
 	TContainer<APEG> test = new PegContainer("TestAny01", stream);
 	APEG e = test.execute();
 	// Expected Result
-	assertEquals( ".", e.toString());
+	assertEquals( "_", e.toString());
 	}	
 	
 	

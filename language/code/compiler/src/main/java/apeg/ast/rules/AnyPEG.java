@@ -12,7 +12,7 @@ public class AnyPEG extends APEG{
     
     
     public String toString(){
-        return ".";
+        return "_";
     } 
 
 }

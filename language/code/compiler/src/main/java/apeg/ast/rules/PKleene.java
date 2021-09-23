@@ -16,7 +16,7 @@ public class PKleene extends APEG{
     public void accept(Visitor v){ v.visit(this); }
     
     public String toString(){
-        return "(* " + pegExp.toString() + ")";
+        return "(+ " + pegExp.toString() + ")";
     } 
 
 }

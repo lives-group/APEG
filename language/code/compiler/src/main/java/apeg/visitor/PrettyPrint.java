@@ -1497,4 +1497,11 @@ public class PrettyPrint extends Visitor{
             expr = r;
         }
 
+        public void visit(Unquote n){
+            ST r = groupTemplate.getInstanceOf("unquote_expr");
+
+            n.getExpr().accept(this);
+            r.add("expr", expr);
+            expr = r;
+        }
 }

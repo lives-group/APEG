@@ -78,6 +78,7 @@ public abstract class Visitor {
     public abstract void visit(Or n);
     public abstract void visit(Sub n);
     public abstract void visit(UMinus n);
+    public abstract void visit(Unquote n);
 
     // Meta operators
     public abstract void visit(MetaAdd n);

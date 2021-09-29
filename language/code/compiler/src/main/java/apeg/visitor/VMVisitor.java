@@ -1182,4 +1182,7 @@ public class VMVisitor extends Visitor{
             
             stk.push(new Pair<VType, Object>(VTyGrammar.getInstance(), rules));
         }
+
+        public void visit(Unquote n){
+        }
 }

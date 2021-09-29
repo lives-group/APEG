@@ -1930,4 +1930,16 @@ private STGroup groupTemplate;
         }
 
         public void visit(MetaGrammar n){}
+
+        public void visit(Unquote n){
+            ST node = groupTemplate.getInstanceOf("node");
+            node.add("parent", parent);
+            nodeName = "unquote" + c_expr++;
+            node.add("node", nodeName);
+            node.add("lable", groupTemplate.getInstanceOf("unquote_expr_lable"));
+            nodes.add(node);
+
+            parent = nodeName;
+            n.getExpr().accept(this);
+        }
 }

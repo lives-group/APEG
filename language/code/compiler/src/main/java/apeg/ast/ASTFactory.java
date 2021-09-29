@@ -339,6 +339,14 @@ public interface ASTFactory {
 	 */
 	public Expr newUMinusExpr(SymInfo s,Expr e);
 
+	/**
+	 * 
+	 * @param s corresponding SymInfo node
+	 * @param e corresponding expression node
+	 * @return
+	 */
+	public Expr newUnquoteExpr(SymInfo s,Expr e);
+
 	/*------------------------------------------------------
 	 * Rules 
 	 * ------------------------------------------------------

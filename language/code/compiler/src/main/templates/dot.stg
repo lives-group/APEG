@@ -128,6 +128,7 @@ or_expr_lable() ::= "||"
 and_expr_lable() ::= "&&"
 concat_expr_lable() ::= "\+\+"
 compose_expr_lable() ::= "\<\<"
+unquote_expr_lable() ::= "#"
 
 metaboolean_expr_lable(value) ::= "'<value>"
 metafloat_expr_lable(value) ::= "'<value>"

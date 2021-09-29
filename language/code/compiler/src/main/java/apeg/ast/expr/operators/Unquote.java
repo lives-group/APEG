@@ -3,11 +3,11 @@ import apeg.visitor.Visitor;
 import apeg.ast.expr.Expr;
 import apeg.util.SymInfo;
 
-public class UMinus extends Expr{
+public class Unquote extends Expr{
 
     private Expr expr;
     
-    public UMinus(SymInfo s,Expr e){
+    public Unquote(SymInfo s,Expr e){
         super(s);
         this.expr = e;
     }
@@ -16,6 +16,7 @@ public class UMinus extends Expr{
     }
     public void accept(Visitor v){ v.visit(this); }
 
-    public String toString() {return "-" + getExpr().toString();}
+    public String toString() {return "(# " + getExpr().toString() + ")"; }
 
 }
+

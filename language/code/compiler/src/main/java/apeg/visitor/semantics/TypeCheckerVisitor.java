@@ -1374,4 +1374,7 @@ public class TypeCheckerVisitor extends Visitor {
         s.pop();
         s.push(VTyGrammar.getInstance());
     }
+
+    public void visit(Unquote n){
+    }
 }

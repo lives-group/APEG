@@ -88,11 +88,11 @@ To interpret an apeg file use the following command:
 
 >mvn exec:java@inter -Dgrammar="grammar01.apeg" -Dinput="input.txt"
 
-The -Dgrammar="grammar01.apeg" paramter instruct the maven to pass the addres of the file  grammar01.apeg,
+The -Dgrammar="grammar01.apeg" parameter instruct the maven to pass the address of the file  grammar01.apeg,
 located at _language/examples/grammar/_, as one parameter to the APEG tool. We configured maven to always look 
 at _language/examples/grammar/_ when  looking for an APEG grammar file. 
 
-The -Dinput="input.txt" is tha name of the input file to be feed to the interpreted parser,
+The -Dinput="input.txt" parameter is the name of the input file to be feed to the interpreted parser,
 located at _language/examples/inputs/_. We configured maven to always look 
 at _language/examples/inputs/_ when  looking for an input file. 
 
@@ -115,7 +115,7 @@ and students about the project are placed in _docs_ folders.
 _experiments_ folder is dedicated to putting the sources of the experiments conducted
 using our tool.
 All the tool source code resides in the _language_ folder.
-This folder has tow others: _examples_ and _code_.
+This folder has two others: _examples_ and _code_.
 All examples of APEG grammars resides inside _examples_ folder, and the source code
 is inside the _code_ folder and its sub-directories.
 
@@ -148,7 +148,7 @@ The AST does not represent all of the details that are on the real syntax, only 
 
 
 The codes we are analyzing describes the right-hand side of a PEG expression, they give attributes to the types like a Rule type or a Not-PEG, etc. 
-For example, the _RuleNode_ defined on the _RuleNode_ class has a name, an annotation, a list named _VarDeclartionNode_ it contains parameters and returns and, finally a _PegNode_.
+For example, the _RuleNode_ defined on the _RuleNode_ class has a name, an annotation, a list named _VarDeclartionNode_ it contains parameters and returns finally a _PegNode_.
 In _grammar 01_ we got rules _a_ and _b_:
 
 > a: b '1' / b '2';
@@ -166,7 +166,7 @@ When a nonterminal is referenced inside a PEG expression, the values of the inhe
 
 In this example _0_ is the inherited value and _k_ is the synthesized attribute. Synthesized attributes must always be in the variable form.
 
-In our code we've got the _PegNode_ class that is the base interface of all the parsing expressions this parsing expressions are defined in different classes whose extends from _PegNode_, which one has his own attribute including a positions on the AST.
+In our code we've got the _PegNode_ class that is the base interface of all the parsing expressions. These parsing expressions are defined in different classes whose extends from _PegNode_, which one has his own attribute including a position on the AST.
 * AndPegNode
 * AnyPegNode
 * BindPegNode
@@ -183,7 +183,7 @@ In our code we've got the _PegNode_ class that is the base interface of all the 
 * StarPegNode
 * UpdatePegNode
 
-Besides the _PegNode_ class we got also _TypeNode_ and _ExprNode_ all extendiing from _ASTNode_. Those three classes defines all that a peg needs.
+Besides the _PegNode_ class we got also _TypeNode_ and _ExprNode_ all extending from _ASTNode_. Those three classes defines all that a peg needs.
 _PegNodes_ define the peg operators.
 _ExprNode_ identify the operator given in language and defines which kind of Peg it is.
-_TypeNode_ defines de type of the expression.
+_TypeNode_ defines the type of the expression.

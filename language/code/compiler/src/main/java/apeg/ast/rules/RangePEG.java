@@ -20,7 +20,7 @@ public class RangePEG extends APEG {
     public void accept(Visitor v){ v.visit(this); }
     
     public String toString(){
-        return "[" + interval.toString() + "]"; 
+        return "[.. " + interval.toString() + "]"; 
     } 
 
 }

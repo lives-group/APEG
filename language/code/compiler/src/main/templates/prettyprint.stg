@@ -101,7 +101,7 @@ choice_peg(left_peg, right_peg) ::=<<
  <left_peg> / <right_peg>
 >>
 constraint_peg(expr) ::= "{? <expr> }"
-group_peg(ranges) ::= "[<ranges>]"
+group_peg(ranges) ::= "<ranges>"
 literal_peg(value) ::= "'<value>'"
 lambda_peg() ::= " " 
 nonterminal_peg(name, attrs) ::= "<name>\<<attrs; separator=\", \", wrap>>"

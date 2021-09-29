@@ -201,7 +201,12 @@ public class PrettyPrint extends Visitor{
 	@Override
 	public void visit(MetaRangePEG n) {
 		// TODO Auto-generated method stub
+		ST aux_peg = groupTemplate.getInstanceOf("group_peg");
 		
+                RangePEG rang = n.getEmbeedNode();
+                CharInterval ci = rang.getInterval();
+		aux_peg.add("ranges", ci.toString());
+		this.expr = aux_peg;
 	}
 
 	@Override
@@ -1105,7 +1110,7 @@ public class PrettyPrint extends Visitor{
 
 	@Override
 	public void visit(RangePEG n) {
-	    peg = groupTemplate.getInstanceOf("range_peg");
+	    peg = groupTemplate.getInstanceOf("group_peg");
 	    CharInterval c = n.getInterval();
 	    peg.add("ranges", c.toString());
 	}

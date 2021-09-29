@@ -273,6 +273,21 @@ private STGroup groupTemplate;
 	public void visit(MetaRangePEG n) {
 		// TODO Auto-generated method stub
 		
+		ST node = groupTemplate.getInstanceOf("node");
+		
+		node.add("parent", parent);
+		nodeName = "metaRangePEG" + c_peg++;
+		node.add("node", nodeName);
+
+                ST label = groupTemplate.getInstanceOf("metarange_peg_label");
+                RangePEG res = n.getEmbeedNode();
+                CharInterval ci = res.getInterval();
+                label.add("ranges", ci.toString());
+                node.add("lable", label);
+
+                nodes.add(node);
+
+                parent = nodeName;
 	}
 
 	@Override
@@ -609,6 +624,17 @@ private STGroup groupTemplate;
 	public void visit(MetaTyLang n) {
 		// TODO Auto-generated method stub
 		
+                ST node = groupTemplate.getInstanceOf("node");
+
+                node.add("parent", parent);
+                nodeName = "MetaTyLang" + c_peg++;
+                node.add("node", nodeName);
+
+                ST n_aux = groupTemplate.getInstanceOf("metatylang_expr_lable");
+                node.add("lable", n_aux);
+
+                nodes.add(node);
+                parent = nodeName;
 	}
 
 	@Override
@@ -1471,6 +1497,8 @@ private STGroup groupTemplate;
 	    node.add("lable", label);
 
 	    nodes.add(node);
+
+            parent = nodeName;
 	}
 
 	@Override
@@ -1929,7 +1957,17 @@ private STGroup groupTemplate;
 
         }
 
-        public void visit(MetaGrammar n){}
+        public void visit(MetaGrammar n){
+            ST node = groupTemplate.getInstanceOf("node");
+            node.add("parent", parent);
+            nodeName = "metaGrammar" + c_peg++;
+            node.add("node", nodeName);
+            node.add("lable", groupTemplate.getInstanceOf("metagrammar_expr_lable"));
+            nodes.add(node);
+
+            parent = nodeName;
+            n.getListMetaRule().accept(this);
+        }
 
         public void visit(Unquote n){
             ST node = groupTemplate.getInstanceOf("node");

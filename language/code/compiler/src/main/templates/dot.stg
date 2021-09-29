@@ -26,6 +26,7 @@ grammar -> <nodeName>;
 
 /** Template for metarule declaration */
 metarule(name) ::= "metaRule[<name>]"
+metagrammar_expr_lable() ::= "grammar{| |}"
 
 /** Template for dot node and edges */
 node(parent, node, lable) ::= <<
@@ -79,7 +80,7 @@ optional_peg_lable() ::= "OptionalPegExpr(?)"
 sequence_peg_lable() ::= "SequencePegExpr(.)"
 star_peg_lable() ::= "StarPegExpr(*)"
 update_peg_lable() ::= "UpdatePegExpr([\<-])"
-range_peg_label(ranges) ::= "[<ranges>]"
+range_peg_label(ranges) ::= "<ranges>"
 
 /** Template for assignment from update parsing expressions */
 assign_lable(var) ::= "Assignment:<var>"
@@ -141,6 +142,7 @@ metaor_expr_lable() ::= "'||"
 metaand_expr_lable() ::= "'&&"
 metaconcat_expr_lable() ::= "'\+\+"
 metacompose_expr_lable() ::= "'\<\<"
+metatylang_expr_lable() ::= "lang"
 
 listLit_expr_lable() ::= "[]"
 listAcces_expr_lable() ::= "!!"
@@ -167,4 +169,4 @@ metaoptional_peg_lable() ::= "'OptionalPegExpr(?)"
 metasequence_peg_lable() ::= "'SequencePegExpr(.)"
 metastar_peg_lable() ::= "'StarPegExpr(*)"
 metaupdate_peg_lable() ::= "'UpdatePegExpr([\<-])"
-metarange_peg_label(ranges) ::= "'[<ranges>]"
+metarange_peg_label(ranges) ::= "'<ranges>"

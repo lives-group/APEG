@@ -463,10 +463,10 @@ public class VMVisitor extends Visitor{
 		        re =  (ArrayList<RulePEG>)((Grammar)lan.getFirst()).cloneRules();
 		        rd = mergeGrammars((ArrayList)re, (ArrayList<RulePEG>)stk.peek().getSecond());
 		        gext = new Grammar(gext.getSymInfo(), gext.getName(),gext.getOptions(),rd);
-//                 Visitor prettyprint = new PrettyPrint(new RelativePath(new AbsolutePath("."), "src/main/templates/prettyprint.stg"));
-//                 System.out.println("----------------------");
-//                 gext.accept(prettyprint);
-//                 System.out.println("----------------------");
+                 Visitor prettyprint = new PrettyPrint(new RelativePath(new AbsolutePath("."), "src/main/templates/prettyprint.stg"));
+                 System.out.println("----------------------");
+                 gext.accept(prettyprint);
+                 System.out.println("----------------------");
                 TypeCheckerVisitor tychk = new TypeCheckerVisitor();
 		        gext.accept(tychk);
 		        if(tychk.getError().size() != 0){
@@ -630,11 +630,11 @@ public class VMVisitor extends Visitor{
 
 	public void visit(ListAcces n){
 	    n.getList().accept(this);
+	    VType ty = ((VTyList) stk.peek().getFirst()).getTyParameter();
 	    ArrayList<Object> o = (ArrayList<Object>)stk.pop().getSecond();
 	    n.getIndex().accept(this);
 	    
 	    Integer idx = (Integer)stk.peek().getSecond();
-	    VType ty = stk.peek().getFirst();
 	    stk.push(new Pair(ty, o.get(idx)) );
 	}
 

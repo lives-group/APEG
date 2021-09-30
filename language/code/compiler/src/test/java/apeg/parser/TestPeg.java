@@ -149,14 +149,25 @@ public class TestPeg {
 	}	
 		
 	@Test
-	void TestLambda() throws IOException {
+	void TestLambda01() throws IOException {
 	// Create a ANTLR CharStream from a string
 	CharStream stream = CharStreams.fromReader(new StringReader(" 'A' / \u03bb"));
 	
-	TContainer<APEG> test = new PegContainer("TestNonTerminal01", stream);
+	TContainer<APEG> test = new PegContainer("TestLambda01", stream);
 	APEG e = test.execute();
 	// Expected Result
 	assertEquals( "(/ 'A' \u03bb)", e.toString());
+	}	
+		
+	@Test
+	void TestGroup01() throws IOException {
+	// Create a ANTLR CharStream from a string
+	CharStream stream = CharStreams.fromReader(new StringReader(" (a..b) "));
+	
+	TContainer<APEG> test = new PegContainer("TestGroup01", stream);
+	APEG e = test.execute();
+	// Expected Result
+	assertEquals( "[.. a b]", e.toString());
 	}	
 
 }

@@ -345,7 +345,7 @@ public interface ASTFactory {
 	 * @param e corresponding expression node
 	 * @return
 	 */
-	public Expr newUnquoteExpr(SymInfo s,Expr e);
+	public Unquote newUnquoteExpr(SymInfo s,Expr e);
 
 	/*------------------------------------------------------
 	 * Rules 

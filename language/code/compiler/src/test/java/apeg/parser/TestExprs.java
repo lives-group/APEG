@@ -864,5 +864,15 @@ public class TestExprs {
 		// Expected Result
 		assertEquals("'(+ ([] 'm ''key') ([] 'm (# 'ref)))" , e.toString());
     }
+
+    @Test
+    void testUnquoteExpr02() throws IOException {
+		CharStream stream = CharStreams.fromReader(new StringReader ("{| #quoteRef foo<#quote, bar> |}"));
+		
+		TContainer<Expr> test = new ExprContainer("UnquoteExpr01", stream);
+		Expr e = test.execute();
+		// Expected Result
+		assertEquals("'(seq  (# 'quoteRef) '('foo' ([ (# 'quote) 'bar])))" , e.toString());
+    }
 }
 

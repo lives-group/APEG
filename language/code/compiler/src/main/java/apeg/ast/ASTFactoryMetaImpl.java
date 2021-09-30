@@ -74,7 +74,7 @@ public class ASTFactoryMetaImpl implements ASTFactory{
     public Expr newUMinusExpr(SymInfo s,Expr e){
         return new MetaUMinus(s,e);
     }
-    public Expr newUnquoteExpr(SymInfo s,Expr e){
+    public Unquote newUnquoteExpr(SymInfo s,Expr e){
         return new Unquote(s,e);
     }
     public Attribute newAttributeExpr(SymInfo s,String name){

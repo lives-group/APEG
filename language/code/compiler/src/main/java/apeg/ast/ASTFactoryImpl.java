@@ -74,7 +74,7 @@ public class ASTFactoryImpl implements ASTFactory{
     public Expr newUMinusExpr(SymInfo s,Expr e){
         return new UMinus(s,e);
     }
-    public Expr newUnquoteExpr(SymInfo s,Expr e){
+    public Unquote newUnquoteExpr(SymInfo s,Expr e){
         return new Unquote(s,e);
     }
     public Attribute newAttributeExpr(SymInfo s,String name){

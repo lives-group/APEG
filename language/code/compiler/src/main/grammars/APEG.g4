@@ -337,8 +337,6 @@ peg_seq returns[APEG peg, Expr mpeg]:
      if(!metaLevel) $peg = $peg_capturetext.peg;
      else $mpeg = $peg_capturetext.mpeg;
    }
-  |
-   '\u03bb' {$peg = factory.newLambdaPEG(new SymInfo(_ctx.start.getLine(), _ctx.start.getCharPositionInLine()));}/ // LAMBDA parsing expression
 ;
 
 peg_capturetext returns[APEG peg, Expr mpeg]:
@@ -409,6 +407,8 @@ peg_unary_op returns[APEG peg, Expr mpeg]:
    '}' {
    if(!metaLevel) $peg = factory.newUpdatePEG(new SymInfo($t.line, $t.pos), l);
    else $mpeg = factory.newMetaUpdatePEG(new SymInfo($t.line, $t.pos), factory.newListExpr(new SymInfo($t.line, $t.pos), ml));}
+  |
+   '\u03bb' {$peg = factory.newLambdaPEG(new SymInfo(_ctx.start.getLine(), _ctx.start.getCharPositionInLine()));}/ // LAMBDA parsing expression
 ;
 
 // This rule defines the other operators and basic expressions
@@ -446,6 +446,8 @@ peg_factor returns[APEG peg, Expr mpeg]:
      if(!metaLevel) $peg = $peg_expr.peg;
      else $mpeg = $peg_expr.mpeg;
    }
+  |
+   unquote_expr { $mpeg = $unquote_expr.unq; }
 ;
 
 ntcall returns[APEG peg, Expr mpeg]:
@@ -573,7 +575,7 @@ term returns[Expr exp]:
 
 
 factor returns[Expr exp]: 
-    {metaLevel}? t='#' primary {$exp = factory.newUnquoteExpr(new SymInfo($t.line, $t.pos), $primary.exp);}
+    unquote_expr { $exp = $unquote_expr.unq; }
   |
    OP_SUB primary { $exp = factory.newUMinusExpr(new SymInfo($OP_SUB.line, $OP_SUB.pos), $primary.exp); }
   |
@@ -702,6 +704,11 @@ meta returns[Expr exp]:
    |
     '(|' {enterMeta();} expr '|)' {exitMeta(); $exp = $expr.exp;}
 ;
+
+unquote_expr returns[Unquote unq]:
+    {metaLevel}? t='#' primary {$unq = factory.newUnquoteExpr(new SymInfo($t.line, $t.pos), $primary.exp);}
+;
+
 
 /*************************************************
  ***************** Lexical *************************

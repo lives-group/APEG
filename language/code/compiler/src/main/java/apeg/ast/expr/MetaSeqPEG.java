@@ -19,7 +19,7 @@ public class MetaSeqPEG extends MetaAPEG{
     public void accept(Visitor v){ v.visit(this); }
 
     public String toString(){
-        String s = "'(seq "  ;
+        String s = "'(seq"  ;
         for(Expr p : e){
             s += " " + p.toString();
         }

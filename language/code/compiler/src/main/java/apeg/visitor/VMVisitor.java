@@ -630,11 +630,10 @@ public class VMVisitor extends Visitor{
 
 	public void visit(ListAcces n){
 	    n.getList().accept(this);
+	    VType ty = ((VTyList)stk.peek().getFirst()).getTyParameter();
 	    ArrayList<Object> o = (ArrayList<Object>)stk.pop().getSecond();
 	    n.getIndex().accept(this);
-	    
 	    Integer idx = (Integer)stk.peek().getSecond();
-	    VType ty = stk.peek().getFirst();
 	    stk.push(new Pair(ty, o.get(idx)) );
 	}
 

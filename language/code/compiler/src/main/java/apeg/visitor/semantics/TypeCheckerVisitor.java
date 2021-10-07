@@ -1376,5 +1376,15 @@ public class TypeCheckerVisitor extends Visitor {
     }
 
     public void visit(Unquote n){
+        n.getExpr().accept(this);
+        if(s.peek().match(VTyString.getInstance()) || 
+           s.peek().match(VTyInt.getInstance())    || 
+           s.peek().match(VTyFloat.getInstance())  ||
+           s.peek().match(VTyBool.getInstance())  ||
+           s.peek().match(VTyChar.getInstance())  ||
+           s.peek() instanceof VtyList ||
+           s.peek() instanceof VtyMap){
+           
+        }
     }
 }

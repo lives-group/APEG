@@ -82,6 +82,8 @@ public class PageStream{
 	      int n = f.read(blocks[page]);
 	      if(n != -1 ){
 	          pw = pw + n;
+	      }else{
+	          throws new EOFException("END OF FILE DETECTED");
 	      }
 	 }
 

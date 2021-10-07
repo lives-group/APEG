@@ -18,7 +18,7 @@ public class SeqPEG extends APEG{
     public void accept(Visitor v){ v.visit(this); }
     
     public String toString(){
-        String s = "(seq "  ;
+        String s = "(seq"  ;
         for(APEG p : pegs){
             s += " " + p.toString();
         }

@@ -4,6 +4,7 @@ import java.io.FileReader;
 import java.io.StringReader;
 import java.io.Reader;
 import java.io.IOException;
+import java.io.EOFException;
 import java.util.Stack;
 
 public class PageStream{
@@ -33,31 +34,28 @@ public class PageStream{
      private Stack<Integer> recStart; // para usar o Bind
      
      private Reader f;
-
+     
+     private void initialize(){
+          blocksize = 2048; 
+          blocks = new char[1024][];
+	      pw = 0;
+	      pr = 0;
+          marks = new Stack<Tern>();
+	      recStart = new Stack<Integer>();
+	      line = 0;
+          col = 0;
+     }
+     
 	 public PageStream(String path) throws IOException{
-	    blocksize = 4;
+	    initialize();
 	    f = new FileReader(path);
-	    blocks = new char[128][];
-	    pw = 0;
-	    pr = 0;
 	    load(0);
-	    marks = new Stack<Tern>();
-	    recStart = new Stack<Integer>();
-	    line = 0;
-        col = 0;
 	 }
 	 
 	 public PageStream(StringReader sr) throws IOException{
-	    blocksize = 4;
+	    initialize();
 	    f = sr;
-	    blocks = new char[128][];
-	    pw = 0;
-	    pr = 0;
 	    load(0);
-	    marks = new Stack<Tern>();
-	    recStart = new Stack<Integer>();
-	    line = 0;
-        col = 0;
 	 }
 	 
 	 public void startBuffer(){ recStart.push(pr);}
@@ -83,7 +81,7 @@ public class PageStream{
 	      if(n != -1 ){
 	          pw = pw + n;
 	      }else{
-	          throws new EOFException("END OF FILE DETECTED");
+	          throw new EOFException("END OF FILE DETECTED WHILE LOADING PAGE " + page);
 	      }
 	 }
 
@@ -112,8 +110,8 @@ public class PageStream{
 	    	 load(decode_page(pr));
 	     }
 	     char c = blocks[decode_page(pr)][decode_pos(pr)];
-	     line =  blocks[decode_page(pr)][decode_pos(pr)] == '\n' ? line+1 : line; 
-         col =  blocks[decode_page(pr)][decode_pos(pr)] == '\n' ? 0 : col+1;
+	     line = c == '\n' ? line+1 : line; 
+         col  = c == '\n' ? 0 : col+1;
 	     pr++;
 	     return c;
 	 }

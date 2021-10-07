@@ -1382,8 +1382,8 @@ public class TypeCheckerVisitor extends Visitor {
            s.peek().match(VTyFloat.getInstance())  ||
            s.peek().match(VTyBool.getInstance())  ||
            s.peek().match(VTyChar.getInstance())  ||
-           s.peek() instanceof VtyList ||
-           s.peek() instanceof VtyMap){
+           s.peek() instanceof VTyList ||
+           s.peek() instanceof VTyMap){
            
         }
     }

@@ -153,19 +153,25 @@ production returns[RulePEG rule, MetaRulePEG mrule]:
    annotation ID optDecls optReturn ':' peg_expr ';'
    {$rule = factory.newRule(new SymInfo($ID.line, $ID.pos) ,$ID.text, $annotation.anno, $optDecls.list, $optReturn.list, $peg_expr.peg);}
   |
-   ID optDecls optReturn ':' peg_expr ';'
-   {if(!metaLevel) $rule = factory.newRule(new SymInfo($ID.line, $ID.pos), $ID.text, RulePEG.Annotation.NONE,
+   ruleName optDecls optReturn ':' peg_expr ';'
+   {if(!metaLevel) $rule = factory.newRule(new SymInfo($ruleName.si.getLine(), $ruleName.si.getColumn()), $ruleName.id, RulePEG.Annotation.NONE,
    	                        $optDecls.list, $optReturn.list, $peg_expr.peg);
 
     else $mrule = factory.newMetaRulePEG(
-                           new SymInfo($ID.line, $ID.pos),
-                           factoryNormal.newStringExpr(new SymInfo($ID.line, $ID.pos), $ID.text),
+                           new SymInfo($ruleName.si.getLine(), $ruleName.si.getColumn()),
+                           $ruleName.metaRef,
                            null,
-                           factory.newListExpr(new SymInfo($ID.line, $ID.pos), $optDecls.mtypes),
-                           factory.newListExpr(new SymInfo($ID.line, $ID.pos), $optDecls.minh),
-                           factory.newListExpr(new SymInfo($ID.line, $ID.pos), $optReturn.msyn),
+                           factory.newListExpr(new SymInfo($ruleName.si.getLine(), $ruleName.si.getColumn()), $optDecls.mtypes),
+                           factory.newListExpr(new SymInfo($ruleName.si.getLine(), $ruleName.si.getColumn()), $optDecls.minh),
+                           factory.newListExpr(new SymInfo($ruleName.si.getLine(), $ruleName.si.getColumn()), $optReturn.msyn),
                            $peg_expr.mpeg);
    }
+;
+
+ruleName returns[String id, Expr metaRef, SymInfo si]:
+     ID { $id = $ID.text; $metaRef = factoryNormal.newStringExpr(new SymInfo($ID.line, $ID.pos), $ID.text); $si = new SymInfo($ID.line, $ID.pos); }
+    |
+     unquote_expr { $metaRef = $unquote_expr.unq; $si = new SymInfo($unquote_expr.si.getLine(), $unquote_expr.si.getColumn()); }
 ;
 
 annotation returns[RulePEG.Annotation anno]:
@@ -705,8 +711,8 @@ meta returns[Expr exp]:
     '(|' {enterMeta();} expr '|)' {exitMeta(); $exp = $expr.exp;}
 ;
 
-unquote_expr returns[Unquote unq]:
-    {metaLevel}? t='#' primary {$unq = factory.newUnquoteExpr(new SymInfo($t.line, $t.pos), $primary.exp);}
+unquote_expr returns[Unquote unq, SymInfo si]:
+    {metaLevel}? t='#' primary {$unq = factory.newUnquoteExpr(new SymInfo($t.line, $t.pos), $primary.exp); $si = new SymInfo($t.line, $t.pos); }
 ;
 
 

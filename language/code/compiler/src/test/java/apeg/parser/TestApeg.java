@@ -48,12 +48,12 @@ public class TestApeg {
 	@Test
 	void TestUpdate01() throws IOException {
 	// Create a ANTLR CharStream from a string
-	CharStream stream = CharStreams.fromReader(new StringReader(" Update :{ exp = 'exp' ;} ;"));
+	CharStream stream = CharStreams.fromReader(new StringReader(" Update :{ exp = exp ;} ;"));
 	
 	TContainer<RulePEG> test = new ApegContainer("TestUpdate01", stream);
 	RulePEG e = test.execute();
 	// Expected Result
-	assertEquals( "(rule Update NONE () () { (= exp 'exp')})", e.toString());
+	assertEquals( "(rule Update NONE () () { (= exp exp)})", e.toString());
 	}	
 		
 	@Test
@@ -77,5 +77,117 @@ public class TestApeg {
 	// Expected Result
 	assertEquals( "(rule Nntrml NONE ( (:: int x)) ( (+ w 1)) (atribute 'char'))", e.toString());
 	}	
+		
+	@Test
+	void TestBindUpdate01() throws IOException {
+	// Create a ANTLR CharStream from a string
+	CharStream stream = CharStreams.fromReader(new StringReader(" Bdup : x = { sum = x + x ;} ;"));
+	
+	TContainer<RulePEG> test = new ApegContainer("TestBindUpdate01", stream);
+	RulePEG e = test.execute();
+	// Expected Result
+	assertEquals( "(rule Bdup NONE () () (= x { (= sum (+ x x))}))", e.toString());
+	}	
+		
+	@Test
+	void TestNotUpdate01() throws IOException {
+	// Create a ANTLR CharStream from a string
+	CharStream stream = CharStreams.fromReader(new StringReader(" Bdup : !(x = { sum = x + x ;}) ;"));
+	
+	TContainer<RulePEG> test = new ApegContainer("TestNotUpdate01", stream);
+	RulePEG e = test.execute();
+	// Expected Result
+	assertEquals( "(rule Bdup NONE () () (! (= x { (= sum (+ x x))})))", e.toString());
+	}	
+		
+	@Test
+	void TestBindUpdate02() throws IOException {
+	// Create a ANTLR CharStream from a string
+	CharStream stream = CharStreams.fromReader(new StringReader(" Bdup : x = { sum = x + x ; mult = x * 4; } ;"));
+	
+	TContainer<RulePEG> test = new ApegContainer("TestBindUpdate02", stream);
+	RulePEG e = test.execute();
+	// Expected Result
+	assertEquals( "(rule Bdup NONE () () (= x { (= sum (+ x x)) (= mult (* x 4))}))", e.toString());
+	}	
+		
+	@Test
+	void TestLit01() throws IOException {
+	// Create a ANTLR CharStream from a string
+	CharStream stream = CharStreams.fromReader(new StringReader("rule : 'something' ;"));
+	
+	TContainer<RulePEG> test = new ApegContainer("TestLit01", stream);
+	RulePEG e = test.execute();
+	// Expected Result
+	assertEquals( "(rule rule NONE () () 'something')", e.toString());
+	}
+		
+	@Test
+	void TestSeqRule01() throws IOException {
+	// Create a ANTLR CharStream from a string
+	CharStream stream = CharStreams.fromReader(new StringReader("rule_one : rule_two ;"));
+	
+	TContainer<RulePEG> test = new ApegContainer("TestSeqRule01", stream);
+	RulePEG e = test.execute();
+	// Expected Result
+	assertEquals( "(rule rule_one NONE () () (rule_two))", e.toString());
+	}
+		
+	@Test
+	void TestMetaMapLit01() throws IOException {
+	// Create a ANTLR CharStream from a string
+	CharStream stream = CharStreams.fromReader(new StringReader("a:{x = (| {: 'x' -> 2, 'y' -> 3:} |); };"));
+	
+	TContainer<RulePEG> test = new ApegContainer("TestMetaMapLit01", stream);
+	RulePEG e = test.execute();
+	// Expected Result
+	assertEquals( "(rule a NONE () () { (= x '({: ''x', 2 ''y', 3:}))})", e.toString());
+	}
+		
+	@Test
+	void TestRuleSeq01() throws IOException {
+	// Create a ANTLR CharStream from a string
+	CharStream stream = CharStreams.fromReader(new StringReader("A : B C D ;"));
+	
+	TContainer<RulePEG> test = new ApegContainer("TestRuleSeq01", stream);
+	RulePEG e = test.execute();
+	// Expected Result
+	assertEquals( "(rule A NONE () () (seq (B) (C) (D)))", e.toString());
+	}
+		
+	@Test
+	void TestRuleSeqAny01() throws IOException {
+	// Create a ANTLR CharStream from a string
+	CharStream stream = CharStreams.fromReader(new StringReader("A : B _ ;"));
+	
+	TContainer<RulePEG> test = new ApegContainer("TestRuleSeqAny01", stream);
+	RulePEG e = test.execute();
+	// Expected Result
+	assertEquals( "(rule A NONE () () (seq (B) _))", e.toString());
+	}
+	
+	@Test
+	void TestBindList01() throws IOException {
+	// Create a ANTLR CharStream from a string
+	CharStream stream = CharStreams.fromReader(new StringReader("A : {x = [a , b, c] ;} ;"));
+	
+	TContainer<RulePEG> test = new ApegContainer("TestBindList01", stream);
+	RulePEG e = test.execute();
+	// Expected Result
+	assertEquals( "(rule A NONE () () { (= x ([ a b c]))})", e.toString());
+	}
+	
+	@Test
+	void Test() throws IOException {
+	// Create a ANTLR CharStream from a string
+	CharStream stream = CharStreams.fromReader(new StringReader("A : \u03bb ;"));
+	
+	TContainer<RulePEG> test = new ApegContainer("TestBindList01", stream);
+	RulePEG e = test.execute();
+	// Expected Result
+	assertEquals( "(rule A NONE () () \u03bb)", e.toString());
+	}
+ 
+	
 
 }

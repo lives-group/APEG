@@ -463,10 +463,10 @@ public class VMVisitor extends Visitor{
 		        re =  (ArrayList<RulePEG>)((Grammar)lan.getFirst()).cloneRules();
 		        rd = mergeGrammars((ArrayList)re, (ArrayList<RulePEG>)stk.peek().getSecond());
 		        gext = new Grammar(gext.getSymInfo(), gext.getName(),gext.getOptions(),rd);
-//                 Visitor prettyprint = new PrettyPrint(new RelativePath(new AbsolutePath("."), "src/main/templates/prettyprint.stg"));
-//                 System.out.println("----------------------");
-//                 gext.accept(prettyprint);
-//                 System.out.println("----------------------");
+                 Visitor prettyprint = new PrettyPrint(new RelativePath(new AbsolutePath("."), "src/main/templates/prettyprint.stg"));
+                 System.out.println("----------------------");
+                 gext.accept(prettyprint);
+                 System.out.println("----------------------");
                 TypeCheckerVisitor tychk = new TypeCheckerVisitor();
 		        gext.accept(tychk);
 		        if(tychk.getError().size() != 0){

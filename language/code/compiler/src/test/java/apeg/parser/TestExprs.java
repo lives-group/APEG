@@ -872,7 +872,7 @@ public class TestExprs {
 		TContainer<Expr> test = new ExprContainer("UnquoteExpr01", stream);
 		Expr e = test.execute();
 		// Expected Result
-		assertEquals("'(seq  (# 'quoteRef) '('foo' ([ (# 'quote) 'bar])))" , e.toString());
+		assertEquals("'(seq (# 'quoteRef) '('foo' ([ (# 'quote) 'bar])))" , e.toString());
     }
 }
 

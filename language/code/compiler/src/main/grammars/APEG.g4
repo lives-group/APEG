@@ -300,6 +300,8 @@ type returns[Type tp, Expr mtp]:
      if(!metaLevel) $tp = factory.newListType(new SymInfo($t.line, $t.pos), $type.tp);
   }
  |
+  unquote_expr { $mtp = $unquote_expr.unq; }
+ |
   META_TYPE {$tp = factory.newMetaType(new SymInfo($META_TYPE.line, $META_TYPE.pos));}
 ;
 
@@ -346,24 +348,37 @@ peg_seq returns[APEG peg, Expr mpeg]:
 ;
 
 peg_capturetext returns[APEG peg, Expr mpeg]:
-   peg_unary_op {
-     if(!metaLevel) $peg = $peg_unary_op.peg;
-     else $mpeg = $peg_unary_op.mpeg;
+   peg_prefix {
+     if(!metaLevel) $peg = $peg_prefix.peg;
+     else $mpeg = $peg_prefix.mpeg;
    }
   |
-   attribute_ref t='=' peg_unary_op {
-     if(!metaLevel) $peg = factory.newBindPEG(new SymInfo($t.line, $t.pos), $attribute_ref.exp, $peg_unary_op.peg);
-     else $mpeg = factory.newMetaBindPEG(new SymInfo($t.line, $t.pos), $attribute_ref.mexp, $peg_unary_op.mpeg);
+   attribute_ref t='=' peg_prefix {
+     if(!metaLevel) $peg = factory.newBindPEG(new SymInfo($t.line, $t.pos), $attribute_ref.exp, $peg_prefix.peg);
+     else $mpeg = factory.newMetaBindPEG(new SymInfo($t.line, $t.pos), $attribute_ref.mexp, $peg_prefix.mpeg);
    }
 ;
 
-
-// This rule defines the operators with precedence 4 and 3  
-// e? (Optional with precedence 4
-// e* (Zero-or-more with precedence 4)
-// e+ (One-or-more with precedence 4)
 // &e (And-predicate with precedence 3)
 // !e (Not-predicate with precedence 3)
+peg_prefix returns[APEG peg, Expr mpeg]:
+   t='&' peg_unary_op {
+   if(!metaLevel) $peg = factory.newAndPEG(new SymInfo($t.line, $t.pos), $peg_unary_op.peg);
+   else $mpeg = factory.newMetaAndPEG(new SymInfo($t.line, $t.pos), $peg_unary_op.mpeg);}
+  |
+   t='!' peg_unary_op {
+   if(!metaLevel) $peg = factory.newNotPEG(new SymInfo($t.line, $t.pos), $peg_unary_op.peg);
+   else $mpeg = factory.newMetaNotPEG(new SymInfo($t.line, $t.pos), $peg_unary_op.mpeg);}
+  |
+   peg_unary_op {
+   if(!metaLevel) $peg = $peg_unary_op.peg;
+   else $mpeg = $peg_unary_op.mpeg;}
+;
+
+
+// e? (Optional with precedence 4)
+// e* (Zero-or-more with precedence 4)
+// e+ (One-or-more with precedence 4)
 peg_unary_op returns[APEG peg, Expr mpeg]:
    peg_factor t= '?' {
    if(!metaLevel) $peg = factory.newOptionalPEG(new SymInfo($t.line, $t.pos), $peg_factor.peg);
@@ -381,14 +396,6 @@ peg_unary_op returns[APEG peg, Expr mpeg]:
    peg_factor {
    if(!metaLevel) $peg = $peg_factor.peg;
    else $mpeg = $peg_factor.mpeg; }
-  |
-   t='&' peg_factor {
-   if(!metaLevel) $peg = factory.newAndPEG(new SymInfo($t.line, $t.pos), $peg_factor.peg);
-   else $mpeg = factory.newMetaAndPEG(new SymInfo($t.line, $t.pos), $peg_factor.mpeg);}
-  |
-   t='!' peg_factor {
-   if(!metaLevel) $peg = factory.newNotPEG(new SymInfo($t.line, $t.pos), $peg_factor.peg);
-   else $mpeg = factory.newMetaNotPEG(new SymInfo($t.line, $t.pos), $peg_factor.mpeg);}
   |
    t='{?' expr '}' {
    if(!metaLevel) $peg = factory.newConstraintPEG(new SymInfo($t.line, $t.pos), $expr.exp);
@@ -709,6 +716,8 @@ meta returns[Expr exp]:
     '{|' {enterMeta();} rules '|}' {exitMeta(); $exp = $rules.mrules;}
    |
     '(|' {enterMeta();} expr '|)' {exitMeta(); $exp = $expr.exp;}
+   |
+    '(|' {enterMeta();} type '|)' {exitMeta(); $exp = $type.mtp;}
 ;
 
 unquote_expr returns[Unquote unq, SymInfo si]:

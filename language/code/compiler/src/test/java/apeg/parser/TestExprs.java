@@ -842,7 +842,7 @@ public class TestExprs {
 		TContainer<Expr> test = new ExprContainer("MetaRule01", stream);
 		Expr e = test.execute();
 		// Expected Result
-		assertEquals("(metagrammar ([ (metaRule 'foobar' ([ 'int 'map 'string]) ([ 'x' 'm' 'str']))]))", e.toString());
+		assertEquals("(metagrammar ([ (metaRule 'foobar' ([ 'int 'map 'string]) ([ 'x' 'm' 'str']) '(seq '(* '('noterm' ([ 'metafoo 'metabar]))) '{([ 'y 30])}))]))", e.toString());
     }
 
 	@Test
@@ -873,6 +873,26 @@ public class TestExprs {
 		Expr e = test.execute();
 		// Expected Result
 		assertEquals("'(seq (# 'quoteRef) '('foo' ([ (# 'quote) 'bar])))" , e.toString());
+    }
+
+    @Test
+    void testUnquoteType01() throws IOException {
+		CharStream stream = CharStreams.fromReader(new StringReader ("(| float |)"));
+		
+		TContainer<Expr> test = new ExprContainer("UnquoteType", stream);
+		Expr e = test.execute();
+		// Expected Result
+		assertEquals("'float" , e.toString());
+    }
+
+    @Test
+    void testUnquoteType02() throws IOException {
+		CharStream stream = CharStreams.fromReader(new StringReader ("{| #prog[#ty varname]: #foo ; |}"));
+		
+		TContainer<Expr> test = new ExprContainer("UnquoteType", stream);
+		Expr e = test.execute();
+		// Expected Result
+		assertEquals("(metagrammar ([ (metaRule (# 'prog) ([ (# 'ty)]) ([ 'varname']) (# 'foo))]))" , e.toString());
     }
 }
 

@@ -15,7 +15,9 @@ public class VTyMetaExpr extends VType{
         super("metaExpr");
     }
     public boolean match(VType t){
-        if (t == instance || t == TypeError.getInstance()) {
+        if (t == instance ||
+            t == VTyMeta.getInstance() ||
+            t == TypeError.getInstance()) {
             return true;
         }
         else {

@@ -1376,15 +1376,11 @@ public class TypeCheckerVisitor extends Visitor {
     }
 
     public void visit(Unquote n){
-        n.getExpr().accept(this);
-        if(s.peek().match(VTyString.getInstance()) || 
-           s.peek().match(VTyInt.getInstance())    || 
-           s.peek().match(VTyFloat.getInstance())  ||
-           s.peek().match(VTyBool.getInstance())  ||
-           s.peek().match(VTyChar.getInstance())  ||
-           s.peek() instanceof VTyList ||
-           s.peek() instanceof VTyMap){
-           
-        }
+       n.getExpr().accept(this);
+       if(!VTyMeta.getInstance().matchCT(s.peek(),ct )){
+          errorMsg(39, n.getSymInfo(), s.pop());
+          s.push(TypeError.getInstance());
+          return;
+       } 
     }
 }

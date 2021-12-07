@@ -1,24 +1,25 @@
 package apeg.visitor.semantics;
 
-public class VTyMetaType extends VType{
+public class VTyMeta extends VType{
     
       
     
-    private static VTyMetaType instance = new VTyMetaType();
+    private static VTyMeta instance = new VTyMeta();
     
-    public static VTyMetaType getInstance() {
+    public static VTyMeta getInstance() {
         
         return instance;
     }
     
-    private  VTyMetaType(){
-        super("metaType");
+    private  VTyMeta(){
+        super("meta");
     }
     
     public boolean match(VType t){
-        if (t == instance ||
-            t == VTyMeta.getInstance() ||
-            t == TypeError.getInstance()) {
+        if ((t == VTyMetaExpr.getInstance()) ||
+            (t == VTyMetaPeg.getInstance())  ||
+            (t == VTyMetaType.getInstance()) ||
+            (t == TypeError.getInstance()) ) {
             return true;
         }
         else {
@@ -41,7 +42,9 @@ public class VTyMetaType extends VType{
     }
 
     public boolean Unify (VType t) {
-        if(t instanceof VTyMetaType) { return true; }
+        if(t instanceof VTyMetaExpr || 
+           t instanceof VTyMetaPeg  ||
+           t instanceof VTyMetaType) { return true; }
         else {
             if(t instanceof VTyVar) {
                 if(((VTyVar)t).solve() == null) {

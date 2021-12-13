@@ -70,6 +70,7 @@ public class ErrorsMsg {
           msg.put(36,"Meta update construction error");
           msg.put(37,"Meta attribute error");
           msg.put(38,"Meta Maplit construction error");
+          msg.put(39,"Meta construction expected.");
 
     }
 

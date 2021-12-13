@@ -137,15 +137,22 @@ public class Tool {
 				Visitor typechecker = new TypeCheckerVisitor(true);
 
 				g.accept(typechecker);
-
-				if(tool.interpretInput != null){
-                    if(!((TypeCheckerVisitor)typechecker).getError().isEmpty()){
+                if(!((TypeCheckerVisitor)typechecker).getError().isEmpty()){
                         ErrorsMsg errm = ErrorsMsg.getInstance();
                         for(ErrorEntry perr:((TypeCheckerVisitor)typechecker).getError()){
                             System.out.println(errm.translate(perr) );
                         }
                     System.exit(1);
-                    }
+                }
+                
+				if(tool.interpretInput != null){
+//                     if(!((TypeCheckerVisitor)typechecker).getError().isEmpty()){
+//                         ErrorsMsg errm = ErrorsMsg.getInstance();
+//                         for(ErrorEntry perr:((TypeCheckerVisitor)typechecker).getError()){
+//                             System.out.println(errm.translate(perr) );
+//                         }
+//                     System.exit(1);
+//                     }
 					VMVisitor vm = new VMVisitor(tool.interpretInput.toString(),((TypeCheckerVisitor)typechecker).getEnv());
                                         vm.setDebugMode(true);
 					System.out.println("Executing: " + tool.interpretInput);

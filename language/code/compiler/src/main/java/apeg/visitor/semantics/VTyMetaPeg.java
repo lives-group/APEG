@@ -14,7 +14,9 @@ public class VTyMetaPeg extends VType{
         super("metaPeg");
     }
     public boolean match(VType t){
-        if (t == instance || t == TypeError.getInstance()) {
+        if (t == instance ||
+            t == VTyMeta.getInstance() ||
+            t == TypeError.getInstance()) {
             return true;
         }
         else {

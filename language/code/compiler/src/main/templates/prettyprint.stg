@@ -81,6 +81,7 @@ not_expr(expr) ::= "!<expr>"
 or_expr(left_expr, right_expr) ::= "(<left_expr> || <right_expr>)"
 and_expr(left_expr, right_expr) ::= "(<left_expr> && <right_expr>)"
 unquote_expr(expr) ::= "#<expr>"
+quotevalue(expr) ::= "~<expr>"
 
 pair(left_expr, right_expr) ::= << <left_expr> -> <right_expr> >>
 mapLit(pairs) ::= << {: <pairs; separator=", ", wrap> :} >>

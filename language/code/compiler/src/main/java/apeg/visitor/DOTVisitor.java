@@ -1477,8 +1477,11 @@ private STGroup groupTemplate;
 		
 		nodes.add(node);
 		
-		parent = nodeName;
+		String s = nodeName;
+		parent = s;
 		n.getExpr().accept(this);
+		parent = s;
+		n.getAttribute().accept(this);
 	
 	}
 	 
@@ -1975,6 +1978,18 @@ private STGroup groupTemplate;
             nodeName = "unquote" + c_expr++;
             node.add("node", nodeName);
             node.add("lable", groupTemplate.getInstanceOf("unquote_expr_lable"));
+            nodes.add(node);
+
+            parent = nodeName;
+            n.getExpr().accept(this);
+        }
+
+        public void visit(QuoteValue n){
+            ST node = groupTemplate.getInstanceOf("node");
+            node.add("parent", parent);
+            nodeName = "quotevalue" + c_expr++;
+            node.add("node", nodeName);
+            node.add("lable", groupTemplate.getInstanceOf("quotevalue_lable"));
             nodes.add(node);
 
             parent = nodeName;

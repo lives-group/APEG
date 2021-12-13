@@ -1,0 +1,33 @@
+apeg generate_expr_ast;
+
+expr[language g] returns e:
+    term<g, t1> '+' expr<g, e1> {e = (| #t + #e1 |);} /
+    term<g, t2> '-' expr<g, e2> {e = (| #t + #e2 |);} /
+    term<g, t3> {e = t3;}
+;
+
+term[language g] returns t:
+    factor<g, f1> '*' term<g, f2> {t = (| #f1 * #f2 |);} /
+    factor<g, f> {t = f;}
+;
+
+factor[language g] returns ~r:
+    number<g, r> 
+;
+
+number[language g] returns r:
+    digit<g, r> ( digit<g, aux> {r = r * 10 + aux; })*
+;
+  
+digit[language g] returns x1:
+    '0'  { x1 = 0; }
+    / '1'  { x1 = 1; }
+    / '2'  { x1 = 2; }
+    / '3'  { x1 = 3; }
+    / '4'  { x1 = 4; }
+    / '5'  { x1 = 5; }
+    / '6'  { x1 = 6; }
+    / '7'  { x1 = 7; }
+    / '8'  { x1 = 8; }
+    / '9'  { x1 = 9; }
+;

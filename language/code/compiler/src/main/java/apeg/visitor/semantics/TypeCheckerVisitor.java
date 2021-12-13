@@ -1387,4 +1387,7 @@ public class TypeCheckerVisitor extends Visitor {
            
         }
     }
+
+    public void visit(QuoteValue n){
+    }
 }

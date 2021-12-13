@@ -2,8 +2,7 @@ package apeg.visitor;
 import java.util.*;
 import apeg.ast.*;
 import apeg.ast.expr.*;
-import apeg.ast.expr.operators.*;
-import apeg.ast.rules.*;
+import apeg.ast.expr.operators.*; import apeg.ast.rules.*;
 import apeg.ast.types.*;
 import apeg.util.*;
 import apeg.vm.*;
@@ -1183,5 +1182,7 @@ public class VMVisitor extends Visitor{
         }
 
         public void visit(Unquote n){
+        }
+        public void visit(QuoteValue n){
         }
 }

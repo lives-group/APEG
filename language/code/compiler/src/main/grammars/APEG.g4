@@ -588,11 +588,13 @@ term returns[Expr exp]:
 
 
 factor returns[Expr exp]: 
-    unquote_expr { $exp = $unquote_expr.unq; }
+   unquote_expr {$exp = $unquote_expr.unq;}
   |
-   OP_SUB primary { $exp = factory.newUMinusExpr(new SymInfo($OP_SUB.line, $OP_SUB.pos), $primary.exp); }
+   OP_SUB primary {$exp = factory.newUMinusExpr(new SymInfo($OP_SUB.line, $OP_SUB.pos), $primary.exp);}
   |
    t='!' f=primary {$exp = factory.newNotExpr(new SymInfo($t.line, $t.pos), $f.exp);}
+  |
+   t='~' f=primary {$exp = factory.newQuoteValue(new SymInfo($t.line, $t.pos), $f.exp);}
   |
    primary {$exp = $primary.exp;}
  ;
@@ -624,6 +626,12 @@ primary returns[Expr exp]:
    f=primary t='[' e=expr ']' {$exp = factory.newMapAcces(new SymInfo($t.line, $t.pos), $f.exp, $e.exp);}
   |
    f=primary t='[' m=mapPair ']' {$exp = factory.newMapExtension(new SymInfo($t.line, $t.pos), $f.exp, $m.p.getFirst(), $m.p.getSecond());}
+  |
+   t='`' f=primary '`' {$exp = factoryMeta.newMetaLitPEG(new SymInfo($t.line, $t.pos), $f.exp);}
+  |
+   t='<' e1=expr ',' actPars '>' {$exp = factoryMeta.newMetaNonterminalPEG(new SymInfo($t.line, $t.pos), $e1.exp, factory.newListExpr(new SymInfo($t.line, $t.pos), new ArrayList($actPars.list)));}
+  |
+   '$' // TODO: Create empty grammar node
 ;
 
 listLit returns[Expr exp]:

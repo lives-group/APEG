@@ -894,5 +894,16 @@ public class TestExprs {
 		// Expected Result
 		assertEquals("(metagrammar ([ (metaRule (# 'prog) ([ (# 'ty)]) ([ 'varname']) (# 'foo))]))" , e.toString());
     }
+
+    @Test
+    void testQuoteValue01() throws IOException {
+		CharStream stream = CharStreams.fromReader(new StringReader ("~1"));
+		
+		TContainer<Expr> test = new ExprContainer("QuoteValue01", stream);
+		Expr e = test.execute();
+		// Expected Result
+		assertEquals("(~ 1)" , e.toString());
+    }
+
 }
 

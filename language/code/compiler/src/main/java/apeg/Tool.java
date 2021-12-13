@@ -129,9 +129,9 @@ public class Tool {
 
                                 // g.accept(prettyprint);
 
-                                 // Visitor dotvisitor = new DOTVisitor(new RelativePath(tool.outputPath, fName + ".dot"),
-				 //                                   new RelativePath(new AbsolutePath("."),
-				 //       		            "src/main/templates/dot.stg"));
+                                // Visitor dotvisitor = new DOTVisitor(new RelativePath(tool.outputPath, fName + ".dot"),
+				//                                   new RelativePath(new AbsolutePath("."),
+				//       		            "src/main/templates/dot.stg"));
 				// g.accept(dotvisitor);
 
 				Visitor typechecker = new TypeCheckerVisitor(true);

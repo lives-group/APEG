@@ -1509,4 +1509,12 @@ public class PrettyPrint extends Visitor{
             r.add("expr", expr);
             expr = r;
         }
+
+        public void visit(QuoteValue n){
+            ST r = groupTemplate.getInstanceOf("quotevalue");
+
+            n.getExpr().accept(this);
+            r.add("expr", expr);
+            expr = r;
+        }
 }

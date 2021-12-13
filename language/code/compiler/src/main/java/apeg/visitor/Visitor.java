@@ -79,6 +79,7 @@ public abstract class Visitor {
     public abstract void visit(Sub n);
     public abstract void visit(UMinus n);
     public abstract void visit(Unquote n);
+    public abstract void visit(QuoteValue n);
 
     // Meta operators
     public abstract void visit(MetaAdd n);

@@ -389,4 +389,5 @@ public void visit(TyMetaTy n){}
 
  public void visit(MetaGrammar n){}
  public void visit(Unquote n){}
+ public void visit(QuoteValue n){}
 }

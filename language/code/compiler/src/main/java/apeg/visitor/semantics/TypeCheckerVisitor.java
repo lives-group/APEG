@@ -402,6 +402,7 @@ public class TypeCheckerVisitor extends Visitor {
                if( !s.peek().matchCT(tyarg,ct) ){
                     errorMsg(27,n.getSymInfo(),"Meta nonterminal call", s.peek());
                     s.pop();
+                    s.push(TypeError.getInstance());
                     return;
                }
                s.pop();
@@ -1385,5 +1386,12 @@ public class TypeCheckerVisitor extends Visitor {
     }
 
     public void visit(QuoteValue n){
+        n.getExpr().accept(this);
+
+        if(s.peek() != TypeError.getInstance()){
+          s.pop();
+          s.push(VTyMetaExpr.getInstance());
+          return;
+        }
     }
 }

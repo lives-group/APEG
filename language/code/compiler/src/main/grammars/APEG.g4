@@ -626,10 +626,10 @@ primary returns[Expr exp]:
    f=primary t='[' e=expr ']' {$exp = factory.newMapAcces(new SymInfo($t.line, $t.pos), $f.exp, $e.exp);}
   |
    f=primary t='[' m=mapPair ']' {$exp = factory.newMapExtension(new SymInfo($t.line, $t.pos), $f.exp, $m.p.getFirst(), $m.p.getSecond());}
-  |
+  | 
    t='`' f=primary '`' {$exp = factoryMeta.newMetaLitPEG(new SymInfo($t.line, $t.pos), $f.exp);}
   |
-   t='<' e1=expr ',' actPars '>' {$exp = factoryMeta.newMetaNonterminalPEG(new SymInfo($t.line, $t.pos), $e1.exp, factory.newListExpr(new SymInfo($t.line, $t.pos), new ArrayList($actPars.list)));}
+   t='<' e1=expr ',' e2=expr '>' {$exp = factoryMeta.newMetaNonterminalPEG(new SymInfo($t.line, $t.pos), $e1.exp, $e2.exp);}
   |
    '$' // TODO: Create empty grammar node
 ;

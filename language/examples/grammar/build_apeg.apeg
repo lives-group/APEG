@@ -1,5 +1,6 @@
 apeg build_apeg;
 
+/*
 -- { '0' / '1' } 1
 prog[language g]: '{' newPEG<g, peg> '}' userInput<g>
 ;
@@ -23,9 +24,10 @@ pterm[language g] returns p:
 pfactor[language g] returns p:
     ntCall<g, p> / literal<g, p>
 ;
+*/
 
 ntCall[language g] returns <n, args>:
-    n=id '<' expr<g, e> {args = [e];} (',' expr<g, e> {args = args ++ e;})* '>'
+    n=(a..z)+ '<' expr<g, e> {args = [e];} (',' expr<g, e> {args = args ++ [e];})* '>'
 ;
 
 literalPEG[language g] returns `s`:
@@ -46,6 +48,13 @@ term[language g] returns t:
     factor<g, f1> '*' term<g, f2> {t = (| #f1 * #f2 |);} /
     factor<g, f> {t = f;}
 ;
+-- ~(1 + 2) -> MetaIntLit (3)
+-- (| 1 + 2 |) -> MetaAdd (+ (1 2))
+-- x = ~1
+-- x = (| 1 |)
+-- y = (| #x |)
+-- (| #x |) -> (MetaInt x)
+-- (| x |) -> (MetaAttribute x)
 
 factor[language g] returns ~r:
     number<g, r> 

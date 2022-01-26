@@ -35,7 +35,7 @@ public class VTyMeta extends VType{
     public boolean matchCT(VType t, CTM ct) {
         
         if(t instanceof VTyVar) {
-            ct.addConstraint(new VarConstraint((VTyVar)t, this));
+            ct.addConstraint(new SetConstraint((VTyVar)t, new VType[]{VTyMetaExpr.getInstance(), VTyMetaPeg.getInstance(), VTyMetaType.getInstance()} ));
             return true;
         }
         return match(t);

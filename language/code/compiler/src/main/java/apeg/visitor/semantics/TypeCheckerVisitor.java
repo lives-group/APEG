@@ -1355,7 +1355,7 @@ public class TypeCheckerVisitor extends Visitor {
         // System.out.println(global.toString());
         if(debug){ System.out.println(ct.toString());}
         error.addAll(ct.resolveUnify(opTable));
-        global.replace((k,v) -> {v.simplify(); return v;} );
+        //global.replace((k,v) -> {v.simplify(); return v;} );
         if(debug){
            System.out.println(global.pprint());
            System.out.println(ct.toString());
@@ -1387,7 +1387,6 @@ public class TypeCheckerVisitor extends Visitor {
 
     public void visit(QuoteValue n){
         n.getExpr().accept(this);
-
         if(s.peek() != TypeError.getInstance()){
           s.pop();
           s.push(VTyMetaExpr.getInstance());

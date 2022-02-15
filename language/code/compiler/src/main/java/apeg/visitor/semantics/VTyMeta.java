@@ -35,7 +35,8 @@ public class VTyMeta extends VType{
     public boolean matchCT(VType t, CTM ct) {
         
         if(t instanceof VTyVar) {
-            ct.addConstraint(new SetConstraint((VTyVar)t, new VType[]{VTyMetaExpr.getInstance(), VTyMetaPeg.getInstance(), VTyMetaType.getInstance()} ));
+            // ct.addConstraint(new VarConstraint((VTyVar)t, this));
+
             return true;
         }
         return match(t);
@@ -45,6 +46,9 @@ public class VTyMeta extends VType{
         if(t instanceof VTyMetaExpr || 
            t instanceof VTyMetaPeg  ||
            t instanceof VTyMetaType) { return true; }
+
+        return false;
+        /*
         else {
             if(t instanceof VTyVar) {
                 if(((VTyVar)t).solve() == null) {
@@ -55,6 +59,7 @@ public class VTyMeta extends VType{
             }
             else {return false;}
         }
+        */
     }
 
     public VType simplify(){

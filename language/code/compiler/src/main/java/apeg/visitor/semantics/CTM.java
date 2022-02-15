@@ -84,7 +84,7 @@ public class CTM {
 			                    mct = s.getVarName().match(vty);
                                 k++;
 			               }
-                           error.add(new ErrorEntry(40, null, s.getVarName().getName() ,s.getSet() ));
+                           if(!mct){error.add(new ErrorEntry(40, null, s.getVarName().getName() ,s.getSet() ));}
 			            }
 			        }else{ ct.add(c);  }
 			   }

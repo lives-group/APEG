@@ -552,25 +552,35 @@ public class TypeCheckerVisitor extends Visitor {
     }
 
     @Override
+    
     public void visit(Compose n) {
         n.getLeft().accept(this);
-        VType left = s.pop();
+        VType left = s.peek();
         n.getRight().accept(this);
-        VType right = s.pop();
-        if(left.matchCT(VTyLang.getInstance(), ct) && 
-          (right.matchCT(VTyLang.getInstance(), ct) || right.matchCT(VTyGrammar.getInstance(), ct))) {
-          s.push(VTyLang.getInstance());
-          return;
-        }else if(right.matchCT(VTyGrammar.getInstance(), ct) || right.matchCT(VTyGrammar.getInstance(), ct)) {
-          s.push(VTyLang.getInstance());
-          return;
+        VType right = s.peek();
+        if(!matchBinOp("<<", left, right)) {
+            errorMsg(18,n.getSymInfo(),"<<",left,right);
         }
-        else {
-                errorMsg(18,n.getSymInfo(),"<<",left,right);
-                s.push(TypeError.getInstance());
-                return;
-        }
-    }
+    }    
+//     public void visit(Compose n) {
+//         n.getLeft().accept(this);
+//         VType left = s.pop();
+//         n.getRight().accept(this);
+//         VType right = s.pop();
+//         if(left.matchCT(VTyLang.getInstance(), ct) && 
+//           (right.matchCT(VTyLang.getInstance(), ct) || right.matchCT(VTyGrammar.getInstance(), ct))) {
+//           s.push(VTyLang.getInstance());
+//           return;
+//         }else if(right.matchCT(VTyGrammar.getInstance(), ct) || right.matchCT(VTyGrammar.getInstance(), ct)) {
+//           s.push(VTyLang.getInstance());
+//           return;
+//         }
+//         else {
+//                 errorMsg(18,n.getSymInfo(),"<<",left,right);
+//                 s.push(TypeError.getInstance());
+//                 return;
+//         }
+//     }
 
     @Override
     public void visit(Concat n) {

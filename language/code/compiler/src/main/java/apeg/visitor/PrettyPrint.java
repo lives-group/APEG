@@ -1463,9 +1463,9 @@ public class PrettyPrint extends Visitor{
 	
 	public void render() {
 		//rendering template
-		
 		System.out.println(template.render());
 	}
+	
 	public void visit(TyList n){
                 ST type_aux = groupTemplate.getInstanceOf("list_type");
                 n.getTyParameter().accept(this);

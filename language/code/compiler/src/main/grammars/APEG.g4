@@ -729,7 +729,7 @@ meta returns[Expr exp]:
 ;
 
 unquote_expr returns[Unquote unq, SymInfo si]:
-    {metaLevel}? t='#' primary {$unq = factory.newUnquoteExpr(new SymInfo($t.line, $t.pos), $primary.exp); $si = new SymInfo($t.line, $t.pos); }
+    {metaLevel}? t='#' {exitMeta();} primary {enterMeta();} {$unq = factory.newUnquoteExpr(new SymInfo($t.line, $t.pos), $primary.exp); $si = new SymInfo($t.line, $t.pos); }
 ;
 
 

@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>br.ufjf.dcc.apeg</groupId>
   <artifactId>apeg</artifactId>
@@ -17,14 +17,17 @@
     <grammar>grammar01.apeg</grammar>
     <inputSamples>../../examples/inputs</inputSamples>
     <input>input01.txt</input>
+
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>${maven.compiler.source}</maven.compiler.target>
+    <jqwik.version>1.6.3</jqwik.version>
+    <assertj.version>3.22.0</assertj.version>
   </properties>
 
+
   <dependencies>
-    <dependency>
-    <groupId>org.junit.jupiter</groupId>
-    <artifactId>junit-jupiter-engine</artifactId>
-    <version>5.5.2</version>
-      </dependency>
+
     <dependency>
       <groupId>org.antlr</groupId>
       <artifactId>antlr4</artifactId>
@@ -47,6 +50,31 @@
       <artifactId>commons-cli</artifactId>
       <version>1.2</version>
     </dependency>
+
+
+
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <version>5.6.2</version>
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>net.jqwik</groupId>
+      <artifactId>jqwik</artifactId>
+      <version>${jqwik.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <version>${assertj.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+
+
   </dependencies>
 
   <build>
@@ -55,7 +83,7 @@
     <directory>bin</directory>
 
     <plugins>
-    
+
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.1</version>
@@ -64,88 +92,98 @@
           <target>1.8</target>
         </configuration>
       </plugin>
-     <plugin>
-       <groupId>org.apache.maven.plugins</groupId>
-       <artifactId>maven-surefire-plugin</artifactId>
-       <version>2.22.0</version>
-     </plugin>
-     <plugin>
+
+      <plugin>
        <groupId>org.apache.maven.plugins</groupId>
        <artifactId>maven-failsafe-plugin</artifactId>
        <version>2.22.0</version>
      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <version>3.0.0</version>
-        <executions>
-          <execution>
-            <id>add-source</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>add-source</goal>
-            </goals>
-            <configuration>
-              <sources>
-                <source>src/main/generated/antlr</source>
-              </sources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
+     <plugin>
+      <groupId>org.codehaus.mojo</groupId>
+      <artifactId>build-helper-maven-plugin</artifactId>
+      <version>3.0.0</version>
+      <executions>
+        <execution>
+          <id>add-source</id>
+          <phase>generate-sources</phase>
+          <goals>
+            <goal>add-source</goal>
+          </goals>
+          <configuration>
+            <sources>
+              <source>src/main/generated/antlr</source>
+            </sources>
+          </configuration>
+        </execution>
+      </executions>
+    </plugin>
 
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <version>1.6.0</version>
-            <executions>
-                <execution>
-                    <id>inter</id>
-                    <configuration>
-                        <mainClass>apeg.Tool</mainClass>
-                        <arguments>
-                            <argument>${grammarSamples}/${grammar}</argument>
-                            <argument>-i</argument>
-                            <argument>${inputSamples}/${input}</argument>
-                        </arguments>
-                    </configuration>
-                </execution>
-                <execution>
-                    <id>gen</id>
-                    <configuration>
-                        <mainClass>apeg.Tool</mainClass>
-                        <arguments>
+    <plugin>
+      <groupId>org.codehaus.mojo</groupId>
+      <artifactId>exec-maven-plugin</artifactId>
+      <version>1.6.0</version>
+      <executions>
+        <execution>
+          <id>inter</id>
+          <configuration>
+            <mainClass>apeg.Tool</mainClass>
+            <arguments>
+              <argument>${grammarSamples}/${grammar}</argument>
+              <argument>-i</argument>
+              <argument>${inputSamples}/${input}</argument>
+            </arguments>
+          </configuration>
+        </execution>
+        <execution>
+          <id>gen</id>
+          <configuration>
+            <mainClass>apeg.Tool</mainClass>
+            <arguments>
                              <!--  automatically creates the classpath using all project dependencies,
                                    also adding the project build directory **>
                                    <argument>-classpath</argument> -->
-                             <argument>${grammarSamples}/${grammar}</argument>
-                        </arguments>
-                    </configuration>
-                </execution>
-         </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.antlr</groupId>
-        <artifactId>antlr4-maven-plugin</artifactId>
-        <version>${antlr.version}</version>
-        <executions>
-          <execution>
-            <configuration>
+                                   <argument>${grammarSamples}/${grammar}</argument>
+                                 </arguments>
+                               </configuration>
+                             </execution>
+                           </executions>
+                         </plugin>
+                         <plugin>
+                          <groupId>org.antlr</groupId>
+                          <artifactId>antlr4-maven-plugin</artifactId>
+                          <version>${antlr.version}</version>
+                          <executions>
+                            <execution>
+                              <configuration>
              <!--
             <argument>-package</argument>
             <argument>apeg.parse</argument>
-            -->
-              <sourceDirectory>src/main/grammars</sourceDirectory>
-              <outputDirectory>src/main/generated/antlr/apeg/parse</outputDirectory>
-              <listener>false</listener>
-            </configuration>
-            <id>antlr</id>
-            <goals>
-              <goal>antlr4</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
+          -->
+          <sourceDirectory>src/main/grammars</sourceDirectory>
+          <outputDirectory>src/main/generated/antlr/apeg/parse</outputDirectory>
+          <listener>false</listener>
+        </configuration>
+        <id>antlr</id>
+        <goals>
+          <goal>antlr4</goal>
+        </goals>
+      </execution>
+    </executions>
+  </plugin>
+
+
+  <plugin>
+    <artifactId>maven-surefire-plugin</artifactId>
+    <version>2.22.2</version>
+    <configuration>
+      <includes>
+        <!--coolocar o nome das classes com geraçao nestes includes-->
+        <include>**/*PEGGenerator.java</include>
+        <!--________________________________________________________-->
+      </includes>
+    </configuration>
+  </plugin>
+
+</plugins>
+</build>
 </project>

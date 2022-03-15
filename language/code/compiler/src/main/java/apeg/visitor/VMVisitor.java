@@ -85,7 +85,7 @@ public class VMVisitor extends Visitor{
 		stk.push(new Pair(VTyInt.getInstance(),n.getValue()));
 	}
 
-	@Override
+        @Override
 	public void visit(MapLit n) {
 		Hashtable<String,Object>  map = new Hashtable<String,Object>();
 		n.getAssocs()[0].getSecond().accept(this);
@@ -477,6 +477,7 @@ public class VMVisitor extends Visitor{
 		            throw new RuntimeException("Composition error at " + n.getSymInfo().toString()); 
                         }
 
+                        // TODO: Implement stack type environment fusion
                         stk.push(new Pair<VType,Object>(VTyLang.getInstance(), new Pair<Grammar, Environment<String, NTInfo>>(gext, tychk.getEnv())));
 		    }
                     else{
@@ -1018,6 +1019,9 @@ public class VMVisitor extends Visitor{
 		NTInfo local = env.get(n.getName());
 		List<Expr> l = n.getArgs();
 		RulePEG rule = null;
+                System.out.println("_---------------------------");
+                System.out.println("-> " + n.getName());
+                System.out.println("-> " + local);
 		if( local.getSig().getNumInherited() > 0){ 
 		    l.get(0).accept(this);
 		    if(stk.peek().getFirst().match(VTyLang.getInstance())){
@@ -1182,7 +1186,51 @@ public class VMVisitor extends Visitor{
         }
 
         public void visit(Unquote n){
+            n.getExpr().accept(this);
         }
+
+        private void createValue(SymInfo n, VType ty, Object value){
+            if(ty instanceof VTyInt)
+                stk.push(new Pair(VTyMetaExpr.getInstance(), new IntLit(n, (Integer) value)));
+            if(ty instanceof VTyFloat)
+                stk.push(new Pair(VTyMetaExpr.getInstance(), new FloatLit(n, (Float) value)));
+            if(ty instanceof VTyBool)
+                stk.push(new Pair(VTyMetaExpr.getInstance(), new BoolLit(n, (Boolean) value)));
+            if(ty instanceof VTyString)
+                stk.push(new Pair(VTyMetaExpr.getInstance(), new StrLit(n, (String) value)));
+            else if(ty instanceof VTyList){
+                VTyList vty = (VTyList) ty;
+                ArrayList<Expr> list = new ArrayList<Expr>();
+
+                for(Object v : (ArrayList) value){
+                    createValue(n, vty.getTyParameter(), v);
+                    list.add((Expr) stk.pop().getSecond());
+                }
+
+                stk.push(new Pair(VTyMetaExpr.getInstance(), new ListLit(n, list)));
+            }
+            else if(ty instanceof VTyMap){
+                VTyMap vty = (VTyMap) ty;
+                Hashtable<String, Object> map = (Hashtable) value;
+                ArrayList<Pair<Expr, Expr>> pairs = new ArrayList<Pair<Expr, Expr>>();
+
+                for(String key : map.keySet()){
+                    StrLit litKey = new StrLit(n, key);
+                    createValue(n, vty.getTyParameter(), map.get(key));
+                    pairs.add(new Pair(litKey, stk.pop().getSecond()));
+                }
+
+                // Converting ArrayList to Java Static Array
+                Pair<Expr, Expr>[] arrPairs = new Pair[map.size()];
+                stk.push(new Pair(VTyMetaExpr.getInstance(), new MapLit(n, pairs.toArray(arrPairs))));
+            }
+        }
+
         public void visit(QuoteValue n){
+            n.getExpr().accept(this);
+            VType ty = stk.peek().getFirst();
+            Object value = stk.pop().getSecond();
+
+            createValue(n.getSymInfo(), ty, value);
         }
 }

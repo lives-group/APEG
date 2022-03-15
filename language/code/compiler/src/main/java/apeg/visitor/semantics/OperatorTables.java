@@ -17,6 +17,7 @@ public class OperatorTables {
 		 ArrayList<NTType> t = new ArrayList<NTType>();
 		 t.add(new NTType(new VType[]{VTyInt.getInstance(),VTyInt.getInstance()},new VType[]{VTyInt.getInstance()}));
 		 t.add(new NTType(new VType[]{VTyFloat.getInstance(),VTyFloat.getInstance()},new VType[]{VTyFloat.getInstance()}));
+		 t.add(new NTType(new VType[]{VTyString.getInstance(),VTyString.getInstance()},new VType[]{VTyString.getInstance()}));
 		 return t;
 	}
 	
@@ -46,6 +47,15 @@ public class OperatorTables {
 		 t.add(new NTType(new VType[]{VTyBool.getInstance()},new VType[]{VTyBool.getInstance()}));
 		 return t;
 	}
+
+	private static ArrayList<NTType> mkCompose(){
+		 ArrayList<NTType> t = new ArrayList<NTType>();
+		 t.add(new NTType(new VType[]{VTyLang.getInstance(), VTyLang.getInstance()},new VType[]{VTyLang.getInstance()}));
+		 t.add(new NTType(new VType[]{VTyLang.getInstance(), VTyGrammar.getInstance()},new VType[]{VTyLang.getInstance()}));
+		 t.add(new NTType(new VType[]{VTyGrammar.getInstance(), VTyLang.getInstance()},new VType[]{VTyLang.getInstance()}));
+		 t.add(new NTType(new VType[]{VTyGrammar.getInstance(), VTyGrammar.getInstance()},new VType[]{VTyGrammar.getInstance()}));
+		 return t;
+	}
 	
 	public static Environment<String,ArrayList<NTType>> mkArithmeticEnv(){
 		 Environment<String,ArrayList<NTType>> env = new Environment<String,ArrayList<NTType>>();
@@ -54,6 +64,7 @@ public class OperatorTables {
 		 ArrayList<NTType> tr = mkRelationalTable();
 		 ArrayList<NTType> tm = mkMinus();
 		 ArrayList<NTType> tn = mkNot();
+                 ArrayList<NTType> tc = mkCompose();
 		 
 		 
 		 env.add("ADD", t);
@@ -79,6 +90,8 @@ public class OperatorTables {
 		 env.add("MINUS",tm);
 		 
 		 env.add("NOT",tn);
+
+                 env.add("<<", tc);
 		 
 		 return env;
 	}

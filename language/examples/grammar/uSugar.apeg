@@ -38,45 +38,54 @@ n[{int} m] :
 -- expr  (| e |)
 -- type
 
-prog[language g] : newSyn<g, {: :}, s>* extStmt<g,s>+;
-
-newSyn[language g, {grammar} s] returns s[n -> rs]:
-    'define' n=id '{' {rs = $;} (rule<g,  r> {rs = rs << r;} )+ '}'
+prog[language g]: { s = {: 'empty' -> {| empty[language g]: {? false } ; |} :}; } newSyn<g, {: 'empty' -> {| empty[language g]: {? false } ;|} :}, s>* extStmt<g, s>+
 ;
 
-rule[language g] returns {| #nt [language g ] :  #p |}:
-   nt=id  '->' pattern<g, p> ';'
+newSyn[language g, {grammar} s] returns s[n -> rs]:
+    'define' n=(a..z)+ '{' {rs = $;} (rule<g,  r> {rs = rs << r;} )+ '}'
+;
+
+rule[language g] returns {| #nt [language g] :  #p ; |}:
+   nt=(a..z)+  '->' pattern<g, p> ';'
 ;
 
 pattern[language g] returns p:
-  pseq<g,p> ('/' pseq<g, p1> {p = <| #p /  #p1 |>;} )*
+  pseq<g,p> ('/' pseq<g, p1> {p = {| #p /  #p1 |};} )*
 ;
 
 pseq[language g] returns p:
- prefix<g, p> (prefix<g, p1> {p = <| #p #p1 |>;)*
+ prefix<g, p> (prefix<g, p1> {p = {| #p #p1 |};})*
 ;
 
 prefix[language g] returns p:
- '!' pterm<g,p> {p = <| ! #p |>;} / pterm<g,p>
+ '!' pterm<g,p> {p = {| ! #p |};} / pterm<g,p>
 ;
 
 pterm[language g] returns p:
- pfactor<g,p> '*' {p = <| #p* |>;} / pfactor<g,p>
+ pfactor<g,p> '*' {p = {| #p* |};} / pfactor<g,p>
 ;
 
 pfactor[language g] returns p:
- '(' pattern<g,p> ')' / ntCall<g,p> / p=literal
+ '(' pattern<g,p> ')' / ntCall<g,p> / lit_peg=(a..z)+ {p = `lit_peg`;}
 ;
 
 extStmt[language g, {grammar} s]:
- extBlock<g, s> / stmt<g>
+ extBlock<g, s>
+ -- / stmt<g>
 ;
 
 extBlock[language g, {grammar} s]:
- 'syntax' n=id {g1 = g << s[n];} (',' n=id {g1 = g1 << s[n];})* block<g1>+
+ 'syntax' n=(a..z)+ {g1 = g << s[n];} (',' n=(a..z)+ {g1 = g1 << s[n];})* '{' block<g1>+ '}'
 ;
 
-ntCall[language g] returns p:
- n=id '<' expr<g, e> {args = [e];} (',' expr<g,e> {args = args ++ [e];})*  '>'
- {p = <|  #n<#args>  |>;
-};
+ntCall[language g] returns r:
+ n=(a..z)+ '<' expression<g, e> {args = [e];} (',' expression<g,e> {args = args ++ [e];})*  '>' {r = <n, args>;}
+;
+
+-- Only for testing purposes
+expression[language g] returns e:
+    {? true } {e = (| 10 + 20 |);}
+;
+
+block[language g]: {? true }
+;

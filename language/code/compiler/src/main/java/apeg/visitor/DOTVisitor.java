@@ -1827,28 +1827,30 @@ private STGroup groupTemplate;
 	@Override
 	public void visit(TyLang n) {
 		// TODO Auto-generated method stub
+		
+		this.type = groupTemplate.getInstanceOf("lang_type");
 	}
 
 	@Override
 	public void visit(TyMap n) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void visit(TyMeta n) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void visit(TyMetaExpr n) {
 		// TODO Auto-generated method stub
+		this.type = groupTemplate.getInstanceOf("meta_expr");
 	}
 
 	@Override
 	public void visit(TyMetaPeg n) {
 		// TODO Auto-generated method stub
+		this.type = groupTemplate.getInstanceOf("meta_peg");
 
 	}
 
@@ -1860,7 +1862,9 @@ private STGroup groupTemplate;
 		
 	}
 	
-	public void visit(TyMetaTy n){}
+	public void visit(TyMetaTy n){
+		this.type = groupTemplate.getInstanceOf("meta_ty");
+        }
 
 	@Override
 	public void visit(Grammar n) {
@@ -1924,7 +1928,8 @@ private STGroup groupTemplate;
 		}
 	}
 
-	public void visit(TyList n){}
+	public void visit(TyList n){
+        }
 
 	public void visit(ListAcces n){
 

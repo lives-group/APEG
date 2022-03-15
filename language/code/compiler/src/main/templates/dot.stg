@@ -61,8 +61,12 @@ string_type() ::= "string"
 boolean_type() ::= "boolean"
 grammar_type() ::= "grammar"
 char_type() ::= "char"
-map_type() ::= "map"
-list_type() ::= "list"
+lang_type() ::= "lang"
+map_type(t) ::= "map"
+list_type(t) ::= "list"
+meta_ty() ::= "type"
+meta_peg() ::= "peg"
+meta_expr() ::= "expr"
 
 
 /** Template for parsing expression */

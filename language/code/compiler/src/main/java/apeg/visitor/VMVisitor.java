@@ -1021,6 +1021,7 @@ public class VMVisitor extends Visitor{
 		// Avaliar (ou visitar) os argumentos herdados e por na pilha.
 		List<Expr> l = n.getArgs();
 		NTInfo local = env.get(n.getName());
+		Environment<String, NTInfo> bkp, newEnv = null;
 		RulePEG rule = null;
                 System.out.println("_---------------------------");
                 System.out.println("-> " + n.getName());
@@ -1033,14 +1034,15 @@ public class VMVisitor extends Visitor{
 		        }else{
 		            throw new RuntimeException(n.getSymInfo() + " Calling an abscented dynamic composed rule " + n.getName() + ", no language parameter  supplied ");
 			    }
-			}
-			throw new RuntimeException(n.getSymInfo() + " Calling an abscented dynamic composed rule " + n.getName() + ", no language parameter  supplied ");
-		    
+			}else{
+			    throw new RuntimeException(n.getSymInfo() + " Calling an abscented dynamic composed rule " + n.getName() + ", no arguments supplied. ");
+		    }
 		}
 		if( local.getSig().getNumInherited() > 0){ 
 		    l.get(0).accept(this);
 		    if(stk.peek().getFirst().match(VTyLang.getInstance())){
 		         Grammar r = ((Pair<Grammar, Environment<String, NTInfo>>)stk.peek().getSecond()).getFirst();
+		         newEnv  =  ((Pair<Grammar, Environment<String, NTInfo>>)stk.peek().getSecond()).getSecond();
 		         for(RulePEG rp : r.getRules()){
 		              if( rp.getRuleName().equals(n.getName()) ){
 		                   rule = rp;
@@ -1058,8 +1060,16 @@ public class VMVisitor extends Visitor{
 		if(rule==null){
 			throw new RuntimeException("Rule "+n.getName()+" not found");
 		}
-		rule.accept(this);
-		//os ultimos serao os primeiros
+		if(newEnv == null){
+		   rule.accept(this);
+		}
+		else{
+		    bkp = env;
+		    env = newEnv;
+		    rule.accept(this);
+		    env = bkp;
+		}
+				//os ultimos serao os primeiros
 		if(vm.succeed()){
 			for (int i = local.getSig().getNumSintetized()+local.getSig().getNumInherited();i>local.getSig().getNumInherited();i--) {
 				vm.setValue(((Attribute)l.get(i-1)).getName(),stk.pop().getSecond());

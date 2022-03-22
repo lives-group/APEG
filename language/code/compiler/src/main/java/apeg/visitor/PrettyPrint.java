@@ -1392,13 +1392,13 @@ public class PrettyPrint extends Visitor{
 	@Override
 	public void visit(TyMetaExpr n) {
 		// TODO Auto-generated method stub
-		
+		this.type = groupTemplate.getInstanceOf("meta_expr");
 	}
 
 	@Override
 	public void visit(TyMetaPeg n) {
 		// TODO Auto-generated method stub
-		
+		this.type = groupTemplate.getInstanceOf("meta_peg");
 	}
 
 	@Override
@@ -1408,7 +1408,9 @@ public class PrettyPrint extends Visitor{
 		this.type = groupTemplate.getInstanceOf("string_type");
 	}
 	
-	public void visit(TyMetaTy n){}
+	public void visit(TyMetaTy n){
+		this.type = groupTemplate.getInstanceOf("meta_ty");
+        }
 
 	@Override
 	public void visit(Grammar n) {

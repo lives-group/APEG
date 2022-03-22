@@ -1,0 +1,18 @@
+apeg I;
+
+prog[language g]:
+    (is<g, r> ',' {g = g << {| syntax[language g]: #r ; |};})+ '"' syntax<g>+ '"'
+;
+
+is[language g] returns `r`:
+    {i=0;} ('I' {i = i + 1;})+ ' ' letter=(A..Z) concatenate<g, 0, i, letter, '', r>
+;
+
+concatenate[language g, int i, int lim, string letter, string res] returns s:
+    {? i < lim } {i = i + 1; res = res + letter;} concatenate<g, i, lim, letter, res, s>
+    / {s = res;}
+;
+
+syntax[language g]:
+    '.'
+;

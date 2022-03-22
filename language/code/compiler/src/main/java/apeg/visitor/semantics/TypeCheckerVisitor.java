@@ -561,26 +561,7 @@ public class TypeCheckerVisitor extends Visitor {
         if(!matchBinOp("<<", left, right)) {
             errorMsg(18,n.getSymInfo(),"<<",left,right);
         }
-    }    
-//     public void visit(Compose n) {
-//         n.getLeft().accept(this);
-//         VType left = s.pop();
-//         n.getRight().accept(this);
-//         VType right = s.pop();
-//         if(left.matchCT(VTyLang.getInstance(), ct) && 
-//           (right.matchCT(VTyLang.getInstance(), ct) || right.matchCT(VTyGrammar.getInstance(), ct))) {
-//           s.push(VTyLang.getInstance());
-//           return;
-//         }else if(right.matchCT(VTyGrammar.getInstance(), ct) || right.matchCT(VTyGrammar.getInstance(), ct)) {
-//           s.push(VTyLang.getInstance());
-//           return;
-//         }
-//         else {
-//                 errorMsg(18,n.getSymInfo(),"<<",left,right);
-//                 s.push(TypeError.getInstance());
-//                 return;
-//         }
-//     }
+    } 
 
     @Override
     public void visit(Concat n) {
@@ -1317,21 +1298,20 @@ public class TypeCheckerVisitor extends Visitor {
 
     @Override
     public void visit(TyMeta n) {
-        // TODO Auto-generated method stub
     }
 
     @Override
     public void visit(TyMetaExpr n) {
-        // TODO Auto-generated method stub
+        s.push(VTyMetaExpr.getInstance());
     }
 
     @Override
     public void visit(TyMetaPeg n) {
-        // TODO Auto-generated method stub
+        s.push(VTyMetaPeg.getInstance());
     }
     
     public void visit(TyMetaTy n){
-        // TODO Auto-generated method stub
+        s.push(VTyMetaType.getInstance());
     }
 
     @Override
@@ -1365,7 +1345,7 @@ public class TypeCheckerVisitor extends Visitor {
         // System.out.println(global.toString());
         if(debug){ System.out.println(ct.toString());}
         error.addAll(ct.resolveUnify(opTable));
-        // global.replace((k,v) -> {v.simplify(); return v;} );
+        global.replace((k,v) -> {v.simplify(); return v;} );
         if(debug){
            System.out.println(global.pprint());
            System.out.println(ct.toString());
@@ -1388,11 +1368,13 @@ public class TypeCheckerVisitor extends Visitor {
 
     public void visit(Unquote n){
        n.getExpr().accept(this);
+       /*
        if(!VTyMeta.getInstance().matchCT(s.peek(),ct )){
           errorMsg(39, n.getSymInfo(), s.pop());
           s.push(TypeError.getInstance());
           return;
        } 
+       */
     }
 
     public void visit(QuoteValue n){

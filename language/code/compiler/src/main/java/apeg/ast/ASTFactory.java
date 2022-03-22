@@ -606,7 +606,11 @@ public interface ASTFactory {
 	 * 			corresponding SymInfo node
 	 * @return a Meta type node
 	 */
-	public TyMeta newMetaType(SymInfo s);
+	public TyMetaTy newMetaType(SymInfo s);
+
+        public TyMetaExpr newMetaTypeExpr(SymInfo s);
+
+        public TyMetaPeg newMetaTypePeg(SymInfo s);
 
 	/**
 	 * 

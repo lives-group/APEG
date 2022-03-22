@@ -47,6 +47,9 @@ user_type(name) ::= "<name>"
 lang_type() ::= "language"
 map_type(type) ::= "{<type>}"
 list_type(type) ::= "[<type>]"
+meta_ty() ::= "type"
+meta_peg() ::= "peg"
+meta_expr() ::= "expr"
 
 
 /** Template for expressions */
@@ -96,7 +99,7 @@ metaattribute(name) ::="<name>"
 and_peg(peg_expr) ::= "&<peg_expr>"
 any_peg() ::= "_"
 bind_peg(name, peg_expr) ::="<name>=<peg_expr>)"
-choice_peg(left_peg, right_peg) ::= << <left_peg> / <right_peg>> >
+choice_peg(left_peg, right_peg) ::= "<left_peg> / <right_peg>"
 constraint_peg(expr) ::= "{? <expr> }"
 group_peg(ranges) ::= "<ranges>"
 literal_peg(value) ::= "'<value>'"
@@ -110,7 +113,7 @@ kleene(peg) ::= "(<peg>)*"
 update_peg(assig) ::= "{<assig; separator=\" \", wrap>}"
 meta_grammar(expr) ::= "{| <expr> |}"
 
-assig(metaExpr, metaRule, attr, expr) ::= << <if(metaRule)><attr> = {| <expr> |};<elseif(metaExpr)><attr> = (| <expr> |);<else><attr> = <expr>;<endif>>>
+assig(metaExpr, metaRule, attr, expr) ::= "<if(metaRule)><attr> = {| <expr> |};<elseif(metaExpr)><attr> = (| <expr> |);<else><attr> = <expr>;<endif>"
 
 inh(type, name) ::= "<type> <name>"
 

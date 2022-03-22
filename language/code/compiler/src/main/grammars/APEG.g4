@@ -304,6 +304,10 @@ type returns[Type tp, Expr mtp]:
   unquote_expr { $mtp = $unquote_expr.unq; }
  |
   META_TYPE {$tp = factory.newMetaType(new SymInfo($META_TYPE.line, $META_TYPE.pos));}
+ |
+  META_PEG {$tp = factory.newMetaTypePeg(new SymInfo($META_PEG.line, $META_PEG.pos));}
+ |
+  META_EXPR {$tp = factory.newMetaTypeExpr(new SymInfo($META_EXPR.line, $META_EXPR.pos));}
 ;
 
 /***
@@ -632,7 +636,7 @@ primary returns[Expr exp]:
   |
    t='<' e1=expr ',' e2=expr '>' {$exp = factoryMeta.newMetaNonterminalPEG(new SymInfo($t.line, $t.pos), $e1.exp, $e2.exp);}
   |
-   '$' // TODO: Create empty grammar node
+   t='$' {$exp = factoryMeta.newMetaGrammar(new SymInfo($t.line, $t.pos), factory.newListExpr(new SymInfo($t.line, $t.pos), new ArrayList<Expr>()));}
 ;
 
 listLit returns[Expr exp]:
@@ -724,9 +728,9 @@ meta returns[Expr exp]:
    |
     '{|' {enterMeta();} rules '|}' {exitMeta(); $exp = $rules.mrules;}
    |
-    '(|' {enterMeta();} expr '|)' {exitMeta(); $exp = $expr.exp;}
-   |
     '(|' {enterMeta();} type '|)' {exitMeta(); $exp = $type.mtp;}
+   |
+    '(|' {enterMeta();} expr '|)' {exitMeta(); $exp = $expr.exp;}
 ;
 
 unquote_expr returns[Unquote unq, SymInfo si]:
@@ -757,7 +761,10 @@ LANGUAGE_TYPE: 'language';
 /* Type for maps */
 MAP_TYPE: 'map';
 /* Type for meta-values */
-META_TYPE: 'meta';
+META: 'meta';
+META_TYPE: 'type';
+META_PEG: 'peg';
+META_EXPR: 'expr';
 
 /*
  * Operators

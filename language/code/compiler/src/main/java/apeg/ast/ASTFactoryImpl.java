@@ -260,8 +260,8 @@ public class ASTFactoryImpl implements ASTFactory{
     public TyGrammar newGrammarType(SymInfo s){
         return new TyGrammar(s);
     }
-    public TyMeta newMetaType(SymInfo s){
-        return new TyMeta(s);
+    public TyMetaTy newMetaType(SymInfo s){
+        return new TyMetaTy(s);
     }
     public TyMetaExpr newMetaTypeExpr(SymInfo s){
         return new TyMetaExpr(s);

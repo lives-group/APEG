@@ -1,0 +1,28 @@
+apeg metagrammar;
+
+prog[language g]:
+    {g = g << {| 
+                a[language g]:
+                    b<g> '1'  /  b<g> '2'
+                ;
+
+                b[language g]: 
+                  'b' 
+                ;
+                start[language g]:
+                    a<g>
+                ;
+              |};} start<g>
+;
+
+start[language g]:
+    {? false }
+;
+
+a[language g]:
+    {? false }
+;
+
+b[language g]:
+    {? false }
+;

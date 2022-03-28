@@ -1,0 +1,74 @@
+apeg misugar;
+
+prog[language g]:
+    {s = {: 'empty' -> {| empty[language g]: {? false } ; |} :};} define<g, s, s>* extStmt<g, s>+
+;
+
+define[language g, {grammar} m] returns m[n -> rs]:
+    'define ' n=(a..z)+ {rs = $;} '{' (rule<g, r, res> {rs = rs << r; rs = rs << {| #n[language g]: #<res, [(| g |)]> ; |};})+ '}'
+;
+
+rule[language g] returns {| #nt[language g]: #p ; |}, nt:
+    nt=(a..z)+ '->' pattern<g, p> ';'
+;
+
+pattern[language g] returns p:
+    pseq<g, p> ('/' pseq<g, p1> {p = {| #p / #p1 |};})*
+;
+
+pseq[language g] returns p:
+    prefix<g, p> (prefix<g, p1> {p = {| #p #p1 |};})*
+;
+
+prefix[language g] returns p:
+    '!' pterm<g, p> {p = {| !#p |};} / pterm<g, p>
+;
+
+pterm[language g] returns p:
+    pfactor<g, p> '*' {p = {| #p* |};} / pfactor<g, p>
+;
+
+pfactor[language g] returns p:
+    lit_peg<g, p> / ntCall<g, p> / '(' pattern<g, p> ')'
+;
+
+lit_peg[language g] returns `s`:
+    {s = '';} '"' s=(a..z / ';')+ '"'
+;
+
+ntCall[language g] returns <n, args>:
+    -- n=(a..z)+ '<' {args = [(| g |)];} ({args = args ++ [e];})*  '>'
+    n=(a..z)+ '<' {args = [(| g |)];} '>'
+;
+
+extStmt[language g, {grammar} m]:
+    syntax<g, m> / stmt<g>
+;
+
+syntax[language g, {grammar} m]:
+    'syntax ' id=(a..z)+ {g1 = g << m[id]; g1 = g1 << {| block[language g]: #<id, [(| g |)]> ; |};} '{' (block<g1> ';')+ '}'
+;
+
+stmt[language g]:
+    id=(a..z)+ ' := ' (0..9)+
+;
+
+block[language g]:
+    {? false }
+;
+
+bar[language g]:
+    {? false }
+;
+
+foo[language g]:
+    {? false }
+;
+
+r[language g]:
+    {? false }
+;
+
+ws[language g]:
+    ' ' / '\n' / '\t'
+;

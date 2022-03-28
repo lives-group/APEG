@@ -1,0 +1,34 @@
+apeg testfunction;
+
+prog[language g]:
+    {g = g << {|
+        teste[language g, int x, int y] returns z :
+          { z = x+y; }
+          strN<g, z*2>
+          ;
+
+        strN[language g, int n] : ( {? n > 0 } CHAR<g> { n = n - 1; } )* {? n == 0 } !_ ;
+
+        CHAR[language g] : _ ;
+
+        start[language g]:
+            teste<g, 2, 2, z>
+        ;
+    |};} start<g>
+;
+
+start[language g]:
+    {? false }
+;
+
+teste[language g, int x, int y] returns z:
+    {z = 0;} {? false }
+;
+
+strN[language g, int n]:
+    {? false }
+;
+
+CHAR[language g]:
+    {? false }
+;

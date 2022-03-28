@@ -1,0 +1,1 @@
+define foo{r->bar<>;bar->"helloworld";}syntax foo{helloworld;}var := 10

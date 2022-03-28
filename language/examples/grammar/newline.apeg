@@ -1,0 +1,5 @@
+apeg newline;
+
+prog[language g]:
+    'lucas' 'matheus'
+;

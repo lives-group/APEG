@@ -1,0 +1,33 @@
+apeg expression;
+
+prog[language g]:
+    { g = g << {|
+        a[language g] returns k: 
+            c<g, k>
+        ;
+
+        c[language g] returns x:
+      { x = 0; }
+      (
+        { x = x + 1; }
+        '2'
+      )*
+      ;
+
+        start[language g]:
+            a<g, k>
+        ;
+|};} start<g>
+;
+
+start[language g]:
+    {? false }
+;
+
+a[language g] returns k:
+    { k = 0; } {? false }
+;
+
+c[language g] returns x:
+    { x = 0; } {? false }
+;

@@ -467,7 +467,10 @@ public class VMVisitor extends Visitor{
                  gext.accept(prettyprint);
                  System.out.println("----------------------");
                 TypeCheckerVisitor tychk = new TypeCheckerVisitor();
-		        gext.accept(tychk);
+		        // TODO  Unoptmized version of type extension 
+				// Extesion don't need to check whole grammar, only the extension part 
+				// using the current type environment.
+		        gext.accept(tychk); 
 		        if(tychk.getError().size() != 0){
 		            System.out.println("Type erros when composing grammars at " + n.getSymInfo().toString());
 		            ErrorsMsg err = ErrorsMsg.getInstance();
@@ -475,15 +478,15 @@ public class VMVisitor extends Visitor{
 		                 System.out.println(err.translate(e));
 		            }
 		            throw new RuntimeException("Composition error at " + n.getSymInfo().toString()); 
-                        }
+				}
 
-                        // TODO: Implement stack type environment fusion
-                        stk.push(new Pair<VType,Object>(VTyLang.getInstance(), new Pair<Grammar, Environment<String, NTInfo>>(gext, tychk.getEnv())));
+                // TODO: Implement stack type environment fusion
+                stk.push(new Pair<VType,Object>(VTyLang.getInstance(), new Pair<Grammar, Environment<String, NTInfo>>(gext, tychk.getEnv())));
 		    }
-                    else{
-                        throw new RuntimeException(" Unexpected composed parameters at " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn()
+			else{
+                   throw new RuntimeException(" Unexpected composed parameters at " + n.getSymInfo().getLine() + ", " + n.getSymInfo().getColumn()
                                                     + " Stack: " + stk.peek().getFirst());
-                    }
+            }
 		    return;
 		}
 	}
@@ -1014,18 +1017,32 @@ public class VMVisitor extends Visitor{
 	}
 
 	@Override
-	public void visit(NonterminalPEG n) {
+    public void visit(NonterminalPEG n) {
 		// Avaliar (ou visitar) os argumentos herdados e por na pilha.
-		NTInfo local = env.get(n.getName());
 		List<Expr> l = n.getArgs();
+		NTInfo local = env.get(n.getName());
+		Environment<String, NTInfo> bkp, newEnv = null;
 		RulePEG rule = null;
                 System.out.println("_---------------------------");
                 System.out.println("-> " + n.getName());
                 System.out.println("-> " + local);
+		if((local == null)){ // Maybe this rule is fully dynamic ?? 
+		    if(l.size() > 0){
+		        l.get(0).accept(this);
+		        if(stk.peek().getFirst().match(VTyLang.getInstance())){
+		            local = (((Pair<Grammar, Environment<String, NTInfo>>)(stk.peek().getSecond()) ).getSecond()).get(n.getName());
+		        }else{
+		            throw new RuntimeException(n.getSymInfo() + " Calling an abscented dynamic composed rule " + n.getName() + ", no language parameter  supplied ");
+			    }
+			}else{
+			    throw new RuntimeException(n.getSymInfo() + " Calling an abscented dynamic composed rule " + n.getName() + ", no arguments supplied. ");
+		    }
+		}
 		if( local.getSig().getNumInherited() > 0){ 
 		    l.get(0).accept(this);
 		    if(stk.peek().getFirst().match(VTyLang.getInstance())){
 		         Grammar r = ((Pair<Grammar, Environment<String, NTInfo>>)stk.peek().getSecond()).getFirst();
+		         newEnv  =  ((Pair<Grammar, Environment<String, NTInfo>>)stk.peek().getSecond()).getSecond();
 		         for(RulePEG rp : r.getRules()){
 		              if( rp.getRuleName().equals(n.getName()) ){
 		                   rule = rp;
@@ -1043,14 +1060,61 @@ public class VMVisitor extends Visitor{
 		if(rule==null){
 			throw new RuntimeException("Rule "+n.getName()+" not found");
 		}
-		rule.accept(this);
-		//os ultimos serao os primeiros
+		if(newEnv == null){
+		   rule.accept(this);
+		}
+		else{
+		    bkp = env;
+		    env = newEnv;
+		    rule.accept(this);
+		    env = bkp;
+		}
+				//os ultimos serao os primeiros
 		if(vm.succeed()){
 			for (int i = local.getSig().getNumSintetized()+local.getSig().getNumInherited();i>local.getSig().getNumInherited();i--) {
 				vm.setValue(((Attribute)l.get(i-1)).getName(),stk.pop().getSecond());
 			}		
 		}
 	}
+	
+//Old code
+// 	public void visit(NonterminalPEG n) {
+// 		// Avaliar (ou visitar) os argumentos herdados e por na pilha.
+// 		NTInfo local = env.get(n.getName());
+// 		List<Expr> l = n.getArgs();
+// 		RulePEG rule = null;
+//                 System.out.println("_---------------------------");
+//                 System.out.println("-> " + n.getName());
+//                 System.out.println("-> " + local);
+// 		if( local.getSig().getNumInherited() > 0){ 
+// 		    l.get(0).accept(this);
+// 		    if(stk.peek().getFirst().match(VTyLang.getInstance())){
+// 		         Grammar r = ((Pair<Grammar, Environment<String, NTInfo>>)stk.peek().getSecond()).getFirst();
+// 		         for(RulePEG rp : r.getRules()){
+// 		              if( rp.getRuleName().equals(n.getName()) ){
+// 		                   rule = rp;
+// 		                   break;
+// 		              }
+// 		         }
+// 		         if(rule == null){ throw new RuntimeException(n.getSymInfo() + " Calling an abscented composed rule " + n.getName()); }
+// 		    }
+// 		    for(int i = 1;i < local.getSig().getNumInherited();i++){
+// 			    l.get(i).accept(this);
+// 		    }
+// 		}
+// 		// Visitar rulepeg. 
+// 		rule = rule == null ? hashRules.get(n.getName()) : rule;
+// 		if(rule==null){
+// 			throw new RuntimeException("Rule "+n.getName()+" not found");
+// 		}
+// 		rule.accept(this);
+// 		//os ultimos serao os primeiros
+// 		if(vm.succeed()){
+// 			for (int i = local.getSig().getNumSintetized()+local.getSig().getNumInherited();i>local.getSig().getNumInherited();i--) {
+// 				vm.setValue(((Attribute)l.get(i-1)).getName(),stk.pop().getSecond());
+// 			}		
+// 		}
+// 	}
 
 
 	@Override

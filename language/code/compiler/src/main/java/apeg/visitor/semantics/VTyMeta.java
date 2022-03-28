@@ -36,6 +36,7 @@ public class VTyMeta extends VType{
         
         if(t instanceof VTyVar) {
             // ct.addConstraint(new VarConstraint((VTyVar)t, this));
+
             return true;
         }
         return match(t);

@@ -71,17 +71,26 @@ public class ErrorsMsg {
           msg.put(37,"Meta attribute error");
           msg.put(38,"Meta Maplit construction error");
           msg.put(39,"Meta construction expected.");
+          msg.put(40,"Unsatisfied set restriction");
 
     }
 
     public String translate(ErrorEntry e){
-         String err = e.info != null ? "Error at (" + e.info.getLine() + "," + e.info.getColumn() + ") " + msg.get(e.errCode) : "Error at ";
+         String err = e.info != null ? "Error at (" + e.info.getLine() + "," + e.info.getColumn() + ") " + msg.get(e.errCode) : "Error at";
          if(e.t != null){
              if((e.errCode >= 11) && (e.errCode <= 14) ){
                  err += ": " + e.t[0].getName() + " and " + e.t[1].getName();
              }else if( ((e.errCode >= 15) && (e.errCode <= 17)) || (e.errCode == 19)  ){
                  err += e.t.length == 2 ? " expected " + e.t[0] + " found " + e.t[1] : " found " + e.t[0] ;
-             }else {
+             }else if (e.errCode == 40){
+                 err += e.name + " must be one of {";
+                 if(e.t.length > 0){
+                     err += e.t[0];
+                     for(int j = 1; j< e.t.length; j++){ err += ", " + e.t[j]; }
+                 }
+                 err += "} ";
+             }
+             else {
                 if(e.t.length > 0 ){
                    err +=  " " + e.t[0].toString();
                    for(int i = 1; i < e.t.length;i++){
@@ -92,7 +101,7 @@ public class ErrorsMsg {
                 }
              }
          }else{ err += " " + e.name; }
-         return err;
+         return err + " [ error code : "+ e.errCode + " ]";
     }
 
 }

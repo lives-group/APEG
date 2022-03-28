@@ -57,6 +57,15 @@ public class OperatorTables {
 		 return t;
 	}
 	
+//     private static ArrayList<NTType> mkCompose(){
+// 		 ArrayList<NTType> t = new ArrayList<NTType>();
+// 		 t.add(new NTType(new VType[]{VTyLang.getInstance(),VTyLang.getInstance() },new VType[] {VTyLang.getInstance()}));
+//          t.add(new NTType(new VType[]{VTyLang.getInstance(),VTyGrammar.getInstance() },new VType[] {VTyLang.getInstance()}));
+//          t.add(new NTType(new VType[]{VTyGrammar.getInstance(), VTyLang.getInstance() },new VType[] {VTyLang.getInstance()}));
+// 		 t.add(new NTType(new VType[]{VTyGrammar.getInstance(), VTyGrammar.getInstance() },new VType[] {VTyGrammar.getInstance()}));
+// 		 return t;
+// 	}
+	
 	public static Environment<String,ArrayList<NTType>> mkArithmeticEnv(){
 		 Environment<String,ArrayList<NTType>> env = new Environment<String,ArrayList<NTType>>();
 		 ArrayList<NTType> t = mkArithmeticTable();
@@ -92,6 +101,8 @@ public class OperatorTables {
 		 env.add("NOT",tn);
 
                  env.add("<<", tc);
+		 
+		 env.add("<<",mkCompose());
 		 
 		 return env;
 	}

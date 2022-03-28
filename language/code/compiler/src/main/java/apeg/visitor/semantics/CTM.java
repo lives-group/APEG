@@ -38,6 +38,7 @@ public class CTM {
 		//TODO
 		OpConstraint op;
 		VarConstraint v;
+		SetConstraint s;
 		List<NTType>type;
 		int t1 = ct.size()+1;
 		while(!ct.isEmpty() && ct.size() < t1) {
@@ -65,13 +66,27 @@ public class CTM {
 					    }
 				    }
                }
-			   else {
-				    if(c instanceof VarConstraint) {
-					    v = (VarConstraint) c;
-					    if(!v.getVarName().Unify(v.getType())) {
-						    ct.add(c);
-					    }
-				    }
+			   else if(c instanceof VarConstraint) {
+				   v = (VarConstraint) c;
+                   if(!v.getVarName().Unify(v.getType())) {
+                        ct.add(c);
+				   }
+			   }
+			   else if( c instanceof SetConstraint){
+			        s = (SetConstraint) c;
+			        if(s.getVarName().solve() != null){
+			            if(s.getSet().length > 0){
+			               boolean mct = false;
+			               int k = 0;
+                           VType vty;
+			               while( !mct && (k < s.getSet().length) ){
+			                    vty = s.getSet()[k];
+			                    mct = s.getVarName().match(vty);
+                                k++;
+			               }
+                           if(!mct){error.add(new ErrorEntry(40, null, s.getVarName().getName() ,s.getSet() ));}
+			            }
+			        }else{ ct.add(c);  }
 			   }
             }while(c != last);
 		}

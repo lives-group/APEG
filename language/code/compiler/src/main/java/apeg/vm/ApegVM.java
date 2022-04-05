@@ -9,6 +9,8 @@ public class ApegVM {
   private Stack<CTX> ctx;
   private Stack<String> rule;
   private boolean lastResult;
+  private boolean trace;
+  private String level;
 
   public ApegVM(String path){
     try{
@@ -16,6 +18,7 @@ public class ApegVM {
       page = new PageStream(path);
       rule = new Stack<String>();
       lastResult = true;
+      level = "";
     }catch(IOException e) {
       System.out.println(e);
     }
@@ -27,9 +30,14 @@ public class ApegVM {
       page = new PageStream(sr);
       rule = new Stack<String>();
       lastResult = true;
+      level = "";
     }catch(IOException e) {
       System.out.println(e);
     }
+  }
+
+  public void setTrace(boolean v){
+      this.trace = v;
   }
   
   public int size(){
@@ -69,17 +77,31 @@ public void beginRule(String n, CTX c){
  page.mark();
  ctx.push(c);
  rule.push(n);
+
+ if(trace){
+     System.out.println(level + n + " at (" + getLine() + ", " + getColumn() + ")");
+     incLevel();
+ }
 }
 
 public CTX endRule(/*boolean r*/){
+ if(trace){
+     System.out.println(level + "end: " + rule.peek() + " at (" + getLine() + ", " + getColumn() + ")" + " -> " + lastResult);
+     decLevel();
+ }
+
  page.unmark();
  rule.pop();
+
  return ctx.pop(); 
 }
 
 public void beginAlt(){
  page.mark();
  ctx.push(ctx.peek().cloneContext());
+
+ if(trace)
+     System.out.println(level + "trying (" + getLine() + ", " + getColumn() + ")");
 }
 
 public void endAlt(){
@@ -88,18 +110,27 @@ public void endAlt(){
  ctx.pop();
  ctx.push(aux);
  lastResult = true;
+
+ if(trace)
+     System.out.println(level + "finished (" + getLine() + ", " + getColumn() + ")" + " -> " + lastResult);
 }
 
 public void failAlt(){
  page.unmark();
  ctx.pop();
  lastResult = false;
+
+ if(trace)
+     System.out.println(level + "fail (" + getLine() + ", " + getColumn() + ")" + " -> " + lastResult);
 }
 
 public void retryAlt(){
  page.restore();
  ctx.pop();
      //ctx.push(ctx.peek().cloneContext());
+
+ if(trace)
+     System.out.println(level + "retrying (" + getLine() + ", " + getColumn() + ")" + " -> " + lastResult);
 }
 
 public void setValue(String n, Object v){
@@ -140,6 +171,14 @@ public void stopBind(){
 
 public int getLine(){ return page.getLine();}
 public int getColumn(){ return page.getColumn();}
+
+public void incLevel(){
+    level = level + "    ";
+}
+
+public void decLevel(){
+    level = level.substring(0, level.length()-4);
+}
 
 
 //   //testar clone

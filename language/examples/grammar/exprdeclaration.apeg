@@ -1,0 +1,15 @@
+apeg exprdeclaration;
+
+prog[language g]: ops<g, n> {x={| #n |};} (',' ops<g, n1> {x={| #x / #n1 |};})*
+                  ' : ' {g = g << {| op[language g]: #x ; |};} var<g> ;
+
+ops[language g] returns `s`: s='+' / s='-' / s='*' ;
+
+var[language g]: a..z+ ' = ' expression<g> ';' ;                                              
+
+expression[language g]: factor<g> op<g> expression<g> /                                       
+                        factor<g> ;                                                           
+
+factor[language g]: 0..9+ / a..z+ ;
+
+op[language g]: {? false };

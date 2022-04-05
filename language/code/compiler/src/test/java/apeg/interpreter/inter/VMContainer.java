@@ -12,72 +12,64 @@ import apeg.parse.APEGParser;
 import apeg.ast.*;
 import apeg.visitor.*;
 import apeg.visitor.semantics.*;
+import apeg.vm.*;
 
 import apeg.util.path.Path;
 
 import apeg.TContainer;
 
-public class VMContainer extends TContainer<Boolean> {
+public class VMContainer extends TContainer<VMContainer.Result> {
 
     CharStream stream;
-    String input;
-    File temp;
+    StringReader input;
 
-    public VMContainer(String name, CharStream stream, String input){
+    public class Result {
+        public int line, column;
+        public boolean b; 
+    }
+
+    public VMContainer(String name, CharStream stream, StringReader input){
         super(name);
         this.stream = stream;
-        try{
-            this.temp = File.createTempFile(name, ".txt", new File());
-        }
-        catch(IOException e){
-            System.exit(1);
-        }
         this.input = input;
     }
 
-    public Boolean execute() {
-        try{
-            // create a lexer that feeds off of stream
-            APEGLexer lexer = new APEGLexer(stream);
-            // create a buffer of tokens pulled from the lexer
-            CommonTokenStream tokens = new CommonTokenStream(lexer);
+    public Result execute() {
+        Result r = new Result();
 
-            // create an AST factory
-            ASTFactory factory = new ASTFactoryImpl();
-            ASTFactory factoryMeta = new ASTFactoryMetaImpl();
-            // create a parser that feeds off the tokens buffer
-            APEGParser parser = new APEGParser(factory, factoryMeta, tokens);
-            // tell ANTLR to does not automatically build an AST
-            parser.setBuildParseTree(false);
+        // create a lexer that feeds off of stream
+        APEGLexer lexer = new APEGLexer(stream);
+        // create a buffer of tokens pulled from the lexer
+        CommonTokenStream tokens = new CommonTokenStream(lexer);
 
-            // Parse phase: extract the AST from the grammar source code
-            Grammar g = parser.grammarDef().gram;
-            Visitor typechecker = new TypeCheckerVisitor(true);
-            g.accept(typechecker);
+        // create an AST factory
+        ASTFactory factory = new ASTFactoryImpl();
+        ASTFactory factoryMeta = new ASTFactoryMetaImpl();
+        // create a parser that feeds off the tokens buffer
+        APEGParser parser = new APEGParser(factory, factoryMeta, tokens);
+        // tell ANTLR to does not automatically build an AST
+        parser.setBuildParseTree(false);
 
-            if(!((TypeCheckerVisitor)typechecker).getError().isEmpty()){
-                ErrorsMsg errm = ErrorsMsg.getInstance();
-               for(ErrorEntry perr:((TypeCheckerVisitor)typechecker).getError())
-                   System.out.println(errm.translate(perr) );
-                System.exit(1);
-            }
+        // Parse phase: extract the AST from the grammar source code
+        Grammar g = parser.grammarDef().gram;
+        Visitor typechecker = new TypeCheckerVisitor(false);
+        g.accept(typechecker);
 
-            // Writing tmp file to serve as VMVisitor input parameter
-            BufferedWriter out = new BufferedWriter(new FileWriter(temp));
-            out.write(input);
-            out.close();
-
-            File f = new File(temp.toString());
-            VMVisitor vm = new VMVisitor(f.getAbsolutePath(), ((TypeCheckerVisitor)typechecker).getEnv());
-            vm.setDebugMode(true);
-            g.accept(vm);
-
-            return vm.succeed();
-        }
-        catch(IOException e){
-            e.printStackTrace();
+        if(!((TypeCheckerVisitor)typechecker).getError().isEmpty()){
+            ErrorsMsg errm = ErrorsMsg.getInstance();
+           for(ErrorEntry perr:((TypeCheckerVisitor)typechecker).getError())
+               System.out.println(errm.translate(perr) );
             System.exit(1);
-            return false;
         }
+
+        VMVisitor vm = new VMVisitor(input, ((TypeCheckerVisitor)typechecker).getEnv());
+        vm.setDebugMode(true);
+        g.accept(vm);
+
+        r.line = vm.getVM().getLine();
+        r.column = vm.getVM().getColumn();
+        r.b = vm.getVM().succeed();
+
+        return r;
     }
 }

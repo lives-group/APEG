@@ -48,7 +48,10 @@ public class VMVisitor extends Visitor{
 		}
 	}
 
-	public void setDebugMode(boolean b){ debug = b; }
+	public void setDebugMode(boolean b){
+            // debug = b;
+            vm.setTrace(b);
+        }
 
 	public ApegVM getVM(){ return vm; }
 
@@ -1021,11 +1024,8 @@ public class VMVisitor extends Visitor{
 		// Avaliar (ou visitar) os argumentos herdados e por na pilha.
 		List<Expr> l = n.getArgs();
 		NTInfo local = env.get(n.getName());
-		Environment<String, NTInfo> bkp, newEnv = null;
+		// Environment<String, NTInfo> bkp, newEnv = null;
 		RulePEG rule = null;
-                System.out.println("_---------------------------");
-                System.out.println("-> " + n.getName());
-                System.out.println("-> " + local);
 		if((local == null)){ // Maybe this rule is fully dynamic ?? 
 		    if(l.size() > 0){
 		        l.get(0).accept(this);
@@ -1042,7 +1042,7 @@ public class VMVisitor extends Visitor{
 		    l.get(0).accept(this);
 		    if(stk.peek().getFirst().match(VTyLang.getInstance())){
 		         Grammar r = ((Pair<Grammar, Environment<String, NTInfo>>)stk.peek().getSecond()).getFirst();
-		         newEnv  =  ((Pair<Grammar, Environment<String, NTInfo>>)stk.peek().getSecond()).getSecond();
+		         // newEnv  =  ((Pair<Grammar, Environment<String, NTInfo>>)stk.peek().getSecond()).getSecond();
 		         for(RulePEG rp : r.getRules()){
 		              if( rp.getRuleName().equals(n.getName()) ){
 		                   rule = rp;
@@ -1060,15 +1060,16 @@ public class VMVisitor extends Visitor{
 		if(rule==null){
 			throw new RuntimeException("Rule "+n.getName()+" not found");
 		}
-		if(newEnv == null){
-		   rule.accept(this);
-		}
-		else{
-		    bkp = env;
-		    env = newEnv;
-		    rule.accept(this);
-		    env = bkp;
-		}
+                rule.accept(this);
+		// if(newEnv == null){
+		//    rule.accept(this);
+		// }
+		// else{
+		//     bkp = env;
+		//     env = newEnv;
+		//     rule.accept(this);
+		//     env = bkp;
+		// }
 				//os ultimos serao os primeiros
 		if(vm.succeed()){
 			for (int i = local.getSig().getNumSintetized()+local.getSig().getNumInherited();i>local.getSig().getNumInherited();i--) {

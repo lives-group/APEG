@@ -77,12 +77,21 @@ public class PageStream{
 		  if(blocks[page] == null){
 		      blocks[page] = new char[blocksize];
 		  }
+                try{
+                    int n = f.read(blocks[page]);
+                    if(n != -1)
+                        pw = pw + n;
+                } catch(IOException e){
+                    System.out.println(e);
+                }
+                /*
 	      int n = f.read(blocks[page]);
 	      if(n != -1 ){
 	          pw = pw + n;
 	      }else{
 	          throw new EOFException("END OF FILE DETECTED WHILE LOADING PAGE " + page);
 	      }
+              */
 	 }
 
 	 public boolean match(String s) throws IOException{

@@ -2,7 +2,7 @@ package apeg.ast.expr;
 import apeg.visitor.Visitor;
 import apeg.util.SymInfo;
 
-public class Attribute extends Expr{
+public class Attribute extends Expr {
 
     private String name;
     

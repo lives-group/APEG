@@ -2,7 +2,9 @@ package apeg.ast;
 import apeg.visitor.Visitor;
 import apeg.util.SymInfo;
 
-public abstract class ASTNode {
+import java.io.Serializable;
+
+public abstract class ASTNode implements Serializable{
 
     private SymInfo symInfo;
     

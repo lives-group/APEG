@@ -3,7 +3,9 @@ import apeg.visitor.Visitor;
 import apeg.ast.ASTNode;
 import apeg.util.SymInfo;
 
-public abstract class APEG extends ASTNode{
+import java.io.Serializable;
+
+public abstract class APEG extends ASTNode implements Serializable{
 
     
     public APEG(SymInfo s){

@@ -1110,9 +1110,16 @@ public class PrettyPrint extends Visitor{
 
 	@Override
 	public void visit(RangePEG n) {
+		// peg = groupTemplate.getInstanceOf("group_peg");
+		// CharInterval c = n.getInterval();
+		// peg.add("ranges", c.toString());
+
 		peg = groupTemplate.getInstanceOf("group_peg");
 		CharInterval c = n.getInterval();
-		peg.add("ranges", c.toString());
+
+		peg.add("start", c.getStart()+"");
+		peg.add("end", c.getEnd()+"");
+
 	}
 
 	@Override
@@ -1164,6 +1171,7 @@ public class PrettyPrint extends Visitor{
 		// TODO Auto-generated method stub
 		
 		peg = groupTemplate.getInstanceOf("lambda_peg");
+		// peg.add("symbol","\u03bb")
 		
 	}
 

@@ -1,6 +1,8 @@
 package apeg.util;
 
-public class SymInfo {
+import java.io.Serializable;
+
+public class SymInfo implements Serializable{
     private int line, col;
     
     public SymInfo(int l, int c){

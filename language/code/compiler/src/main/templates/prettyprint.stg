@@ -94,21 +94,22 @@ listAcces(list, index) ::= "<list> !! <index>"
 metaattribute(name) ::="<name>"
 
 /** Template for parsing expression */
-and_peg(peg_expr) ::= "&<peg_expr>"
+and_peg(peg_expr) ::= "&(<peg_expr>)"
 any_peg() ::= "_"
-bind_peg(name, peg_expr) ::="<name>=<peg_expr>)"
+bind_peg(name, peg_expr) ::="<name>=(<peg_expr>)"
 choice_peg(left_peg, right_peg) ::=<<
- <left_peg> / <right_peg>
+ (<left_peg> / <right_peg>)
 >>
 constraint_peg(expr) ::= "{? <expr> }"
-group_peg(ranges) ::= "<ranges>"
+group_peg(start, end) ::= "<start>..<end>"
 literal_peg(value) ::= "'<value>'"
-lambda_peg() ::= " " 
+lambda_peg() ::= << <\u03bb> >>
+
 nonterminal_peg(name, attrs) ::= "<name>\<<attrs; separator=\", \", wrap>>"
 not_peg(peg_expr) ::= "!(<peg_expr>)"
 plus_peg(peg_expr) ::= "(<peg_expr>)+"
 optional_peg(peg_expr) ::= "(<peg_expr>)?"
-sequence_peg(peg_exprs) ::= "<peg_exprs:{x | <x>}; separator=\" \">"
+sequence_peg(peg_exprs) ::= "(<peg_exprs:{x | <x>}; separator=\" \">)"
 kleene(peg) ::= "(<peg>)*"
 update_peg(assig) ::= "{<assig; separator=\" \", wrap>}"
 meta_grammar(expr) ::= "{| <expr> |}"

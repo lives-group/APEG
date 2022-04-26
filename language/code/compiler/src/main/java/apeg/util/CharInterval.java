@@ -1,7 +1,9 @@
 
 package apeg.util;
 
-public class CharInterval{
+import java.io.Serializable;
+
+public class CharInterval implements Serializable{
     private char i,f;
     
     public CharInterval(char i, char f){

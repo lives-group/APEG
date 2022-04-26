@@ -11,9 +11,6 @@ import apeg.util.path.AbsolutePath;
 import apeg.util.path.Path;
 import apeg.util.path.RelativePath;
 
-
-//_____________________________________________________________________________________________________________________
-
 import apeg.ast.*;
 import apeg.ast.expr.*;
 import apeg.ast.rules.*;
@@ -32,54 +29,73 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import apeg.parse.APEGLexer;
 import apeg.parse.APEGParser;
 
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
+
 import apeg.parser.expr.PegContainer;
 import apeg.TContainer;
 
-//_____________________________________________________________________________________________________________________
+import java.util.List;
+import java.io.File;
+import net.jqwik.api.*;
 
-
+//Class to be use to try the faild APEGS
 class FaildSample{
-	@BeforeContainer
-	@Example
-	void beforeProperty() throws IOException{
-    // Visitor prettyprint = new PrettyPrint(new RelativePath(new AbsolutePath("."),"src/main/templates/prettyprint.stg"));
-    // APEG generated = new newNotPEG(new SymInfo(-1, -1),readerTxt());
 
-    // generated.accept(prettyprint);
+	//colect the Faild Objects from the directory to try then again 
+	void samples() throws IOException{
+		try{ 
+			File f = new File((new RelativePath(new AbsolutePath("."),
+				"src/test/java/apeg/parser/generator/faild")).toString());
 
-    // System.out.println(((PrettyPrint) prettyprint).renderPEG());
-    // System.out.println(generated.toString()+"\n");
+			File vet[] = f.listFiles();
+			for (File file : vet) {
 
-    // CharStream stream = CharStreams.fromReader(new StringReader(((PrettyPrint) prettyprint).renderPEG()));
+				tester(readBinFile(file.getCanonicalPath()));
 
-    // TContainer<APEG> test = new PegContainer("Rodando teste", stream);
-    // APEG e = test.execute();
-
-    // assertEquals( generated.toString(), e.toString());
-		String str=readerTxt();
-		System.out.println("_____________________________________________________________________________________\n"
-			+str +
-			"\n_____________________________________________________________________________________");
-		assertEquals( str,str+" 1");
-	}
-
-	private String readerTxt() throws IOException {
-		try{
-			RelativePath rpth = new RelativePath(
-				new AbsolutePath("."),"src/test/java/apeg/parser/generator/outputFaildSamples.txt");
-			FileReader fr = new FileReader(rpth.getAbsolutePath());
-			String data="";
-			int i;
-			while((i=fr.read())!= -1){
-				data+= (char)+i +"";
+				//if the object pass trough the test, it is deleted from the directory
+				file.delete();
 			}
-			fr.close();
-			return data;
 		}
-		catch (Exception ex){
-			return "";
+		catch (FileNotFoundException e){
+			System.out.println("No Faild Samples\n");
+		} 
+		catch(IOException e){
+			System.out.println("IOException\n");
+		}
+		catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
+	//Try to run the tests over the faild object again
+	private void tester(APEG generated) throws Exception{
+		Visitor prettyprint = new PrettyPrint(new RelativePath(new AbsolutePath("."),"src/main/templates/prettyprint.stg"));
+		generated.accept(prettyprint);
 
+		System.out.println(((PrettyPrint) prettyprint).renderPEG());
+		System.out.println(generated.toString());
+
+		CharStream stream = CharStreams.fromReader(new StringReader(((PrettyPrint) prettyprint).renderPEG()));
+
+		TContainer<APEG> test = new PegContainer("Last faild try", stream);
+		APEG e = test.execute();
+
+		assertEquals( generated.toString(), e.toString());
+	}
+
+	//Read the Object from the path 
+	private APEG readBinFile(String str) throws Exception {
+		try(
+			ObjectInputStream ois = new ObjectInputStream(
+				new FileInputStream(str) ) 
+			) 
+		{
+			APEG a =  (APEG) ois.readObject();
+			return  a; 
+		} 
+		catch (Exception e){
+			throw e;
+		}
+	}
 }

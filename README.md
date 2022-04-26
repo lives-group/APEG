@@ -2,6 +2,8 @@
 
 This project aims to create a parser generator based on Adaptable Parsing Expression Grammars
 
+[![Tests](https://github.com/lives-group/APEG/actions/workflows/maven.yml/badge.svg)](https://github.com/lives-group/APEG/actions/workflows/maven.yml)
+
 ## How to use 
 
 APEG compiler toolchain is distributed as a single jar file.

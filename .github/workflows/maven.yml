@@ -3,15 +3,10 @@
 
 name: Tests
 
-on:
-  push:
-    branches: [all]
-  pull_request:
-    branches: []
+on: [push]
     
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:

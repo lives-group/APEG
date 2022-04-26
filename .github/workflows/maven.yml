@@ -5,7 +5,9 @@ name: Tests
 
 on:
   push:
-    branches: [ all ]
+    branches: [all]
+  pull_request:
+    branches: []
     
 jobs:
   build:

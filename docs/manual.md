@@ -5,7 +5,7 @@ This file contains all information about APEG syntax. If you haven't seen our "G
 On this manual we introduce the most basic concepts with code examples as well as the most robust resources which are presented later in this document.
 
 
-[TOC]
+
 
 ### APEG Grammars
 
@@ -38,8 +38,8 @@ Every value in APEG has a type associated to it. You can have the following type
 * int:  *-2147483648 to 2147483647*
 
 * float: *3.40282347 x 10<sup>38</sup> to 1.40239846 x 10<sup>-45</sup>*
-* boolean: TRUE or FALSE
-* char: \0000 to \ffff
+* boolean: <i>TRUE</i> or <i>FALSE</i>
+* char: <i>\0000</i> to <i>\ffff</i>
 
 
 
@@ -329,7 +329,7 @@ More documentation about lists, maps and number ranges can be found at the manua
 
 ### Links
 
-[Meta Guide](https://github.com/lives-group/APEG/blob/dev/docs/meta_guide.md)
-[Users Guide](https://github.com/lives-group/APEG/blob/dev/docs/users.md)
-[Contributors](https://github.com/lives-group/APEG/blob/dev/docs/contributors.md)
+[Meta Guide](https://github.com/lives-group/APEG/blob/dev/docs/meta_guide.md) |
+[Users Guide](https://github.com/lives-group/APEG/blob/dev/docs/users.md) |
+[Contributors](https://github.com/lives-group/APEG/blob/dev/docs/contributors.md) |
 [Getting Started](https://github.com/lives-group/APEG/blob/dev/docs/getting-started.md)

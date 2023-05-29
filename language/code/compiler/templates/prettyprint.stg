@@ -1,0 +1,120 @@
+group prettyprint;
+
+/** Defining the grammar specfication template */
+apeg(name, option, rules) ::= <<
+apeg <name>;
+<if(option)>
+
+options {
+  <option; separator=";\n">;
+}
+<endif>
+
+<rules; separator="\n\n">
+>>
+
+
+/** Template for rules specification */
+rule(annotation, name, inh, syn, peg) ::= <<
+<if(annotation)>
+@<annotation> 
+<endif>
+<name><if(inh)>[<inh; separator=", ", wrap>]<endif><if(syn)> returns <syn; separator=", ", wrap><endif>:
+  <peg>
+;
+>>
+
+/** Template for meta rule */
+metarule(name, vardecl, syn, peg) ::= <<
+<name>[<vardecl; separator=", ", wrap>]<if(syn)> returns <syn><endif> : <peg> ;
+>>
+
+metadecl(type, var) ::= "<type> <var>"
+
+/** Template for parameters declaration */
+decl(type, name) ::= "<type> <name>"
+
+
+/** Template for types */
+int_type() ::= "int"
+float_type() ::= "float"
+string_type() ::= "string"
+char_type() ::= "char"
+boolean_type() ::= "boolean"
+grammar_type() ::= "grammar"
+rule_type() ::= "rule"
+user_type(name) ::= "<name>"
+lang_type() ::= "language"
+map_type(type) ::= "{<type>}"
+list_type(type) ::= "[<type>]"
+meta_ty() ::= "type"
+meta_peg() ::= "peg"
+meta_expr() ::= "expr"
+
+
+/** Template for expressions */
+attribute(name) ::="<name>"
+attribute_grammar(name) ::="<name>"
+
+gt_expr(left_expr, right_expr) ::= "(<left_expr> \> <right_expr>)"
+ge_expr(left_expr, right_expr) ::= "(<left_expr> \>= <right_expr>)"
+lt_expr(left_expr, right_expr) ::= "(<left_expr> \< <right_expr>)"
+le_expr(left_expr, right_expr) ::= "(<left_expr> \<= <right_expr>)"
+mul_expr(left_expr, right_expr) ::= "(<left_expr> * <right_expr>)"
+div_expr(left_expr, right_expr) ::= "(<left_expr> / <right_expr>)"
+mod_expr(left_expr, right_expr) ::= "(<left_expr> % <right_expr>)"
+add_expr(left_expr, right_expr) ::= "(<left_expr> + <right_expr>)"
+sub_expr(left_expr, right_expr) ::= "(<left_expr> - <right_expr>)"
+concat_expr(left_expr, right_expr) ::= "(<left_expr> ++ <right_expr>)"
+compose_expr(left_expr, right_expr) ::= "(<left_expr> \<\< <right_expr>)"
+
+equals_expr(left_expr, right_expr) ::= "(<left_expr> == <right_expr>)"
+no_equals_expr(left_expr, right_expr) ::= "(<left_expr> != <right_expr>)"
+
+boolean_expr(value) ::= "<value>"
+float_expr(value) ::= "<value>"
+int_expr(value) ::= "<value>"
+
+// If condition to avoid too much quotes when in meta level
+string_expr(meta, value) ::= << <if(meta)><value><else>'<value>'<endif> >>
+minus_expr(expr) ::= "-<expr>"
+not_expr(expr) ::= "!<expr>"
+or_expr(left_expr, right_expr) ::= "(<left_expr> || <right_expr>)"
+and_expr(left_expr, right_expr) ::= "(<left_expr> && <right_expr>)"
+unquote_expr(expr) ::= "#<expr>"
+quotevalue(expr) ::= "~<expr>"
+
+pair(left_expr, right_expr) ::= << <left_expr> -> <right_expr> >>
+mapLit(pairs) ::= << {: <pairs; separator=", ", wrap> :} >>
+mapExtension(acces, pair) ::= "<acces> [<pair>]"
+mapAcces(acces, factor, expr) ::= "<factor> [<expr>]"
+
+listLit(exprs) ::= <<[<exprs; separator=", ", wrap>]>>
+listAcces(list, index) ::= "<list> !! <index>"
+
+/** Template for metaexpressions */
+metaattribute(name) ::="<name>"
+
+/** Template for parsing expression */
+and_peg(peg_expr) ::= "&<peg_expr>"
+any_peg() ::= "_"
+bind_peg(name, peg_expr) ::="<name>=<peg_expr>)"
+choice_peg(left_peg, right_peg) ::= "<left_peg> / <right_peg>"
+constraint_peg(expr) ::= "{? <expr> }"
+group_peg(ranges) ::= "<ranges>"
+literal_peg(value) ::= "'<value>'"
+lambda_peg() ::= " " 
+nonterminal_peg(name, attrs) ::= "<name>\<<attrs; separator=\", \", wrap>>"
+not_peg(peg_expr) ::= "!(<peg_expr>)"
+plus_peg(peg_expr) ::= "(<peg_expr>)+"
+optional_peg(peg_expr) ::= "(<peg_expr>)?"
+sequence_peg(peg_exprs) ::= "<peg_exprs:{x | <x>}; separator=\" \">"
+kleene(peg) ::= "(<peg>)*"
+update_peg(assig) ::= "{<assig; separator=\" \", wrap>}"
+meta_grammar(expr) ::= "{| <expr> |}"
+
+assig(metaExpr, metaRule, attr, expr) ::= "<if(metaRule)><attr> = {| <expr> |};<elseif(metaExpr)><attr> = (| <expr> |);<else><attr> = <expr>;<endif>"
+
+inh(type, name) ::= "<type> <name>"
+
+/** func(f) ::= "<f>"  Not implemented yet */

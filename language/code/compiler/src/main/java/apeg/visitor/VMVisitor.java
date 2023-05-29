@@ -33,7 +33,8 @@ public class VMVisitor extends Visitor{
 			vm = new ApegVM(path);
 			debug = false;
 		} catch(Exception exc) {
-			exc.printStackTrace();
+                        System.exit(1);
+			// exc.printStackTrace();
 		}
 	}
 	
@@ -44,12 +45,13 @@ public class VMVisitor extends Visitor{
 			vm = new ApegVM(sr);
 			debug = false;
 		} catch(Exception exc) {
-			exc.printStackTrace();
+                        System.exit(1);
+			// exc.printStackTrace();
 		}
 	}
 
 	public void setDebugMode(boolean b){
-            // debug = b;
+            debug = b;
             vm.setTrace(b);
         }
 
@@ -1231,7 +1233,8 @@ public class VMVisitor extends Visitor{
                 // TODO: Replace new parameter by type environment
                 stk.push(new Pair<VType, Object>(VTyLang.getInstance(), new Pair<Grammar,Environment<String,NTInfo>>(n, new Environment<String, NTInfo>())));
 		n.getRules().get(0).accept(this);
-		if(debug){System.out.println("Read until " + vm.getLine() + ", " + vm.getColumn());}
+		// if(debug){System.out.println("Read until " + vm.getLine() + ", " + vm.getColumn());}
+		System.out.println("Read until " + vm.getLine() + ", " + vm.getColumn());
 	}
 
 	public boolean succeed(){

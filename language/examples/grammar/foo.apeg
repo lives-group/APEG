@@ -1,0 +1,17 @@
+apeg foo;
+
+prog[language g]:
+    declList<g, p> {g = g << {| var[language g]: #p ;|};} stmt<g>+
+;
+
+declList[language g] returns p:
+    decl<g, s> {p = {| #s |};} (decl<g, p1> {p = {| #p / #p1 |};})*
+;
+
+decl[language g] returns `id`:
+    'int ' id=(a..z)+ ' = ' (0..9)+ ';'
+;
+
+stmt[language g]: var<g> ' = ' var<g> ';';
+
+var[language g]: {? false };

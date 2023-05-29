@@ -22,8 +22,8 @@ public class HandlerOption {
 			for(Option opt : line.getOptions()) {
 				switch(opt.getLongOpt()) {
 				case "help": // print the help message
-					usage(options);
-					break;
+					usage();
+                                        return null;
 				case "package": // set the package/namespace
 					tool.setNamespace(opt.getValue());
 					break;
@@ -60,6 +60,10 @@ public class HandlerOption {
 					String input = opt.getValue();
 					tool.setInterpretSource(input);
 					break;
+                                case "debug":
+                                        tool.setTypeCheckerDebug(true);
+                                        tool.setVMDebug(true);
+                                        break;
 				default:
 					tool.addWarning("Invalid option " + opt.getLongOpt());
 				}
@@ -85,6 +89,7 @@ public class HandlerOption {
 		options.addOption("e", "external", true, "The path location of the external functions");
 		options.addOption("h", "help", false, "Print the help message");
 		options.addOption("i", "interpret", true, "Interpret the specified file");
+                options.addOption("d", "debug", false, "Print debug information");
 
 		return options;
 
@@ -96,10 +101,13 @@ public class HandlerOption {
 		return parser.parse(options, args);
 	}
 	
-	/**
-	 * TODO
-	 */
-	private static void usage(Options opt) {
-		System.out.println(opt.toString());
+	private static void usage() {
+            System.out.println("usage: java -jar apeg.jar <grammar> [command]... [files]...\n");
+            System.out.println("By default, this tool parses and type check a given APEG grammar.\n");
+            System.out.println("It is also possible to do the following commands:\n");
+            System.out.println("-h, --help        print this help message");
+            System.out.println("-i, --interpret   runs the interpreter for a file X using the APEG grammar specified");
+            System.out.println("-o, --output      specify output directory");
+            System.out.println("-d, --debug       runs the tool printing debug information");
 	}
 }

@@ -1,0 +1,9 @@
+apeg predicate;
+
+p[language g]:
+    {g = g << {| neg[language g]: !'foo' 'bar' &'end' ; |};} neg<g>
+;
+
+neg[language g]:
+    {? false }
+;

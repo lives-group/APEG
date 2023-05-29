@@ -76,7 +76,7 @@ public class ErrorsMsg {
     }
 
     public String translate(ErrorEntry e){
-         String err = e.info != null ? "Error at (" + e.info.getLine() + "," + e.info.getColumn() + ") " + msg.get(e.errCode) : "Error at";
+         String err = e.info != null ? "line " + e.info.getLine() + ":" + e.info.getColumn() + " " + msg.get(e.errCode) : "Error at";
          if(e.t != null){
              if((e.errCode >= 11) && (e.errCode <= 14) ){
                  err += ": " + e.t[0].getName() + " and " + e.t[1].getName();

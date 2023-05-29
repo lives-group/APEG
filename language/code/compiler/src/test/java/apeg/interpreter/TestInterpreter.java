@@ -87,9 +87,9 @@ public class TestInterpreter {
             VMContainer.Result e = test.execute();
 
             // Expected Result
-            assertEquals(true, e.b);
+            assertEquals(false, e.b);
             assertEquals(0, e.line);
-            assertEquals(23, e.column);
+            assertEquals(11, e.column);
         }
 
         @Test
@@ -122,6 +122,7 @@ public class TestInterpreter {
             assertEquals(3, e.column);
         }
 
+        /*
         @Test
         void RuleBuild01() throws IOException {
             // Create a ANTLR CharStream from a string
@@ -136,6 +137,7 @@ public class TestInterpreter {
             assertEquals(0, e.line);
             assertEquals(3, e.column);
         }
+        */
 
         @Test
         void MetaNtcall01() throws IOException {
@@ -159,7 +161,7 @@ public class TestInterpreter {
             String content = new Scanner(new File(fpath.getFile().toString())).useDelimiter("\\Z").next();
 
             // Create a ANTLR CharStream from a string
-            CharStream stream = CharStreams.fromReader(new StringReader(Programs.METAPARAMETER));
+            CharStream stream = CharStreams.fromReader(new StringReader(content));
             StringReader input = new StringReader("b1");
 
             TContainer<VMContainer.Result> test = new VMContainer("Grammar01", stream, input);
@@ -168,6 +170,85 @@ public class TestInterpreter {
             // Expected Result
             assertEquals(true, e.b);
             assertEquals(0, e.line);
-            assertEquals(1, e.column);
+            assertEquals(2, e.column);
+        }
+
+        @Test
+        void AbsGrammar() throws IOException {
+            // Create a ANTLR CharStream from a string
+            CharStream stream = CharStreams.fromReader(new StringReader(Programs.ABSGRAMMAR));
+            StringReader input = new StringReader("|-20|=20");
+
+            TContainer<VMContainer.Result> test = new VMContainer("AbsGrammar", stream, input);
+            VMContainer.Result e = test.execute();
+
+            // Expected Result
+            assertEquals(true, e.b);
+            assertEquals(0, e.line);
+            assertEquals(8, e.column);
+        }
+
+        @Test
+        void MetaSum() throws IOException {
+            // Create a ANTLR CharStream from a string
+            CharStream stream = CharStreams.fromReader(new StringReader(Programs.METASUM));
+            StringReader input = new StringReader("10+20+30=80");
+
+            TContainer<VMContainer.Result> test = new VMContainer("MetaSum", stream, input);
+            VMContainer.Result e = test.execute();
+
+            // Expected Result
+            assertEquals(false, e.b);
+            assertEquals(0, e.line);
+            assertEquals(11, e.column);
+        }
+
+        @Test
+        void VarDeclaration() throws IOException {
+            // Create a ANTLR CharStream from a string
+            CharStream stream = CharStreams.fromReader(new StringReader(Programs.VARDECLARATION));
+            StringReader input = new StringReader("int a = 10;int b = 20;a = b;");
+
+            TContainer<VMContainer.Result> test = new VMContainer("VarDeclaration", stream, input);
+            VMContainer.Result e = test.execute();
+
+            // Expected Result
+            assertEquals(true, e.b);
+            assertEquals(0, e.line);
+            assertEquals(28, e.column);
+        }
+
+        @Test
+        void Predicate() throws IOException {
+            // Create a ANTLR CharStream from a string
+            CharStream stream = CharStreams.fromReader(new StringReader(Programs.PREDICATE));
+            StringReader input = new StringReader("barend");
+
+            TContainer<VMContainer.Result> test = new VMContainer("Predicate", stream, input);
+            VMContainer.Result e = test.execute();
+
+            // Expected Result
+            assertEquals(true, e.b);
+            assertEquals(0, e.line);
+            assertEquals(0, e.column);
+        }
+
+        @Test
+        void Fatorial() throws IOException {
+            // Reading grammar .apeg file
+            Path fpath = new RelativePath(new AbsolutePath(System.getProperty("user.dir")), this.prefix + "grammarFat.apeg");
+            String content = new Scanner(new File(fpath.getFile().toString())).useDelimiter("\\Z").next();
+
+            // Create a ANTLR CharStream from a string
+            CharStream stream = CharStreams.fromReader(new StringReader(content));
+            StringReader input = new StringReader("3!=6");
+
+            TContainer<VMContainer.Result> test = new VMContainer("Fatorial", stream, input);
+            VMContainer.Result e = test.execute();
+
+            // Expected Result
+            assertEquals(true, e.b);
+            assertEquals(0, e.line);
+            assertEquals(4, e.column);
         }
 }

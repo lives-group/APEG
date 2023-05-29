@@ -1,0 +1,3 @@
+apeg foo;
+
+p[language g] returns x: 'hello' { x = 10; };

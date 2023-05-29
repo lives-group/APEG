@@ -21,6 +21,7 @@ public class ApegVM {
       level = "";
     }catch(IOException e) {
       System.out.println(e);
+      System.out.println("\nInput file not found");
     }
   }
   
@@ -33,6 +34,7 @@ public class ApegVM {
       level = "";
     }catch(IOException e) {
       System.out.println(e);
+      System.out.println("\nInput file not found");
     }
   }
 

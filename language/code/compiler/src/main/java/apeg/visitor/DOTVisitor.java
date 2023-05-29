@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URL;
 
 import org.stringtemplate.v4.ST;
 import org.stringtemplate.v4.STGroup;
@@ -41,6 +42,19 @@ private STGroup groupTemplate;
     public DOTVisitor (Path filepath, Path template) {
 		
 		groupTemplate = new STGroupFile(template.getAbsolutePath());
+		inh = new ArrayList<ST> ();
+
+		try{
+		    out = new FileWriter(filepath.getAbsolutePath());
+		} catch(IOException e){
+		    e.printStackTrace();
+		}
+		
+	}
+
+    public DOTVisitor (Path filepath, String template) {
+		
+		groupTemplate = new STGroupFile(template);
 		inh = new ArrayList<ST> ();
 
 		try{

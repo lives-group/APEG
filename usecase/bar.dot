@@ -1,0 +1,25 @@
+Digraph foo {
+  node [shape="box"];
+  grammar [label = "Grammar[foo]"];
+
+  pRule [label = "Rule[p]"];
+  grammar -> pRule;
+  inh0 [label = "↓g"];
+  pRule -> inh0;
+  attributeExpr0 [label = "x"];
+  SynAtt1 -> attributeExpr0;
+  SynAtt1 [label = "↑"];
+  pRule -> SynAtt1;
+  SequencePeg0 [label = "SequencePegExpr(.)"];
+  pRule -> SequencePeg0;
+  LiteralPeg1 [label = "'hello'"];
+  SequencePeg0 -> LiteralPeg1;
+  UpdatePeg2 [label = "UpdatePegExpr([<-])"];
+  SequencePeg0 -> UpdatePeg2;
+  attributeExpr1 [label = "x"];
+  UpdatePeg2 -> attributeExpr1;
+  IntLiteralExpr2 [label = "10"];
+  UpdatePeg2 -> IntLiteralExpr2;
+  assignmentNode2 [label = "Assignment:x"];
+  UpdatePeg2 -> assignmentNode2;
+}

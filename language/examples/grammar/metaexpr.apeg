@@ -1,0 +1,13 @@
+apeg metaexpr;
+
+prog[language g]:
+    foo<g, (| language |), g1> bar<g1>
+;
+
+foo[language g, type t] returns g:
+    {g = g << {| bar[#t g]: {? true }; |};}
+;
+
+bar[language g]:
+    {? false }
+;

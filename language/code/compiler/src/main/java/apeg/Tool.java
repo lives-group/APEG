@@ -50,6 +50,7 @@ public class Tool {
 	// external functions
 	private String interpretInput;
 	private Stack<String> warnings;
+        private Boolean TypeCheckerDebug, VMDebug;
 
 
 	public Tool() {
@@ -65,6 +66,10 @@ public class Tool {
 
 		// Set the interpreter's input file path.
 		interpretInput = null;
+
+                // Debug options
+                TypeCheckerDebug = false;
+                VMDebug = false;
 	}
 
 	public static void main(String[] args) {
@@ -76,100 +81,99 @@ public class Tool {
 		for (String s : tool.getWarningMessage())
 		System.out.println(s); // print option arguments warnings
 
-		for (String s : grammars) {
-			// Check if the file ends with the correct extension: apeg
-			if (!s.endsWith(".apeg")) {
-				System.err.println("Invalid file extension: " + s);
-				continue; // go to next file
-			}
-			// Open a the grammar file
-			Path fpath;
-			String fName;
-			if (AbsolutePath.isAbsolute(s))
-			fpath = new AbsolutePath(s);
-			else
-			fpath = new RelativePath(new AbsolutePath(
-			System.getProperty("user.dir")), s);
-			int index = s.lastIndexOf(File.separatorChar, s.length()-5);
-			if(index != -1) // the string has a file separator
-			fName = s.substring(index+1, s.length()-5);
-			else // the string do not have a file separator
-			fName = s.substring(0, s.length()-5);
+                if(grammars != null){
+                    for (String s : grammars) {
+                            // Check if the file ends with the correct extension: apeg
+                            if (!s.endsWith(".apeg")) {
+                                    System.err.println("Invalid file extension: " + s);
+                                    continue; // go to next file
+                            }
+                            else if(s.endsWith(".txt")){
+                                    System.err.println("You should specify an APEG grammar file (.apeg). Use -h for more details.");
+                                    continue;
+                            }
+                            // Open a the grammar file
+                            Path fpath;
+                            String fName;
+                            if (AbsolutePath.isAbsolute(s))
+                            fpath = new AbsolutePath(s);
+                            else
+                            fpath = new RelativePath(new AbsolutePath(
+                            System.getProperty("user.dir")), s);
+                            int index = s.lastIndexOf(File.separatorChar, s.length()-5);
+                            if(index != -1) // the string has a file separator
+                            fName = s.substring(index+1, s.length()-5);
+                            else // the string do not have a file separator
+                            fName = s.substring(0, s.length()-5);
 
-			try {
-			    // System.out.println(fpath.toString());
-				FileReader file = new FileReader(fpath.getFile());
-				// Create an ANTLR input stream
-				ANTLRInputStream input = new ANTLRInputStream(file);
-				// create a lexer that feeds off of input stream
-				APEGLexer lexer = new APEGLexer(input);
-				// create a buffer of tokens pulled from the lexer
-				CommonTokenStream tokens = new CommonTokenStream(lexer);
+                            try {
+                                // System.out.println(fpath.toString());
+                                    FileReader file = new FileReader(fpath.getFile());
+                                    // Create an ANTLR input stream
+                                    ANTLRInputStream input = new ANTLRInputStream(file);
+                                    // create a lexer that feeds off of input stream
+                                    APEGLexer lexer = new APEGLexer(input);
+                                    // create a buffer of tokens pulled from the lexer
+                                    CommonTokenStream tokens = new CommonTokenStream(lexer);
 
-				// create an AST factory
-				ASTFactory factory = new ASTFactoryImpl();
-                                ASTFactory factoryMeta = new ASTFactoryMetaImpl();
-				// create a parser that feeds off the tokens buffer
-				APEGParser parser = new APEGParser(factory, factoryMeta, tokens);
-				// tell ANTLR to does not automatically build an AST
-				parser.setBuildParseTree(false);
+                                    // create an AST factory
+                                    ASTFactory factory = new ASTFactoryImpl();
+                                    ASTFactory factoryMeta = new ASTFactoryMetaImpl();
+                                    // create a parser that feeds off the tokens buffer
+                                    APEGParser parser = new APEGParser(factory, factoryMeta, tokens);
+                                    // tell ANTLR to does not automatically build an AST
+                                    parser.setBuildParseTree(false);
 
-				// Parse phase: extract the AST from the grammar source code
-				Grammar g = parser.grammarDef().gram;
+                                    // Parse phase: extract the AST from the grammar source code
+                                    Grammar g = parser.grammarDef().gram;
 
-				// Check is there is any parse error
-				if(parser.getNumberOfSyntaxErrors() != 0 ||
-				parser.getCurrentToken().getType() != Recognizer.EOF) {
-					// ARTLR has already printed error messages, thus we stop
-					continue;
-				}
+                                    // Check is there is any parse error
+                                    if(parser.getNumberOfSyntaxErrors() != 0 ||
+                                    parser.getCurrentToken().getType() != Recognizer.EOF) {
+                                            // ARTLR has already printed error messages, thus we stop
+                                            continue;
+                                    }
 
-				// Pretty printing the grammar. Just for testing
-                                // Visitor prettyprint = new PrettyPrint(new RelativePath(new AbsolutePath("."), "src/main/templates/prettyprint.stg"));
+                                    // Pretty printing the grammar. Just for testing
+                                    // Visitor prettyprint = new PrettyPrint(new RelativePath(new AbsolutePath("."), "src/main/templates/prettyprint.stg"));
 
-                                // g.accept(prettyprint);
+                                    // g.accept(prettyprint);
 
-                                // Visitor dotvisitor = new DOTVisitor(new RelativePath(tool.outputPath, fName + ".dot"),
-				//                                   new RelativePath(new AbsolutePath("."),
-				//       		            "src/main/templates/dot.stg"));
-				// g.accept(dotvisitor);
+                                    // Visitor dotvisitor = new DOTVisitor(new RelativePath(tool.outputPath, fName + ".dot"),
+                                    //                                     new RelativePath(new AbsolutePath("."),
+                                    //                                     "src/main/templates/dot.stg"));
+                                    // g.accept(dotvisitor);
 
-				Visitor typechecker = new TypeCheckerVisitor(true);
+                                    Visitor typechecker = new TypeCheckerVisitor(tool.TypeCheckerDebug);
 
-				g.accept(typechecker);
-                if(!((TypeCheckerVisitor)typechecker).getError().isEmpty()){
-                        ErrorsMsg errm = ErrorsMsg.getInstance();
-                        for(ErrorEntry perr:((TypeCheckerVisitor)typechecker).getError()){
-                            System.out.println(errm.translate(perr) );
-                        }
-                    System.exit(1);
+                                    g.accept(typechecker);
+                                    if(!((TypeCheckerVisitor)typechecker).getError().isEmpty()){
+                                            ErrorsMsg errm = ErrorsMsg.getInstance();
+                                            for(ErrorEntry perr:((TypeCheckerVisitor)typechecker).getError()){
+                                                System.out.println(errm.translate(perr) );
+                                            }
+                                            System.exit(1);
+                                    }
+                    
+                                    if(tool.interpretInput != null){
+                                            VMVisitor vm = new VMVisitor(tool.interpretInput.toString(),((TypeCheckerVisitor)typechecker).getEnv());
+                                            vm.setDebugMode(tool.VMDebug);
+                                            System.out.println("Executing: " + tool.interpretInput);
+                                            g.accept(vm);
+                                            if(vm.succeed()){
+                                                    System.out.println(" accepted.");
+                                            }
+                                            else{ System.out.println(" rejected"); }
+                                    }
+                }catch (FileNotFoundException e) {
+                    System.err.println("File " + s + " do not exist");
+                        continue;
+                }catch (IOException e) {
+                        System.err.println(e.getMessage());
+                        continue;
                 }
-                
-				if(tool.interpretInput != null){
-//                     if(!((TypeCheckerVisitor)typechecker).getError().isEmpty()){
-//                         ErrorsMsg errm = ErrorsMsg.getInstance();
-//                         for(ErrorEntry perr:((TypeCheckerVisitor)typechecker).getError()){
-//                             System.out.println(errm.translate(perr) );
-//                         }
-//                     System.exit(1);
-//                     }
-					VMVisitor vm = new VMVisitor(tool.interpretInput.toString(),((TypeCheckerVisitor)typechecker).getEnv());
-                                        vm.setDebugMode(true);
-					System.out.println("Executing: " + tool.interpretInput);
-					g.accept(vm);
-					if(vm.succeed()){
-						System.out.println(" accepted.");
-					}
-					else{ System.out.println(" rejected"); }
-				}
-            }catch (FileNotFoundException e) {
-                System.err.println("File " + s + " do not exist");
-	            continue;
-            }catch (IOException e) {
-	            System.err.println(e.getMessage());
-	            continue;
-            }
-       }
+           }
+        }
 
    }
 
@@ -222,5 +226,13 @@ public void setInterpretSource(String s){
 
 public String getInterpretSource(){
 	return interpretInput;
+}
+
+public void setTypeCheckerDebug(Boolean v){
+    this.TypeCheckerDebug = v;
+}
+
+public void setVMDebug(Boolean v){
+    this.VMDebug = v;
 }
 }

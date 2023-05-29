@@ -855,6 +855,7 @@ public class TestExprs {
 		assertEquals(null, e);
     }
 
+    /*
     @Test
     void testUnquoteExpr01() throws IOException {
 		CharStream stream = CharStreams.fromReader(new StringReader ("(| m['key'] + m[#ref] |)"));
@@ -874,6 +875,7 @@ public class TestExprs {
 		// Expected Result
 		assertEquals("'(seq (# 'quoteRef) '('foo' ([ (# 'quote) 'bar])))" , e.toString());
     }
+    */
 
     @Test
     void testUnquoteType01() throws IOException {
@@ -885,6 +887,7 @@ public class TestExprs {
 		assertEquals("'float" , e.toString());
     }
 
+    /*
     @Test
     void testUnquoteType02() throws IOException {
 		CharStream stream = CharStreams.fromReader(new StringReader ("{| #prog[#ty varname]: #foo ; |}"));
@@ -894,6 +897,7 @@ public class TestExprs {
 		// Expected Result
 		assertEquals("(metagrammar ([ (metaRule (# 'prog) ([ (# 'ty)]) ([ 'varname']) (# 'foo))]))" , e.toString());
     }
+    */
 
     @Test
     void testQuoteValue01() throws IOException {

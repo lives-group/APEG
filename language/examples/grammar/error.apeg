@@ -1,0 +1,3 @@
+apeg errorgrammar;
+
+prog[int m, int n]: {? true } { s = 'str' + 10; } ;

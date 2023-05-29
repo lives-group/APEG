@@ -1,0 +1,7 @@
+apeg rulebuild;
+
+p[language g]: aux<g, ~'begin', (| language |), `'foo'`, g1> begin<g1> ;
+
+aux[language g, expr nt, type ty, peg lit] returns g1: {g1 = g << {| #nt[#ty g]: #lit ;|};} ;
+
+begin[language g]: {? false } ;
